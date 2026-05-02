@@ -67,7 +67,7 @@ export function TrackClient() {
             AOR<span>Track</span>
           </span>
         </Link>
-        <span className="text-[12px] text-[var(--t3)]">
+        <span className="hidden max-w-[200px] truncate text-center text-[11px] leading-snug text-[var(--t3)] sm:inline sm:max-w-none sm:text-[12px]">
           Profile syncs to MongoDB via server actions
         </span>
         <span />

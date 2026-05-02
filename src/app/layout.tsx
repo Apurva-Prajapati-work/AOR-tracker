@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { DM_Mono, Sora } from "next/font/google";
 import "./globals.css";
 import { ToastProvider } from "@/components/ToastContext";
@@ -19,6 +19,13 @@ export const metadata: Metadata = {
   title: "AORTrack — Canadian Immigration Timeline",
   description:
     "Crowd-sourced Canadian PR timelines by stream, cohort, and milestone.",
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+  themeColor: "#0f1923",
 };
 
 export default function RootLayout({

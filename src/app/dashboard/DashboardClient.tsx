@@ -13,6 +13,7 @@ import { getCohortStatsForProfileAction } from "@/app/actions/cohort";
 import { getCommunityFeedAction } from "@/app/actions/community";
 import { getProfileAction, updateMilestoneAction } from "@/app/actions/profile";
 import { LogoMark } from "@/components/LogoMark";
+import { DashboardLoadingSkeleton } from "@/components/dashboard/DashboardLoadingSkeleton";
 import { useToast } from "@/components/ToastContext";
 import {
   INSIGHTS,
@@ -35,6 +36,100 @@ import type {
 import { fmtDate, fmtShortUpdated } from "@/lib/format";
 
 type Tab = "tl" | "cm" | "st" | "sh";
+
+type PprEst = NonNullable<ReturnType<typeof estimatePprWindow>>;
+
+function DashboardRails({
+  days,
+  pct,
+  ringOffset,
+  median,
+  ppr,
+  cohort,
+}: {
+  days: number;
+  pct: number;
+  ringOffset: number;
+  median: number;
+  ppr: PprEst | null;
+  cohort: CohortStats;
+}) {
+  return (
+    <>
+      <div className="rc">
+        <div className="rct">Progress</div>
+        <div className="rrw">
+          <svg width="82" height="82" viewBox="0 0 82 82">
+            <circle
+              cx="41"
+              cy="41"
+              r="33"
+              fill="none"
+              stroke="rgba(255,255,255,.06)"
+              strokeWidth="6"
+            />
+            <circle
+              cx="41"
+              cy="41"
+              r="33"
+              fill="none"
+              stroke="#c0392b"
+              strokeWidth="6"
+              strokeDasharray="207"
+              strokeDashoffset={ringOffset}
+              strokeLinecap="round"
+              style={{ transition: "stroke-dashoffset 1.2s ease" }}
+            />
+          </svg>
+          <div className="rrtxt">
+            <div className="rrdays">{days}</div>
+            <div className="rrlbl">days</div>
+          </div>
+        </div>
+        <div className="rrfoot">
+          <div className="rrpct">{pct}% through</div>
+          <div className="rrsub">Based on {median}d median</div>
+        </div>
+        <div className="ebox">
+          <div className="elbl">Estimated PPR window</div>
+          <div className="eval">{ppr?.windowLabel ?? "—"}</div>
+          <div className="esub">
+            Based on {cohort.n_verified} similar profiles · Updated{" "}
+            {fmtDate(cohort.last_updated.slice(0, 10))}
+          </div>
+        </div>
+      </div>
+      <div className="rc">
+        <div className="rct">Community insights</div>
+        {INSIGHTS.map((i) => (
+          <div key={i.txt} className="iitem">
+            <div className={`idot ${i.t}`} />
+            <div
+              className="itxt"
+              dangerouslySetInnerHTML={{ __html: i.txt }}
+            />
+          </div>
+        ))}
+      </div>
+      <div className="rc">
+        <div className="rct">Similar cohorts</div>
+        {SIMILAR_COHORTS.map((s) => (
+          <div
+            key={s.label}
+            className={`sitem ${s.on ? "on" : ""}`}
+            role="presentation"
+          >
+            <div>
+              <div className="siname">{s.label}</div>
+              <div className="simeta">{s.meta}</div>
+            </div>
+            <span className="sidays">{s.days}</span>
+          </div>
+        ))}
+      </div>
+    </>
+  );
+}
 
 export function DashboardClient() {
   const router = useRouter();
@@ -139,11 +234,7 @@ export function DashboardClient() {
       : "";
 
   if (!profile || !cohort || !email) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-[var(--navy)] text-[var(--t2)]">
-        Loading dashboard…
-      </div>
-    );
+    return <DashboardLoadingSkeleton />;
   }
 
   const filteredFeed =
@@ -303,12 +394,26 @@ export function DashboardClient() {
               </div>
             </div>
 
+            <div className="mb-4 flex flex-col gap-3 lg:hidden">
+              <DashboardRails
+                days={days}
+                pct={pct}
+                ringOffset={ringOffset}
+                median={median}
+                ppr={ppr}
+                cohort={cohort}
+              />
+            </div>
+
             <div className="card">
               <div className="chd">
                 <span className="ctit">Your milestone timeline</span>
-                <div className="flex items-center gap-2">
-                  <span className="text-[11px] text-[var(--t3)]">
+                <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:gap-2">
+                  <span className="hidden text-[11px] text-[var(--t3)] sm:inline">
                     Hover any row → click to edit date
+                  </span>
+                  <span className="text-[10px] text-[var(--t3)] sm:hidden">
+                    Tap a row to add or edit dates
                   </span>
                   <span className="ctag">
                     {profile.stream} · {profile.type}
@@ -776,77 +881,14 @@ export function DashboardClient() {
         </main>
 
         <aside className="dr">
-          <div className="rc">
-            <div className="rct">Progress</div>
-            <div className="rrw">
-              <svg width="82" height="82" viewBox="0 0 82 82">
-                <circle
-                  cx="41"
-                  cy="41"
-                  r="33"
-                  fill="none"
-                  stroke="rgba(255,255,255,.06)"
-                  strokeWidth="6"
-                />
-                <circle
-                  cx="41"
-                  cy="41"
-                  r="33"
-                  fill="none"
-                  stroke="#c0392b"
-                  strokeWidth="6"
-                  strokeDasharray="207"
-                  strokeDashoffset={ringOffset}
-                  strokeLinecap="round"
-                  style={{ transition: "stroke-dashoffset 1.2s ease" }}
-                />
-              </svg>
-              <div className="rrtxt">
-                <div className="rrdays">{days}</div>
-                <div className="rrlbl">days</div>
-              </div>
-            </div>
-            <div className="rrfoot">
-              <div className="rrpct">{pct}% through</div>
-              <div className="rrsub">Based on {median}d median</div>
-            </div>
-            <div className="ebox">
-              <div className="elbl">Estimated PPR window</div>
-              <div className="eval">{ppr?.windowLabel ?? "—"}</div>
-              <div className="esub">
-                Based on {cohort.n_verified} similar profiles · Updated{" "}
-                {fmtDate(cohort.last_updated.slice(0, 10))}
-              </div>
-            </div>
-          </div>
-          <div className="rc">
-            <div className="rct">Community insights</div>
-            {INSIGHTS.map((i) => (
-              <div key={i.txt} className="iitem">
-                <div className={`idot ${i.t}`} />
-                <div
-                  className="itxt"
-                  dangerouslySetInnerHTML={{ __html: i.txt }}
-                />
-              </div>
-            ))}
-          </div>
-          <div className="rc">
-            <div className="rct">Similar cohorts</div>
-            {SIMILAR_COHORTS.map((s) => (
-              <div
-                key={s.label}
-                className={`sitem ${s.on ? "on" : ""}`}
-                role="presentation"
-              >
-                <div>
-                  <div className="siname">{s.label}</div>
-                  <div className="simeta">{s.meta}</div>
-                </div>
-                <span className="sidays">{s.days}</span>
-              </div>
-            ))}
-          </div>
+          <DashboardRails
+            days={days}
+            pct={pct}
+            ringOffset={ringOffset}
+            median={median}
+            ppr={ppr}
+            cohort={cohort}
+          />
         </aside>
       </div>
     </div>

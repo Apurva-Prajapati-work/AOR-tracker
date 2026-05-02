@@ -56,7 +56,7 @@ export function LandingClient() {
             AOR<span>Track</span>
           </span>
         </Link>
-        <span className="text-[12px] text-[var(--t3)]">
+        <span className="hidden items-center gap-1 text-[12px] text-[var(--t3)] md:inline-flex">
           <span className="dlive" />
           14,872 timelines live
         </span>

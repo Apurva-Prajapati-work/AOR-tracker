@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>My Dashboard — AORTrack</title>
+<meta name="robots" content="noindex"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,ital,wght@9..144,0,400;9..144,0,700;9..144,0,800;9..144,0,900;9..144,1,400;9..144,1,800&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --cream:#FFFCF5;--cream2:#F5F0E6;--cream3:#EDE8DC;
+  --navy:#1A2332;--navy2:#253347;
+  --red:#C8281E;--red2:#a81f17;--red-pale:#FDECEA;
+  --green:#2D6A4F;--green2:#1f5038;--gbg:#EAF4EE;
+  --amber:#B5651D;--abg:#FDF3E3;
+  --blue:#1E5F8C;--bbg:#E8F2FB;
+  --purple:#5B21B6;--pbg:#EDE9FE;
+  --border:#D5CFBF;--border2:#C8C0AF;
+  --muted:#7A7060;--muted2:#9A8E7E;
+  --fh:'Fraunces',Georgia,serif;
+  --fb:'DM Sans',sans-serif;
+  --fm:'DM Mono',monospace;
+}
+html{scroll-behavior:smooth}
+body{background:var(--cream);color:var(--navy);font-family:var(--fb);font-size:15px;line-height:1.6;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+button{font-family:var(--fb);cursor:pointer;border:none;background:none}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:5px}
+
+/* NAV */
+.nav{background:var(--navy);height:60px;padding:0 clamp(14px,3vw,36px);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;border-bottom:1.5px solid rgba(255,255,255,.07)}
+.nav-brand{display:flex;align-items:center;gap:9px}
+.nav-logo{width:24px;height:24px}
+.nav-name{font-family:var(--fh);font-size:.95rem;font-weight:800;color:#fff;letter-spacing:-.02em}
+.nav-sep{width:1px;height:18px;background:rgba(255,255,255,.12);margin:0 10px}
+.nav-page{font-size:.75rem;color:rgba(255,255,255,.4);font-family:var(--fm)}
+.nav-right{display:flex;align-items:center;gap:8px}
+.nav-pill{display:flex;align-items:center;gap:5px;font-size:.7rem;font-weight:700;color:#4ade80;background:rgba(45,106,79,.2);border:1px solid rgba(45,106,79,.4);padding:4px 10px;border-radius:100px}
+.nav-dot{width:5px;height:5px;border-radius:50%;background:#4ade80;animation:blink 2s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.nbtn{font-size:.77rem;font-weight:600;color:rgba(255,255,255,.55);padding:6px 12px;border-radius:6px;transition:all .15s;display:flex;align-items:center;gap:5px}
+.nbtn:hover{color:#fff;background:rgba(255,255,255,.08)}
+.nbtn.red{background:var(--red);color:#fff;font-weight:700}
+.nbtn.red:hover{background:var(--red2)}
+.nbtn svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+
+/* ALERT STRIP */
+.alert-strip{background:var(--abg);border-bottom:2px solid #E8C585;padding:9px clamp(14px,3vw,36px);display:flex;align-items:center;gap:9px;font-size:.78rem;color:var(--amber)}
+.as-text{flex:1}.as-text strong{font-weight:700}
+.as-link{font-weight:700;cursor:pointer;text-decoration:underline;text-underline-offset:2px}
+.as-x{cursor:pointer;opacity:.5;padding:2px 6px;font-size:1rem;transition:opacity .15s}
+.as-x:hover{opacity:1}
+
+/* LAYOUT */
+.layout{display:grid;grid-template-columns:248px 1fr;min-height:calc(100vh - 60px)}
+
+/* SIDEBAR */
+.sidebar{background:var(--cream2);border-right:2px solid var(--border);padding:16px 0;position:sticky;top:60px;height:calc(100vh - 60px);overflow-y:auto;display:flex;flex-direction:column;gap:0}
+.sb-card{margin:0 14px 4px;background:var(--navy);border-radius:10px;padding:14px}
+.sbc-id{font-size:.62rem;color:rgba(255,255,255,.3);font-family:var(--fm);margin-bottom:3px}
+.sbc-stream{font-family:var(--fh);font-size:.9rem;font-weight:800;color:#fff}
+.sbc-type{font-size:.68rem;color:rgba(255,255,255,.4);margin-top:1px}
+.sbc-aor{margin-top:9px;padding-top:9px;border-top:1px solid rgba(255,255,255,.08);display:flex;justify-content:space-between;font-size:.68rem;color:rgba(255,255,255,.3);font-family:var(--fm)}
+.sbc-aor span{color:rgba(255,255,255,.65);font-weight:600}
+.sb-warn{margin:6px 14px 4px;background:var(--abg);border:1px solid #E8C585;border-radius:7px;padding:8px 10px;font-size:.71rem;color:var(--amber);line-height:1.5}
+.sb-warn a{font-weight:700;text-decoration:underline;text-underline-offset:2px}
+.sb-sec{padding:10px 14px 4px}
+.sb-sec-label{font-size:.62rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted2);margin-bottom:6px;padding:0 4px}
+.sb-link{display:flex;align-items:center;gap:8px;padding:7px 8px;border-radius:7px;font-size:.8rem;font-weight:500;color:var(--muted);cursor:pointer;transition:all .15s}
+.sb-link:hover{background:var(--cream3);color:var(--navy)}
+.sb-link.on{background:var(--navy);color:#fff}
+.sb-link svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;flex-shrink:0}
+.sb-badge{margin-left:auto;font-size:.63rem;font-family:var(--fm);background:var(--cream3);color:var(--muted);padding:1px 6px;border-radius:100px}
+.sb-link.on .sb-badge{background:rgba(255,255,255,.15);color:rgba(255,255,255,.6)}
+.sb-badge.red{background:var(--red-pale);color:var(--red);border:1px solid #f0b0a8}
+.sb-divider{height:1px;background:var(--border);margin:8px 14px}
+.sb-del{color:var(--red)!important}
+
+/* MAIN */
+.main{padding:clamp(18px,2.5vw,32px) clamp(18px,2.5vw,36px)}
+
+/* HERO BAR */
+.hero-bar{display:grid;grid-template-columns:148px 1fr;gap:16px;margin-bottom:18px;align-items:start}
+.days-box{background:var(--navy);border-radius:14px;padding:20px;text-align:center}
+.days-n{font-family:var(--fh);font-size:3.4rem;font-weight:900;color:#fff;line-height:1;letter-spacing:-.04em}
+.days-lbl{font-size:.65rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:rgba(255,255,255,.38);margin-top:5px;font-family:var(--fm)}
+.days-since{font-size:.66rem;color:rgba(255,255,255,.22);margin-top:3px;font-family:var(--fm)}
+.stat-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.s-card{background:#fff;border:2px solid var(--border);border-radius:11px;padding:14px 16px}
+.s-lbl{font-size:.64rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--muted2);margin-bottom:5px;font-family:var(--fm)}
+.s-val{font-family:var(--fh);font-size:1.55rem;font-weight:900;color:var(--navy);line-height:1;margin-bottom:3px}
+.s-val.green{color:var(--green)}
+.s-val.amber{color:var(--amber)}
+.s-val.sm{font-size:1.1rem}
+.s-sub{font-size:.7rem;color:var(--muted);display:flex;align-items:center;gap:4px}
+.up{color:var(--green);font-weight:700}
+.dn{color:var(--red);font-weight:700}
+
+/* RINGS ROW */
+.rings-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:18px}
+.ring-card{background:#fff;border:2px solid var(--border);border-radius:11px;padding:14px 16px;display:flex;align-items:center;gap:14px}
+.ring-svg-wrap{position:relative;width:68px;height:68px;flex-shrink:0}
+.ring-svg-wrap svg{transform:rotate(-90deg)}
+.r-bg{fill:none;stroke:var(--cream3);stroke-width:7}
+.r-fill{fill:none;stroke-width:7;stroke-linecap:round;stroke-dasharray:175.9;stroke-dashoffset:175.9;transition:stroke-dashoffset 1.4s cubic-bezier(.4,0,.2,1)}
+.ring-num{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:var(--fh);font-size:.95rem;font-weight:900;color:var(--navy)}
+.ring-info-title{font-size:.82rem;font-weight:700;color:var(--navy);margin-bottom:3px}
+.ring-info-sub{font-size:.72rem;color:var(--muted);line-height:1.55}
+
+/* PPR WINDOW */
+.ppr-bar{background:var(--navy);border-radius:12px;padding:16px 20px;margin-bottom:18px}
+.ppr-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px}
+.ppr-lbl{font-size:.63rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.32);margin-bottom:3px;font-family:var(--fm)}
+.ppr-win{font-family:var(--fh);font-size:1.35rem;font-weight:900;color:#fff}
+.ppr-right{text-align:right}
+.ppr-n{font-size:.66rem;color:rgba(255,255,255,.32);font-family:var(--fm);margin-bottom:3px}
+.ppr-conf{font-size:.68rem;font-weight:700;color:#4ade80;background:rgba(45,106,79,.2);border:1px solid rgba(45,106,79,.35);padding:2px 9px;border-radius:100px}
+.ppr-track{height:6px;background:rgba(255,255,255,.09);border-radius:100px;position:relative;overflow:visible;margin-bottom:5px}
+.ppr-progress{height:100%;background:linear-gradient(90deg,var(--green),#4ade80);border-radius:100px;transition:width 1.4s ease}
+.ppr-window-band{position:absolute;top:-2px;height:10px;background:rgba(200,40,30,.35);border:1px solid rgba(200,40,30,.6);border-radius:2px}
+.ppr-you-marker{position:absolute;top:-5px;width:3px;height:16px;background:#fff;border-radius:2px;box-shadow:0 0 6px rgba(255,255,255,.5)}
+.ppr-axis{display:flex;justify-content:space-between;font-size:.63rem;color:rgba(255,255,255,.25);font-family:var(--fm)}
+
+/* SECTION HEAD */
+.sec-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.sec-title{font-family:var(--fh);font-size:1rem;font-weight:800;color:var(--navy)}
+.sec-sub{font-size:.72rem;color:var(--muted);margin-top:1px}
+.sec-btn{font-size:.72rem;font-weight:700;color:var(--blue);background:var(--bbg);border:1px solid #b8d8f0;padding:5px 11px;border-radius:6px;cursor:pointer;transition:all .2s}
+.sec-btn:hover{background:var(--blue);color:#fff}
+.data-note{font-size:.66rem;color:var(--muted2);display:flex;align-items:center;gap:4px;margin-top:6px}
+.data-note::before{content:'ⓘ'}
+
+/* TIMELINE */
+.timeline{margin-bottom:22px}
+.tl-row{display:flex;gap:12px;padding-bottom:0;position:relative}
+.tl-spine{width:2px;background:var(--border);position:absolute;left:16px;top:33px;bottom:-1px;z-index:0}
+.tl-row:last-child .tl-spine{display:none}
+.tl-dot{width:32px;height:32px;border-radius:50%;border:2px solid;display:flex;align-items:center;justify-content:center;font-size:.74rem;flex-shrink:0;position:relative;z-index:1;background:var(--cream)}
+.dot-done{background:var(--gbg)!important;border-color:var(--green)!important;color:var(--green)}
+.dot-now{background:var(--bbg)!important;border-color:var(--blue)!important;color:var(--blue);animation:pulse 2.5s infinite}
+.dot-wait{border-color:var(--border2)!important;color:var(--muted2)}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(30,95,140,.3)}60%{box-shadow:0 0 0 5px rgba(30,95,140,0)}}
+.tl-body{flex:1;padding:4px 0 18px}
+.tl-top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+.tl-name{font-size:.85rem;font-weight:700;color:var(--navy)}
+.tl-desc{font-size:.73rem;color:var(--muted);line-height:1.5;margin-top:2px}
+.tl-r{text-align:right;flex-shrink:0}
+.tl-date{font-size:.75rem;font-weight:700;color:var(--navy);font-family:var(--fm)}
+.tl-day{font-size:.65rem;color:var(--muted)}
+.tl-est{font-size:.66rem;color:var(--blue);background:var(--bbg);border:1px solid #b8d8f0;padding:2px 7px;border-radius:100px;font-family:var(--fm);display:inline-block;margin-top:3px}
+.tl-pend{font-size:.7rem;color:var(--muted);font-style:italic}
+.badge-v{display:inline-flex;align-items:center;gap:3px;font-size:.63rem;font-weight:700;color:var(--green);background:var(--gbg);border:1px solid #90d4b0;padding:1px 7px;border-radius:100px;margin-top:3px}
+.badge-p{display:inline-flex;align-items:center;gap:3px;font-size:.63rem;font-weight:700;color:var(--amber);background:var(--abg);border:1px solid #E8C585;padding:1px 7px;border-radius:100px;margin-top:3px}
+.edit-btn{font-size:.66rem;color:var(--muted);background:var(--cream2);border:1px solid var(--border);border-radius:5px;padding:2px 8px;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:3px;margin-top:4px}
+.edit-btn:hover{background:var(--navy);color:#fff;border-color:var(--navy)}
+.edit-panel{display:none;margin-top:8px;background:var(--cream2);border:1.5px solid var(--border);border-radius:8px;padding:10px 12px;animation:fadeIn .2s ease}
+.edit-panel.open{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+.ep-label{font-size:.72rem;font-weight:600;color:var(--muted);margin-bottom:5px;display:block}
+.ep-input{width:100%;padding:7px 10px;border:2px solid var(--border);border-radius:7px;font-family:var(--fm);font-size:.82rem;color:var(--navy);background:#fff;outline:none}
+.ep-input:focus{border-color:var(--navy)}
+.ep-btns{display:flex;gap:6px;margin-top:7px}
+.ep-save{padding:6px 14px;background:var(--green);color:#fff;border-radius:6px;font-size:.74rem;font-weight:700;cursor:pointer;transition:background .2s}
+.ep-save:hover{background:var(--green2)}
+.ep-cancel{padding:6px 12px;background:var(--cream3);color:var(--muted);border-radius:6px;font-size:.74rem;cursor:pointer;border:1px solid var(--border)}
+
+/* COHORT BARS */
+.cohort-card{background:#fff;border:2px solid var(--border);border-radius:11px;padding:16px 18px;margin-bottom:18px}
+.cb-row{margin-bottom:10px}
+.cb-row:last-child{margin-bottom:0}
+.cb-hd{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px}
+.cb-name{font-size:.78rem;font-weight:600;color:var(--navy)}
+.cb-stat{font-size:.7rem;color:var(--muted);font-family:var(--fm)}
+.cb-stat strong{font-weight:700}
+.cb-track{height:7px;background:var(--cream3);border-radius:100px;overflow:hidden}
+.cb-fill{height:100%;border-radius:100px;width:0;transition:width 1.4s cubic-bezier(.4,0,.2,1)}
+.fill-g{background:linear-gradient(90deg,var(--green),#4ade80)}
+.fill-b{background:linear-gradient(90deg,var(--blue),#7dd3fc)}
+.fill-a{background:linear-gradient(90deg,var(--amber),#fbbf24)}
+.fill-r{background:linear-gradient(90deg,var(--red),#f87171)}
+.cb-note{font-size:.64rem;color:var(--muted2);margin-top:2px}
+
+/* HISTOGRAM */
+.hist-card{background:#fff;border:2px solid var(--border);border-radius:11px;padding:16px 18px;margin-bottom:18px}
+.hist-area{height:90px;display:flex;align-items:flex-end;gap:3px;margin:12px 0 4px}
+.hb-wrap{flex:1;display:flex;flex-direction:column;align-items:center;gap:1px}
+.hb{width:100%;border-radius:2px 2px 0 0;transition:height .8s ease;cursor:pointer}
+.hb:hover{filter:brightness(1.15)}
+.hb.n{background:var(--navy2)}
+.hb.h{background:var(--red)}
+.hb.y{background:var(--green)}
+.hb-lbl{font-size:.55rem;color:var(--muted2);font-family:var(--fm);text-align:center;white-space:nowrap}
+.hb-lbl.y{color:var(--green);font-weight:700}
+.hist-legend{display:flex;gap:12px;justify-content:center}
+.hl-item{display:flex;align-items:center;gap:4px;font-size:.68rem;color:var(--muted)}
+.hl-dot{width:9px;height:9px;border-radius:2px}
+
+/* DOT MAP */
+.dotmap-card{background:#fff;border:2px solid var(--border);border-radius:11px;padding:16px 18px;margin-bottom:18px}
+.dm-grid{display:flex;flex-wrap:wrap;gap:3px;margin:12px 0 8px}
+.dm{width:9px;height:9px;border-radius:1.5px;cursor:default;transition:transform .15s}
+.dm:hover{transform:scale(1.6)}
+.dm.ppr{background:var(--green)}
+.dm.mid{background:var(--blue);opacity:.8}
+.dm.early{background:var(--navy2);opacity:.5}
+.dm.you{background:var(--red);outline:2px solid #fff;outline-offset:1px;border-radius:2px}
+.dm-legend{display:flex;gap:10px;flex-wrap:wrap}
+.dl{display:flex;align-items:center;gap:4px;font-size:.68rem;color:var(--muted)}
+.dl-d{width:9px;height:9px;border-radius:1.5px}
+
+/* STREAM COMPARE */
+.comp-card{background:#fff;border:2px solid var(--border);border-radius:11px;padding:16px 18px;margin-bottom:18px}
+.cmp-row{display:flex;align-items:center;gap:9px;margin-bottom:7px}
+.cmp-row:last-child{margin-bottom:0}
+.cmp-name{font-size:.75rem;font-weight:600;color:var(--navy);width:90px;flex-shrink:0}
+.cmp-track{flex:1;height:7px;background:var(--cream3);border-radius:100px;overflow:hidden}
+.cmp-fill{height:100%;border-radius:100px;width:0;transition:width 1.4s cubic-bezier(.4,0,.2,1)}
+.cmp-n{background:linear-gradient(90deg,var(--navy2),var(--navy))}
+.cmp-r{background:linear-gradient(90deg,var(--red),#f87171)}
+.cmp-val{font-size:.72rem;font-weight:700;color:var(--muted);width:34px;text-align:right;font-family:var(--fm);flex-shrink:0}
+.cmp-row.you .cmp-name{color:var(--red);font-weight:800}
+.cmp-row.you .cmp-val{color:var(--red)}
+
+/* ALERTS */
+.alert-card{border-radius:10px;padding:12px 14px;margin-bottom:8px;display:flex;align-items:flex-start;gap:9px}
+.alert-card.amber-c{background:var(--abg);border:1.5px solid #E8C585}
+.alert-card.green-c{background:var(--gbg);border:1.5px solid #90d4b0}
+.ac-ic{font-size:.9rem;flex-shrink:0;margin-top:1px}
+.ac-bd{flex:1}
+.ac-title{font-size:.8rem;font-weight:700;color:var(--navy);margin-bottom:2px}
+.ac-desc{font-size:.73rem;color:var(--muted);line-height:1.55}
+.ac-meta{font-size:.64rem;color:var(--muted2);margin-top:3px;font-family:var(--fm);display:flex;align-items:center;gap:6px}
+.ac-meta a{color:var(--blue);font-weight:700}
+
+/* SHARE */
+.share-card{background:var(--cream2);border:2px solid var(--border);border-radius:11px;padding:16px 18px;margin-bottom:18px}
+.share-url{font-family:var(--fm);font-size:.7rem;color:var(--muted);background:var(--cream3);border:1px solid var(--border);border-radius:5px;padding:6px 9px;margin:8px 0;word-break:break-all}
+.share-btns{display:flex;gap:7px;flex-wrap:wrap}
+.sh-btn{display:flex;align-items:center;gap:5px;padding:7px 13px;border-radius:7px;font-size:.75rem;font-weight:600;cursor:pointer;border:1.5px solid;transition:all .2s}
+.sh-btn.copy{background:#fff;color:var(--navy);border-color:var(--border)}
+.sh-btn.copy:hover{background:var(--navy);color:#fff;border-color:var(--navy)}
+.sh-btn.wa{background:#25D366;color:#fff;border-color:#25D366}
+.sh-btn.gh{background:var(--navy);color:#fff;border-color:var(--navy)}
+.sh-btn svg{width:12px;height:12px;fill:currentColor;flex-shrink:0}
+
+/* CONSULTING CTA */
+.cta-bar{background:var(--navy);border-radius:12px;padding:18px 22px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:30px}
+.cta-bar-h{font-family:var(--fh);font-size:1rem;font-weight:800;color:#fff;margin-bottom:3px}
+.cta-bar-sub{font-size:.78rem;color:rgba(255,255,255,.45);line-height:1.55;max-width:380px}
+.cta-bar-btn{background:var(--red);color:#fff;padding:10px 20px;border-radius:7px;font-family:var(--fh);font-size:.85rem;font-weight:800;white-space:nowrap;flex-shrink:0;transition:background .15s}
+.cta-bar-btn:hover{background:var(--red2)}
+
+/* TOAST */
+.toast{position:fixed;bottom:20px;right:20px;background:var(--navy);color:#fff;padding:11px 16px;border-radius:8px;font-size:.78rem;font-weight:600;z-index:999;box-shadow:0 4px 24px rgba(0,0,0,.25);animation:slideIn .3s ease}
+@keyframes slideIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+/* RESPONSIVE */
+@media(max-width:960px){
+  .layout{grid-template-columns:1fr}
+  .sidebar{position:static;height:auto;flex-direction:row;overflow-x:auto;padding:10px 0;border-right:none;border-bottom:2px solid var(--border)}
+  .sb-card,.sb-warn,.sb-divider,.sb-sec-label{display:none}
+  .sb-sec{display:flex;gap:3px;padding:0 12px;white-space:nowrap}
+  .hero-bar{grid-template-columns:1fr}
+  .days-box{display:flex;align-items:center;gap:14px;padding:14px}
+  .days-n{font-size:2.5rem}
+  .stat-grid{grid-template-columns:1fr 1fr}
+  .rings-row{grid-template-columns:1fr}
+}
+@media(max-width:600px){
+  .stat-grid{grid-template-columns:1fr}
+  .nav-pill,.nav-page,.nav-sep{display:none}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <div style="display:flex;align-items:center">
+    <a href="/" class="nav-brand">
+      <svg class="nav-logo" viewBox="0 0 100 100" fill="none">
+        <path d="M50 5C50 5 30 35 8 38L18 48L10 55L30 52L28 70L50 58L72 70L70 52L90 55L82 48L92 38C70 35 50 5 50 5Z" fill="#C8281E"/>
+        <rect x="44" y="68" width="12" height="22" rx="2" fill="#C8281E"/>
+      </svg>
+      <div class="nav-name">AORTrack</div>
+    </a>
+    <div class="nav-sep"></div>
+    <div class="nav-page">Dashboard · #4821</div>
+  </div>
+  <div class="nav-right">
+    <div class="nav-pill"><div class="nav-dot"></div>CEC General · Feb 2026</div>
+    <button class="nbtn" onclick="showSection('share-sec')">
+      <svg viewBox="0 0 24 24"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8M16 6l-4-4-4 4M12 2v13"/></svg>
+      Share
+    </button>
+    <button class="nbtn red" onclick="showSection('tl-sec')">+ Log Milestone</button>
+  </div>
+</nav>
+
+<!-- ALERT STRIP -->
+<div class="alert-strip" id="alertStrip">
+  <span>⚠️</span>
+  <div class="as-text"><strong>WES Delay Alert:</strong> 12 CEC General applicants report WES results not updating in IRCC tracker. <span class="as-link" onclick="showSection('alerts-sec')">View details →</span></div>
+  <span class="as-x" onclick="document.getElementById('alertStrip').style.display='none'">✕</span>
+</div>
+
+<!-- LAYOUT -->
+<div class="layout">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sb-card">
+      <div class="sbc-id">Applicant #4821</div>
+      <div class="sbc-stream">CEC General</div>
+      <div class="sbc-type">🏠 Inland · Ontario</div>
+      <div class="sbc-aor"><span>AOR Date</span><span>Feb 20, 2026</span></div>
+    </div>
+
+    <div class="sb-warn">⚠️ No email on file. <a href="/profile/add-email">Add email</a> to resume from any device.</div>
+
+    <div class="sb-sec">
+      <div class="sb-sec-label">Dashboard</div>
+      <div class="sb-link on">
+        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+        Overview
+      </div>
+      <div class="sb-link" onclick="showSection('tl-sec')">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        My Timeline
+      </div>
+      <div class="sb-link" onclick="showSection('cohort-sec')">
+        <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+        My Cohort
+        <span class="sb-badge">1,240</span>
+      </div>
+      <div class="sb-link" onclick="showSection('alerts-sec')">
+        <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0"/></svg>
+        Alerts
+        <span class="sb-badge red">1</span>
+      </div>
+    </div>
+
+    <div class="sb-divider"></div>
+
+    <div class="sb-sec">
+      <div class="sb-sec-label">Community</div>
+      <div class="sb-link">
+        <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+        Community Feed
+      </div>
+      <div class="sb-link">
+        <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        Processing Stats
+      </div>
+      <div class="sb-link">
+        <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Give Feedback
+      </div>
+    </div>
+
+    <div class="sb-divider"></div>
+
+    <div class="sb-sec">
+      <div class="sb-sec-label">Profile</div>
+      <div class="sb-link">
+        <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        Add Email
+      </div>
+      <div class="sb-link sb-del" onclick="confirmDel()">
+        <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/></svg>
+        Delete My Data
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+
+    <!-- HERO BAR -->
+    <div class="hero-bar">
+      <div class="days-box">
+        <div>
+          <div class="days-n" id="daysNum">0</div>
+          <div class="days-lbl">Days Since AOR</div>
+          <div class="days-since">Feb 20, 2026</div>
+        </div>
+      </div>
+      <div class="stat-grid">
+        <div class="s-card">
+          <div class="s-lbl">Stream Median</div>
+          <div class="s-val">184d</div>
+          <div class="s-sub"><span class="up">↑ +2d</span>&nbsp;this week</div>
+        </div>
+        <div class="s-card">
+          <div class="s-lbl">Cohort Rank</div>
+          <div class="s-val amber">Top 58%</div>
+          <div class="s-sub">482 of 1,240 ahead</div>
+        </div>
+        <div class="s-card">
+          <div class="s-lbl">Est. PPR Window</div>
+          <div class="s-val green sm">Aug – Oct '26</div>
+          <div class="s-sub">P25–P75 confidence</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RINGS ROW -->
+    <div class="rings-row">
+      <div class="ring-card">
+        <div class="ring-svg-wrap">
+          <svg width="68" height="68" viewBox="0 0 68 68">
+            <defs><linearGradient id="rg1" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stop-color="#2D6A4F"/><stop offset="100%" stop-color="#4ade80"/>
+            </linearGradient></defs>
+            <circle class="r-bg" cx="34" cy="34" r="28"/>
+            <circle class="r-fill" cx="34" cy="34" r="28" id="r1" stroke="url(#rg1)"/>
+          </svg>
+          <div class="ring-num" id="r1pct">39%</div>
+        </div>
+        <div>
+          <div class="ring-info-title">Journey Progress</div>
+          <div class="ring-info-sub">72 of ~184 median days elapsed. You're past the biometrics stage.</div>
+        </div>
+      </div>
+      <div class="ring-card">
+        <div class="ring-svg-wrap">
+          <svg width="68" height="68" viewBox="0 0 68 68">
+            <defs><linearGradient id="rg2" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stop-color="#1E5F8C"/><stop offset="100%" stop-color="#7dd3fc"/>
+            </linearGradient></defs>
+            <circle class="r-bg" cx="34" cy="34" r="28"/>
+            <circle class="r-fill" cx="34" cy="34" r="28" id="r2" stroke="url(#rg2)"/>
+          </svg>
+          <div class="ring-num" id="r2pct" style="color:var(--blue)">39%</div>
+        </div>
+        <div>
+          <div class="ring-info-title">Cohort PPR Rate</div>
+          <div class="ring-info-sub">482 of 1,240 applicants in your Feb 2026 cohort have received PPR.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PPR WINDOW -->
+    <div class="ppr-bar">
+      <div class="ppr-top">
+        <div>
+          <div class="ppr-lbl">Estimated PPR Window</div>
+          <div class="ppr-win">August – October 2026</div>
+        </div>
+        <div class="ppr-right">
+          <div class="ppr-n">Based on 1,240 verified submissions</div>
+          <div class="ppr-conf">P25–P75 Confidence</div>
+        </div>
+      </div>
+      <div class="ppr-track">
+        <div class="ppr-progress" id="pprProg" style="width:0%"></div>
+        <div class="ppr-window-band" style="left:69%;width:17%"></div>
+        <div class="ppr-you-marker" style="left:39%"></div>
+      </div>
+      <div class="ppr-axis">
+        <span>Feb 20 (AOR)</span><span>Today →</span><span>Aug '26 (P25)</span><span>Oct '26 (P75)</span>
+      </div>
+    </div>
+
+    <!-- MILESTONE TIMELINE -->
+    <div id="tl-sec">
+      <div class="sec-head">
+        <div>
+          <div class="sec-title">My Milestone Timeline</div>
+          <div class="sec-sub">Hover any row to edit your date — updates are Gemini-verified before contributing to community stats</div>
+        </div>
+        <button class="sec-btn" onclick="toggleEdit('ep-bgc')">+ Add BGC date</button>
+      </div>
+
+      <div class="timeline">
+
+        <div class="tl-row">
+          <div class="tl-spine"></div>
+          <div class="tl-dot dot-done">✓</div>
+          <div class="tl-body">
+            <div class="tl-top">
+              <div>
+                <div class="tl-name">AOR — Acknowledgement of Receipt</div>
+                <div class="tl-desc">Your application entered the IRCC processing queue.</div>
+                <div class="badge-v">✓ Verified</div>
+              </div>
+              <div class="tl-r"><div class="tl-date">Feb 20, 2026</div><div class="tl-day">Day 0</div></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="tl-row">
+          <div class="tl-spine"></div>
+          <div class="tl-dot dot-done">✓</div>
+          <div class="tl-body">
+            <div class="tl-top">
+              <div>
+                <div class="tl-name">BIL — Background Initiated Letter</div>
+                <div class="tl-desc">IRCC has begun background processing on your file.</div>
+                <div class="badge-v">✓ Verified · contributed to cohort stats</div>
+              </div>
+              <div class="tl-r">
+                <div class="tl-date">Mar 8, 2026</div>
+                <div class="tl-day">Day 16</div>
+                <button class="edit-btn" onclick="toggleEdit('ep-bil')">✎ Edit</button>
+              </div>
+            </div>
+            <div class="edit-panel" id="ep-bil">
+              <label class="ep-label">BIL Date</label>
+              <input class="ep-input" type="date" value="2026-03-08"/>
+              <div class="ep-btns">
+                <button class="ep-save" onclick="saveEdit('ep-bil')">Save</button>
+                <button class="ep-cancel" onclick="toggleEdit('ep-bil')">Cancel</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="tl-row">
+          <div class="tl-spine"></div>
+          <div class="tl-dot dot-done">✓</div>
+          <div class="tl-body">
+            <div class="tl-top">
+              <div>
+                <div class="tl-name">Biometrics Confirmed</div>
+                <div class="tl-desc">Your biometrics verified in the IRCC system.</div>
+                <div class="badge-p">⏳ Pending Gemini review</div>
+              </div>
+              <div class="tl-r">
+                <div class="tl-date">Mar 22, 2026</div>
+                <div class="tl-day">Day 30</div>
+                <button class="edit-btn" onclick="toggleEdit('ep-bio')">✎ Edit</button>
+              </div>
+            </div>
+            <div class="edit-panel" id="ep-bio">
+              <label class="ep-label">Biometrics Date</label>
+              <input class="ep-input" type="date" value="2026-03-22"/>
+              <div class="ep-btns">
+                <button class="ep-save" onclick="saveEdit('ep-bio')">Save</button>
+                <button class="ep-cancel" onclick="toggleEdit('ep-bio')">Cancel</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="tl-row">
+          <div class="tl-spine"></div>
+          <div class="tl-dot dot-now">⟳</div>
+          <div class="tl-body">
+            <div class="tl-top">
+              <div>
+                <div class="tl-name">Background Check</div>
+                <div class="tl-desc">Security and criminal background checks underway.</div>
+                <div class="tl-est">Est. Day 58–90 · 341 cohort members at this stage</div>
+              </div>
+              <div class="tl-r">
+                <div class="tl-pend">Not yet</div>
+                <button class="edit-btn" onclick="toggleEdit('ep-bgc')" style="margin-top:5px">+ Add date</button>
+              </div>
+            </div>
+            <div class="edit-panel" id="ep-bgc">
+              <label class="ep-label">Background Check Start Date</label>
+              <input class="ep-input" type="date" max="2026-05-03"/>
+              <div class="ep-btns">
+                <button class="ep-save" onclick="saveEdit('ep-bgc')">Save &amp; contribute to community</button>
+                <button class="ep-cancel" onclick="toggleEdit('ep-bgc')">Cancel</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="tl-row">
+          <div class="tl-spine"></div>
+          <div class="tl-dot dot-wait">○</div>
+          <div class="tl-body">
+            <div class="tl-top">
+              <div>
+                <div class="tl-name">Medical Results</div>
+                <div class="tl-desc">IRCC reviewing your medical examination results.</div>
+                <div class="tl-est">Est. Day 75–110 · 298 cohort members past this</div>
+              </div>
+              <div class="tl-r">
+                <div class="tl-pend">Not yet</div>
+                <button class="edit-btn" onclick="toggleEdit('ep-med')" style="margin-top:5px">+ Add date</button>
+              </div>
+            </div>
+            <div class="edit-panel" id="ep-med">
+              <input class="ep-input" type="date" max="2026-05-03"/>
+              <div class="ep-btns">
+                <button class="ep-save" onclick="saveEdit('ep-med')">Save</button>
+                <button class="ep-cancel" onclick="toggleEdit('ep-med')">Cancel</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="tl-row">
+          <div class="tl-dot dot-wait" style="font-size:1rem">🍁</div>
+          <div class="tl-body">
+            <div class="tl-top">
+              <div>
+                <div class="tl-name">PPR — Passport Request</div>
+                <div class="tl-desc">Final step before COPR. Your application has been approved.</div>
+                <div class="tl-est">Est. Aug–Oct 2026 · P25–P75 · 482 of your cohort received</div>
+              </div>
+              <div class="tl-r"><div class="tl-pend">Not yet</div></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <div class="data-note">Estimates from 1,240 Gemini-verified submissions · CEC General · Feb 2026 · Updated May 3, 2026</div>
+    </div>
+
+    <!-- COHORT BARS -->
+    <div id="cohort-sec" style="margin-top:26px">
+      <div class="sec-head">
+        <div>
+          <div class="sec-title">Your Cohort — Feb 2026 · CEC General</div>
+          <div class="sec-sub">1,240 verified applicants · All provinces</div>
+        </div>
+      </div>
+      <div class="cohort-card">
+        <div class="cb-row"><div class="cb-hd"><div class="cb-name">AOR Received</div><div class="cb-stat"><strong>1,240</strong> / 1,240 (100%)</div></div><div class="cb-track"><div class="cb-fill fill-g" data-w="100"></div></div></div>
+        <div class="cb-row"><div class="cb-hd"><div class="cb-name">BIL Received</div><div class="cb-stat"><strong>1,108</strong> / 1,240 (89%)</div></div><div class="cb-track"><div class="cb-fill fill-b" data-w="89"></div></div><div class="cb-note">Median: Day 14 after AOR</div></div>
+        <div class="cb-row"><div class="cb-hd"><div class="cb-name">Biometrics</div><div class="cb-stat"><strong>974</strong> / 1,240 (79%)</div></div><div class="cb-track"><div class="cb-fill fill-b" data-w="79"></div></div></div>
+        <div class="cb-row"><div class="cb-hd"><div class="cb-name">Background Check</div><div class="cb-stat"><strong>681</strong> / 1,240 (55%)</div></div><div class="cb-track"><div class="cb-fill fill-a" data-w="55"></div></div></div>
+        <div class="cb-row"><div class="cb-hd"><div class="cb-name">Medical Passed</div><div class="cb-stat"><strong>544</strong> / 1,240 (44%)</div></div><div class="cb-track"><div class="cb-fill fill-a" data-w="44"></div></div></div>
+        <div class="cb-row"><div class="cb-hd"><div class="cb-name">PPR Received 🍁</div><div class="cb-stat"><strong>482</strong> / 1,240 (39%)</div></div><div class="cb-track"><div class="cb-fill fill-r" data-w="39"></div></div><div class="cb-note">Median: Day 184 · Fastest: Day 142 · Slowest tracked: Day 231</div></div>
+      </div>
+
+      <!-- HISTOGRAM -->
+      <div class="hist-card">
+        <div class="sec-head" style="margin-bottom:0">
+          <div><div class="sec-title" style="font-size:.92rem">Days-to-PPR Distribution</div><div class="sec-sub">482 verified PPR completions · your estimated window in red</div></div>
+        </div>
+        <div class="hist-area" id="hist"></div>
+        <div class="hist-legend">
+          <div class="hl-item"><div class="hl-dot" style="background:var(--navy)"></div>Cohort</div>
+          <div class="hl-item"><div class="hl-dot" style="background:var(--red)"></div>Your window</div>
+          <div class="hl-item"><div class="hl-dot" style="background:var(--green)"></div>Your position</div>
+        </div>
+        <div class="data-note">Gemini-verified only · Z-score filtered (±2.5σ)</div>
+      </div>
+
+      <!-- DOT MAP -->
+      <div class="dotmap-card">
+        <div class="sec-head" style="margin-bottom:0">
+          <div><div class="sec-title" style="font-size:.92rem">Cohort Dot Map — 500 sampled</div><div class="sec-sub"><span style="color:var(--red);font-weight:700">Red dot = You</span> · Each dot = one applicant</div></div>
+        </div>
+        <div class="dm-grid" id="dotmap"></div>
+        <div class="dm-legend">
+          <div class="dl"><div class="dl-d" style="background:var(--green)"></div>PPR received (482)</div>
+          <div class="dl"><div class="dl-d" style="background:var(--blue);opacity:.8"></div>BGC / Medical (362)</div>
+          <div class="dl"><div class="dl-d" style="background:var(--navy2);opacity:.5"></div>AOR – Biometrics (395)</div>
+          <div class="dl"><div class="dl-d" style="background:var(--red);outline:1.5px solid #fff;outline-offset:1px"></div>You</div>
+        </div>
+      </div>
+
+      <!-- STREAM COMPARE -->
+      <div class="comp-card">
+        <div class="sec-head" style="margin-bottom:10px">
+          <div><div class="sec-title" style="font-size:.92rem">Stream Comparison — Median Days to PPR</div><div class="sec-sub">Your stream highlighted · Updated weekly</div></div>
+        </div>
+        <div class="cmp-row"><div class="cmp-name" style="color:var(--green);font-weight:800">CEC French</div><div class="cmp-track"><div class="cmp-fill cmp-n" data-w="52"></div></div><div class="cmp-val" style="color:var(--green)">134d</div></div>
+        <div class="cmp-row"><div class="cmp-name">CEC STEM</div><div class="cmp-track"><div class="cmp-fill cmp-n" data-w="63"></div></div><div class="cmp-val">162d</div></div>
+        <div class="cmp-row you"><div class="cmp-name">CEC General ←</div><div class="cmp-track"><div class="cmp-fill cmp-r" data-w="72"></div></div><div class="cmp-val">184d</div></div>
+        <div class="cmp-row"><div class="cmp-name">FSW General</div><div class="cmp-track"><div class="cmp-fill cmp-n" data-w="77"></div></div><div class="cmp-val">198d</div></div>
+        <div class="cmp-row"><div class="cmp-name">PNP</div><div class="cmp-track"><div class="cmp-fill cmp-n" data-w="84"></div></div><div class="cmp-val">216d</div></div>
+        <div class="data-note" style="margin-top:8px">Gemini-verified data only · All = median days to PPR</div>
+      </div>
+    </div>
+
+    <!-- ALERTS -->
+    <div id="alerts-sec" style="margin-top:26px">
+      <div class="sec-head">
+        <div><div class="sec-title">Community Alerts</div><div class="sec-sub">Verified by 3+ community members · Your stream only</div></div>
+      </div>
+      <div class="alert-card amber-c">
+        <div class="ac-ic">⚠️</div>
+        <div class="ac-bd">
+          <div class="ac-title">WES Verification Delay — CEC General</div>
+          <div class="ac-desc">12 applicants report WES credential results not updating in the IRCC online tracker. IRCC confirmation pending. May delay biometrics confirmation for some applicants.</div>
+          <div class="ac-meta"><span>12 members</span><span>·</span><span>3 days ago</span><span>·</span><a href="#">View full details →</a></div>
+        </div>
+      </div>
+      <div class="alert-card green-c">
+        <div class="ac-ic">✅</div>
+        <div class="ac-bd">
+          <div class="ac-title">Processing Velocity Up This Week — CEC General</div>
+          <div class="ac-desc">18 PPR approvals reported in the Feb 2026 cohort this week — highest weekly count since launch. Processing appears to be accelerating.</div>
+          <div class="ac-meta"><span>18 members</span><span>·</span><span>1 day ago</span><span>·</span><a href="#">View community feed →</a></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SHARE -->
+    <div id="share-sec" style="margin-top:26px">
+      <div class="sec-head">
+        <div><div class="sec-title">Share My Journey</div><div class="sec-sub">Read-only link — no personal data exposed</div></div>
+      </div>
+      <div class="share-card">
+        <div style="font-size:.78rem;color:var(--muted)">Your shareable profile link:</div>
+        <div class="share-url">track.getnorthpath.com/t/hopeful-maple-cec-general-feb2026</div>
+        <div class="share-btns">
+          <button class="sh-btn copy" onclick="copyLink()">
+            <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+            Copy Link
+          </button>
+          <button class="sh-btn wa">
+            <svg viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"/></svg>
+            WhatsApp
+          </button>
+          <button class="sh-btn gh" onclick="window.open('https://github.com/Get-North-Path/AOR-tracker')">
+            <svg viewBox="0 0 16 16"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+            ⭐ Star on GitHub
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONSULTING CTA -->
+    <div class="cta-bar" style="margin-top:26px">
+      <div>
+        <div class="cta-bar-h">Need more than tracking?</div>
+        <div class="cta-bar-sub">GetNorthPath consultants manage your full PR application — ITA strategy through PPR submission. $299 CAD, AI-powered forms, expert review.</div>
+      </div>
+      <a href="https://www.getnorthpath.com/contact?utm_source=dashboard" class="cta-bar-btn">Book Free Consultation →</a>
+    </div>
+
+    <div style="height:36px"></div>
+  </main>
+</div>
+
+<script>
+// ── DAYS COUNTER ANIMATION ────────────────────────────────────────────────────
+(function(){
+  const el = document.getElementById('daysNum'), target = 72;
+  let n = 0;
+  const step = () => { n = Math.min(n + 3, target); el.textContent = n; if(n < target) requestAnimationFrame(step); };
+  setTimeout(step, 150);
+})();
+
+// ── RING ANIMATION ─────────────────────────────────────────────────────────────
+window.addEventListener('load', () => {
+  const C = 2 * Math.PI * 28; // circumference for r=28
+  const pct = 0.39;
+  const offset = C * (1 - pct);
+  setTimeout(() => {
+    document.getElementById('r1').style.strokeDasharray = C;
+    document.getElementById('r1').style.strokeDashoffset = offset;
+    document.getElementById('r2').style.strokeDasharray = C;
+    document.getElementById('r2').style.strokeDashoffset = offset;
+  }, 300);
+
+  // PPR track
+  setTimeout(() => { document.getElementById('pprProg').style.width = '39%'; }, 400);
+
+  // Cohort bars
+  document.querySelectorAll('.cb-fill[data-w],.cmp-fill[data-w]').forEach((el, i) => {
+    setTimeout(() => { el.style.width = el.dataset.w + '%'; }, 500 + i * 60);
+  });
+
+  buildHistogram();
+  buildDotMap();
+});
+
+// ── HISTOGRAM ─────────────────────────────────────────────────────────────────
+function buildHistogram() {
+  const bars = [
+    {l:'<150d',v:18,t:'n'},{l:'155d',v:34,t:'n'},{l:'162d',v:52,t:'n'},
+    {l:'170d',v:88,t:'n'},{l:'178d',v:96,t:'n'},{l:'186d',v:80,t:'h'},
+    {l:'194d',v:62,t:'h'},{l:'202d',v:42,t:'h'},{l:'210d',v:28,t:'y'},
+    {l:'>220d',v:12,t:'n'}
+  ];
+  const max = Math.max(...bars.map(b => b.v));
+  const c = document.getElementById('hist');
+  c.innerHTML = '';
+  bars.forEach((b, i) => {
+    const w = document.createElement('div');
+    w.className = 'hb-wrap';
+    const bar = document.createElement('div');
+    bar.className = 'hb ' + b.t;
+    bar.style.cssText = `height:0;transition:height .7s ease ${i*0.05}s`;
+    bar.title = `${b.l}: ${b.v} applicants`;
+    const lbl = document.createElement('div');
+    lbl.className = 'hb-lbl' + (b.t === 'y' ? ' y' : '');
+    lbl.textContent = b.l;
+    w.appendChild(bar); w.appendChild(lbl); c.appendChild(w);
+    setTimeout(() => { bar.style.height = Math.round((b.v / max) * 85) + '%'; }, 700);
+  });
+}
+
+// ── DOT MAP ───────────────────────────────────────────────────────────────────
+function buildDotMap() {
+  const c = document.getElementById('dotmap');
+  const total = 500, ppr = 194, mid = 145;
+  for (let i = 0; i < total; i++) {
+    const d = document.createElement('div');
+    if (i === 210) {
+      d.className = 'dm you';
+      d.title = 'You — Applicant #4821';
+    } else if (i < ppr) {
+      d.className = 'dm ppr';
+    } else if (i < ppr + mid) {
+      d.className = 'dm mid';
+    } else {
+      d.className = 'dm early';
+    }
+    c.appendChild(d);
+  }
+}
+
+// ── INLINE EDIT ───────────────────────────────────────────────────────────────
+function toggleEdit(id) {
+  const p = document.getElementById(id);
+  if (!p) return;
+  p.classList.toggle('open');
+}
+function saveEdit(id) {
+  const p = document.getElementById(id);
+  const input = p.querySelector('input');
+  if (!input?.value) { toggleEdit(id); return; }
+  const btn = p.querySelector('.ep-save');
+  btn.textContent = 'Saving…'; btn.disabled = true;
+  setTimeout(() => {
+    p.classList.remove('open');
+    btn.textContent = 'Save'; btn.disabled = false;
+    toast('✓ Milestone updated · Submitted for Gemini review');
+  }, 1200);
+}
+
+// ── TOAST ─────────────────────────────────────────────────────────────────────
+function toast(msg) {
+  const el = document.createElement('div');
+  el.className = 'toast';
+  el.textContent = msg;
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 3500);
+}
+
+// ── COPY LINK ─────────────────────────────────────────────────────────────────
+function copyLink() {
+  navigator.clipboard.writeText('https://track.getnorthpath.com/t/hopeful-maple-cec-general-feb2026')
+    .then(() => toast('✓ Link copied to clipboard'));
+}
+
+// ── SCROLL TO SECTION ─────────────────────────────────────────────────────────
+function showSection(id) {
+  const el = document.getElementById(id);
+  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// ── DELETE CONFIRM ────────────────────────────────────────────────────────────
+function confirmDel() {
+  if (confirm('⚠️ Delete all your AORTrack data permanently?\n\nThis removes:\n• AOR date and stream\n• All milestone dates\n• Community submissions\n• Shareable profile\n\nThis cannot be undone.')) {
+    toast('Deletion requested — you will receive a confirmation email');
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>AORTrack — Canadian PR Processing Time Tracker | Free | Community Powered</title>
+<meta name="description" content="Track your Canadian permanent residency processing time with real crowd-sourced data from 14,800+ applicants. Free, open-source, no signup required."/>
+<meta property="og:title" content="AORTrack — Free Canadian PR Processing Time Tracker"/>
+<meta property="og:description" content="Real processing timelines from 14,800+ applicants. Not IRCC's generic estimate."/>
+<meta property="og:url" content="https://track.getnorthpath.com"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<link rel="canonical" href="https://track.getnorthpath.com"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,ital,wght@9..144,0,400;9..144,0,700;9..144,0,800;9..144,0,900;9..144,1,400;9..144,1,800&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --cream:#FFFCF5;--cream2:#F5F0E6;--cream3:#EDE8DC;
+  --navy:#1A2332;--navy2:#253347;
+  --red:#C8281E;--red2:#a81f17;--red-pale:#FDECEA;
+  --green:#2D6A4F;--gbg:#EAF4EE;
+  --amber:#B5651D;--abg:#FDF3E3;
+  --blue:#1E5F8C;--bbg:#E8F2FB;
+  --purple:#5B21B6;--pbg:#EDE9FE;
+  --teal:#0D7377;--tbg:#E0F4F4;
+  --border:#D5CFBF;--border2:#C8C0AF;
+  --muted:#7A7060;
+  --fh:'Fraunces',Georgia,serif;
+  --fb:'DM Sans',sans-serif;
+  --fm:'DM Mono',monospace;
+  --max:1160px;
+}
+html{scroll-behavior:smooth}
+body{background:var(--cream);color:var(--navy);font-family:var(--fb);font-size:16px;line-height:1.65;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:5px}
+
+/* NAV */
+.nav{position:sticky;top:0;z-index:100;background:var(--navy);border-bottom:2px solid rgba(255,255,255,.07);padding:0 clamp(16px,4vw,48px);display:flex;align-items:center;justify-content:space-between;height:64px}
+.nav-brand{display:flex;align-items:center;gap:10px}
+.nav-logo{width:28px;height:28px}
+.nav-name{font-family:var(--fh);font-size:1.05rem;font-weight:800;color:#fff;letter-spacing:-.02em}
+.nav-sub{font-size:.62rem;color:rgba(255,255,255,.3);font-family:var(--fm);margin-left:2px;display:block;margin-top:-2px}
+.nav-links{display:flex;align-items:center;gap:24px}
+.nav-links a{font-size:.84rem;font-weight:500;color:rgba(255,255,255,.65);transition:color .15s}
+.nav-links a:hover{color:#fff}
+.nav-oss{display:flex;align-items:center;gap:6px;font-size:.75rem;color:rgba(255,255,255,.4);border:1px solid rgba(255,255,255,.12);border-radius:100px;padding:5px 12px;transition:all .15s}
+.nav-oss:hover{color:rgba(255,255,255,.8);border-color:rgba(255,255,255,.3)}
+.nav-oss svg{width:13px;height:13px;fill:currentColor;flex-shrink:0}
+.nav-cta{background:var(--red);color:#fff;padding:8px 20px;border-radius:7px;font-size:.84rem;font-weight:700;border:2px solid var(--red);transition:background .15s}
+.nav-cta:hover{background:var(--red2)}
+
+/* HERO */
+.hero{background:var(--navy);padding:clamp(56px,7vw,96px) clamp(16px,4vw,48px) 0;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 55% 65% at 88% 35%,rgba(45,106,79,.14) 0%,transparent 65%);pointer-events:none}
+.hero::after{content:'🍁';position:absolute;right:clamp(440px,38%,580px);top:40px;font-size:clamp(80px,12vw,160px);opacity:.04;pointer-events:none;line-height:1}
+.hero-inner{max-width:var(--max);margin:0 auto;display:grid;grid-template-columns:1fr 440px;gap:3rem;align-items:end}
+.hero-breadcrumb{font-size:.72rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.35);margin-bottom:1rem;display:flex;align-items:center;gap:6px}
+.hero-breadcrumb span{color:rgba(255,255,255,.2)}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:8px;background:rgba(45,106,79,.25);border:1px solid rgba(45,106,79,.5);padding:4px 14px;border-radius:100px;font-size:.75rem;font-weight:700;color:#4ade80;letter-spacing:.06em;text-transform:uppercase;margin-bottom:1.4rem}
+.hero-eyebrow-dot{width:6px;height:6px;border-radius:50%;background:#4ade80;animation:blink 2s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.hero-h1{font-family:var(--fh);font-size:clamp(2.2rem,4.5vw,3.4rem);font-weight:900;color:#fff;line-height:1.05;letter-spacing:-.04em;margin-bottom:1.2rem}
+.hero-h1 em{font-style:italic;color:#4ade80}
+.hero-sub{font-size:1.05rem;color:rgba(255,255,255,.6);line-height:1.7;max-width:520px;margin-bottom:2rem;font-weight:300}
+.hero-actions{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:2.5rem}
+.btn-hero{padding:13px 28px;border-radius:8px;font-size:.95rem;font-weight:700;border:2px solid;display:inline-flex;align-items:center;gap:8px;cursor:pointer;transition:all .15s;font-family:var(--fb)}
+.btn-red{background:var(--red);color:#fff;border-color:var(--red)}.btn-red:hover{background:var(--red2)}
+.btn-outline{background:transparent;color:#fff;border-color:rgba(255,255,255,.25)}.btn-outline:hover{border-color:#fff;background:rgba(255,255,255,.07)}
+.hero-trust{display:flex;gap:20px;flex-wrap:wrap;padding-bottom:2.5rem}
+.ht-item{display:flex;align-items:center;gap:7px;font-size:.8rem;color:rgba(255,255,255,.45);font-weight:500}
+.ht-item::before{content:'✓';color:#4ade80;font-weight:700;font-size:.85rem}
+
+/* HERO CARD */
+.hero-card{background:var(--cream);border:2px solid var(--navy2);border-radius:16px;overflow:hidden;margin-bottom:-2px;box-shadow:0 20px 60px rgba(0,0,0,.35)}
+.hc-header{background:var(--green);padding:14px 20px;display:flex;align-items:center;justify-content:space-between}
+.hc-title{font-family:var(--fh);font-size:.9rem;font-weight:800;color:#fff}
+.hc-live{display:flex;align-items:center;gap:6px;font-size:.7rem;font-weight:700;color:rgba(255,255,255,.8);background:rgba(0,0,0,.2);padding:3px 10px;border-radius:100px}
+.hc-live-dot{width:5px;height:5px;border-radius:50%;background:#4ade80;animation:blink 2s infinite}
+.hc-body{padding:18px 20px}
+.hc-stats{display:grid;grid-template-columns:1fr 1px 1fr 1px 1fr;gap:0;margin-bottom:14px}
+.hc-stat{text-align:center;padding:0 8px}
+.hc-stat-val{font-family:var(--fh);font-size:1.55rem;font-weight:900;color:var(--navy);line-height:1}
+.hc-stat-label{font-size:.62rem;color:var(--muted);margin-top:3px;font-family:var(--fm);text-transform:uppercase;letter-spacing:.04em}
+.hc-divider{background:var(--border)}
+.hc-prog-label{display:flex;justify-content:space-between;font-size:.72rem;margin-bottom:5px}
+.hc-prog-key{color:var(--muted)}
+.hc-prog-val{font-weight:700;color:var(--navy);font-family:var(--fm)}
+.hc-bar{height:7px;background:var(--cream3);border-radius:100px;overflow:hidden;margin-bottom:4px}
+.hc-bar-fill{height:100%;border-radius:100px;background:linear-gradient(90deg,var(--green),#4ade80);width:39%}
+.hc-bar-note{font-size:.65rem;color:var(--muted);margin-bottom:14px}
+.hc-feed{border-top:1px solid var(--border)}
+.hc-feed-row{display:flex;align-items:center;gap:9px;padding:8px 0;border-bottom:1px solid var(--border);font-size:.76rem}
+.hc-feed-row:last-child{border-bottom:none}
+.hc-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.d-green{background:var(--green)}
+.d-blue{background:var(--blue)}
+.d-amber{background:var(--amber)}
+.hc-feed-text{flex:1;color:var(--muted)}
+.hc-feed-text strong{color:var(--navy)}
+.hc-badge{font-size:.61rem;font-weight:700;background:var(--cream2);color:var(--muted);border:1px solid var(--border);padding:2px 7px;border-radius:100px}
+.hc-cta{display:block;width:100%;margin-top:14px;padding:11px;background:var(--red);color:#fff;border:none;border-radius:8px;font-family:var(--fh);font-size:.9rem;font-weight:800;cursor:pointer;transition:background .15s;text-align:center}
+.hc-cta:hover{background:var(--red2)}
+
+/* STATS BAR */
+.stats-bar{background:var(--cream2);border-top:2px solid var(--navy);border-bottom:2px solid var(--border)}
+.stats-inner{max-width:var(--max);margin:0 auto;padding:0 clamp(16px,4vw,48px);display:grid;grid-template-columns:repeat(4,1fr)}
+.stat-cell{padding:24px 0;text-align:center;border-right:1px solid var(--border)}
+.stat-cell:last-child{border-right:none}
+.stat-num{font-family:var(--fh);font-size:2rem;font-weight:900;color:var(--navy);line-height:1}
+.stat-num span{color:var(--red)}
+.stat-desc{font-size:.75rem;color:var(--muted);margin-top:4px;font-weight:500}
+
+/* SECTION */
+.section{padding:clamp(60px,7vw,96px) clamp(16px,4vw,48px)}
+.inner{max-width:var(--max);margin:0 auto}
+.section-eye{font-size:.72rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:.8rem}
+.section-h2{font-family:var(--fh);font-size:clamp(1.8rem,3vw,2.4rem);font-weight:800;letter-spacing:-.03em;line-height:1.1;margin-bottom:1rem}
+.section-sub{font-size:1rem;color:var(--muted);line-height:1.7;font-weight:300;max-width:640px}
+
+/* HOW IT WORKS */
+.hiw-section{background:var(--cream2);border-top:2px solid var(--border)}
+.hiw-inner{max-width:var(--max);margin:0 auto;padding:clamp(60px,7vw,96px) clamp(16px,4vw,48px)}
+.hiw-steps{display:grid;grid-template-columns:repeat(4,1fr);gap:0;position:relative;margin-top:2.5rem}
+.hiw-steps::before{content:'';position:absolute;top:27px;left:8%;right:8%;height:2px;background:var(--border);z-index:0}
+.hiw-step{text-align:center;padding:0 14px;position:relative;z-index:1}
+.hs-num{width:54px;height:54px;border-radius:50%;background:var(--cream);border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-family:var(--fh);font-size:1.2rem;font-weight:900;color:var(--navy);margin:0 auto 14px}
+.hiw-step.active .hs-num{background:var(--green);border-color:var(--green);color:#fff}
+.hs-title{font-family:var(--fh);font-size:.92rem;font-weight:700;color:var(--navy);margin-bottom:7px}
+.hs-body{font-size:.79rem;color:var(--muted);line-height:1.65}
+.hs-tag{font-size:.65rem;font-weight:700;padding:3px 8px;border-radius:100px;margin-top:8px;display:inline-block}
+.hs-free{background:var(--gbg);color:var(--green);border:1px solid #90d4b0}
+.hs-oss{background:var(--bbg);color:var(--blue);border:1px solid #b8d8f0}
+
+/* STREAMS */
+.stream-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1.2rem;margin-top:2.5rem}
+.stream-card{border:2px solid var(--navy);border-radius:13px;overflow:hidden;transition:box-shadow .15s;cursor:pointer}
+.stream-card:hover{box-shadow:4px 4px 0 var(--navy)}
+.stream-card.featured{border-color:var(--green)}
+.stream-card.featured:hover{box-shadow:4px 4px 0 var(--green)}
+.sc-head{padding:16px 18px;display:flex;align-items:flex-start;justify-content:space-between;gap:8px}
+.green-bg{background:var(--green)}.navy-bg{background:var(--navy)}.blue-bg{background:var(--blue)}.teal-bg{background:var(--teal)}.amber-bg{background:var(--amber)}
+.sc-icon{font-size:1.5rem;flex-shrink:0}
+.sc-title{font-family:var(--fh);font-size:.95rem;font-weight:800;color:#fff;margin-bottom:3px}
+.sc-sub{font-size:.72rem;color:rgba(255,255,255,.55)}
+.sc-body{padding:15px 18px;background:var(--cream)}
+.sc-avg{font-family:var(--fm);font-size:.78rem;color:var(--muted);margin-bottom:8px}
+.sc-avg strong{color:var(--navy);font-size:1.1rem;font-family:var(--fh);font-weight:800}
+.sc-bar{height:5px;background:var(--cream3);border-radius:100px;overflow:hidden;margin-bottom:10px}
+.sc-bar-fill{height:100%;border-radius:100px;background:linear-gradient(90deg,var(--green),#4ade80)}
+.sc-facts{display:flex;flex-direction:column;gap:5px}
+.sc-fact{font-size:.79rem;display:flex;align-items:flex-start;gap:7px;line-height:1.5;color:var(--muted)}
+.sc-fact::before{content:'→';color:var(--green);font-weight:700;flex-shrink:0;margin-top:1px}
+.stream-add{background:var(--cream2);border:2px dashed var(--border2);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2.5rem 1.5rem;text-align:center;border-radius:13px;cursor:default}
+
+/* MILESTONE TIMELINE */
+.tl-section{background:var(--navy)}
+.tl-inner{max-width:var(--max);margin:0 auto;padding:clamp(60px,7vw,96px) clamp(16px,4vw,48px)}
+.tl-grid{display:grid;grid-template-columns:1fr 380px;gap:3rem;align-items:start;margin-top:2.5rem}
+.tl-item{display:flex;gap:18px;padding-bottom:22px;position:relative}
+.tl-item:not(:last-child)::after{content:'';position:absolute;left:19px;top:38px;bottom:0;width:2px;background:rgba(255,255,255,.08)}
+.tl-dot{width:38px;height:38px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:.82rem;border:2px solid;z-index:1}
+.td-g{background:rgba(45,106,79,.2);border-color:var(--green);color:#4ade80}
+.td-b{background:rgba(30,95,140,.2);border-color:var(--blue);color:#7dd3fc}
+.td-a{background:rgba(181,101,29,.2);border-color:var(--amber);color:#fbbf24}
+.td-r{background:rgba(200,40,30,.2);border-color:var(--red);color:#f87171}
+.td-p{background:rgba(91,33,182,.2);border-color:var(--purple);color:#c4b5fd}
+.tl-bd{flex:1;padding-top:5px}
+.tl-t{font-size:.9rem;font-weight:600;color:#fff;margin-bottom:3px}
+.tl-d{font-size:.8rem;color:rgba(255,255,255,.4);line-height:1.65}
+.tl-time{font-size:.72rem;font-weight:700;color:rgba(255,255,255,.3);margin-top:3px;font-family:var(--fm)}
+.tl-est{font-size:.67rem;font-weight:700;background:rgba(255,255,255,.06);color:rgba(255,255,255,.35);border:1px solid rgba(255,255,255,.1);padding:2px 8px;border-radius:100px;margin-top:5px;display:inline-block;font-family:var(--fm)}
+.tl-right{display:flex;flex-direction:column;gap:1.2rem}
+.info-card{background:rgba(255,255,255,.04);border:1.5px solid rgba(255,255,255,.09);border-radius:12px;padding:20px 22px}
+.ic-label{font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.3);margin-bottom:12px}
+.ic-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.07);font-size:.83rem}
+.ic-row:last-child{border-bottom:none}
+.ic-key{color:rgba(255,255,255,.45)}
+.ic-val{font-weight:600;color:#fff;font-family:var(--fm);font-size:.8rem}
+.ic-val.green{color:#4ade80}
+.ic-val.amber{color:#fbbf24}
+
+/* FEEDBACK / OSS */
+.oss-section{background:var(--cream2);border-top:2px solid var(--border)}
+.oss-inner{max-width:var(--max);margin:0 auto;padding:clamp(60px,7vw,96px) clamp(16px,4vw,48px);display:grid;grid-template-columns:1fr 1fr;gap:3.5rem;align-items:start}
+.oss-feat{display:flex;align-items:flex-start;gap:14px;margin-bottom:1.4rem}
+.oss-ic{width:42px;height:42px;border-radius:10px;border:1.5px solid var(--border);background:var(--cream);display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0}
+.oss-ft{font-size:.9rem;font-weight:600;color:var(--navy);margin-bottom:4px}
+.oss-fb{font-size:.82rem;color:var(--muted);line-height:1.65}
+.github-card{background:var(--navy);border-radius:14px;overflow:hidden;border:2px solid var(--navy2)}
+.gh-bar{background:var(--navy2);padding:13px 18px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,.07)}
+.gh-repo{font-size:.8rem;font-weight:700;color:#fff;display:flex;align-items:center;gap:7px}
+.gh-repo svg{width:14px;height:14px;fill:rgba(255,255,255,.6)}
+.gh-meta{display:flex;align-items:center;gap:12px;font-size:.72rem;color:rgba(255,255,255,.4);font-family:var(--fm)}
+.gh-issue{display:flex;align-items:flex-start;gap:10px;padding:11px 18px;border-bottom:1px solid rgba(255,255,255,.06)}
+.gh-issue:last-child{border-bottom:none}
+.gh-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:4px}
+.dot-open{background:#3fb950}
+.dot-closed{background:#a371f7}
+.gh-info{flex:1}
+.gh-it{font-size:.79rem;color:rgba(255,255,255,.8);margin-bottom:2px}
+.gh-im{font-size:.69rem;color:rgba(255,255,255,.3);font-family:var(--fm)}
+.gh-lbl{font-size:.61rem;font-weight:700;padding:2px 7px;border-radius:100px;flex-shrink:0;margin-top:2px;white-space:nowrap}
+.l-bug{background:rgba(248,81,73,.15);color:#f85149;border:1px solid rgba(248,81,73,.3)}
+.l-feat{background:rgba(56,139,253,.15);color:#58a6ff;border:1px solid rgba(56,139,253,.3)}
+.l-data{background:rgba(63,185,80,.15);color:#3fb950;border:1px solid rgba(63,185,80,.3)}
+.gh-more{padding:11px 18px;border-top:1px solid rgba(255,255,255,.06);text-align:center;font-size:.74rem;color:rgba(255,255,255,.35);transition:color .15s}
+.gh-more:hover{color:rgba(255,255,255,.7)}
+
+/* GROWTH */
+.growth-section{background:var(--navy)}
+.growth-inner{max-width:var(--max);margin:0 auto;padding:clamp(60px,7vw,96px) clamp(16px,4vw,48px)}
+.g-table{background:rgba(255,255,255,.04);border:1.5px solid rgba(255,255,255,.09);border-radius:12px;overflow:hidden;margin-top:2.5rem}
+.gt-head{display:grid;grid-template-columns:1.8fr 1fr 1fr 1fr 1fr;background:rgba(255,255,255,.05);padding:11px 20px;font-size:.67rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.3)}
+.gt-row{display:grid;grid-template-columns:1.8fr 1fr 1fr 1fr 1fr;padding:10px 20px;border-top:1px solid rgba(255,255,255,.06);font-size:.81rem;align-items:center}
+.gt-row:hover{background:rgba(255,255,255,.025)}
+.gt-k{color:rgba(255,255,255,.6);font-weight:500}
+.gt-v{color:rgba(255,255,255,.7);font-family:var(--fm);font-size:.78rem}
+.gt-v.goal{color:#4ade80;font-weight:700}
+.gt-v.current{color:#fff;font-weight:600}
+
+/* CTA */
+.cta-section{background:var(--green);padding:clamp(64px,8vw,96px) clamp(16px,4vw,48px)}
+.cta-inner{max-width:var(--max);margin:0 auto;display:grid;grid-template-columns:1fr auto;gap:3rem;align-items:center}
+.cta-h2{font-family:var(--fh);font-size:clamp(1.8rem,3vw,2.6rem);font-weight:900;color:#fff;letter-spacing:-.03em;line-height:1.1}
+.cta-sub{font-size:1rem;color:rgba(255,255,255,.65);margin-top:.8rem;font-weight:300}
+.cta-note{margin-top:1rem;padding-top:1rem;border-top:1px solid rgba(255,255,255,.2);font-size:.8rem;color:rgba(255,255,255,.55)}
+.cta-note a{color:#fff;font-weight:600;text-decoration:underline;text-underline-offset:3px}
+.cta-btns{display:flex;flex-direction:column;gap:10px;align-items:flex-end}
+.btn-white{padding:13px 28px;border-radius:8px;font-size:.95rem;font-weight:700;background:#fff;color:var(--green);border:2px solid #fff;display:inline-flex;align-items:center;gap:8px;transition:all .15s;white-space:nowrap;font-family:var(--fb)}
+.btn-white:hover{background:rgba(255,255,255,.9)}
+.btn-ghost-w{padding:10px 24px;border-radius:8px;font-size:.85rem;font-weight:600;background:transparent;color:rgba(255,255,255,.8);border:2px solid rgba(255,255,255,.3);display:inline-flex;align-items:center;gap:8px;transition:all .15s;white-space:nowrap;font-family:var(--fb)}
+.btn-ghost-w:hover{border-color:rgba(255,255,255,.7);color:#fff}
+
+/* FOOTER */
+.footer{background:#0D1824;padding:clamp(40px,5vw,64px) clamp(16px,4vw,48px) 32px}
+.footer-grid{max-width:var(--max);margin:0 auto;display:grid;grid-template-columns:1.6fr 1fr 1fr 1fr;gap:3rem;margin-bottom:3rem}
+.fg-brand{font-family:var(--fh);font-size:1.05rem;font-weight:800;color:#fff;margin-bottom:.5rem;display:flex;align-items:center;gap:8px}
+.fg-desc{font-size:.78rem;color:rgba(255,255,255,.35);line-height:1.7;margin-bottom:1rem}
+.fg-badge{display:inline-flex;align-items:center;gap:5px;font-size:.69rem;color:rgba(255,255,255,.35);border:1px solid rgba(255,255,255,.1);border-radius:100px;padding:4px 10px}
+.fg-badge svg{width:11px;height:11px;fill:currentColor}
+.fg-head{font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.3);margin-bottom:12px}
+.fg-link{display:block;font-size:.82rem;color:rgba(255,255,255,.5);margin-bottom:8px;transition:color .15s}
+.fg-link:hover{color:#fff}
+.footer-btm{max-width:var(--max);margin:0 auto;border-top:1px solid rgba(255,255,255,.07);padding-top:24px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;font-size:.74rem;color:rgba(255,255,255,.28)}
+
+/* STICKY */
+.sticky{position:fixed;bottom:0;left:0;right:0;z-index:90;background:var(--navy);border-top:2px solid rgba(255,255,255,.08);padding:14px clamp(16px,4vw,48px);display:flex;align-items:center;justify-content:space-between;transform:translateY(100%);transition:transform .3s;gap:1rem}
+.sticky.show{transform:translateY(0)}
+.sticky-text{font-size:.88rem;font-weight:600;color:#fff}
+.sticky-sub{font-size:.75rem;color:rgba(255,255,255,.5)}
+
+/* REVEAL */
+.reveal{opacity:0;transform:translateY(22px);transition:opacity .5s,transform .5s}
+.reveal.shown{opacity:1;transform:none}
+
+/* RESPONSIVE */
+@media(max-width:960px){
+  .hero-inner,.tl-grid,.oss-inner,.cta-inner{grid-template-columns:1fr}
+  .hero-card{margin-bottom:0}
+  .stream-grid{grid-template-columns:1fr 1fr}
+  .stats-inner{grid-template-columns:1fr 1fr}
+  .stat-cell:nth-child(2){border-right:none}
+  .stat-cell:nth-child(3){border-top:1px solid var(--border)}
+  .footer-grid{grid-template-columns:1fr 1fr}
+  .cta-btns{align-items:flex-start}
+}
+@media(max-width:600px){
+  .nav-links{display:none}
+  .stream-grid,.hiw-steps{grid-template-columns:1fr}
+  .hiw-steps::before{display:none}
+  .gt-head,.gt-row{grid-template-columns:1.4fr 1fr 1fr}
+  .gt-head>*:nth-child(n+4),.gt-row>*:nth-child(n+4){display:none}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav-brand">
+    <svg class="nav-logo" viewBox="0 0 100 100" fill="none">
+      <path d="M50 5C50 5 30 35 8 38L18 48L10 55L30 52L28 70L50 58L72 70L70 52L90 55L82 48L92 38C70 35 50 5 50 5Z" fill="#C8281E"/>
+      <rect x="44" y="68" width="12" height="22" rx="2" fill="#C8281E"/>
+    </svg>
+    <div>
+      <div class="nav-name">AORTrack</div>
+      <div class="nav-sub">by GetNorthPath</div>
+    </div>
+  </div>
+  <div class="nav-links">
+    <a href="#how">How It Works</a>
+    <a href="#streams">Streams</a>
+    <a href="#timeline">Timeline</a>
+    <a href="#feedback">Contribute</a>
+    <a href="https://github.com/Get-North-Path/AOR-tracker" target="_blank" class="nav-oss">
+      <svg viewBox="0 0 16 16"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+      Open Source
+    </a>
+  </div>
+  <a href="/track" class="nav-cta">Track My AOR →</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-inner">
+    <div>
+      <div class="hero-breadcrumb">
+        <a href="https://www.getnorthpath.com">GetNorthPath</a>
+        <span>/</span>
+        AORTrack
+      </div>
+      <div class="hero-eyebrow">
+        <div class="hero-eyebrow-dot"></div>
+        Free · Open Source · No Account Needed
+      </div>
+      <h1 class="hero-h1">Know exactly where you stand in your <em>PR journey.</em></h1>
+      <p class="hero-sub">AORTrack uses real crowd-sourced data from 14,800+ applicants to show your true processing position — not IRCC's generic 6–8 month estimate.</p>
+      <div class="hero-actions">
+        <a href="/track" class="btn-hero btn-red">Track My Application →</a>
+        <a href="https://github.com/Get-North-Path/AOR-tracker" target="_blank" class="btn-hero btn-outline">⭐ Star on GitHub</a>
+      </div>
+      <div class="hero-trust">
+        <span class="ht-item">No signup required</span>
+        <span class="ht-item">100% free forever</span>
+        <span class="ht-item">Community governed</span>
+        <span class="ht-item">Gemini-verified data</span>
+      </div>
+    </div>
+
+    <div class="hero-card">
+      <div class="hc-header">
+        <div class="hc-title">CEC General — Your Position</div>
+        <div class="hc-live"><div class="hc-live-dot"></div>Live</div>
+      </div>
+      <div class="hc-body">
+        <div class="hc-stats">
+          <div class="hc-stat">
+            <div class="hc-stat-val">184</div>
+            <div class="hc-stat-label">Avg Days</div>
+          </div>
+          <div class="hc-divider"></div>
+          <div class="hc-stat">
+            <div class="hc-stat-val">72</div>
+            <div class="hc-stat-label">Days Elapsed</div>
+          </div>
+          <div class="hc-divider"></div>
+          <div class="hc-stat">
+            <div class="hc-stat-val">1,240</div>
+            <div class="hc-stat-label">Cohort Size</div>
+          </div>
+        </div>
+        <div class="hc-prog-label">
+          <span class="hc-prog-key">Feb 2026 cohort progress</span>
+          <span class="hc-prog-val">39%</span>
+        </div>
+        <div class="hc-bar"><div class="hc-bar-fill"></div></div>
+        <div class="hc-bar-note">482 of 1,240 cohort members have received PPR</div>
+        <div class="hc-feed">
+          <div class="hc-feed-row">
+            <div class="hc-dot d-green"></div>
+            <div class="hc-feed-text"><strong>PPR received</strong> · Feb 20 AOR · Day 172</div>
+            <div class="hc-badge">CEC Gen</div>
+          </div>
+          <div class="hc-feed-row">
+            <div class="hc-dot d-blue"></div>
+            <div class="hc-feed-text"><strong>BIL started</strong> · Mar 15 AOR · Day 14</div>
+            <div class="hc-badge">CEC STEM</div>
+          </div>
+          <div class="hc-feed-row">
+            <div class="hc-dot d-amber"></div>
+            <div class="hc-feed-text"><strong>BGC started</strong> · Feb 18 AOR · Day 58</div>
+            <div class="hc-badge">CEC Gen</div>
+          </div>
+        </div>
+        <a href="/track" class="hc-cta">Start Tracking Free →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS BAR -->
+<div class="stats-bar">
+  <div class="stats-inner">
+    <div class="stat-cell">
+      <div class="stat-num">14<span>.8k</span></div>
+      <div class="stat-desc">Active timelines tracked</div>
+    </div>
+    <div class="stat-cell">
+      <div class="stat-num">184<span>d</span></div>
+      <div class="stat-desc">Avg. CEC General wait</div>
+    </div>
+    <div class="stat-cell">
+      <div class="stat-num">96<span>%</span></div>
+      <div class="stat-desc">Within prediction range</div>
+    </div>
+    <div class="stat-cell">
+      <div class="stat-num">100<span>%</span></div>
+      <div class="stat-desc">Free & open source</div>
+    </div>
+  </div>
+</div>
+
+<!-- HOW IT WORKS -->
+<section class="hiw-section" id="how">
+  <div class="hiw-inner">
+    <p class="section-eye">How It Works</p>
+    <h2 class="section-h2">Four steps to your real timeline.</h2>
+    <p class="section-sub">No account needed. Your data is anonymised and contributes back to the community automatically.</p>
+    <div class="hiw-steps">
+      <div class="hiw-step active">
+        <div class="hs-num">01</div>
+        <div class="hs-title">Enter your AOR date</div>
+        <div class="hs-body">Input your Acknowledgement of Receipt date and immigration stream. 30 seconds — no account required.</div>
+        <span class="hs-tag hs-free">Free · No account</span>
+      </div>
+      <div class="hiw-step">
+        <div class="hs-num">02</div>
+        <div class="hs-title">See your cohort</div>
+        <div class="hs-body">Instantly compare your position against everyone who applied in the same month and stream.</div>
+        <span class="hs-tag hs-free">Real data · Not IRCC averages</span>
+      </div>
+      <div class="hiw-step">
+        <div class="hs-num">03</div>
+        <div class="hs-title">Log your milestones</div>
+        <div class="hs-body">Update BIL, BGC, medicals, and PPR as they happen. Each update improves accuracy for your cohort.</div>
+        <span class="hs-tag hs-oss">Contributes to community</span>
+      </div>
+      <div class="hiw-step">
+        <div class="hs-num">04</div>
+        <div class="hs-title">Get community alerts</div>
+        <div class="hs-body">WES delays, IRCC tracker bugs, and cohort anomalies — reported by real applicants on Discord.</div>
+        <span class="hs-tag hs-oss">Discord community</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STREAMS -->
+<section class="section" id="streams">
+  <div class="inner">
+    <p class="section-eye reveal">Immigration Streams</p>
+    <h2 class="section-h2 reveal">Track any Canadian PR pathway.</h2>
+    <p class="section-sub reveal">Community data across all major Express Entry and provincial streams. Updated in real time as applicants log milestones.</p>
+
+    <div class="stream-grid">
+      <div class="stream-card featured reveal">
+        <div class="sc-head green-bg">
+          <div><div class="sc-title">CEC General</div><div class="sc-sub">Canadian Experience Class</div></div>
+          <span class="sc-icon">🍁</span>
+        </div>
+        <div class="sc-body">
+          <div class="sc-avg"><strong>184d</strong> avg to PPR</div>
+          <div class="sc-bar"><div class="sc-bar-fill" style="width:72%"></div></div>
+          <div class="sc-facts">
+            <div class="sc-fact">1,240 active timelines in Feb 2026 cohort</div>
+            <div class="sc-fact">39% of cohort has received PPR</div>
+            <div class="sc-fact">P25–P75 window: 162–210 days</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="stream-card reveal">
+        <div class="sc-head blue-bg">
+          <div><div class="sc-title">CEC STEM</div><div class="sc-sub">Science, Tech, Engineering, Math</div></div>
+          <span class="sc-icon">💻</span>
+        </div>
+        <div class="sc-body">
+          <div class="sc-avg"><strong>162d</strong> avg to PPR</div>
+          <div class="sc-bar"><div class="sc-bar-fill" style="width:61%"></div></div>
+          <div class="sc-facts">
+            <div class="sc-fact">847 active timelines tracked</div>
+            <div class="sc-fact">Faster median than CEC General</div>
+            <div class="sc-fact">P25–P75 window: 148–189 days</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="stream-card reveal">
+        <div class="sc-head navy-bg">
+          <div><div class="sc-title">CEC French</div><div class="sc-sub">Francophone Priority</div></div>
+          <span class="sc-icon">🇫🇷</span>
+        </div>
+        <div class="sc-body">
+          <div class="sc-avg"><strong>134d</strong> avg to PPR</div>
+          <div class="sc-bar"><div class="sc-bar-fill" style="width:52%"></div></div>
+          <div class="sc-facts">
+            <div class="sc-fact">312 active timelines tracked</div>
+            <div class="sc-fact">Fastest median across all streams</div>
+            <div class="sc-fact">P25–P75 window: 118–158 days</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="stream-card reveal">
+        <div class="sc-head teal-bg">
+          <div><div class="sc-title">FSW General</div><div class="sc-sub">Federal Skilled Worker</div></div>
+          <span class="sc-icon">🌐</span>
+        </div>
+        <div class="sc-body">
+          <div class="sc-avg"><strong>198d</strong> avg to PPR</div>
+          <div class="sc-bar"><div class="sc-bar-fill" style="width:45%"></div></div>
+          <div class="sc-facts">
+            <div class="sc-fact">623 active timelines tracked</div>
+            <div class="sc-fact">Longer avg due to WES verification step</div>
+            <div class="sc-fact">P25–P75 window: 172–228 days</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="stream-card reveal">
+        <div class="sc-head amber-bg">
+          <div><div class="sc-title">PNP</div><div class="sc-sub">Provincial Nominee Program</div></div>
+          <span class="sc-icon">🏛️</span>
+        </div>
+        <div class="sc-body">
+          <div class="sc-avg"><strong>216d</strong> avg to PPR</div>
+          <div class="sc-bar"><div class="sc-bar-fill" style="width:38%"></div></div>
+          <div class="sc-facts">
+            <div class="sc-fact">489 active timelines tracked</div>
+            <div class="sc-fact">Variance by province — filter by origin</div>
+            <div class="sc-fact">P25–P75 window: 188–248 days</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="stream-add reveal">
+        <div style="font-size:2rem;margin-bottom:.8rem">➕</div>
+        <div style="font-family:var(--fh);font-size:.95rem;font-weight:700;color:var(--navy);margin-bottom:.4rem">More streams coming</div>
+        <div style="font-size:.8rem;color:var(--muted);margin-bottom:1.2rem">FST, CEC Healthcare, AIP and more — request on GitHub</div>
+        <a href="https://github.com/Get-North-Path/AOR-tracker/issues" target="_blank" style="font-size:.78rem;font-weight:700;color:var(--blue);display:inline-flex;align-items:center;gap:5px">Request a stream →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MILESTONE TIMELINE -->
+<section class="tl-section" id="timeline">
+  <div class="tl-inner">
+    <p class="section-eye" style="color:rgba(255,255,255,.35)">Milestone Tracking</p>
+    <h2 class="section-h2 reveal" style="color:#fff">Your complete journey, <em style="font-style:italic;color:#4ade80">one view.</em></h2>
+    <p class="section-sub reveal" style="color:rgba(255,255,255,.5)">Log each milestone as it happens. Every estimate is derived from Gemini-verified community submissions — no outliers, no guesswork.</p>
+
+    <div class="tl-grid">
+      <div class="reveal">
+        <div class="tl-item">
+          <div class="tl-dot td-g">✓</div>
+          <div class="tl-bd">
+            <div class="tl-t">AOR Received</div>
+            <div class="tl-d">Acknowledgement of Receipt — your application is in the queue.</div>
+            <div class="tl-time">Feb 20, 2026 · Day 0</div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot td-g">✓</div>
+          <div class="tl-bd">
+            <div class="tl-t">BIL — Background Initiated Letter</div>
+            <div class="tl-d">IRCC has begun background processing on your application.</div>
+            <div class="tl-time">Mar 8, 2026 · Day 16</div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot td-b">✓</div>
+          <div class="tl-bd">
+            <div class="tl-t">Biometrics Confirmed</div>
+            <div class="tl-d">Your biometrics have been verified in the IRCC system.</div>
+            <div class="tl-time">Mar 22, 2026 · Day 30</div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot td-a">⏳</div>
+          <div class="tl-bd">
+            <div class="tl-t">Background Check</div>
+            <div class="tl-d">Security and criminal background checks are underway.</div>
+            <span class="tl-est">Est. Day 58–90 · based on 341 cohort members</span>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot td-r">⏳</div>
+          <div class="tl-bd">
+            <div class="tl-t">Medical Results</div>
+            <div class="tl-d">IRCC reviewing your medical examination results.</div>
+            <span class="tl-est">Est. Day 75–110 · based on 298 cohort members</span>
+          </div>
+        </div>
+        <div class="tl-item" style="padding-bottom:0">
+          <div class="tl-dot td-p">⏳</div>
+          <div class="tl-bd">
+            <div class="tl-t">PPR — Passport Request</div>
+            <div class="tl-d">Final step before COPR. Your application has been approved.</div>
+            <span class="tl-est">Est. Day 162–210 · P25–P75 window</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="reveal">
+        <div class="info-card" style="margin-bottom:1.2rem">
+          <div class="ic-label">Your Cohort — Feb 2026 · CEC General</div>
+          <div class="ic-row"><span class="ic-key">Cohort size</span><span class="ic-val">1,240 applicants</span></div>
+          <div class="ic-row"><span class="ic-key">Median processing</span><span class="ic-val green">184 days</span></div>
+          <div class="ic-row"><span class="ic-key">PPR received so far</span><span class="ic-val green">39% (482)</span></div>
+          <div class="ic-row"><span class="ic-key">Your day count</span><span class="ic-val">Day 72</span></div>
+          <div class="ic-row"><span class="ic-key">Your cohort rank</span><span class="ic-val amber">Top 58%</span></div>
+          <div class="ic-row"><span class="ic-key">Est. PPR window</span><span class="ic-val">Aug–Sep 2026</span></div>
+        </div>
+        <div class="info-card">
+          <div class="ic-label">Data Quality</div>
+          <div class="ic-row"><span class="ic-key">Moderation</span><span class="ic-val green">Gemini-reviewed</span></div>
+          <div class="ic-row"><span class="ic-key">Outlier protection</span><span class="ic-val green">Z-score filtered</span></div>
+          <div class="ic-row"><span class="ic-key">Estimate accuracy</span><span class="ic-val">96% within range</span></div>
+          <div class="ic-row"><span class="ic-key">Min. cohort size</span><span class="ic-val">30 submissions</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- OSS / FEEDBACK -->
+<section class="oss-section" id="feedback">
+  <div class="oss-inner">
+    <div class="reveal">
+      <p class="section-eye">Open Source Community</p>
+      <h2 class="section-h2">Your feedback shapes the roadmap.</h2>
+      <p class="section-sub" style="margin-bottom:2rem">Submit bugs, feature requests, or data corrections from the tracker. Each submission auto-creates a GitHub issue — no GitHub account needed.</p>
+
+      <div class="oss-feat">
+        <div class="oss-ic">💬</div>
+        <div><div class="oss-ft">Submit without a GitHub account</div><div class="oss-fb">Fill a simple form on the tracker. We handle the GitHub issue creation automatically with proper labels and routing.</div></div>
+      </div>
+      <div class="oss-feat">
+        <div class="oss-ic">👍</div>
+        <div><div class="oss-ft">Upvote to prioritise</div><div class="oss-fb">Community upvotes determine what we build next. Most-wanted features rise to the top of the public roadmap.</div></div>
+      </div>
+      <div class="oss-feat">
+        <div class="oss-ic">🛠️</div>
+        <div><div class="oss-ft">Self-assign and contribute code</div><div class="oss-fb">Developers can claim open issues via GitHub OAuth and contribute — no repo write access required.</div></div>
+      </div>
+      <div class="oss-feat">
+        <div class="oss-ic" style="font-size:.9rem">DC</div>
+        <div><div class="oss-ft">Discord community</div><div class="oss-fb">Join #aortrack-issues and #aortrack-growth for processing anomalies, IRCC alerts, and community discussion.</div></div>
+      </div>
+
+      <a href="/feedback" class="btn-hero btn-red" style="margin-top:.5rem">Give Feedback →</a>
+    </div>
+
+    <div class="reveal">
+      <div class="github-card">
+        <div class="gh-bar">
+          <div class="gh-repo">
+            <svg viewBox="0 0 16 16"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+            Get-North-Path / AOR-tracker
+          </div>
+          <div class="gh-meta"><span>★ 147</span><span>MIT</span></div>
+        </div>
+        <div class="gh-issue">
+          <div class="gh-dot dot-open"></div>
+          <div class="gh-info"><div class="gh-it">Add OINP stream processing data</div><div class="gh-im">#47 · 2 days ago · 38 👍</div></div>
+          <div class="gh-lbl l-feat">feature</div>
+        </div>
+        <div class="gh-issue">
+          <div class="gh-dot dot-open"></div>
+          <div class="gh-info"><div class="gh-it">BIL date not saving on mobile Safari</div><div class="gh-im">#52 · 1 day ago · 12 👍</div></div>
+          <div class="gh-lbl l-bug">bug</div>
+        </div>
+        <div class="gh-issue">
+          <div class="gh-dot dot-open"></div>
+          <div class="gh-info"><div class="gh-it">Feb 2025 CEC STEM avg. looks incorrect</div><div class="gh-im">#55 · 5 hours ago · 7 👍</div></div>
+          <div class="gh-lbl l-data">data</div>
+        </div>
+        <div class="gh-issue">
+          <div class="gh-dot dot-closed"></div>
+          <div class="gh-info"><div class="gh-it">Resume link stops working after 7 days</div><div class="gh-im">#41 · closed · merged by @community-dev</div></div>
+          <div class="gh-lbl l-bug">bug</div>
+        </div>
+        <div class="gh-issue">
+          <div class="gh-dot dot-open"></div>
+          <div class="gh-info"><div class="gh-it">Add PNP province filter to cohort view</div><div class="gh-im">#58 · 3 hours ago · 4 👍</div></div>
+          <div class="gh-lbl l-feat">feature</div>
+        </div>
+        <a href="https://github.com/Get-North-Path/AOR-tracker/issues" target="_blank" class="gh-more">View all open issues on GitHub →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GROWTH TARGETS -->
+<section class="growth-section">
+  <div class="growth-inner">
+    <p class="section-eye reveal" style="color:rgba(255,255,255,.35)">Community Growth</p>
+    <h2 class="section-h2 reveal" style="color:#fff">Transparent targets. <em style="font-style:italic;color:#4ade80">Public progress.</em></h2>
+    <p class="section-sub reveal" style="color:rgba(255,255,255,.5)">Our 6-month growth targets are public and tracked in our Discord. We believe in building in the open.</p>
+
+    <div class="g-table reveal">
+      <div class="gt-head">
+        <div>Metric</div>
+        <div>Month 1</div>
+        <div>Month 3</div>
+        <div>Month 6 ★</div>
+        <div>Current</div>
+      </div>
+      <div class="gt-row">
+        <div class="gt-k">Active Timelines</div>
+        <div class="gt-v">15,500</div>
+        <div class="gt-v">19,000</div>
+        <div class="gt-v goal">25,000</div>
+        <div class="gt-v current">14,827</div>
+      </div>
+      <div class="gt-row">
+        <div class="gt-k">Monthly Active Users</div>
+        <div class="gt-v">8,000</div>
+        <div class="gt-v">13,000</div>
+        <div class="gt-v goal">22,000</div>
+        <div class="gt-v current">7,412</div>
+      </div>
+      <div class="gt-row">
+        <div class="gt-k">GitHub Stars</div>
+        <div class="gt-v">50</div>
+        <div class="gt-v">350</div>
+        <div class="gt-v goal">1,500</div>
+        <div class="gt-v current">147</div>
+      </div>
+      <div class="gt-row">
+        <div class="gt-k">Community Issues Filed</div>
+        <div class="gt-v">5</div>
+        <div class="gt-v">50</div>
+        <div class="gt-v goal">250</div>
+        <div class="gt-v current">58</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <div class="cta-inner">
+    <div>
+      <h2 class="cta-h2">Start tracking your PR application today. It's free.</h2>
+      <p class="cta-sub">Join 14,800+ applicants using real community data — not IRCC's generic estimate.</p>
+      <div class="cta-note">Need more than tracking? <a href="https://www.getnorthpath.com/contact?utm_source=aortrack">Our consultants manage your full application from ITA to PPR →</a></div>
+    </div>
+    <div class="cta-btns">
+      <a href="/track" class="btn-white">Track My AOR — Free →</a>
+      <a href="https://github.com/Get-North-Path/AOR-tracker" target="_blank" class="btn-ghost-w">⭐ Star on GitHub</a>
+      <a href="/feedback" class="btn-ghost-w">💬 Give Feedback</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-grid">
+    <div>
+      <div class="fg-brand">
+        <svg style="width:20px;height:20px" viewBox="0 0 100 100" fill="none">
+          <path d="M50 5C50 5 30 35 8 38L18 48L10 55L30 52L28 70L50 58L72 70L70 52L90 55L82 48L92 38C70 35 50 5 50 5Z" fill="#C8281E"/>
+          <rect x="44" y="68" width="12" height="22" rx="2" fill="#C8281E"/>
+        </svg>
+        AORTrack
+      </div>
+      <p class="fg-desc">Free, open-source Canadian PR processing time tracker. Community-powered data from 14,800+ real applicants. Built by GetNorthPath.</p>
+      <div class="fg-badge">
+        <svg viewBox="0 0 16 16"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+        MIT License · Open Source
+      </div>
+    </div>
+    <div>
+      <div class="fg-head">Tracker</div>
+      <a href="/track" class="fg-link">Start Tracking</a>
+      <a href="/streams" class="fg-link">All Streams</a>
+      <a href="/stats" class="fg-link">Processing Stats</a>
+      <a href="/roadmap" class="fg-link">Public Roadmap</a>
+      <a href="/changelog" class="fg-link">Changelog</a>
+    </div>
+    <div>
+      <div class="fg-head">Community</div>
+      <a href="/feedback" class="fg-link">Give Feedback</a>
+      <a href="/contributors" class="fg-link">Contributors</a>
+      <a href="https://github.com/Get-North-Path/AOR-tracker" target="_blank" class="fg-link">GitHub</a>
+      <a href="#" class="fg-link">Discord</a>
+      <a href="https://www.getnorthpath.com/blog" target="_blank" class="fg-link">Blog</a>
+    </div>
+    <div>
+      <div class="fg-head">GetNorthPath</div>
+      <a href="https://www.getnorthpath.com" target="_blank" class="fg-link">Main Site</a>
+      <a href="https://www.getnorthpath.com/contact" target="_blank" class="fg-link">Book a Consultation</a>
+      <a href="https://www.getnorthpath.com/pathways" target="_blank" class="fg-link">PR Pathways</a>
+      <a href="/privacy" class="fg-link">Privacy Policy</a>
+      <a href="/terms" class="fg-link">Terms of Use</a>
+    </div>
+  </div>
+  <div class="footer-btm">
+    <span>© 2026 GetNorthPath Inc. AORTrack is free & open source (MIT). Not affiliated with IRCC.</span>
+    <span>track.getnorthpath.com</span>
+  </div>
+</footer>
+
+<!-- STICKY CTA -->
+<div class="sticky" id="sticky">
+  <div>
+    <div class="sticky-text">AORTrack — Free PR Tracker</div>
+    <div class="sticky-sub">Join 14,800+ applicants tracking their journey</div>
+  </div>
+  <a href="/track" class="btn-hero btn-red" style="font-size:.84rem;padding:10px 22px">Track My AOR →</a>
+</div>
+
+<script>
+// Scroll reveal
+const io = new IntersectionObserver(entries => {
+  entries.forEach(e => { if(e.isIntersecting){ e.target.classList.add('shown'); io.unobserve(e.target); } });
+}, { threshold: 0.1 });
+document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+// Sticky CTA
+const sticky = document.getElementById('sticky');
+window.addEventListener('scroll', () => {
+  sticky.classList.toggle('show', window.scrollY > 500);
+}, { passive: true });
+</script>
+</body>
+</html>

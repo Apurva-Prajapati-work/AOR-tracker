@@ -1,19 +1,11 @@
 import type { Metadata, Viewport } from "next";
-import { DM_Mono, Sora } from "next/font/google";
 import "./globals.css";
+import { DeferredStylesheet } from "@/components/layout/DeferredStylesheet";
 import { ToastProvider } from "@/components/ToastContext";
 
-const sora = Sora({
-  subsets: ["latin"],
-  variable: "--font-sora",
-  weight: ["300", "400", "500", "600", "700"],
-});
-
-const dmMono = DM_Mono({
-  subsets: ["latin"],
-  variable: "--font-dm-mono",
-  weight: ["400", "500"],
-});
+/** Same families/weights as GetNorthPath + DM Mono for tracker monospace. */
+const GOOGLE_FONT_STYLESHEET_HREF =
+  "https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700;9..144,800;9..144,900&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=DM+Mono:wght@400;500&display=swap";
 
 export const metadata: Metadata = {
   title: "AORTrack — Canadian Immigration Timeline",
@@ -34,7 +26,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${sora.variable} ${dmMono.variable} h-full`}>
+    <html lang="en" className="h-full">
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <DeferredStylesheet href={GOOGLE_FONT_STYLESHEET_HREF} />
+      </head>
       <body className="min-h-full antialiased">
         <ToastProvider>{children}</ToastProvider>
       </body>

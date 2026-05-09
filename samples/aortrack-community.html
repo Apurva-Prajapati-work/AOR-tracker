@@ -1,0 +1,1178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Community Feed — AORTrack</title>
+<meta name="robots" content="noindex"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,ital,wght@9..144,0,400;9..144,0,700;9..144,0,800;9..144,0,900;9..144,1,400;9..144,1,800&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --cream:#FFFCF5;--cream2:#F5F0E6;--cream3:#EDE8DC;
+  --navy:#1A2332;--navy2:#253347;
+  --red:#C8281E;--red2:#a81f17;--red-pale:#FDECEA;
+  --green:#2D6A4F;--green2:#1f5038;--gbg:#EAF4EE;
+  --amber:#B5651D;--abg:#FDF3E3;
+  --blue:#1E5F8C;--bbg:#E8F2FB;
+  --purple:#5B21B6;--pbg:#EDE9FE;
+  --teal:#0D7377;--tbg:#E0F4F4;
+  --border:#D5CFBF;--border2:#C8C0AF;
+  --muted:#7A7060;--muted2:#9A8E7E;
+  --fh:'Fraunces',Georgia,serif;
+  --fb:'DM Sans',sans-serif;
+  --fm:'DM Mono',monospace;
+}
+html{scroll-behavior:smooth}
+body{background:var(--cream);color:var(--navy);font-family:var(--fb);font-size:15px;line-height:1.6;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+button{font-family:var(--fb);cursor:pointer;border:none;background:none}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:5px}
+
+/* ── NAV ── */
+.nav{background:var(--navy);height:60px;padding:0 clamp(14px,3vw,36px);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200;border-bottom:1.5px solid rgba(255,255,255,.07)}
+.nav-left{display:flex;align-items:center;gap:10px}
+.nav-brand{display:flex;align-items:center;gap:9px}
+.nav-logo{width:24px;height:24px}
+.nav-name{font-family:var(--fh);font-size:.95rem;font-weight:800;color:#fff;letter-spacing:-.02em}
+.nav-sep{width:1px;height:18px;background:rgba(255,255,255,.12);margin:0 8px}
+.nav-page{font-size:.75rem;color:rgba(255,255,255,.4);font-family:var(--fm)}
+.nav-right{display:flex;align-items:center;gap:8px}
+.nav-live{display:flex;align-items:center;gap:5px;font-size:.7rem;font-weight:700;color:#4ade80;background:rgba(45,106,79,.2);border:1px solid rgba(45,106,79,.35);padding:4px 10px;border-radius:100px}
+.nav-live-dot{width:5px;height:5px;border-radius:50%;background:#4ade80;animation:blink 2s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.nbtn{font-size:.77rem;font-weight:600;color:rgba(255,255,255,.55);padding:6px 12px;border-radius:6px;transition:all .15s;display:flex;align-items:center;gap:5px}
+.nbtn:hover{color:#fff;background:rgba(255,255,255,.08)}
+.nbtn svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.nbtn.red{background:var(--red);color:#fff}
+.nbtn.red:hover{background:var(--red2)}
+
+/* ── NEW POST TOAST ── */
+.new-post-bar{position:fixed;top:68px;left:50%;transform:translateX(-50%) translateY(-80px);background:var(--navy);color:#fff;padding:10px 20px;border-radius:100px;font-size:.78rem;font-weight:600;z-index:190;box-shadow:0 4px 24px rgba(0,0,0,.25);cursor:pointer;transition:transform .35s cubic-bezier(.34,1.56,.64,1);display:flex;align-items:center;gap:8px;border:1px solid rgba(255,255,255,.12)}
+.new-post-bar.show{transform:translateX(-50%) translateY(0)}
+.new-post-bar .dot{width:7px;height:7px;border-radius:50%;background:#4ade80;animation:blink 1.5s infinite}
+
+/* ── LAYOUT ── */
+.layout{display:grid;grid-template-columns:240px 1fr 300px;gap:0;min-height:calc(100vh - 60px)}
+
+/* ── LEFT SIDEBAR ── */
+.left-sb{background:var(--cream2);border-right:2px solid var(--border);padding:18px 0;position:sticky;top:60px;height:calc(100vh - 60px);overflow-y:auto}
+.lsb-sec{padding:0 14px;margin-bottom:16px}
+.lsb-label{font-size:.62rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted2);margin-bottom:7px;padding:0 4px}
+.lsb-link{display:flex;align-items:center;gap:8px;padding:7px 8px;border-radius:7px;font-size:.8rem;font-weight:500;color:var(--muted);cursor:pointer;transition:all .15s}
+.lsb-link:hover{background:var(--cream3);color:var(--navy)}
+.lsb-link.on{background:var(--navy);color:#fff}
+.lsb-link svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;flex-shrink:0}
+.lsb-badge{margin-left:auto;font-size:.63rem;font-family:var(--fm);background:var(--cream3);color:var(--muted);padding:1px 6px;border-radius:100px}
+.lsb-link.on .lsb-badge{background:rgba(255,255,255,.15);color:rgba(255,255,255,.6)}
+.lsb-divider{height:1px;background:var(--border);margin:6px 14px 14px}
+
+/* MY COHORT MINI-CARD */
+.cohort-mini{margin:0 14px 14px;background:var(--navy);border-radius:10px;padding:12px}
+.cm-label{font-size:.62rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.3);margin-bottom:8px;font-family:var(--fm)}
+.cm-row{display:flex;justify-content:space-between;align-items:center;font-size:.72rem;padding:4px 0;border-bottom:1px solid rgba(255,255,255,.06)}
+.cm-row:last-child{border-bottom:none;padding-bottom:0}
+.cm-key{color:rgba(255,255,255,.4)}
+.cm-val{color:#fff;font-family:var(--fm);font-weight:600;font-size:.7rem}
+.cm-val.g{color:#4ade80}
+
+/* ── MAIN FEED ── */
+.feed-main{padding:0;display:flex;flex-direction:column}
+
+/* FILTER BAR */
+.filter-bar{background:#fff;border-bottom:2px solid var(--border);padding:12px clamp(16px,2.5vw,28px);position:sticky;top:60px;z-index:100;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.filter-chips{display:flex;gap:6px;flex:1;flex-wrap:wrap}
+.chip{padding:6px 14px;border-radius:100px;font-size:.77rem;font-weight:600;cursor:pointer;border:1.5px solid var(--border);background:var(--cream);color:var(--muted);transition:all .2s;display:flex;align-items:center;gap:5px;white-space:nowrap}
+.chip:hover{border-color:var(--border2);color:var(--navy)}
+.chip.on{border-color:var(--navy);background:var(--navy);color:#fff}
+.chip-dot{width:7px;height:7px;border-radius:50%}
+.chip-n{display:flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:50%;background:rgba(255,255,255,.2);font-size:.62rem;font-weight:700}
+
+.search-wrap{position:relative;flex-shrink:0}
+.search-input{padding:7px 12px 7px 32px;border:1.5px solid var(--border);border-radius:8px;font-family:var(--fb);font-size:.78rem;color:var(--navy);background:var(--cream);outline:none;width:190px;transition:all .2s}
+.search-input:focus{border-color:var(--navy);width:220px}
+.search-icon{position:absolute;left:10px;top:50%;transform:translateY(-50%);width:13px;height:13px;fill:none;stroke:var(--muted);stroke-width:2;stroke-linecap:round;pointer-events:none}
+
+.sort-select{padding:7px 10px;border:1.5px solid var(--border);border-radius:8px;font-family:var(--fb);font-size:.77rem;color:var(--navy);background:var(--cream);outline:none;cursor:pointer}
+
+/* FEED CONTAINER */
+.feed-list{padding:18px clamp(16px,2.5vw,28px);display:flex;flex-direction:column;gap:14px}
+
+/* FEED CARD */
+.feed-card{background:#fff;border:2px solid var(--border);border-radius:13px;overflow:hidden;transition:border-color .2s,box-shadow .2s;position:relative}
+.feed-card:hover{border-color:var(--border2);box-shadow:0 2px 12px rgba(26,35,50,.07)}
+.feed-card.new-entry{animation:slideDown .4s cubic-bezier(.34,1.56,.64,1)}
+@keyframes slideDown{from{opacity:0;transform:translateY(-18px)}to{opacity:1;transform:none}}
+
+/* MILESTONE TYPE ACCENT */
+.fc-accent{width:4px;position:absolute;left:0;top:0;bottom:0;border-radius:13px 0 0 13px}
+.accent-ppr{background:var(--green)}
+.accent-bil{background:var(--blue)}
+.accent-bgc{background:var(--amber)}
+.accent-med{background:var(--purple)}
+.accent-aor{background:var(--navy2)}
+
+.fc-inner{padding:14px 16px 14px 20px}
+
+/* CARD HEADER */
+.fc-header{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:10px}
+.fc-meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.fc-id{font-size:.72rem;font-weight:700;color:var(--navy);font-family:var(--fm)}
+.fc-milestone{display:flex;align-items:center;gap:5px;padding:3px 10px;border-radius:100px;font-size:.7rem;font-weight:700}
+.ms-ppr{background:var(--gbg);color:var(--green);border:1px solid #90d4b0}
+.ms-bil{background:var(--bbg);color:var(--blue);border:1px solid #b8d8f0}
+.ms-bgc{background:var(--abg);color:var(--amber);border:1px solid #E8C585}
+.ms-med{background:var(--pbg);color:var(--purple);border:1px solid #c4b5fd}
+.ms-aor{background:var(--cream2);color:var(--navy2);border:1px solid var(--border)}
+.fc-stream{font-size:.68rem;font-weight:600;color:var(--muted);background:var(--cream2);border:1px solid var(--border);padding:2px 7px;border-radius:100px;font-family:var(--fm)}
+.fc-ts{font-size:.67rem;color:var(--muted2);font-family:var(--fm);white-space:nowrap}
+
+/* MODERATION BADGES */
+.fc-mod-badge{font-size:.65rem;font-weight:700;padding:2px 8px;border-radius:100px;display:flex;align-items:center;gap:3px}
+.mod-pending{background:var(--abg);color:var(--amber);border:1px solid #E8C585}
+.mod-removed{background:var(--red-pale);color:var(--red);border:1px solid #f0b0a8}
+.mod-soft{background:var(--cream3);color:var(--muted);border:1px solid var(--border2)}
+
+/* CARD BODY */
+.fc-cohort{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:8px}
+.fcc-item{display:flex;flex-direction:column;gap:1px}
+.fcc-label{font-size:.63rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted2);font-family:var(--fm)}
+.fcc-val{font-family:var(--fh);font-size:.95rem;font-weight:800;color:var(--navy)}
+.fcc-val.green{color:var(--green)}
+.fcc-val.blue{color:var(--blue)}
+
+/* MINI TIMELINE */
+.mini-tl{display:flex;align-items:center;gap:0;margin:8px 0}
+.mt-dot{width:10px;height:10px;border-radius:50%;border:2px solid;position:relative;z-index:1;flex-shrink:0}
+.mt-line{flex:1;height:2px;background:var(--border);min-width:8px}
+.mt-done{background:var(--gbg);border-color:var(--green)}
+.mt-now{background:var(--bbg);border-color:var(--blue)}
+.mt-wait{background:var(--cream2);border-color:var(--border2)}
+.mt-label{font-size:.6rem;color:var(--muted2);text-align:center;margin-top:3px;font-family:var(--fm)}
+
+/* POST BODY */
+.fc-body{font-size:.82rem;color:var(--muted);line-height:1.65;margin-bottom:10px}
+.fc-body strong{color:var(--navy);font-weight:600}
+
+/* CARD FOOTER — ENGAGEMENT */
+.fc-footer{display:flex;align-items:center;gap:0;padding-top:10px;border-top:1px solid var(--border);margin-top:2px}
+.eng-btn{display:flex;align-items:center;gap:5px;padding:5px 10px;border-radius:6px;font-size:.74rem;font-weight:600;color:var(--muted);cursor:pointer;transition:all .2s;border:none;background:none}
+.eng-btn:hover{background:var(--cream2);color:var(--navy)}
+.eng-btn.active{color:var(--green);background:var(--gbg)}
+.eng-btn svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round}
+.eng-btn.active svg{stroke:var(--green);fill:var(--gbg)}
+.eng-sep{width:1px;height:16px;background:var(--border);margin:0 2px}
+.eng-save.saved{color:var(--blue)}
+.eng-save.saved svg{stroke:var(--blue)}
+.fc-footer-right{margin-left:auto;display:flex;align-items:center;gap:6px}
+.data-src{font-size:.63rem;color:var(--muted2);display:flex;align-items:center;gap:3px}
+.data-src::before{content:'ⓘ'}
+
+/* REPLY PANEL */
+.reply-panel{display:none;background:var(--cream2);border-top:1.5px solid var(--border);padding:12px 16px 12px 20px;animation:fadeIn .2s ease}
+.reply-panel.open{display:block}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.reply-input{width:100%;padding:8px 12px;border:1.5px solid var(--border);border-radius:8px;font-family:var(--fb);font-size:.8rem;color:var(--navy);background:#fff;outline:none;resize:none;min-height:64px;transition:border-color .2s}
+.reply-input:focus{border-color:var(--navy)}
+.reply-footer{display:flex;justify-content:space-between;align-items:center;margin-top:7px}
+.reply-hint{font-size:.66rem;color:var(--muted2)}
+.reply-send{padding:6px 14px;background:var(--navy);color:#fff;border-radius:6px;font-size:.74rem;font-weight:700;cursor:pointer;transition:background .15s}
+.reply-send:hover{background:var(--navy2)}
+
+/* EXISTING REPLIES */
+.replies-list{background:var(--cream);border-top:1px solid var(--border);padding:10px 16px 10px 20px;display:flex;flex-direction:column;gap:8px}
+.reply-item{display:flex;gap:9px}
+.reply-avatar{width:24px;height:24px;border-radius:50%;background:var(--navy2);display:flex;align-items:center;justify-content:center;font-size:.6rem;font-weight:700;color:rgba(255,255,255,.7);flex-shrink:0;font-family:var(--fm)}
+.reply-bd{flex:1}
+.reply-name{font-size:.7rem;font-weight:700;color:var(--navy);margin-bottom:2px}
+.reply-text{font-size:.75rem;color:var(--muted);line-height:1.55}
+
+/* OWN PENDING CARD (only visible to author) */
+.feed-card.own-pending{border-color:#E8C585;background:linear-gradient(135deg,var(--abg) 0%,#fff 50%)}
+.own-pending-label{display:flex;align-items:center;gap:6px;font-size:.72rem;font-weight:700;color:var(--amber);padding:7px 16px 7px 20px;background:var(--abg);border-bottom:1px solid #E8C585}
+
+/* REMOVED CARD (own, only visible to author) */
+.feed-card.own-removed{border-color:#f0b0a8;background:linear-gradient(135deg,var(--red-pale) 0%,#fff 50%);opacity:.75}
+.removed-label{display:flex;align-items:flex-start;gap:8px;font-size:.75rem;color:var(--red);padding:10px 16px 10px 20px;background:var(--red-pale);border-bottom:1px solid #f0b0a8;line-height:1.55}
+.removed-label strong{font-weight:700;display:block;margin-bottom:2px}
+.appeal-link{color:var(--red);font-weight:700;text-decoration:underline;text-underline-offset:2px;cursor:pointer;margin-top:3px;display:inline-block}
+
+/* LOAD MORE */
+.load-more{text-align:center;padding:16px 0 28px}
+.load-more-btn{padding:10px 24px;border:2px solid var(--border);border-radius:100px;font-size:.8rem;font-weight:600;color:var(--muted);cursor:pointer;background:#fff;transition:all .2s;display:inline-flex;align-items:center;gap:7px}
+.load-more-btn:hover{border-color:var(--navy);color:var(--navy);background:var(--cream2)}
+.load-more-btn svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+
+/* ── RIGHT PANEL — INSIGHTS ── */
+.right-panel{background:var(--cream2);border-left:2px solid var(--border);padding:18px 16px;position:sticky;top:60px;height:calc(100vh - 60px);overflow-y:auto;display:flex;flex-direction:column;gap:0}
+.rp-section{margin-bottom:20px}
+.rp-label{font-size:.62rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted2);margin-bottom:9px;padding:0 2px}
+
+/* INSIGHT CARDS */
+.insight-card{border-radius:9px;padding:11px 13px;margin-bottom:8px;border:1.5px solid}
+.ic-amber{background:var(--abg);border-color:#E8C585}
+.ic-green{background:var(--gbg);border-color:#90d4b0}
+.ic-red{background:var(--red-pale);border-color:#f0b0a8}
+.ic-blue{background:var(--bbg);border-color:#b8d8f0}
+.ic-top{display:flex;align-items:flex-start;gap:7px;margin-bottom:5px}
+.ic-icon{font-size:.85rem;flex-shrink:0;margin-top:1px}
+.ic-title{font-size:.78rem;font-weight:700;color:var(--navy);line-height:1.35}
+.ic-body{font-size:.72rem;color:var(--muted);line-height:1.55}
+.ic-foot{display:flex;justify-content:space-between;margin-top:5px;font-size:.63rem;color:var(--muted2);font-family:var(--fm)}
+.ic-link{font-size:.7rem;font-weight:700;color:var(--blue);cursor:pointer;margin-top:4px;display:block}
+
+/* PROCESSING PULSE */
+.pulse-section{margin-bottom:20px}
+.pulse-chart{display:flex;align-items:flex-end;gap:3px;height:56px;margin:8px 0 4px}
+.pc-bar{flex:1;border-radius:2px 2px 0 0;background:var(--navy2);opacity:.5;transition:all .3s;cursor:default;position:relative}
+.pc-bar:hover{opacity:1}
+.pc-bar.peak{background:var(--green);opacity:1}
+.pc-bar.this-week{background:var(--red);opacity:1}
+.pulse-labels{display:flex;gap:3px}
+.pl-lbl{flex:1;font-size:.55rem;color:var(--muted2);text-align:center;font-family:var(--fm)}
+.pl-lbl.this-week{color:var(--red);font-weight:700}
+.pulse-note{font-size:.68rem;color:var(--muted);line-height:1.5}
+
+/* TOP CONTRIBUTORS */
+.contrib-row{display:flex;align-items:center;gap:9px;padding:7px 0;border-bottom:1px solid var(--border)}
+.contrib-row:last-child{border-bottom:none}
+.contrib-rank{font-size:.68rem;font-weight:700;color:var(--muted2);width:16px;text-align:center;font-family:var(--fm)}
+.contrib-av{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:700;color:#fff;flex-shrink:0;font-family:var(--fm)}
+.contrib-name{font-size:.77rem;font-weight:600;color:var(--navy);flex:1}
+.contrib-count{font-size:.68rem;color:var(--muted);font-family:var(--fm)}
+
+/* DISCORD CTA */
+.discord-card{background:var(--navy);border-radius:10px;padding:14px 14px;text-align:center}
+.dc-icon{font-size:1.5rem;margin-bottom:7px}
+.dc-title{font-family:var(--fh);font-size:.88rem;font-weight:800;color:#fff;margin-bottom:4px}
+.dc-sub{font-size:.72rem;color:rgba(255,255,255,.45);line-height:1.5;margin-bottom:10px}
+.dc-btn{display:block;background:#5865F2;color:#fff;padding:8px 14px;border-radius:7px;font-size:.77rem;font-weight:700;transition:background .2s}
+.dc-btn:hover{background:#4752C4}
+
+/* SUBMIT CTA in feed */
+.submit-card{background:var(--navy);border-radius:13px;padding:18px 20px;border:2px solid var(--navy2);display:flex;align-items:center;gap:16px}
+.sub-card-text h3{font-family:var(--fh);font-size:.95rem;font-weight:800;color:#fff;margin-bottom:3px}
+.sub-card-text p{font-size:.75rem;color:rgba(255,255,255,.45);line-height:1.5}
+.sub-card-btn{background:var(--red);color:#fff;padding:9px 18px;border-radius:8px;font-family:var(--fh);font-size:.85rem;font-weight:800;cursor:pointer;white-space:nowrap;border:none;transition:background .15s;flex-shrink:0}
+.sub-card-btn:hover{background:var(--red2)}
+
+/* SUBMIT MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(26,35,50,.6);z-index:300;display:none;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(4px)}
+.modal-overlay.open{display:flex}
+.modal{background:#fff;border-radius:16px;width:100%;max-width:520px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.2);animation:modalIn .3s cubic-bezier(.34,1.56,.64,1)}
+@keyframes modalIn{from{opacity:0;transform:scale(.94)}to{opacity:1;transform:scale(1)}}
+.modal-header{background:var(--navy);padding:18px 22px;display:flex;align-items:center;justify-content:space-between}
+.modal-title{font-family:var(--fh);font-size:1.05rem;font-weight:800;color:#fff}
+.modal-close{color:rgba(255,255,255,.4);font-size:1.2rem;cursor:pointer;padding:2px 6px;transition:color .15s}
+.modal-close:hover{color:#fff}
+.modal-body{padding:20px 22px}
+.m-field{margin-bottom:14px}
+.m-label{font-size:.78rem;font-weight:600;color:var(--navy);margin-bottom:5px;display:block}
+.m-label .req{color:var(--red);font-size:.7rem}
+.m-select,.m-input{width:100%;padding:9px 12px;border:2px solid var(--border);border-radius:8px;font-family:var(--fb);font-size:.85rem;color:var(--navy);background:var(--cream);outline:none;transition:border-color .2s;appearance:none}
+.m-select:focus,.m-input:focus{border-color:var(--navy)}
+.m-textarea{width:100%;padding:9px 12px;border:2px solid var(--border);border-radius:8px;font-family:var(--fb);font-size:.82rem;color:var(--navy);background:var(--cream);outline:none;resize:none;min-height:90px;transition:border-color .2s}
+.m-textarea:focus{border-color:var(--navy)}
+.m-note{font-size:.72rem;color:var(--muted);margin-top:4px;line-height:1.5}
+.m-footer{display:flex;gap:8px;padding:14px 22px;border-top:1px solid var(--border);background:var(--cream2)}
+.m-submit{flex:1;padding:11px;background:var(--green);color:#fff;border-radius:9px;font-family:var(--fh);font-size:.92rem;font-weight:800;cursor:pointer;border:none;transition:background .15s}
+.m-submit:hover{background:var(--green2)}
+.m-cancel{padding:11px 18px;background:transparent;color:var(--muted);border-radius:9px;font-size:.85rem;font-weight:600;cursor:pointer;border:2px solid var(--border);transition:all .2s}
+.m-cancel:hover{background:var(--cream3)}
+
+/* APPEAL MODAL */
+.appeal-modal .modal-header{background:var(--red)}
+
+/* TOAST */
+.toast{position:fixed;bottom:22px;right:22px;background:var(--navy);color:#fff;padding:11px 18px;border-radius:9px;font-size:.78rem;font-weight:600;z-index:400;box-shadow:0 4px 20px rgba(0,0,0,.2);animation:slideIn .3s cubic-bezier(.34,1.56,.64,1);display:flex;align-items:center;gap:8px;max-width:340px}
+@keyframes slideIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.toast.green{border-left:3px solid #4ade80}
+.toast.amber{border-left:3px solid var(--amber)}
+
+/* RESPONSIVE */
+@media(max-width:1100px){
+  .layout{grid-template-columns:200px 1fr 260px}
+  .right-panel{padding:14px 12px}
+}
+@media(max-width:900px){
+  .layout{grid-template-columns:1fr}
+  .left-sb,.right-panel{display:none}
+  .filter-bar{top:60px}
+}
+@media(max-width:600px){
+  .nav-live,.nav-page,.nav-sep{display:none}
+  .filter-chips{gap:4px}
+  .chip{padding:5px 10px;font-size:.72rem}
+  .search-wrap{display:none}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav-left">
+    <a href="/" class="nav-brand">
+      <svg class="nav-logo" viewBox="0 0 100 100" fill="none">
+        <path d="M50 5C50 5 30 35 8 38L18 48L10 55L30 52L28 70L50 58L72 70L70 52L90 55L82 48L92 38C70 35 50 5 50 5Z" fill="#C8281E"/>
+        <rect x="44" y="68" width="12" height="22" rx="2" fill="#C8281E"/>
+      </svg>
+      <div class="nav-name">AORTrack</div>
+    </a>
+    <div class="nav-sep"></div>
+    <div class="nav-page">Community Feed</div>
+  </div>
+  <div class="nav-right">
+    <div class="nav-live"><div class="nav-live-dot"></div><span id="live-count">14,831</span> live</div>
+    <a href="/dashboard" class="nbtn">
+      <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+      Dashboard
+    </a>
+    <button class="nbtn red" onclick="openSubmit()">+ Submit Milestone</button>
+  </div>
+</nav>
+
+<!-- NEW POST NOTIFICATION BAR -->
+<div class="new-post-bar" id="new-post-bar" onclick="loadNewPosts()">
+  <div class="dot"></div>
+  <span id="new-post-text">2 new posts — click to load</span>
+</div>
+
+<!-- LAYOUT -->
+<div class="layout">
+
+  <!-- LEFT SIDEBAR -->
+  <aside class="left-sb">
+    <div class="lsb-sec">
+      <div class="lsb-label">My Profile</div>
+      <div class="cohort-mini">
+        <div class="cm-label">Active Session</div>
+        <div class="cm-row"><div class="cm-key">Stream</div><div class="cm-val g">CEC General</div></div>
+        <div class="cm-row"><div class="cm-key">AOR Month</div><div class="cm-val">Feb 2026</div></div>
+        <div class="cm-row"><div class="cm-key">Day</div><div class="cm-val g">72</div></div>
+        <div class="cm-row"><div class="cm-key">Submissions</div><div class="cm-val">3</div></div>
+      </div>
+    </div>
+
+    <div class="lsb-sec">
+      <div class="lsb-label">Browse</div>
+      <div class="lsb-link on" onclick="setFilter('all')">
+        <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+        All Posts
+        <span class="lsb-badge">1,240</span>
+      </div>
+      <div class="lsb-link" onclick="setFilter('my-cohort')">
+        <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+        My Cohort Only
+        <span class="lsb-badge">87</span>
+      </div>
+      <div class="lsb-link" onclick="setFilter('saved')">
+        <svg viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg>
+        Saved Posts
+        <span class="lsb-badge">4</span>
+      </div>
+    </div>
+
+    <div class="lsb-divider"></div>
+
+    <div class="lsb-sec">
+      <div class="lsb-label">Milestones</div>
+      <div class="lsb-link" onclick="setFilter('ppr')"><span style="font-size:.9rem">🍁</span>PPR Received<span class="lsb-badge">482</span></div>
+      <div class="lsb-link" onclick="setFilter('bil')"><span style="font-size:.9rem">📨</span>BIL Received<span class="lsb-badge">318</span></div>
+      <div class="lsb-link" onclick="setFilter('bgc')"><span style="font-size:.9rem">🔍</span>Background Check<span class="lsb-badge">241</span></div>
+      <div class="lsb-link" onclick="setFilter('medical')"><span style="font-size:.9rem">🏥</span>Medical Passed<span class="lsb-badge">199</span></div>
+    </div>
+
+    <div class="lsb-divider"></div>
+
+    <div class="lsb-sec">
+      <div class="lsb-label">Quick</div>
+      <div class="lsb-link" onclick="openSubmit()">
+        <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Submit Milestone
+      </div>
+      <div class="lsb-link" onclick="window.location='/feedback'">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        Give Feedback
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN FEED -->
+  <div class="feed-main">
+
+    <!-- FILTER BAR -->
+    <div class="filter-bar">
+      <div class="filter-chips">
+        <div class="chip on" data-filter="all" onclick="setChip(this,'all')">
+          <span>All</span>
+          <span class="chip-n">1,240</span>
+        </div>
+        <div class="chip" data-filter="ppr" onclick="setChip(this,'ppr')">
+          <span class="chip-dot" style="background:var(--green)"></span>PPR
+          <span class="chip-n" style="background:rgba(45,106,79,.2);color:var(--green)">482</span>
+        </div>
+        <div class="chip" data-filter="bil" onclick="setChip(this,'bil')">
+          <span class="chip-dot" style="background:var(--blue)"></span>BIL
+          <span class="chip-n" style="background:rgba(30,95,140,.15);color:var(--blue)">318</span>
+        </div>
+        <div class="chip" data-filter="bgc" onclick="setChip(this,'bgc')">
+          <span class="chip-dot" style="background:var(--amber)"></span>BGC
+          <span class="chip-n" style="background:rgba(181,101,29,.15);color:var(--amber)">241</span>
+        </div>
+        <div class="chip" data-filter="medical" onclick="setChip(this,'medical')">
+          <span class="chip-dot" style="background:var(--purple)"></span>Medical
+        </div>
+      </div>
+      <div class="search-wrap">
+        <svg class="search-icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input class="search-input" type="text" placeholder="Search posts…" oninput="handleSearch(this.value)"/>
+      </div>
+      <select class="sort-select" onchange="handleSort(this.value)">
+        <option value="recent">Most Recent</option>
+        <option value="helpful">Most Helpful</option>
+        <option value="cohort">My Cohort First</option>
+      </select>
+    </div>
+
+    <!-- FEED -->
+    <div class="feed-list" id="feed-list">
+
+      <!-- SUBMIT CTA CARD -->
+      <div class="submit-card">
+        <div class="sub-card-text">
+          <h3>Got a milestone? Share it.</h3>
+          <p>Your BIL, BGC, PPR — every date you log helps 1,240 applicants in your cohort predict their timeline.</p>
+        </div>
+        <button class="sub-card-btn" onclick="openSubmit()">+ Submit Milestone</button>
+      </div>
+
+      <!-- OWN PENDING POST (visible to author only) -->
+      <div class="feed-card own-pending">
+        <div class="own-pending-label">
+          <span>⏳</span>
+          <span>Your post is under Gemini review — visible only to you until approved. Usually takes under 30 seconds.</span>
+        </div>
+        <div class="fc-accent accent-bil"></div>
+        <div class="fc-inner">
+          <div class="fc-header">
+            <div class="fc-meta">
+              <div class="fc-id">You (#4821)</div>
+              <div class="fc-milestone ms-bil">📨 BIL Received</div>
+              <div class="fc-stream">CEC General</div>
+            </div>
+            <div class="fc-ts">Just now</div>
+          </div>
+          <div class="fc-cohort">
+            <div class="fcc-item"><div class="fcc-label">AOR Month</div><div class="fcc-val">Feb 2026</div></div>
+            <div class="fcc-item"><div class="fcc-label">BIL Day</div><div class="fcc-val blue">Day 16</div></div>
+            <div class="fcc-item"><div class="fcc-label">Type</div><div class="fcc-val">Inland</div></div>
+          </div>
+          <div class="fc-body">Got my BIL today! Slightly faster than I expected based on the cohort averages. Fingers crossed for the rest of the process.</div>
+        </div>
+      </div>
+
+      <!-- CARD 1: PPR -->
+      <div class="feed-card" id="card-1">
+        <div class="fc-accent accent-ppr"></div>
+        <div class="fc-inner">
+          <div class="fc-header">
+            <div class="fc-meta">
+              <div class="fc-id">#3847</div>
+              <div class="fc-milestone ms-ppr">🍁 PPR Received</div>
+              <div class="fc-stream">CEC General</div>
+              <div class="fc-milestone mod-soft" style="font-size:.61rem">Gemini Verified</div>
+            </div>
+            <div class="fc-ts">4 min ago</div>
+          </div>
+          <div class="fc-cohort">
+            <div class="fcc-item"><div class="fcc-label">AOR Month</div><div class="fcc-val">Feb 2026</div></div>
+            <div class="fcc-item"><div class="fcc-label">PPR Day</div><div class="fcc-val green">Day 172</div></div>
+            <div class="fcc-item"><div class="fcc-label">Type</div><div class="fcc-val">Inland</div></div>
+            <div class="fcc-item"><div class="fcc-label">Province</div><div class="fcc-val">Ontario</div></div>
+          </div>
+          <!-- MINI TIMELINE -->
+          <div class="mini-tl">
+            <div><div class="mt-dot mt-done" title="AOR"></div></div>
+            <div class="mt-line"></div>
+            <div><div class="mt-dot mt-done" title="BIL"></div></div>
+            <div class="mt-line"></div>
+            <div><div class="mt-dot mt-done" title="Biometrics"></div></div>
+            <div class="mt-line"></div>
+            <div><div class="mt-dot mt-done" title="BGC"></div></div>
+            <div class="mt-line"></div>
+            <div><div class="mt-dot mt-done" title="Medical"></div></div>
+            <div class="mt-line"></div>
+            <div><div class="mt-dot mt-done" style="background:var(--gbg);border-color:var(--green);box-shadow:0 0 0 3px rgba(45,106,79,.2)" title="PPR"></div></div>
+          </div>
+          <div class="fc-body">Finally got PPR today after <strong>172 days</strong>! Inland CEC General, Ontario. My timeline: AOR Feb 20 → BIL Mar 7 → Biometrics Mar 18 → BGC Apr 2 → Medical Apr 14 → PPR today. It moved way faster than I expected in the last 3 weeks. Good luck everyone 🍁</div>
+          <div class="fc-footer">
+            <button class="eng-btn" id="helpful-1" onclick="toggleHelpful('helpful-1', 'count-1')">
+              <svg viewBox="0 0 24 24"><path d="M14 9V5a3 3 0 00-3-3l-4 9v11h11.28a2 2 0 002-1.7l1.38-9a2 2 0 00-2-2.3H14z"/><path d="M7 22H4a2 2 0 01-2-2v-7a2 2 0 012-2h3"/></svg>
+              Helpful <span id="count-1">47</span>
+            </button>
+            <div class="eng-sep"></div>
+            <button class="eng-btn" onclick="toggleReply('replies-1','reply-1')">
+              <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+              Reply <span>8</span>
+            </button>
+            <div class="eng-sep"></div>
+            <button class="eng-btn eng-save" id="save-1" onclick="toggleSave('save-1')">
+              <svg viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg>
+              Save
+            </button>
+            <div class="fc-footer-right">
+              <div class="data-src">Gemini-verified · Feb 2026 cohort</div>
+            </div>
+          </div>
+        </div>
+        <div class="replies-list" id="replies-1" style="display:none">
+          <div class="reply-item">
+            <div class="reply-avatar">52</div>
+            <div class="reply-bd"><div class="reply-name">#5214</div><div class="reply-text">Congratulations!! 🎉 I'm Feb 22 AOR so fingers crossed I'm next.</div></div>
+          </div>
+          <div class="reply-item">
+            <div class="reply-avatar">61</div>
+            <div class="reply-bd"><div class="reply-name">#6108</div><div class="reply-text">What stream exactly — CEC General or STEM? And was WES involved?</div></div>
+          </div>
+        </div>
+        <div class="reply-panel" id="reply-1">
+          <textarea class="reply-input" placeholder="Share a thought or ask a question… (max 500 chars)" maxlength="500"></textarea>
+          <div class="reply-footer">
+            <div class="reply-hint">Replies go through the same Gemini moderation as posts</div>
+            <button class="reply-send" onclick="submitReply('reply-1', 'replies-1')">Post Reply</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- CARD 2: BIL -->
+      <div class="feed-card" id="card-2">
+        <div class="fc-accent accent-bil"></div>
+        <div class="fc-inner">
+          <div class="fc-header">
+            <div class="fc-meta">
+              <div class="fc-id">#5502</div>
+              <div class="fc-milestone ms-bil">📨 BIL Received</div>
+              <div class="fc-stream">CEC STEM</div>
+            </div>
+            <div class="fc-ts">18 min ago</div>
+          </div>
+          <div class="fc-cohort">
+            <div class="fcc-item"><div class="fcc-label">AOR Month</div><div class="fcc-val">Mar 2026</div></div>
+            <div class="fcc-item"><div class="fcc-label">BIL Day</div><div class="fcc-val blue">Day 11</div></div>
+            <div class="fcc-item"><div class="fcc-label">Type</div><div class="fcc-val">Inland</div></div>
+          </div>
+          <div class="fc-body">BIL arrived on Day 11 for CEC STEM, March AOR. Faster than the cohort median of 14 days. For anyone wondering — yes, upfront biometrics still worked fine. No issues with the IRCC tracker showing it.</div>
+          <div class="fc-footer">
+            <button class="eng-btn" id="helpful-2" onclick="toggleHelpful('helpful-2','count-2')">
+              <svg viewBox="0 0 24 24"><path d="M14 9V5a3 3 0 00-3-3l-4 9v11h11.28a2 2 0 002-1.7l1.38-9a2 2 0 00-2-2.3H14z"/><path d="M7 22H4a2 2 0 01-2-2v-7a2 2 0 012-2h3"/></svg>
+              Helpful <span id="count-2">12</span>
+            </button>
+            <div class="eng-sep"></div>
+            <button class="eng-btn" onclick="toggleReply('replies-2','reply-2')">
+              <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+              Reply <span>2</span>
+            </button>
+            <div class="eng-sep"></div>
+            <button class="eng-btn eng-save" id="save-2" onclick="toggleSave('save-2')">
+              <svg viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg>
+              Save
+            </button>
+          </div>
+        </div>
+        <div class="replies-list" id="replies-2" style="display:none"></div>
+        <div class="reply-panel" id="reply-2">
+          <textarea class="reply-input" placeholder="Share a thought… (max 500 chars)" maxlength="500"></textarea>
+          <div class="reply-footer">
+            <div class="reply-hint">Replies go through Gemini moderation</div>
+            <button class="reply-send" onclick="submitReply('reply-2','replies-2')">Post Reply</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- CARD 3: BGC -->
+      <div class="feed-card" id="card-3">
+        <div class="fc-accent accent-bgc"></div>
+        <div class="fc-inner">
+          <div class="fc-header">
+            <div class="fc-meta">
+              <div class="fc-id">#4102</div>
+              <div class="fc-milestone ms-bgc">🔍 BGC Started</div>
+              <div class="fc-stream">FSW General</div>
+            </div>
+            <div class="fc-ts">42 min ago</div>
+          </div>
+          <div class="fc-cohort">
+            <div class="fcc-item"><div class="fcc-label">AOR Month</div><div class="fcc-val">Jan 2026</div></div>
+            <div class="fcc-item"><div class="fcc-label">BGC Day</div><div class="fcc-val">Day 61</div></div>
+            <div class="fcc-item"><div class="fcc-label">Type</div><div class="fcc-val">Outland</div></div>
+          </div>
+          <div class="fc-body">Background check started on Day 61 for FSW General January AOR. WES verification was the slow part for us — took about 3 weeks to show in the IRCC tracker. Once it cleared, BGC initiated pretty quickly. Outland applicant from India, in case that context helps anyone.</div>
+          <div class="fc-footer">
+            <button class="eng-btn" id="helpful-3" onclick="toggleHelpful('helpful-3','count-3')">
+              <svg viewBox="0 0 24 24"><path d="M14 9V5a3 3 0 00-3-3l-4 9v11h11.28a2 2 0 002-1.7l1.38-9a2 2 0 00-2-2.3H14z"/><path d="M7 22H4a2 2 0 01-2-2v-7a2 2 0 012-2h3"/></svg>
+              Helpful <span id="count-3">28</span>
+            </button>
+            <div class="eng-sep"></div>
+            <button class="eng-btn" onclick="toggleReply('replies-3','reply-3')">
+              <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+              Reply <span>5</span>
+            </button>
+            <div class="eng-sep"></div>
+            <button class="eng-btn eng-save saved" id="save-3" onclick="toggleSave('save-3')">
+              <svg viewBox="0 0 24 24" style="fill:var(--blue);stroke:var(--blue)"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg>
+              Saved
+            </button>
+          </div>
+        </div>
+        <div class="replies-list" id="replies-3" style="display:none">
+          <div class="reply-item">
+            <div class="reply-avatar" style="background:var(--teal)">77</div>
+            <div class="reply-bd"><div class="reply-name">#7731</div><div class="reply-text">Same experience — WES was the bottleneck for us too. FSW outland from Philippines, BGC started Day 58.</div></div>
+          </div>
+        </div>
+        <div class="reply-panel" id="reply-3">
+          <textarea class="reply-input" placeholder="Share a thought… (max 500 chars)" maxlength="500"></textarea>
+          <div class="reply-footer">
+            <div class="reply-hint">Replies go through Gemini moderation</div>
+            <button class="reply-send" onclick="submitReply('reply-3','replies-3')">Post Reply</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- CARD 4: Medical -->
+      <div class="feed-card" id="card-4">
+        <div class="fc-accent accent-med"></div>
+        <div class="fc-inner">
+          <div class="fc-header">
+            <div class="fc-meta">
+              <div class="fc-id">#6841</div>
+              <div class="fc-milestone ms-med">🏥 Medical Passed</div>
+              <div class="fc-stream">CEC General</div>
+            </div>
+            <div class="fc-ts">1 hr ago</div>
+          </div>
+          <div class="fc-cohort">
+            <div class="fcc-item"><div class="fcc-label">AOR Month</div><div class="fcc-val">Feb 2026</div></div>
+            <div class="fcc-item"><div class="fcc-label">Medical Day</div><div class="fcc-val">Day 84</div></div>
+            <div class="fcc-item"><div class="fcc-label">Type</div><div class="fcc-val">Inland</div></div>
+          </div>
+          <div class="fc-body">Medical results passed! Did upfront medicals before AOR and they finally showed as valid in the system on Day 84. My cohort data should help other Feb AOR CEC General applicants — feel free to ask questions.</div>
+          <div class="fc-footer">
+            <button class="eng-btn" id="helpful-4" onclick="toggleHelpful('helpful-4','count-4')">
+              <svg viewBox="0 0 24 24"><path d="M14 9V5a3 3 0 00-3-3l-4 9v11h11.28a2 2 0 002-1.7l1.38-9a2 2 0 00-2-2.3H14z"/><path d="M7 22H4a2 2 0 01-2-2v-7a2 2 0 012-2h3"/></svg>
+              Helpful <span id="count-4">19</span>
+            </button>
+            <div class="eng-sep"></div>
+            <button class="eng-btn" onclick="toggleReply('replies-4','reply-4')">
+              <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+              Reply <span>3</span>
+            </button>
+            <div class="eng-sep"></div>
+            <button class="eng-btn eng-save" id="save-4" onclick="toggleSave('save-4')">
+              <svg viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg>
+              Save
+            </button>
+          </div>
+        </div>
+        <div class="replies-list" id="replies-4" style="display:none"></div>
+        <div class="reply-panel" id="reply-4">
+          <textarea class="reply-input" placeholder="Share a thought… (max 500 chars)" maxlength="500"></textarea>
+          <div class="reply-footer">
+            <div class="reply-hint">Replies go through Gemini moderation</div>
+            <button class="reply-send" onclick="submitReply('reply-4','replies-4')">Post Reply</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- CARD 5: PPR Celebration -->
+      <div class="feed-card" id="card-5">
+        <div class="fc-accent accent-ppr"></div>
+        <div class="fc-inner">
+          <div class="fc-header">
+            <div class="fc-meta">
+              <div class="fc-id">#2291</div>
+              <div class="fc-milestone ms-ppr">🍁 PPR Received</div>
+              <div class="fc-stream">CEC French</div>
+            </div>
+            <div class="fc-ts">2 hr ago</div>
+          </div>
+          <div class="fc-cohort">
+            <div class="fcc-item"><div class="fcc-label">AOR Month</div><div class="fcc-val">Jan 2026</div></div>
+            <div class="fcc-item"><div class="fcc-label">PPR Day</div><div class="fcc-val green">Day 98</div></div>
+            <div class="fcc-item"><div class="fcc-label">Type</div><div class="fcc-val">Outland</div></div>
+          </div>
+          <div class="fc-body">PPR received in just 98 days via CEC French! The francophone pathway is genuinely fast. Applied outland from France. Full timeline: AOR Jan 14 → BIL Jan 25 (Day 11) → Biometrics waived (done previously) → BGC Feb 8 (Day 25) → Medical Feb 19 (Day 36) → PPR today (Day 98). Merci AORTrack for helping me track this! 🇫🇷🍁</div>
+          <div class="fc-footer">
+            <button class="eng-btn" id="helpful-5" onclick="toggleHelpful('helpful-5','count-5')">
+              <svg viewBox="0 0 24 24"><path d="M14 9V5a3 3 0 00-3-3l-4 9v11h11.28a2 2 0 002-1.7l1.38-9a2 2 0 00-2-2.3H14z"/><path d="M7 22H4a2 2 0 01-2-2v-7a2 2 0 012-2h3"/></svg>
+              Helpful <span id="count-5">83</span>
+            </button>
+            <div class="eng-sep"></div>
+            <button class="eng-btn" onclick="toggleReply('replies-5','reply-5')">
+              <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+              Reply <span>14</span>
+            </button>
+            <div class="eng-sep"></div>
+            <button class="eng-btn eng-save" id="save-5" onclick="toggleSave('save-5')">
+              <svg viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg>
+              Save
+            </button>
+          </div>
+        </div>
+        <div class="replies-list" id="replies-5" style="display:none">
+          <div class="reply-item">
+            <div class="reply-avatar" style="background:var(--green2)">33</div>
+            <div class="reply-bd"><div class="reply-name">#3309</div><div class="reply-text">Félicitations!! 🎉 This is amazing. CEC French is incredible. Can you share if the IRCC tracker updated before or after the PPR email?</div></div>
+          </div>
+        </div>
+        <div class="reply-panel" id="reply-5">
+          <textarea class="reply-input" placeholder="Share a thought… (max 500 chars)" maxlength="500"></textarea>
+          <div class="reply-footer">
+            <div class="reply-hint">Replies go through Gemini moderation</div>
+            <button class="reply-send" onclick="submitReply('reply-5','replies-5')">Post Reply</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- OWN REMOVED CARD -->
+      <div class="feed-card own-removed">
+        <div class="removed-label">
+          <span>🚫</span>
+          <div>
+            <strong>Your post was removed</strong>
+            Our system detected that the processing time you reported (PPR at Day 28) is 3.8 standard deviations from the Feb 2026 CEC General cohort average (184 days). This is outside the range we can verify. If you believe this is correct, please appeal with supporting documentation.
+            <span class="appeal-link" onclick="openAppeal()">Appeal this decision → (6 days remaining)</span>
+          </div>
+        </div>
+        <div class="fc-accent accent-ppr"></div>
+        <div class="fc-inner" style="opacity:.6">
+          <div class="fc-header">
+            <div class="fc-meta">
+              <div class="fc-id">You (#4821)</div>
+              <div class="fc-milestone ms-ppr">🍁 PPR Received</div>
+              <div class="fc-milestone mod-removed">Removed</div>
+            </div>
+            <div class="fc-ts">3 days ago</div>
+          </div>
+          <div class="fc-cohort">
+            <div class="fcc-item"><div class="fcc-label">Claimed PPR Day</div><div class="fcc-val">Day 28</div></div>
+          </div>
+          <div class="fc-body">[Content hidden — post removed by moderation]</div>
+        </div>
+      </div>
+
+      <!-- LOAD MORE -->
+      <div class="load-more">
+        <button class="load-more-btn" onclick="loadMore()">
+          <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+          Load more posts
+        </button>
+      </div>
+
+    </div><!-- /feed-list -->
+  </div><!-- /feed-main -->
+
+  <!-- RIGHT PANEL — INSIGHTS -->
+  <aside class="right-panel">
+
+    <div class="rp-section">
+      <div class="rp-label">Community Insights</div>
+
+      <div class="insight-card ic-amber">
+        <div class="ic-top">
+          <div class="ic-icon">⚠️</div>
+          <div class="ic-title">WES Tracker Lag — CEC General</div>
+        </div>
+        <div class="ic-body">12 applicants report WES results showing up 7–14 days after the IRCC tracker reflects them. May delay your BGC initiation.</div>
+        <div class="ic-foot"><span>12 reporters</span><span>3 days ago</span></div>
+        <a class="ic-link" onclick="showSection('alerts-sec')">View all community reports →</a>
+      </div>
+
+      <div class="insight-card ic-green">
+        <div class="ic-top">
+          <div class="ic-icon">📈</div>
+          <div class="ic-title">PPR Velocity Up This Week</div>
+        </div>
+        <div class="ic-body">18 PPR approvals logged in the Feb 2026 CEC General cohort this week — highest since tracking began.</div>
+        <div class="ic-foot"><span>18 reporters</span><span>1 day ago</span></div>
+      </div>
+
+      <div class="insight-card ic-blue">
+        <div class="ic-top">
+          <div class="ic-icon">ℹ️</div>
+          <div class="ic-title">IRCC Tracker Maintenance</div>
+        </div>
+        <div class="ic-body">IRCC online tracker had a 4-hour outage on Apr 30. Status updates may be delayed by 1 day.</div>
+        <div class="ic-foot"><span>System report</span><span>2 days ago</span></div>
+      </div>
+    </div>
+
+    <div class="rp-section pulse-section">
+      <div class="rp-label">Weekly PPR Pulse — CEC General</div>
+      <div class="pulse-chart" id="pulse-chart"></div>
+      <div class="pulse-labels" id="pulse-labels"></div>
+      <div class="pulse-note" style="margin-top:6px">This week: <strong>18 PPRs</strong> — ↑ 38% vs last week (13)</div>
+    </div>
+
+    <div class="rp-section">
+      <div class="rp-label">Top Contributors</div>
+      <div class="contrib-row">
+        <div class="contrib-rank">1</div>
+        <div class="contrib-av" style="background:var(--amber)">#38</div>
+        <div class="contrib-name">#3847</div>
+        <div class="contrib-count">14 verified</div>
+      </div>
+      <div class="contrib-row">
+        <div class="contrib-rank">2</div>
+        <div class="contrib-av" style="background:var(--blue)">#55</div>
+        <div class="contrib-name">#5502</div>
+        <div class="contrib-count">11 verified</div>
+      </div>
+      <div class="contrib-row">
+        <div class="contrib-rank">3</div>
+        <div class="contrib-av" style="background:var(--green)">#22</div>
+        <div class="contrib-name">#2291</div>
+        <div class="contrib-count">9 verified</div>
+      </div>
+      <div class="contrib-row">
+        <div class="contrib-rank">4</div>
+        <div class="contrib-av" style="background:var(--teal)">#41</div>
+        <div class="contrib-name">#4102</div>
+        <div class="contrib-count">8 verified</div>
+      </div>
+      <div class="contrib-row">
+        <div class="contrib-rank">5</div>
+        <div class="contrib-av" style="background:var(--purple)">#68</div>
+        <div class="contrib-name">#6841</div>
+        <div class="contrib-count">6 verified</div>
+      </div>
+    </div>
+
+    <div class="rp-section">
+      <div class="discord-card">
+        <div class="dc-icon">💬</div>
+        <div class="dc-title">Join our Discord</div>
+        <div class="dc-sub">Real-time alerts, IRCC tracker updates, and direct discussion with your cohort.</div>
+        <a href="#" class="dc-btn">Join #aortrack-general →</a>
+      </div>
+    </div>
+
+  </aside>
+</div>
+
+<!-- SUBMIT MILESTONE MODAL -->
+<div class="modal-overlay" id="submit-modal" onclick="closeOnOverlay(event,'submit-modal')">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Submit a Milestone</div>
+      <span class="modal-close" onclick="closeModal('submit-modal')">✕</span>
+    </div>
+    <div class="modal-body">
+      <div class="m-field">
+        <label class="m-label">Milestone Type <span class="req">Required</span></label>
+        <select class="m-select" id="ms-type">
+          <option value="">Select milestone…</option>
+          <option value="ppr">🍁 PPR Received</option>
+          <option value="bil">📨 BIL Received</option>
+          <option value="bgc">🔍 Background Check Started</option>
+          <option value="medical">🏥 Medical Results Passed</option>
+          <option value="biometrics">👆 Biometrics Confirmed</option>
+          <option value="copr">🎉 COPR Received</option>
+        </select>
+      </div>
+      <div class="m-field">
+        <label class="m-label">Date <span class="req">Required</span></label>
+        <input class="m-input" type="date" id="ms-date" max="2026-05-03"/>
+      </div>
+      <div class="m-field">
+        <label class="m-label">Optional note <span style="font-size:.7rem;color:var(--muted);font-weight:400">(max 500 chars)</span></label>
+        <textarea class="m-textarea" id="ms-note" placeholder="Share context about your timeline — WES timing, province, anything useful for others in your cohort…" maxlength="500"></textarea>
+        <div class="m-note">Your post will go through Gemini moderation before appearing in the community feed. Usually takes under 30 seconds. Visible only to you until approved.</div>
+      </div>
+    </div>
+    <div class="m-footer">
+      <button class="m-cancel" onclick="closeModal('submit-modal')">Cancel</button>
+      <button class="m-submit" id="submit-ms-btn" onclick="submitMilestone()">Submit Milestone →</button>
+    </div>
+  </div>
+</div>
+
+<!-- APPEAL MODAL -->
+<div class="modal-overlay appeal-modal" id="appeal-modal" onclick="closeOnOverlay(event,'appeal-modal')">
+  <div class="modal">
+    <div class="modal-header" style="background:var(--red)">
+      <div class="modal-title">Appeal Moderation Decision</div>
+      <span class="modal-close" onclick="closeModal('appeal-modal')">✕</span>
+    </div>
+    <div class="modal-body">
+      <div style="background:var(--red-pale);border:1.5px solid #f0b0a8;border-radius:8px;padding:12px 14px;margin-bottom:16px;font-size:.78rem;color:var(--red);line-height:1.6">
+        <strong>Removed post:</strong> PPR Received · Day 28 · Feb 2026 · CEC General<br/>
+        <strong>Reason:</strong> Claimed date is 3.8σ from cohort median — outside verifiable range.
+      </div>
+      <div class="m-field">
+        <label class="m-label">Your appeal explanation <span class="req">Required</span></label>
+        <textarea class="m-textarea" placeholder="Explain why your date is correct. Supporting documentation (e.g. IRCC portal screenshot, email screenshot) is strongly recommended. Paste any relevant context here…" style="min-height:110px;max-width:100%" maxlength="1000"></textarea>
+        <div class="m-note">Appeals are reviewed by a human moderator (not Gemini) within 48 hours. You have 6 days remaining to appeal.</div>
+      </div>
+    </div>
+    <div class="m-footer">
+      <button class="m-cancel" onclick="closeModal('appeal-modal')">Cancel</button>
+      <button class="m-submit" style="background:var(--red)" onclick="submitAppeal()">Submit Appeal →</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── FILTER CHIPS ──────────────────────────────────────────────────────────────
+function setChip(el, filter) {
+  document.querySelectorAll('.chip').forEach(c => c.classList.remove('on'));
+  el.classList.add('on');
+  document.querySelectorAll('.lsb-link').forEach(l => l.classList.remove('on'));
+  setFilter(filter);
+}
+function setFilter(filter) {
+  // Simulate filtering — in production, fetches from API
+  toast('Showing: ' + filter.replace('-', ' '), 'green');
+}
+
+// ── SEARCH ────────────────────────────────────────────────────────────────────
+let searchTimer;
+function handleSearch(val) {
+  clearTimeout(searchTimer);
+  searchTimer = setTimeout(() => {
+    if (val.length > 1) toast('Filtering: "' + val + '"', 'green');
+  }, 300);
+}
+
+// ── SORT ──────────────────────────────────────────────────────────────────────
+function handleSort(val) {
+  toast('Sorted by: ' + val, 'green');
+}
+
+// ── HELPFUL TOGGLE ────────────────────────────────────────────────────────────
+function toggleHelpful(btnId, countId) {
+  const btn = document.getElementById(btnId);
+  const countEl = document.getElementById(countId);
+  const isActive = btn.classList.contains('active');
+  btn.classList.toggle('active', !isActive);
+  const n = parseInt(countEl.textContent);
+  countEl.textContent = isActive ? n - 1 : n + 1;
+  if (!isActive) toast('Marked as helpful ✓', 'green');
+}
+
+// ── SAVE TOGGLE ───────────────────────────────────────────────────────────────
+function toggleSave(btnId) {
+  const btn = document.getElementById(btnId);
+  const isSaved = btn.classList.contains('saved');
+  btn.classList.toggle('saved', !isSaved);
+  const svg = btn.querySelector('svg');
+  if (!isSaved) {
+    btn.innerHTML = '<svg viewBox="0 0 24 24" style="width:13px;height:13px;fill:var(--blue);stroke:var(--blue)"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg> Saved';
+    toast('Post saved to your profile', 'green');
+  } else {
+    btn.innerHTML = '<svg viewBox="0 0 24 24" style="width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg> Save';
+    toast('Removed from saved posts');
+  }
+  btn.onclick = () => toggleSave(btnId);
+}
+
+// ── REPLY TOGGLE ──────────────────────────────────────────────────────────────
+function toggleReply(listId, panelId) {
+  const panel = document.getElementById(panelId);
+  const list = document.getElementById(listId);
+  const isOpen = panel.classList.contains('open');
+  panel.classList.toggle('open', !isOpen);
+  if (list && list.children.length > 0) list.style.display = isOpen ? 'none' : 'flex';
+  if (!isOpen) { panel.querySelector('textarea')?.focus(); }
+}
+
+function submitReply(panelId, listId) {
+  const panel = document.getElementById(panelId);
+  const textarea = panel.querySelector('textarea');
+  if (!textarea.value.trim()) return;
+
+  const list = document.getElementById(listId);
+  list.style.display = 'flex';
+
+  const item = document.createElement('div');
+  item.className = 'reply-item';
+  item.style.animation = 'slideDown .3s ease';
+  item.innerHTML = `
+    <div class="reply-avatar" style="background:var(--green2)">Me</div>
+    <div class="reply-bd">
+      <div class="reply-name">You (#4821)</div>
+      <div class="reply-text">${textarea.value}</div>
+    </div>`;
+  list.appendChild(item);
+  textarea.value = '';
+  panel.classList.remove('open');
+  toast('Reply submitted for Gemini review ⏳', 'amber');
+}
+
+// ── SUBMIT MODAL ──────────────────────────────────────────────────────────────
+function openSubmit() {
+  document.getElementById('submit-modal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function openAppeal() {
+  document.getElementById('appeal-modal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeModal(id) {
+  document.getElementById(id).classList.remove('open');
+  document.body.style.overflow = '';
+}
+function closeOnOverlay(e, id) {
+  if (e.target === document.getElementById(id)) closeModal(id);
+}
+
+function submitMilestone() {
+  const type = document.getElementById('ms-type').value;
+  const date = document.getElementById('ms-date').value;
+  if (!type || !date) { toast('Please fill in all required fields', 'amber'); return; }
+
+  const btn = document.getElementById('submit-ms-btn');
+  btn.textContent = 'Submitting…'; btn.disabled = true;
+
+  setTimeout(() => {
+    closeModal('submit-modal');
+    btn.textContent = 'Submit Milestone →'; btn.disabled = false;
+    document.getElementById('ms-type').value = '';
+    document.getElementById('ms-date').value = '';
+    document.getElementById('ms-note').value = '';
+    toast('Submitted! Under Gemini review — appears in your feed once approved ✓', 'green');
+  }, 1600);
+}
+
+function submitAppeal() {
+  toast('Appeal submitted — a moderator will review within 48 hours', 'green');
+  closeModal('appeal-modal');
+}
+
+// ── NEW POST NOTIFICATION ─────────────────────────────────────────────────────
+let newPostCount = 0;
+function showNewPostBar() {
+  newPostCount += Math.floor(Math.random() * 2) + 1;
+  const bar = document.getElementById('new-post-bar');
+  document.getElementById('new-post-text').textContent = newPostCount + ' new post' + (newPostCount > 1 ? 's' : '') + ' — click to load';
+  bar.classList.add('show');
+}
+function loadNewPosts() {
+  const bar = document.getElementById('new-post-bar');
+  bar.classList.remove('show');
+
+  // Insert a new card at the top
+  const feed = document.getElementById('feed-list');
+  const newCard = document.createElement('div');
+  newCard.className = 'feed-card new-entry';
+  newCard.innerHTML = `
+    <div class="fc-accent accent-ppr"></div>
+    <div class="fc-inner">
+      <div class="fc-header">
+        <div class="fc-meta">
+          <div class="fc-id">#${Math.floor(Math.random()*9000)+1000}</div>
+          <div class="fc-milestone ms-ppr">🍁 PPR Received</div>
+          <div class="fc-stream">CEC General</div>
+        </div>
+        <div class="fc-ts">Just now</div>
+      </div>
+      <div class="fc-cohort">
+        <div class="fcc-item"><div class="fcc-label">AOR Month</div><div class="fcc-val">Feb 2026</div></div>
+        <div class="fcc-item"><div class="fcc-label">PPR Day</div><div class="fcc-val green">Day ${160 + Math.floor(Math.random()*30)}</div></div>
+        <div class="fcc-item"><div class="fcc-label">Type</div><div class="fcc-val">Inland</div></div>
+      </div>
+      <div class="fc-body">Just received PPR! Feb 2026 CEC General inland. Feeling very relieved. Thank you all for sharing your timelines — it really helped me stay calm during the wait. 🍁</div>
+      <div class="fc-footer">
+        <div class="eng-btn"><svg style="width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round" viewBox="0 0 24 24"><path d="M14 9V5a3 3 0 00-3-3l-4 9v11h11.28a2 2 0 002-1.7l1.38-9a2 2 0 00-2-2.3H14z"/><path d="M7 22H4a2 2 0 01-2-2v-7a2 2 0 012-2h3"/></svg> Helpful 0</div>
+      </div>
+    </div>`;
+  const submitCard = feed.querySelector('.submit-card');
+  const pendingCard = feed.querySelector('.own-pending');
+  const insertAfter = pendingCard || submitCard;
+  if (insertAfter && insertAfter.nextSibling) {
+    feed.insertBefore(newCard, insertAfter.nextSibling);
+  } else {
+    feed.insertBefore(newCard, feed.firstChild.nextSibling);
+  }
+
+  newPostCount = 0;
+  // Update live counter
+  const lc = document.getElementById('live-count');
+  lc.textContent = (parseInt(lc.textContent.replace(',','')) + 1).toLocaleString();
+}
+
+// ── LOAD MORE ─────────────────────────────────────────────────────────────────
+function loadMore() {
+  const btn = document.querySelector('.load-more-btn');
+  btn.innerHTML = '<svg style="width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;animation:spin .6s linear infinite" viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg> Loading…';
+  btn.disabled = true;
+  setTimeout(() => {
+    btn.innerHTML = '<svg viewBox="0 0 24 24" style="width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><polyline points="6 9 12 15 18 9"/></svg> Load more posts';
+    btn.disabled = false;
+    toast('Loaded 20 more posts', 'green');
+  }, 1200);
+}
+
+// ── PULSE CHART ───────────────────────────────────────────────────────────────
+function buildPulseChart() {
+  const weeks = ['Apr 7','Apr 14','Apr 21','Apr 28','May 3'];
+  const values = [8, 11, 13, 13, 18];
+  const max = Math.max(...values);
+  const chart = document.getElementById('pulse-chart');
+  const labels = document.getElementById('pulse-labels');
+  chart.innerHTML = ''; labels.innerHTML = '';
+
+  weeks.forEach((w, i) => {
+    const bar = document.createElement('div');
+    bar.className = 'pc-bar' + (i === weeks.length - 1 ? ' this-week' : i === 4 ? ' peak' : '');
+    bar.style.height = '0';
+    bar.style.transition = `height .6s ease ${i * 0.08}s`;
+    bar.title = `${w}: ${values[i]} PPRs`;
+    chart.appendChild(bar);
+    setTimeout(() => { bar.style.height = Math.round((values[i] / max) * 100) + '%'; }, 300);
+
+    const lbl = document.createElement('div');
+    lbl.className = 'pl-lbl' + (i === weeks.length - 1 ? ' this-week' : '');
+    lbl.textContent = w.replace('Apr ','').replace('May ','') + (i < 4 ? '' : '★');
+    labels.appendChild(lbl);
+  });
+}
+
+// ── SIMULATED SSE ─────────────────────────────────────────────────────────────
+setTimeout(() => showNewPostBar(), 8000);
+setTimeout(() => {
+  if (newPostCount < 3) {
+    newPostCount++;
+    const bar = document.getElementById('new-post-bar');
+    document.getElementById('new-post-text').textContent = newPostCount + ' new post' + (newPostCount > 1 ? 's' : '') + ' — click to load';
+    bar.classList.add('show');
+  }
+}, 20000);
+
+// ── LIVE COUNTER ──────────────────────────────────────────────────────────────
+setInterval(() => {
+  if (Math.random() > 0.6) {
+    const lc = document.getElementById('live-count');
+    const n = parseInt(lc.textContent.replace(',','')) + 1;
+    lc.textContent = n.toLocaleString();
+  }
+}, 5000);
+
+// ── TOAST ─────────────────────────────────────────────────────────────────────
+function toast(msg, type = '') {
+  document.querySelectorAll('.toast').forEach(t => t.remove());
+  const el = document.createElement('div');
+  el.className = 'toast ' + type;
+  el.textContent = msg;
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 3500);
+}
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+buildPulseChart();
+document.getElementById('ms-date').max = new Date().toISOString().split('T')[0];
+</script>
+</body>
+</html>

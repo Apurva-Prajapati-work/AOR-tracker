@@ -13,6 +13,7 @@ export function DashboardRails({
   cohort,
   similarCohorts,
   cohortInsights,
+  onSelectCohort,
 }: {
   days: number;
   pct: number;
@@ -22,6 +23,7 @@ export function DashboardRails({
   cohort: CohortStats;
   similarCohorts: CohortSummaryRow[];
   cohortInsights: CohortInsight[];
+  onSelectCohort: (cohortKey: string) => void;
 }) {
   return (
     <>
@@ -83,19 +85,20 @@ export function DashboardRails({
       <div className="rc">
         <div className="rct">Similar cohorts</div>
         {similarCohorts.map((s) => (
-          <div
+          <button
             key={s.cohortKey}
+            type="button"
             className={`sitem ${s.isCurrent ? "on" : ""}`}
-            role="presentation"
+            onClick={() => onSelectCohort(s.cohortKey)}
           >
-            <div>
+            <div className="min-w-0 text-left">
               <div className="siname">{s.label}</div>
               <div className="simeta">
                 {s.nVerified} applicants · median ~{s.medianDays}d
               </div>
             </div>
-            <span className="sidays">~{s.medianDays}d</span>
-          </div>
+            <span className="sidays shrink-0">~{s.medianDays}d</span>
+          </button>
         ))}
       </div>
     </>

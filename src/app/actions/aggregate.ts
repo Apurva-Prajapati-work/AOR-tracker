@@ -1,7 +1,7 @@
 "use server";
 
 import { getDb } from "@/lib/db";
-import { humanizeCohortKey, streamSlugFromLabel } from "@/lib/cohort";
+import { humanizeCohortKey, peerCohortKeyPattern } from "@/lib/cohort";
 import type { MilestoneKey } from "@/lib/types";
 
 export type LiveCohortAggregate = {
@@ -79,21 +79,22 @@ export type CohortSummaryRow = {
   isCurrent: boolean;
 };
 
-/** Other cohort rows from `cohort_stats` (excludes `currentCohortKey`); client prepends the active cohort. */
+/**
+ * Peer cohorts from `cohort_stats`: same stream, inland/outland, province — any AOR month/year.
+ * Includes keys that match `profileCohortKey`'s peer pattern (caller may dedupe with the active view).
+ */
 export async function listRelatedCohortSummariesAction(
-  currentCohortKey: string,
-  streamLabel: string,
-  limit = 4,
+  profileCohortKey: string,
+  limit = 8,
 ): Promise<Omit<CohortSummaryRow, "isCurrent">[]> {
   const db = await getDb();
   const col = db.collection("cohort_stats");
-  const slug = streamSlugFromLabel(streamLabel);
-  const escaped = slug.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const pattern = peerCohortKeyPattern(profileCohortKey);
+  const peerRegex = new RegExp(pattern);
 
   const prefer = await col
-    .find({
-      cohortKey: { $ne: currentCohortKey, $regex: new RegExp(`^${escaped}:`) },
-    })
+    .find({ cohortKey: peerRegex })
+    .sort({ median_days_to_ppr: 1 })
     .limit(limit)
     .toArray();
 
@@ -110,7 +111,7 @@ export async function listRelatedCohortSummariesAction(
   const seen = new Set(rows.map((r) => r.cohortKey));
   if (rows.length < limit) {
     const filler = await col
-      .find({ cohortKey: { $ne: currentCohortKey } })
+      .find({ cohortKey: { $nin: [...seen] } })
       .limit(limit * 3)
       .toArray();
     for (const doc of filler) {

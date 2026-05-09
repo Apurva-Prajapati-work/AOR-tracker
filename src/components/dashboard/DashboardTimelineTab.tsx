@@ -44,11 +44,13 @@ export function DashboardTimelineTab() {
     cohortInsights,
     milestoneDefsForCohort,
     cohortTotal,
+    cohortDataSparse,
+    selectCohort,
   } = useDashboard();
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="srow">
+      <div className={`srow ${cohortDataSparse ? "srow--sparse" : ""}`}>
         <div className="sc hi">
           <div className="slbl">Days since AOR</div>
           <div className="sval">{days}</div>
@@ -75,7 +77,9 @@ export function DashboardTimelineTab() {
             {Math.round((cohort.completion_rate ?? 0) * 100)}%
           </div>
           <div className="ssub text-[#5de494]">
-            ↑ {Math.round((cohort.weekly_delta ?? 0) * 100)}% this week
+            {cohortDataSparse
+              ? "Low sample — sync cohorts"
+              : `↑ ${Math.round((cohort.weekly_delta ?? 0) * 100)}% this week`}
           </div>
         </div>
       </div>
@@ -90,6 +94,7 @@ export function DashboardTimelineTab() {
           cohort={cohortDisplay}
           similarCohorts={similarCohortsDisplay}
           cohortInsights={cohortInsights}
+          onSelectCohort={selectCohort}
         />
       </div>
 
@@ -201,12 +206,21 @@ export function DashboardTimelineTab() {
                       : ""}
                   </div>
                   {!isLast ? (
-                    <div className="tlcrowd">
+                    <div
+                      className={`tlcrowd ${cohortDataSparse || cohortTotal === 0 ? "tlcrowd--sparse" : ""}`}
+                    >
                       <div className="tlcbw">
                         <div className="tlcb" style={{ width: `${cp}%` }} />
                       </div>
                       <span className="tlctxt">
-                        <b>{n}</b> of {cohortTotal} ({cp}%) past this
+                        {cohortTotal === 0 ? (
+                          <>No cohort data — run Sync cohorts</>
+                        ) : (
+                          <>
+                            <b>{n}</b> of {cohortTotal} ({cp}%) past this
+                            {cohortDataSparse ? " · low n" : ""}
+                          </>
+                        )}
                       </span>
                     </div>
                   ) : null}
@@ -246,7 +260,9 @@ export function DashboardTimelineTab() {
             <span className="ctit">Cohort map</span>
             <span className="ctag">{cohortTotal} applicants</span>
           </div>
-          <div className="cgrid">
+          <div
+            className={`cgrid ${cohortDataSparse || cohortTotal === 0 ? "cgrid--sparse" : ""}`}
+          >
             {Array.from({
               length: Math.min(Math.max(cohortTotal, 1), 400),
             }).map((_, i) => {
@@ -254,7 +270,16 @@ export function DashboardTimelineTab() {
               const pos = Math.min(Math.max(days - 1, 0), cap);
               let bg = "var(--navy4)";
               let title = "Early stage";
-              if (i === pos) {
+              if (cohortTotal === 0 || cohortDataSparse) {
+                bg =
+                  i === pos
+                    ? "var(--red)"
+                    : "rgba(255,255,255,.08)";
+                title =
+                  i === pos
+                    ? `You — Day ${days} (sparse cohort)`
+                    : "Awaiting data";
+              } else if (i === pos) {
                 bg = "var(--red)";
                 title = `You — Day ${days}`;
               } else if (i < 94) {

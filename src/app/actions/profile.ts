@@ -66,8 +66,13 @@ export async function saveProfileAction(profile: UserProfile): Promise<{
               aorDate: profile.aorDate,
               stream: profile.stream,
               type: profile.type,
+              province: profile.province,
             })
-          : streamFallbackKey(profile.stream),
+          : streamFallbackKey(
+              profile.stream,
+              profile.province,
+              profile.type,
+            ),
         updatedAt: now,
       },
       $setOnInsert: {
@@ -99,7 +104,11 @@ export async function createDraftProfileAction(
     type: profile.type,
     province: profile.province,
     milestones: profile.milestones,
-    cohortKey: streamFallbackKey(profile.stream),
+    cohortKey: streamFallbackKey(
+      profile.stream,
+      profile.province,
+      profile.type,
+    ),
   });
   return { ok: true, profile };
 }
@@ -134,6 +143,7 @@ export async function updateMilestoneAction(
             aorDate: profile.aorDate,
             stream: profile.stream,
             type: profile.type,
+            province: profile.province,
           }),
         },
       },
@@ -176,6 +186,7 @@ export async function ensureDemoProfileAction(): Promise<UserProfile> {
           aorDate: profile.aorDate,
           stream: profile.stream,
           type: profile.type,
+          province: profile.province,
         }),
         updatedAt: new Date(),
       },

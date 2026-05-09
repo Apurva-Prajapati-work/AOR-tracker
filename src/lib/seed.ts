@@ -110,6 +110,14 @@ const SEED_POSTS: Omit<
   },
 ];
 
+/** Synthetic stats when Mongo has no `cohort_stats` row yet (e.g. before dev seed). */
+export function cohortStatsFallback(cohortKey: string): CohortStats {
+  return {
+    ...baseCohort(cohortKey),
+    last_updated: new Date().toISOString(),
+  };
+}
+
 function baseCohort(key: string): CohortStats {
   return {
     cohortKey: key,
@@ -140,6 +148,9 @@ export async function ensureIndexes(db: Db): Promise<void> {
   const posts = db.collection("community_posts");
   await db.collection("profiles").createIndex({ emailNorm: 1 }, { unique: true });
   await db.collection("profiles").createIndex({ cohortKey: 1 });
+  await db
+    .collection("profiles")
+    .createIndex({ shareToken: 1 }, { unique: true, sparse: true });
   await cohorts.createIndex({ cohortKey: 1 }, { unique: true });
   await posts.createIndex({ createdAt: -1 });
 }
@@ -164,10 +175,10 @@ export async function seedDemoDataIfEmpty(db: Db): Promise<SeedDemoResult> {
   if (cohortCount === 0) {
     const keys = new Set<string>();
     const samples = [
-      "CEC_GENERAL:2:2025:inland",
-      "CEC_GENERAL:2025",
-      "CEC_STEM:2:2025:inland",
-      "FSW_GENERAL:1:2025:outland",
+      "CEC_GENERAL:2:2025:inland:ON",
+      "CEC_GENERAL:0:2025:inland:ON",
+      "CEC_STEM:2:2025:inland:BC",
+      "FSW_GENERAL:1:2025:outland:ON",
     ];
     samples.forEach((k) => keys.add(k));
     const list = [...keys];
@@ -197,7 +208,13 @@ export async function seedDemoDataIfEmpty(db: Db): Promise<SeedDemoResult> {
   return { cohortsInserted, postsInserted };
 }
 
-export function serializeCohort(doc: Record<string, unknown>): CohortStats {
+export function serializeCohort(
+  doc: Record<string, unknown> | null | undefined,
+  fallbackCohortKey = "CEC_GENERAL:2025",
+): CohortStats {
+  if (!doc) {
+    return cohortStatsFallback(fallbackCohortKey);
+  }
   const c = doc as CohortStats & { last_updated?: Date };
   return {
     ...c,

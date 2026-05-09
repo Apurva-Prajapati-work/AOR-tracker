@@ -19,8 +19,10 @@ import {
   type CohortSummaryRow,
   type LiveCohortAggregate,
 } from "@/app/actions/aggregate";
-import { getCohortStatsForProfileAction } from "@/app/actions/cohort";
+import { getCohortStatsByKeyAction } from "@/app/actions/cohort";
+import { syncCohortStatsFromProfilesAction } from "@/app/actions/cohort-sync";
 import { getProfileAction, updateMilestoneAction } from "@/app/actions/profile";
+import { ensureShareTokenForEmailAction } from "@/app/actions/share";
 import { LogoMark } from "@/components/LogoMark";
 import { DashboardLoadingSkeleton } from "@/components/dashboard/DashboardLoadingSkeleton";
 import { DashboardProvider } from "@/components/dashboard/DashboardContext";
@@ -32,7 +34,7 @@ import {
 } from "@/lib/cohort-dynamic";
 import { MILESTONE_DEFS } from "@/lib/constants";
 import { dashboardHref, dashboardNavActive } from "@/lib/dashboard-nav";
-import { humanizeCohortKey } from "@/lib/cohort";
+import { cohortKeyFromProfile, humanizeCohortKey } from "@/lib/cohort";
 import { computeProfileCompleteness } from "@/lib/profile-completeness";
 import {
   daysSinceAor,
@@ -58,37 +60,53 @@ export function DashboardShell({ children }: { children: ReactNode }) {
   const [relatedCohorts, setRelatedCohorts] = useState<
     Omit<CohortSummaryRow, "isCurrent">[]
   >([]);
+  const [viewingCohortKeyOverride, setViewingCohortKeyOverride] = useState<
+    string | null
+  >(null);
+  const [syncCohortBusy, setSyncCohortBusy] = useState(false);
+  const [shareState, setShareState] = useState<{
+    email: string;
+    token: string | null;
+    error: string | null;
+  } | null>(null);
 
-  const load = useCallback(async (em: string) => {
-    const p = await getProfileAction(em);
-    if (!p.ok) {
-      router.replace("/");
-      return;
-    }
-    setProfile(p.profile);
-    const c = await getCohortStatsForProfileAction(p.profile);
-    setCohort(c);
-    const [live, related] = await Promise.all([
-      getLiveCohortAggregateAction(c.cohortKey),
-      listRelatedCohortSummariesAction(c.cohortKey, p.profile.stream),
-    ]);
-    setLiveAggregate(live);
-    setRelatedCohorts(related);
-  }, [router]);
-
-  const refreshAfterProfileUpdate = useCallback(
-    async (next: UserProfile) => {
-      setProfile(next);
-      const c = await getCohortStatsForProfileAction(next);
-      setCohort(c);
-      const [live, related] = await Promise.all([
-        getLiveCohortAggregateAction(c.cohortKey),
-        listRelatedCohortSummariesAction(c.cohortKey, next.stream),
+  const hydrateCohortView = useCallback(
+    async (viewKey: string, peerRootKey: string) => {
+      const [c, live, related] = await Promise.all([
+        getCohortStatsByKeyAction(viewKey),
+        getLiveCohortAggregateAction(viewKey),
+        listRelatedCohortSummariesAction(peerRootKey, 8),
       ]);
+      setCohort({ ...c, cohortKey: viewKey });
       setLiveAggregate(live);
       setRelatedCohorts(related);
     },
     [],
+  );
+
+  const load = useCallback(
+    async (em: string) => {
+      const p = await getProfileAction(em);
+      if (!p.ok) {
+        router.replace("/");
+        return;
+      }
+      setProfile(p.profile);
+      setViewingCohortKeyOverride(null);
+      const pk = cohortKeyFromProfile(p.profile);
+      await hydrateCohortView(pk, pk);
+    },
+    [router, hydrateCohortView],
+  );
+
+  const refreshAfterProfileUpdate = useCallback(
+    async (next: UserProfile) => {
+      setProfile(next);
+      setViewingCohortKeyOverride(null);
+      const pk = cohortKeyFromProfile(next);
+      await hydrateCohortView(pk, pk);
+    },
+    [hydrateCohortView],
   );
 
   useEffect(() => {
@@ -109,6 +127,31 @@ export function DashboardShell({ children }: { children: ReactNode }) {
     }, 0);
     return () => window.clearTimeout(id);
   }, [email, load]);
+
+  useEffect(() => {
+    if (!email) return;
+    let cancelled = false;
+    void ensureShareTokenForEmailAction(email).then((r) => {
+      if (cancelled) return;
+      if (r.ok) {
+        setShareState({ email, token: r.token, error: null });
+      } else {
+        setShareState({
+          email,
+          token: null,
+          error:
+            r.error === "not_found"
+              ? "Could not load profile for sharing."
+              : r.error,
+        });
+      }
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [email]);
+
+  const cohortDataSparse = (liveAggregate?.profileCount ?? 0) < 2;
 
   const cohortDisplay = useMemo((): CohortStats | null => {
     if (!cohort || !liveAggregate) return cohort;
@@ -131,20 +174,30 @@ export function DashboardShell({ children }: { children: ReactNode }) {
     [profile],
   );
 
+  const profileCohortKey = useMemo(
+    () => (profile ? cohortKeyFromProfile(profile) : ""),
+    [profile],
+  );
+  const activeCohortKey =
+    (viewingCohortKeyOverride ?? profileCohortKey) || "";
+
   const similarCohortsDisplay = useMemo((): CohortSummaryRow[] => {
-    if (!cohort) return [];
-    const current: CohortSummaryRow = {
-      cohortKey: cohort.cohortKey,
-      label: humanizeCohortKey(cohort.cohortKey),
-      nVerified: cohort.n_verified,
-      medianDays: cohort.median_days_to_ppr,
-      isCurrent: true,
-    };
-    const rest = relatedCohorts
-      .filter((r) => r.cohortKey !== cohort.cohortKey)
-      .map((r) => ({ ...r, isCurrent: false as const }));
-    return [current, ...rest].slice(0, 5);
-  }, [cohort, relatedCohorts]);
+    if (!cohort || !profileCohortKey) return [];
+    const rows: CohortSummaryRow[] = relatedCohorts.map((r) => ({
+      ...r,
+      isCurrent: r.cohortKey === activeCohortKey,
+    }));
+    if (!rows.some((r) => r.cohortKey === activeCohortKey)) {
+      rows.unshift({
+        cohortKey: activeCohortKey,
+        label: humanizeCohortKey(activeCohortKey),
+        nVerified: cohort.n_verified,
+        medianDays: cohort.median_days_to_ppr,
+        isCurrent: true,
+      });
+    }
+    return rows.slice(0, 8);
+  }, [cohort, relatedCohorts, profileCohortKey, activeCohortKey]);
 
   const cohortInsights = useMemo(() => {
     if (!cohort) return [];
@@ -170,6 +223,50 @@ export function DashboardShell({ children }: { children: ReactNode }) {
 
   const ringOffset = 207 - (207 * ringPct) / 100;
 
+  const selectCohort = useCallback(
+    async (key: string) => {
+      if (!profile) return;
+      setViewingCohortKeyOverride(key);
+      await hydrateCohortView(key, cohortKeyFromProfile(profile));
+    },
+    [profile, hydrateCohortView],
+  );
+
+  const resetCohortToProfile = useCallback(async () => {
+    if (!profile) return;
+    setViewingCohortKeyOverride(null);
+    const pk = cohortKeyFromProfile(profile);
+    await hydrateCohortView(pk, pk);
+  }, [profile, hydrateCohortView]);
+
+  const syncCohortStats = useCallback(async () => {
+    if (!email || syncCohortBusy) return;
+    setSyncCohortBusy(true);
+    try {
+      const r = await syncCohortStatsFromProfilesAction(email);
+      if (!r.ok) {
+        toast.show(r.error);
+        return;
+      }
+      toast.show(
+        `Cohorts synced · ${r.cohortsUpserted} groups · ${r.profilesCohortKeyUpdates} profiles relinked`,
+      );
+      if (!profile) return;
+      const pk = cohortKeyFromProfile(profile);
+      const vk = viewingCohortKeyOverride ?? pk;
+      await hydrateCohortView(vk, pk);
+    } finally {
+      setSyncCohortBusy(false);
+    }
+  }, [
+    email,
+    syncCohortBusy,
+    profile,
+    viewingCohortKeyOverride,
+    hydrateCohortView,
+    toast,
+  ]);
+
   const switchProfile = () => {
     if (
       typeof window !== "undefined" &&
@@ -188,19 +285,23 @@ export function DashboardShell({ children }: { children: ReactNode }) {
       setOpenPicker(null);
       setSavedFlash(key);
       window.setTimeout(() => setSavedFlash(null), 3000);
-      const c = await getCohortStatsForProfileAction(res.profile);
-      setCohort(c);
-      const live = await getLiveCohortAggregateAction(c.cohortKey);
-      setLiveAggregate(live);
+      const next = res.profile;
+      const pk = cohortKeyFromProfile(next);
+      const vk = viewingCohortKeyOverride ?? pk;
+      await hydrateCohortView(vk, pk);
       toast.show(`✓ ${MILESTONE_DEFS.find((m) => m.key === key)?.label} date saved`);
     }
   };
 
   const cohortTotal = cohortDisplay?.n_verified ?? cohort?.n_verified ?? 0;
 
+  const shareLinkError =
+    shareState?.email === email ? shareState.error : null;
+  const shareToken =
+    shareState?.email === email ? shareState.token : null;
   const shareUrl =
-    typeof window !== "undefined" && profile
-      ? `${window.location.origin}/t/${profile.email.split("@")[0].toLowerCase().replace(/[^a-z0-9]/g, "-")}-${(profile.aorDate || "aor").replaceAll("-", "")}`
+    typeof window !== "undefined" && shareToken
+      ? `${window.location.origin}/s/${shareToken}`
       : "";
 
   if (!profile || !cohort || !cohortDisplay || !email) {
@@ -235,6 +336,14 @@ export function DashboardShell({ children }: { children: ReactNode }) {
     cohortTotal,
     ringOffset,
     shareUrl,
+    shareLinkError,
+    profileCohortKey,
+    activeCohortKey,
+    selectCohort,
+    resetCohortToProfile,
+    syncCohortStats,
+    syncCohortBusy,
+    cohortDataSparse,
   };
 
   return (
@@ -275,7 +384,16 @@ export function DashboardShell({ children }: { children: ReactNode }) {
               Share
             </Link>
           </nav>
-          <div className="tr">
+          <div className="tr flex flex-wrap items-center gap-2">
+            <button
+              type="button"
+              className="rounded-md border border-[var(--border)] bg-[var(--navy3)] px-4 py-2.5 text-[11px] font-medium leading-snug text-[var(--t2)] hover:border-[rgba(255,255,255,.18)] disabled:opacity-40"
+              disabled={syncCohortBusy || !email}
+              title="Rebuild cohort_stats from all profiles (run daily in production via cron)"
+              onClick={() => void syncCohortStats()}
+            >
+              {syncCohortBusy ? "Syncing…" : "↻ Sync cohorts"}
+            </button>
             <span className="text-[11px] text-[var(--t3)]">
               <span className="dlive" />
               Live
@@ -314,16 +432,32 @@ export function DashboardShell({ children }: { children: ReactNode }) {
               <span className="sbico">🔗</span>Share Timeline
             </Link>
             <hr className="sbdiv" />
-            <div className="sblbl">Similar cohorts</div>
-            {similarCohortsDisplay.slice(0, 3).map((s) => (
-              <div
+            <div className="sblbl">Cohort compare</div>
+            {activeCohortKey && activeCohortKey !== profileCohortKey ? (
+              <button
+                type="button"
+                className="sbitem w-full text-left"
+                onClick={() => void resetCohortToProfile()}
+              >
+                <span className="sbico">⌂</span>
+                <span className="truncate text-[var(--t2)]">Back to my cohort</span>
+              </button>
+            ) : null}
+            {similarCohortsDisplay.slice(0, 6).map((s) => (
+              <button
                 key={s.cohortKey}
-                className={`sbitem ${s.isCurrent ? "on" : ""}`}
-                role="presentation"
+                type="button"
+                className={`sbitem w-full text-left ${s.isCurrent ? "on" : ""}`}
+                onClick={() => void selectCohort(s.cohortKey)}
               >
                 <span className="sbico">◈</span>
-                <span className="truncate">{s.label.split("·")[0]?.trim()}</span>
-              </div>
+                <span className="min-w-0 flex-1 truncate text-left">
+                  {s.label}
+                </span>
+                <span className="shrink-0 text-[9px] text-[var(--t3)]">
+                  n={s.nVerified}
+                </span>
+              </button>
             ))}
             <hr className="sbdiv" />
             <Link href="/onboarding" className="sbitem no-underline">
@@ -360,6 +494,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
               cohort={cohortDisplay}
               similarCohorts={similarCohortsDisplay}
               cohortInsights={cohortInsights}
+              onSelectCohort={selectCohort}
             />
           </aside>
         </div>

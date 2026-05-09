@@ -6,7 +6,8 @@ import { fmtDate } from "@/lib/format";
 
 export function DashboardShareTab() {
   const toast = useToast();
-  const { email, profile, days, median, pct, ppr, shareUrl } = useDashboard();
+  const { email, profile, days, median, pct, ppr, shareUrl, shareLinkError } =
+    useDashboard();
 
   return (
     <>
@@ -37,10 +38,20 @@ export function DashboardShareTab() {
           </div>
         </div>
         <div className="urlbox">
-          <input className="urltxt" readOnly value={shareUrl} />
+          <input
+            className="urltxt"
+            readOnly
+            value={
+              shareLinkError
+                ? shareLinkError
+                : shareUrl || "Preparing your public link…"
+            }
+            aria-label="Public share URL"
+          />
           <button
             type="button"
             className="urlcopy"
+            disabled={!shareUrl || !!shareLinkError}
             onClick={() => {
               void navigator.clipboard.writeText(shareUrl);
               toast.show("Link copied to clipboard!");
@@ -49,6 +60,10 @@ export function DashboardShareTab() {
             Copy link
           </button>
         </div>
+        <p className="mt-2 text-center text-[10px] text-[var(--t3)]">
+          Anyone with the link can view this read-only snapshot — no sign-in
+          required.
+        </p>
         <div className="shopts">
           <button
             type="button"

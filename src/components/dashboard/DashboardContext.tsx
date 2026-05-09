@@ -42,6 +42,18 @@ export type DashboardContextValue = {
   cohortTotal: number;
   ringOffset: number;
   shareUrl: string;
+  /** Set when link generation fails; empty shareUrl may mean loading or error. */
+  shareLinkError: string | null;
+  /** Cohort derived from the user's profile (stream, AOR month/year, type, province). */
+  profileCohortKey: string;
+  /** Cohort currently driving stats/rails (may differ when comparing peers). */
+  activeCohortKey: string;
+  selectCohort: (cohortKey: string) => void;
+  resetCohortToProfile: () => void;
+  syncCohortStats: () => Promise<void>;
+  syncCohortBusy: boolean;
+  /** Fewer than 2 profiles in the active cohort — treat model as low confidence. */
+  cohortDataSparse: boolean;
 };
 
 const DashboardContext = createContext<DashboardContextValue | null>(null);

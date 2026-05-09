@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>AORTrack — Hero Animation</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,ital,wght@9..144,0,700;9..144,0,800;9..144,0,900;9..144,1,400;9..144,1,800&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --cream:#FFFCF5;--cream2:#F5F0E6;--cream3:#EDE8DC;
+  --navy:#1A2332;--navy2:#253347;
+  --red:#C8281E;--red2:#a81f17;
+  --green:#2D6A4F;--gbg:#EAF4EE;
+  --amber:#B5651D;--abg:#FDF3E3;
+  --blue:#1E5F8C;--bbg:#E8F2FB;
+  --purple:#5B21B6;--pbg:#EDE9FE;
+  --teal:#0D7377;--tbg:#E0F4F4;
+  --border:#D5CFBF;
+  --muted:#7A7060;--muted2:#9A8E7E;
+  --fh:'Fraunces',Georgia,serif;
+  --fb:'DM Sans',sans-serif;
+  --fm:'DM Mono',monospace;
+  --g4:#4ade80;
+}
+
+html,body{width:100%;min-height:100vh;background:var(--navy);font-family:var(--fb);overflow-x:hidden}
+
+/* ─── HERO WRAPPER ─── */
+.hero{
+  position:relative;
+  width:100%;
+  min-height:560px;
+  background:var(--navy);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  padding:52px 20px 60px;
+  overflow:hidden;
+}
+
+/* Maple leaf watermark */
+.maple{
+  position:absolute;
+  right:clamp(280px,30%,440px);
+  top:30px;
+  font-size:clamp(100px,18vw,200px);
+  opacity:.03;
+  pointer-events:none;
+  line-height:1;
+  user-select:none;
+}
+
+/* Radial glow */
+.glow{
+  position:absolute;inset:0;
+  background:radial-gradient(ellipse 55% 60% at 90% 30%,rgba(45,106,79,.16) 0%,transparent 65%);
+  pointer-events:none;
+}
+
+/* Grid */
+.grid-bg{
+  position:absolute;inset:0;
+  background-image:
+    repeating-linear-gradient(0deg,transparent,transparent 44px,rgba(255,255,255,.02) 44px,rgba(255,255,255,.02) 45px),
+    repeating-linear-gradient(90deg,transparent,transparent 44px,rgba(255,255,255,.02) 44px,rgba(255,255,255,.02) 45px);
+  pointer-events:none;
+}
+
+/* ─── EYEBROW ─── */
+.eyebrow{
+  display:inline-flex;align-items:center;gap:7px;
+  background:rgba(45,106,79,.25);
+  border:1px solid rgba(45,106,79,.5);
+  padding:4px 14px;border-radius:100px;
+  font-size:.7rem;font-weight:700;
+  color:var(--g4);letter-spacing:.08em;text-transform:uppercase;
+  margin-bottom:1.2rem;
+  position:relative;z-index:2;
+}
+.ey-dot{width:6px;height:6px;border-radius:50%;background:var(--g4);animation:blink 2s infinite;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+
+/* ─── HEADLINE ─── */
+.h1{
+  font-family:var(--fh);
+  font-size:clamp(2rem,5.5vw,3.4rem);
+  font-weight:900;line-height:1.05;
+  letter-spacing:-.04em;
+  color:#fff;
+  text-align:center;
+  margin-bottom:.7rem;
+  position:relative;z-index:2;
+}
+.h1 em{font-style:italic;color:var(--g4);}
+
+.sub{
+  font-size:clamp(.82rem,2vw,1rem);
+  color:rgba(255,255,255,.5);
+  line-height:1.75;font-weight:300;
+  text-align:center;
+  max-width:540px;
+  margin-bottom:2.4rem;
+  position:relative;z-index:2;
+}
+
+/* ─── SCENE TABS ─── */
+.tabs{
+  display:flex;gap:6px;
+  position:relative;z-index:2;
+  margin-bottom:1.8rem;
+  flex-wrap:wrap;
+  justify-content:center;
+}
+.tab{
+  font-size:.68rem;font-weight:700;
+  letter-spacing:.06em;text-transform:uppercase;
+  padding:6px 14px;border-radius:100px;
+  border:1.5px solid rgba(255,255,255,.12);
+  color:rgba(255,255,255,.35);
+  cursor:pointer;
+  transition:all .25s;
+  font-family:var(--fm);
+}
+.tab.active{
+  background:var(--green);
+  border-color:var(--green);
+  color:#fff;
+}
+.tab:hover:not(.active){border-color:rgba(255,255,255,.3);color:rgba(255,255,255,.7);}
+
+/* ─── CARD STAGE ─── */
+.stage{
+  width:100%;
+  max-width:600px;
+  position:relative;z-index:2;
+  min-height:290px;
+}
+.scene{
+  position:absolute;inset:0;
+  opacity:0;
+  transform:translateY(16px) scale(.98);
+  transition:opacity .5s ease, transform .5s cubic-bezier(.34,1.2,.64,1);
+  pointer-events:none;
+}
+.scene.vis{
+  opacity:1;transform:translateY(0) scale(1);
+  pointer-events:auto;
+  position:relative;
+}
+
+/* ════════════════════
+   SCENE 1 — Live Feed
+   ════════════════════ */
+.s1{background:var(--cream);border:2px solid var(--navy2);border-radius:16px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.35);}
+.s1-head{background:var(--green);padding:13px 18px;display:flex;align-items:center;justify-content:space-between;}
+.s1h-title{font-family:var(--fh);font-size:.9rem;font-weight:800;color:#fff;}
+.s1h-live{display:flex;align-items:center;gap:5px;font-size:.68rem;font-weight:700;color:rgba(255,255,255,.8);background:rgba(0,0,0,.2);padding:3px 9px;border-radius:100px;}
+.s1h-dot{width:5px;height:5px;border-radius:50%;background:var(--g4);animation:blink 2s infinite;}
+.s1-stats{display:grid;grid-template-columns:1fr 1px 1fr 1px 1fr;padding:16px 18px 12px;border-bottom:1px solid var(--border);}
+.s1-stat{text-align:center;padding:0 6px;}
+.s1-val{font-family:var(--fh);font-size:1.5rem;font-weight:900;color:var(--navy);line-height:1;}
+.s1-lbl{font-size:.58rem;color:var(--muted);font-family:var(--fm);text-transform:uppercase;letter-spacing:.04em;margin-top:3px;}
+.s1-sep{background:var(--border);}
+.s1-bar-wrap{padding:14px 18px 0;}
+.s1-bar-row{display:flex;justify-content:space-between;font-size:.7rem;margin-bottom:5px;}
+.s1-bar-key{color:var(--muted);}
+.s1-bar-val{font-weight:700;font-family:var(--fm);color:var(--navy);}
+.s1-track{height:7px;background:var(--cream3);border-radius:100px;overflow:hidden;margin-bottom:4px;}
+.s1-fill{height:100%;border-radius:100px;background:linear-gradient(90deg,var(--green),var(--g4));width:39%;animation:barGrow 1.8s cubic-bezier(.4,0,.2,1) forwards;}
+@keyframes barGrow{from{width:4%;}to{width:39%;}}
+.s1-bar-note{font-size:.62rem;color:var(--muted);margin-bottom:12px;}
+.s1-feed{border-top:1px solid var(--border);padding:0 18px;}
+.s1-row{display:flex;align-items:center;gap:9px;padding:9px 0;border-bottom:1px solid var(--border);font-size:.74rem;}
+.s1-row:last-child{border-bottom:none;}
+.fd{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.fd-g{background:var(--green);}
+.fd-b{background:var(--blue);}
+.fd-a{background:var(--amber);}
+.s1-txt{flex:1;color:var(--muted);}
+.s1-txt strong{color:var(--navy);}
+.s1-badge{font-size:.6rem;font-weight:700;background:var(--cream2);color:var(--muted);border:1px solid var(--border);padding:2px 7px;border-radius:100px;}
+.s1-cta{display:block;width:calc(100% - 36px);margin:12px 18px 14px;padding:11px;background:var(--red);color:#fff;border:none;border-radius:8px;font-family:var(--fh);font-size:.9rem;font-weight:800;cursor:pointer;text-align:center;animation:ctaGlow 3s ease infinite;}
+@keyframes ctaGlow{0%,100%{box-shadow:0 0 0 0 rgba(200,40,30,.4);}50%{box-shadow:0 0 0 7px rgba(200,40,30,0);}}
+
+/* ════════════════════
+   SCENE 2 — Dashboard
+   ════════════════════ */
+.s2{background:var(--cream);border:2px solid var(--border);border-radius:16px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.3);}
+.s2-nav{background:var(--navy);padding:10px 16px;display:flex;align-items:center;gap:10px;border-bottom:1px solid rgba(255,255,255,.07);}
+.s2-logo{width:20px;height:20px;border-radius:5px;background:var(--green);display:flex;align-items:center;justify-content:center;font-size:.6rem;font-weight:700;color:#fff;flex-shrink:0;}
+.s2-brand{font-family:var(--fh);font-size:.82rem;font-weight:800;color:#fff;}
+.s2-sep{width:1px;height:14px;background:rgba(255,255,255,.12);margin:0 6px;}
+.s2-page{font-size:.65rem;color:rgba(255,255,255,.35);font-family:var(--fm);}
+.s2-pill{margin-left:auto;display:flex;align-items:center;gap:4px;font-size:.65rem;font-weight:700;color:var(--g4);background:rgba(45,106,79,.2);border:1px solid rgba(45,106,79,.4);padding:3px 9px;border-radius:100px;}
+.s2-pdot{width:5px;height:5px;border-radius:50%;background:var(--g4);animation:blink 2s infinite;}
+.s2-body{padding:14px 16px;display:flex;flex-direction:column;gap:10px;}
+/* Days + stat cards */
+.s2-top{display:grid;grid-template-columns:120px 1fr;gap:10px;}
+.days-box{background:var(--navy);border-radius:11px;padding:16px;text-align:center;}
+.days-n{font-family:var(--fh);font-size:2.6rem;font-weight:900;color:#fff;line-height:1;letter-spacing:-.04em;}
+.days-lbl{font-size:.58rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:rgba(255,255,255,.35);margin-top:4px;font-family:var(--fm);}
+.stat-mini-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
+.sm-card{background:#fff;border:1.5px solid var(--border);border-radius:9px;padding:10px 12px;}
+.sm-lbl{font-size:.57rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--muted2);font-family:var(--fm);margin-bottom:4px;}
+.sm-val{font-family:var(--fh);font-size:1.2rem;font-weight:900;color:var(--navy);line-height:1;}
+.sm-val.green{color:var(--green);}
+.sm-val.amber{color:var(--amber);}
+.sm-sub{font-size:.64rem;color:var(--muted);margin-top:2px;}
+/* Cohort bars */
+.cohort-card{background:#fff;border:1.5px solid var(--border);border-radius:9px;padding:12px 14px;}
+.cc-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:9px;font-size:.65rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--muted2);font-family:var(--fm);}
+.cc-row{margin-bottom:7px;}
+.cc-row:last-child{margin-bottom:0;}
+.cc-hd{display:flex;justify-content:space-between;margin-bottom:3px;}
+.cc-name{font-size:.74rem;font-weight:600;color:var(--navy);}
+.cc-stat{font-size:.68rem;color:var(--muted);font-family:var(--fm);}
+.cc-track{height:6px;background:var(--cream3);border-radius:100px;overflow:hidden;}
+.cc-fill{height:100%;border-radius:100px;}
+.cg{background:linear-gradient(90deg,var(--green),var(--g4));}
+.cb{background:linear-gradient(90deg,var(--blue),#7dd3fc);}
+.ca{background:linear-gradient(90deg,var(--amber),#fbbf24);}
+.cr{background:linear-gradient(90deg,var(--red),#f87171);}
+
+/* ════════════════════
+   SCENE 3 — Entry Form
+   ════════════════════ */
+.s3{background:var(--cream);border:2px solid var(--border);border-radius:16px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.3);}
+.s3-head{background:var(--navy);padding:13px 18px;display:flex;align-items:center;gap:10px;}
+.s3-ico{width:28px;height:28px;border-radius:7px;background:var(--green);display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:700;color:#fff;}
+.s3-title{font-family:var(--fh);font-size:.88rem;font-weight:800;color:#fff;}
+.s3-sub{font-size:.64rem;color:rgba(255,255,255,.35);margin-top:1px;}
+.s3-body{padding:16px 18px;display:flex;flex-direction:column;gap:11px;}
+/* Steps nav */
+.steps-row{display:flex;align-items:center;gap:0;margin-bottom:4px;}
+.sn{width:26px;height:26px;border-radius:50%;border:2px solid var(--border);background:var(--cream);display:flex;align-items:center;justify-content:center;font-size:.68rem;font-weight:700;color:var(--muted);font-family:var(--fm);}
+.sn.done{background:var(--green);border-color:var(--green);color:#fff;}
+.sn.active{background:var(--navy);border-color:var(--navy);color:#fff;}
+.s-line{flex:1;height:2px;background:var(--border);}
+.s-line.done{background:var(--green);}
+/* Stream selector */
+.stream-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;}
+.stream-opt{border:2px solid var(--border);border-radius:9px;padding:10px 12px;cursor:pointer;transition:all .2s;}
+.stream-opt.sel{border-color:var(--navy);background:var(--navy);}
+.so-icon{font-size:1rem;margin-bottom:4px;}
+.so-name{font-family:var(--fh);font-size:.82rem;font-weight:800;color:var(--navy);margin-bottom:1px;}
+.stream-opt.sel .so-name{color:#fff;}
+.so-avg{font-size:.66rem;color:var(--green);font-weight:700;font-family:var(--fm);}
+.stream-opt.sel .so-avg{color:var(--g4);}
+/* Input row */
+.f-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.f-field label{font-size:.72rem;font-weight:600;color:var(--navy);display:block;margin-bottom:4px;}
+.f-input{width:100%;padding:9px 12px;border:2px solid var(--border);border-radius:8px;font-family:var(--fm);font-size:.8rem;color:var(--navy);background:var(--cream);}
+.f-input.filled{border-color:var(--green);background:#fff;}
+/* Submit */
+.s3-submit{width:100%;padding:12px;background:var(--red);color:#fff;border:none;border-radius:9px;font-family:var(--fh);font-size:.92rem;font-weight:800;cursor:pointer;animation:ctaGlow 3s ease infinite;}
+
+/* ════════════════════
+   SCENE 4 — Timeline / PPR Window
+   ════════════════════ */
+.s4{background:var(--cream);border:2px solid var(--border);border-radius:16px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.3);}
+.s4-head{background:var(--navy);padding:13px 18px;display:flex;align-items:center;justify-content:space-between;}
+.s4-title{font-family:var(--fh);font-size:.88rem;font-weight:800;color:#fff;}
+.s4-badge{font-size:.64rem;font-weight:700;background:rgba(45,106,79,.25);color:var(--g4);border:1px solid rgba(45,106,79,.5);padding:3px 9px;border-radius:100px;font-family:var(--fm);}
+.s4-ppr{background:var(--navy2);padding:13px 16px;border-bottom:1px solid rgba(255,255,255,.07);}
+.s4-ppr-label{font-size:.6rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.3);margin-bottom:7px;font-family:var(--fm);}
+.s4-ppr-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
+.ppr-cell{text-align:center;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:8px;padding:9px;}
+.ppr-val{font-family:var(--fh);font-size:1rem;font-weight:800;color:#fff;line-height:1;}
+.ppr-lbl{font-size:.58rem;color:rgba(255,255,255,.35);font-family:var(--fm);text-transform:uppercase;letter-spacing:.04em;margin-top:3px;}
+.ppr-cell.mid .ppr-val{color:var(--g4);}
+/* Timeline rows */
+.tl-body{padding:12px 16px;display:flex;flex-direction:column;gap:0;}
+.tl-row{display:flex;gap:12px;position:relative;padding-bottom:14px;}
+.tl-row:not(:last-child)::before{content:'';position:absolute;left:15px;top:30px;bottom:0;width:2px;background:rgba(26,35,50,.08);}
+.tl-dot{width:30px;height:30px;border-radius:50%;border:2px solid;display:flex;align-items:center;justify-content:center;font-size:.7rem;flex-shrink:0;z-index:1;background:var(--cream);}
+.td-done{background:var(--gbg)!important;border-color:var(--green)!important;color:var(--green);}
+.td-now{background:var(--bbg)!important;border-color:var(--blue)!important;color:var(--blue);animation:ring 2.5s infinite;}
+@keyframes ring{0%,100%{box-shadow:0 0 0 0 rgba(30,95,140,.3);}60%{box-shadow:0 0 0 5px rgba(30,95,140,0);}}
+.td-wait{border-color:var(--border)!important;color:var(--muted2)!important;}
+.tl-bd{flex:1;padding-top:4px;}
+.tl-name{font-size:.82rem;font-weight:700;color:var(--navy);}
+.tl-desc{font-size:.7rem;color:var(--muted);line-height:1.45;margin-top:1px;}
+.tl-date{font-size:.7rem;font-weight:700;color:var(--navy);font-family:var(--fm);}
+.tl-est{font-size:.64rem;color:var(--blue);background:var(--bbg);border:1px solid #b8d8f0;padding:1px 7px;border-radius:100px;font-family:var(--fm);display:inline-block;margin-top:3px;}
+.badge-v{display:inline-flex;align-items:center;gap:3px;font-size:.61rem;font-weight:700;color:var(--green);background:var(--gbg);border:1px solid #90d4b0;padding:1px 7px;border-radius:100px;margin-top:2px;}
+
+/* ─── SCENE LABEL ─── */
+.scene-label{
+  position:relative;z-index:2;
+  text-align:center;
+  margin-top:1.3rem;
+  min-height:50px;
+}
+.sl-wrap{
+  position:absolute;inset:0;
+  display:flex;flex-direction:column;align-items:center;
+  opacity:0;transform:translateY(6px);
+  transition:opacity .4s ease, transform .4s ease;
+  pointer-events:none;
+}
+.sl-wrap.vis{opacity:1;transform:translateY(0);pointer-events:auto;}
+.sl-num{font-size:.6rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.3);font-family:var(--fm);margin-bottom:2px;}
+.sl-name{font-family:var(--fh);font-size:clamp(.95rem,2.5vw,1.25rem);font-weight:700;color:#fff;}
+.sl-sub{font-size:.68rem;color:rgba(255,255,255,.35);margin-top:3px;font-family:var(--fm);}
+
+/* ─── CTA ROW ─── */
+.cta-row{
+  position:relative;z-index:2;
+  display:flex;gap:10px;justify-content:center;flex-wrap:wrap;
+  margin-top:2rem;
+}
+.btn-red{
+  background:var(--red);color:#fff;
+  padding:13px 28px;border-radius:8px;
+  font-size:.9rem;font-weight:700;
+  text-decoration:none;
+  border:2px solid var(--red);
+  display:inline-flex;align-items:center;gap:7px;
+  transition:all .2s;
+}
+.btn-red:hover{background:var(--red2);transform:translateY(-2px);}
+.btn-outline{
+  background:transparent;color:#fff;
+  padding:13px 22px;border-radius:8px;
+  font-size:.9rem;font-weight:400;
+  text-decoration:none;
+  border:2px solid rgba(255,255,255,.2);
+  display:inline-flex;align-items:center;gap:7px;
+  transition:all .2s;
+}
+.btn-outline:hover{border-color:rgba(255,255,255,.5);}
+
+/* ─── TRUST PILLS ─── */
+.trust-row{
+  display:flex;gap:16px;flex-wrap:wrap;justify-content:center;
+  margin-top:1.2rem;
+  position:relative;z-index:2;
+}
+.trust-item{
+  display:flex;align-items:center;gap:6px;
+  font-size:.75rem;font-weight:500;
+  color:rgba(255,255,255,.4);
+}
+.trust-item::before{content:'✓';color:var(--g4);font-weight:700;font-size:.8rem;}
+
+/* ─── PROGRESS BAR ─── */
+.prog-bar{position:absolute;bottom:0;left:0;right:0;height:3px;background:rgba(255,255,255,.05);z-index:10;}
+.pb-fill{height:100%;background:var(--green);width:0%;transition:width linear;}
+
+/* ─── RESPONSIVE ─── */
+@media(max-width:600px){
+  .hero{padding:36px 14px 48px;}
+  .stat-mini-grid{grid-template-columns:1fr 1fr;}
+  .sm-card:last-child{display:none;}
+  .f-row{grid-template-columns:1fr;}
+  .cta-row{flex-direction:column;align-items:center;}
+  .btn-red,.btn-outline{width:100%;max-width:280px;justify-content:center;}
+  .trust-row{gap:10px;}
+  .s2-top{grid-template-columns:100px 1fr;}
+  .days-n{font-size:2rem;}
+}
+@media(max-width:420px){
+  .stream-grid{grid-template-columns:1fr 1fr;}
+  .tab{font-size:.6rem;padding:5px 10px;}
+  .s4-ppr-row{grid-template-columns:1fr 1fr;}
+  .ppr-cell:last-child{display:none;}
+}
+</style>
+</head>
+<body>
+
+<div class="hero" id="hero">
+  <div class="grid-bg"></div>
+  <div class="glow"></div>
+  <div class="maple">🍁</div>
+
+  <!-- Eyebrow -->
+  <div class="eyebrow">
+    <span class="ey-dot"></span>
+    14,800+ applicants tracked · Community powered
+  </div>
+
+  <!-- Headline -->
+  <h1 class="h1">Know exactly where<br>your <em>PR stands.</em></h1>
+  <p class="sub">Real processing timelines from real Express Entry applicants — not IRCC's generic estimates. Free, open-source, no signup required.</p>
+
+  <!-- Scene tabs -->
+  <div class="tabs" id="tabs">
+    <div class="tab active" data-scene="1">📊 Live Feed</div>
+    <div class="tab" data-scene="2">🗂 Dashboard</div>
+    <div class="tab" data-scene="3">✍️ Submit AOR</div>
+    <div class="tab" data-scene="4">📅 PPR Timeline</div>
+  </div>
+
+  <!-- Card Stage -->
+  <div class="stage">
+
+    <!-- Scene 1: Live Feed Card -->
+    <div class="scene s1 vis" id="scene-1">
+      <div class="s1-head">
+        <span class="s1h-title">Express Entry — Live Tracker</span>
+        <span class="s1h-live"><span class="s1h-dot"></span>Updated 3 min ago</span>
+      </div>
+      <div class="s1-stats">
+        <div class="s1-stat"><div class="s1-val">14,847</div><div class="s1-lbl">Applicants</div></div>
+        <div class="s1-sep"></div>
+        <div class="s1-stat"><div class="s1-val">247</div><div class="s1-lbl">Avg Days</div></div>
+        <div class="s1-sep"></div>
+        <div class="s1-stat"><div class="s1-val">68%</div><div class="s1-lbl">PPR'd</div></div>
+      </div>
+      <div class="s1-bar-wrap">
+        <div class="s1-bar-row">
+          <span class="s1-bar-key">Applicants who received PPR</span>
+          <span class="s1-bar-val">39.2%</span>
+        </div>
+        <div class="s1-track"><div class="s1-fill"></div></div>
+        <div class="s1-bar-note">Based on 14,847 verified data points · Jan 2024 – present</div>
+      </div>
+      <div class="s1-feed">
+        <div class="s1-row">
+          <div class="fd fd-g"></div>
+          <div class="s1-txt"><strong>Ahmed R.</strong> received PPR — Day 198 · Canadian Experience Class</div>
+          <span class="s1-badge">2 min ago</span>
+        </div>
+        <div class="s1-row">
+          <div class="fd fd-b"></div>
+          <div class="s1-txt"><strong>Priya S.</strong> submitted AOR — Federal Skilled Worker</div>
+          <span class="s1-badge">11 min ago</span>
+        </div>
+        <div class="s1-row">
+          <div class="fd fd-a"></div>
+          <div class="s1-txt"><strong>Wei C.</strong> received medicals request — Day 143</div>
+          <span class="s1-badge">24 min ago</span>
+        </div>
+      </div>
+      <a class="s1-cta" href="https://track.getnorthpath.com">Track Your AOR — Free →</a>
+    </div>
+
+    <!-- Scene 2: Personal Dashboard -->
+    <div class="scene s2" id="scene-2">
+      <div class="s2-nav">
+        <div class="s2-logo">A</div>
+        <span class="s2-brand">AORTrack</span>
+        <div class="s2-sep"></div>
+        <span class="s2-page">My Dashboard</span>
+        <div class="s2-pill"><span class="s2-pdot"></span>Live</div>
+      </div>
+      <div class="s2-body">
+        <div class="s2-top">
+          <div class="days-box">
+            <div class="days-n">247</div>
+            <div class="days-lbl">Days since AOR</div>
+          </div>
+          <div class="stat-mini-grid">
+            <div class="sm-card">
+              <div class="sm-lbl">Stream</div>
+              <div class="sm-val sm green" style="font-size:.88rem;margin-top:2px;">CEC</div>
+              <div class="sm-sub">Canadian Exp. Class</div>
+            </div>
+            <div class="sm-card">
+              <div class="sm-lbl">Cohort Rank</div>
+              <div class="sm-val amber">Top 28%</div>
+              <div class="sm-sub">of Jan '24 cohort</div>
+            </div>
+            <div class="sm-card">
+              <div class="sm-lbl">Avg PPR Day</div>
+              <div class="sm-val">262</div>
+              <div class="sm-sub">↑ 4 days this week</div>
+            </div>
+          </div>
+        </div>
+        <div class="cohort-card">
+          <div class="cc-head"><span>Cohort Breakdown</span><span style="font-family:var(--fm)">Jan 2024</span></div>
+          <div class="cc-row">
+            <div class="cc-hd"><span class="cc-name">Got PPR</span><span class="cc-stat"><strong>5,812</strong> / 14,847</span></div>
+            <div class="cc-track"><div class="cc-fill cg" style="width:39%"></div></div>
+          </div>
+          <div class="cc-row">
+            <div class="cc-hd"><span class="cc-name">Medicals Requested</span><span class="cc-stat"><strong>3,204</strong></span></div>
+            <div class="cc-track"><div class="cc-fill cb" style="width:22%"></div></div>
+          </div>
+          <div class="cc-row">
+            <div class="cc-hd"><span class="cc-name">Still Waiting</span><span class="cc-stat"><strong>5,831</strong></span></div>
+            <div class="cc-track"><div class="cc-fill ca" style="width:39%"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scene 3: Submit / Track Form -->
+    <div class="scene s3" id="scene-3">
+      <div class="s3-head">
+        <div class="s3-ico">🍁</div>
+        <div>
+          <div class="s3-title">Track My AOR</div>
+          <div class="s3-sub">Enter your details — see your position instantly</div>
+        </div>
+      </div>
+      <div class="s3-body">
+        <!-- Step nav -->
+        <div class="steps-row">
+          <div class="sn done">✓</div>
+          <div class="s-line done"></div>
+          <div class="sn active">2</div>
+          <div class="s-line"></div>
+          <div class="sn">3</div>
+        </div>
+        <!-- Stream picker -->
+        <div>
+          <div style="font-size:.76rem;font-weight:600;color:var(--navy);margin-bottom:7px;">Immigration Stream</div>
+          <div class="stream-grid">
+            <div class="stream-opt sel">
+              <div class="so-icon">⚡</div>
+              <div class="so-name">CEC</div>
+              <div class="so-avg">Avg 241 days</div>
+            </div>
+            <div class="stream-opt">
+              <div class="so-icon">🌍</div>
+              <div class="so-name">FSW</div>
+              <div class="so-avg">Avg 267 days</div>
+            </div>
+            <div class="stream-opt">
+              <div class="so-icon">🎓</div>
+              <div class="so-name">FST</div>
+              <div class="so-avg">Avg 284 days</div>
+            </div>
+            <div class="stream-opt">
+              <div class="so-icon">🏔</div>
+              <div class="so-name">PNP</div>
+              <div class="so-avg">Avg 312 days</div>
+            </div>
+          </div>
+        </div>
+        <!-- Date inputs -->
+        <div class="f-row">
+          <div class="f-field">
+            <label>AOR Date</label>
+            <input class="f-input filled" type="text" value="2024-01-08" readonly/>
+          </div>
+          <div class="f-field">
+            <label>ITA Date</label>
+            <input class="f-input" type="text" placeholder="YYYY-MM-DD"/>
+          </div>
+        </div>
+        <button class="s3-submit">Calculate My PPR Window →</button>
+      </div>
+    </div>
+
+    <!-- Scene 4: PPR Timeline -->
+    <div class="scene s4" id="scene-4">
+      <div class="s4-head">
+        <span class="s4-title">Your PPR Window — CEC · Jan 2024</span>
+        <span class="s4-badge">247 days in</span>
+      </div>
+      <!-- PPR Window bar -->
+      <div class="s4-ppr">
+        <div class="s4-ppr-label">Estimated PPR window (based on your cohort)</div>
+        <div class="s4-ppr-row">
+          <div class="ppr-cell">
+            <div class="ppr-val">Jun '25</div>
+            <div class="ppr-lbl">Earliest</div>
+          </div>
+          <div class="ppr-cell mid">
+            <div class="ppr-val">Aug '25</div>
+            <div class="ppr-lbl">Most Likely</div>
+          </div>
+          <div class="ppr-cell">
+            <div class="ppr-val">Nov '25</div>
+            <div class="ppr-lbl">Latest</div>
+          </div>
+        </div>
+      </div>
+      <!-- Timeline -->
+      <div class="tl-body">
+        <div class="tl-row">
+          <div class="tl-dot td-done">✓</div>
+          <div class="tl-bd">
+            <div class="tl-name">ITA Received</div>
+            <div class="tl-desc">Invitation to Apply · Express Entry pool</div>
+            <div class="tl-date">Dec 14, 2023</div>
+            <span class="badge-v">✓ Verified</span>
+          </div>
+        </div>
+        <div class="tl-row">
+          <div class="tl-dot td-done">✓</div>
+          <div class="tl-bd">
+            <div class="tl-name">AOR Received</div>
+            <div class="tl-desc">Application received by IRCC</div>
+            <div class="tl-date">Jan 08, 2024</div>
+            <span class="badge-v">✓ Confirmed</span>
+          </div>
+        </div>
+        <div class="tl-row">
+          <div class="tl-dot td-now">→</div>
+          <div class="tl-bd">
+            <div class="tl-name">Medicals / Biometrics</div>
+            <div class="tl-desc">Background checks in progress</div>
+            <div class="tl-date" style="color:var(--muted);font-style:italic;">In progress — Day 247</div>
+            <span class="tl-est">~4–6 weeks estimated</span>
+          </div>
+        </div>
+        <div class="tl-row">
+          <div class="tl-dot td-wait" style="border-color:var(--border);">🏆</div>
+          <div class="tl-bd">
+            <div class="tl-name">PPR — Passport Request</div>
+            <div class="tl-desc">Final step before PR approval</div>
+            <div class="tl-date" style="color:var(--muted);font-style:italic;">Pending</div>
+            <span class="tl-est">Est. Aug – Nov 2025</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end stage -->
+
+  <!-- Scene labels -->
+  <div class="scene-label" id="sceneLabel">
+    <div class="sl-wrap vis" id="label-1"><span class="sl-num">View 1 of 4</span><span class="sl-name">Live Community Feed</span><span class="sl-sub">Real-time PPR reports from 14,847 applicants</span></div>
+    <div class="sl-wrap" id="label-2"><span class="sl-num">View 2 of 4</span><span class="sl-name">Personal Dashboard</span><span class="sl-sub">Your cohort rank, days in queue & PPR probability</span></div>
+    <div class="sl-wrap" id="label-3"><span class="sl-num">View 3 of 4</span><span class="sl-name">Submit Your AOR</span><span class="sl-sub">Free · No account · Instant cohort placement</span></div>
+    <div class="sl-wrap" id="label-4"><span class="sl-num">View 4 of 4</span><span class="sl-name">PPR Window Estimator</span><span class="sl-sub">Know your earliest, median & latest PPR date</span></div>
+  </div>
+
+  <!-- CTAs -->
+  <div class="cta-row">
+    <a class="btn-red" href="https://track.getnorthpath.com/track">Track My AOR Free →</a>
+    <a class="btn-outline" href="https://track.getnorthpath.com">View Live Data ↓</a>
+  </div>
+
+  <!-- Trust -->
+  <div class="trust-row">
+    <span class="trust-item">No signup required</span>
+    <span class="trust-item">Open source</span>
+    <span class="trust-item">14,847 data points</span>
+    <span class="trust-item">Updated daily</span>
+  </div>
+
+  <!-- Progress bar -->
+  <div class="prog-bar"><div class="pb-fill" id="pbFill"></div></div>
+</div>
+
+<script>
+const SCENES = 4;
+const DURATION = 4200;
+let current = 1;
+let autoTimer = null;
+
+const tabs = document.querySelectorAll('.tab');
+
+function showScene(n){
+  // Scenes
+  for(let i=1;i<=SCENES;i++){
+    const s = document.getElementById('scene-'+i);
+    if(i===n){s.classList.add('vis');}
+    else{s.classList.remove('vis');}
+  }
+  // Labels
+  for(let i=1;i<=SCENES;i++){
+    const l = document.getElementById('label-'+i);
+    if(i===n){l.classList.add('vis');}
+    else{l.classList.remove('vis');}
+  }
+  // Tabs
+  tabs.forEach((t,idx)=>{
+    t.classList.toggle('active', idx+1===n);
+  });
+  current = n;
+  startProg();
+}
+
+function startProg(){
+  const fill = document.getElementById('pbFill');
+  fill.style.transition='none';
+  fill.style.width='0%';
+  void fill.offsetWidth;
+  fill.style.transition=`width ${DURATION}ms linear`;
+  fill.style.width='100%';
+}
+
+function next(){
+  showScene(current >= SCENES ? 1 : current+1);
+}
+
+function startAuto(){
+  if(autoTimer) clearInterval(autoTimer);
+  autoTimer = setInterval(next, DURATION);
+}
+
+// Tab clicks
+tabs.forEach((t,idx)=>{
+  t.addEventListener('click',()=>{
+    clearInterval(autoTimer);
+    showScene(idx+1);
+    startAuto();
+  });
+});
+
+// Init
+showScene(1);
+startAuto();
+</script>
+</body>
+</html>

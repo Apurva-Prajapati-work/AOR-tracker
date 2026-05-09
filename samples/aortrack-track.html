@@ -1,0 +1,1027 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Track My AOR — AORTrack | Canadian PR Processing Tracker</title>
+<meta name="description" content="Enter your AOR date and immigration stream to instantly see your cohort position and estimated PPR window. Free, no account required."/>
+<meta name="robots" content="noindex"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,ital,wght@9..144,0,400;9..144,0,700;9..144,0,800;9..144,0,900;9..144,1,400;9..144,1,800&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --cream:#FFFCF5;--cream2:#F5F0E6;--cream3:#EDE8DC;
+  --navy:#1A2332;--navy2:#253347;--navy3:#1A2332cc;
+  --red:#C8281E;--red2:#a81f17;--red-pale:#FDECEA;
+  --green:#2D6A4F;--green2:#1f5038;--gbg:#EAF4EE;
+  --amber:#B5651D;--abg:#FDF3E3;
+  --blue:#1E5F8C;--bbg:#E8F2FB;
+  --border:#D5CFBF;--border2:#C8C0AF;
+  --muted:#7A7060;--muted2:#9A8E7E;
+  --fh:'Fraunces',Georgia,serif;
+  --fb:'DM Sans',sans-serif;
+  --fm:'DM Mono',monospace;
+  --shadow:0 4px 24px rgba(26,35,50,.12);
+  --shadow-lg:0 8px 48px rgba(26,35,50,.16);
+}
+
+html{scroll-behavior:smooth}
+body{background:var(--cream);color:var(--navy);font-family:var(--fb);font-size:16px;line-height:1.65;min-height:100vh;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+button{font-family:var(--fb);cursor:pointer}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:5px}
+
+/* ── NAV ── */
+.nav{position:sticky;top:0;z-index:100;background:var(--navy);border-bottom:2px solid rgba(255,255,255,.07);padding:0 clamp(16px,4vw,48px);display:flex;align-items:center;justify-content:space-between;height:64px}
+.nav-brand{display:flex;align-items:center;gap:10px;text-decoration:none}
+.nav-logo{width:28px;height:28px}
+.nav-name{font-family:var(--fh);font-size:1.05rem;font-weight:800;color:#fff;letter-spacing:-.02em}
+.nav-sub{font-size:.62rem;color:rgba(255,255,255,.3);font-family:var(--fm);display:block;margin-top:-2px}
+.nav-back{font-size:.82rem;color:rgba(255,255,255,.55);display:flex;align-items:center;gap:6px;transition:color .15s}
+.nav-back:hover{color:#fff}
+.nav-back svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+
+/* ── PAGE LAYOUT ── */
+.page{display:grid;grid-template-columns:1fr 420px;min-height:calc(100vh - 64px)}
+
+/* ── LEFT PANEL ── */
+.left{background:var(--navy);padding:clamp(40px,5vw,64px) clamp(24px,4vw,56px);position:relative;overflow:hidden}
+.left::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 70% 50% at 20% 80%,rgba(45,106,79,.18) 0%,transparent 60%);pointer-events:none}
+.left::after{content:'🍁';position:absolute;right:-20px;bottom:-20px;font-size:200px;opacity:.03;pointer-events:none;line-height:1}
+
+.left-content{position:relative;z-index:1;max-width:520px}
+.left-eyebrow{display:inline-flex;align-items:center;gap:7px;background:rgba(45,106,79,.25);border:1px solid rgba(45,106,79,.5);padding:4px 12px;border-radius:100px;font-size:.72rem;font-weight:700;color:#4ade80;letter-spacing:.06em;text-transform:uppercase;margin-bottom:1.4rem}
+.left-dot{width:6px;height:6px;border-radius:50%;background:#4ade80;animation:blink 2s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+
+.left h1{font-family:var(--fh);font-size:clamp(1.8rem,3.5vw,2.6rem);font-weight:900;color:#fff;line-height:1.08;letter-spacing:-.04em;margin-bottom:1rem}
+.left h1 em{font-style:italic;color:#4ade80}
+.left-sub{font-size:.95rem;color:rgba(255,255,255,.55);line-height:1.75;margin-bottom:2.5rem;font-weight:300;max-width:400px}
+
+/* PREVIEW STATS */
+.preview-stats{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:2rem}
+.ps-card{background:rgba(255,255,255,.05);border:1.5px solid rgba(255,255,255,.09);border-radius:11px;padding:16px 18px}
+.ps-val{font-family:var(--fh);font-size:1.8rem;font-weight:900;color:#fff;line-height:1;margin-bottom:4px}
+.ps-val span{font-size:1rem;color:rgba(255,255,255,.4)}
+.ps-label{font-size:.7rem;color:rgba(255,255,255,.4);font-family:var(--fm);text-transform:uppercase;letter-spacing:.04em}
+.ps-sub{font-size:.7rem;color:#4ade80;margin-top:3px;display:flex;align-items:center;gap:4px}
+.ps-sub::before{content:'↑';font-weight:700}
+
+/* COHORT MINI-CHART */
+.cohort-preview{background:rgba(255,255,255,.04);border:1.5px solid rgba(255,255,255,.09);border-radius:11px;padding:18px 20px;margin-bottom:2rem}
+.cp-label{font-size:.68rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.3);margin-bottom:14px}
+.cp-bars{display:flex;align-items:flex-end;gap:5px;height:48px}
+.cp-bar{flex:1;border-radius:3px 3px 0 0;background:rgba(255,255,255,.12);position:relative;transition:background .2s}
+.cp-bar.active{background:linear-gradient(180deg,#4ade80,var(--green))}
+.cp-bar.you{background:linear-gradient(180deg,var(--red),#f87171)}
+.cp-labels{display:flex;gap:5px;margin-top:6px}
+.cp-lbl{flex:1;font-size:.6rem;color:rgba(255,255,255,.25);text-align:center;font-family:var(--fm)}
+.cp-lbl.active{color:rgba(255,255,255,.5)}
+.cp-lbl.you{color:#f87171;font-weight:700}
+.cp-legend{display:flex;gap:14px;margin-top:10px}
+.cp-leg{display:flex;align-items:center;gap:5px;font-size:.69rem;color:rgba(255,255,255,.4)}
+.cp-leg-dot{width:8px;height:8px;border-radius:2px;flex-shrink:0}
+
+/* TRUST LIST */
+.trust-list{display:flex;flex-direction:column;gap:10px}
+.trust-item{display:flex;align-items:center;gap:10px;font-size:.82rem;color:rgba(255,255,255,.5)}
+.trust-ic{width:28px;height:28px;border-radius:7px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.09);display:flex;align-items:center;justify-content:center;font-size:.82rem;flex-shrink:0}
+
+/* ── RIGHT PANEL — FORM ── */
+.right{background:var(--cream);padding:clamp(32px,4vw,56px) clamp(24px,4vw,48px);overflow-y:auto}
+
+/* STEP INDICATOR */
+.steps-nav{display:flex;align-items:center;gap:0;margin-bottom:2.5rem}
+.step-node{display:flex;align-items:center;gap:8px;flex:1;position:relative}
+.step-node:not(:last-child)::after{content:'';position:absolute;left:calc(50% + 14px);right:calc(-50% + 14px);top:14px;height:2px;background:var(--border);z-index:0}
+.step-node:not(:last-child).done::after{background:var(--green)}
+.sn-circle{width:28px;height:28px;border-radius:50%;border:2px solid var(--border);background:var(--cream);display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:700;color:var(--muted);position:relative;z-index:1;flex-shrink:0;transition:all .3s;font-family:var(--fm)}
+.step-node.active .sn-circle{background:var(--navy);border-color:var(--navy);color:#fff}
+.step-node.done .sn-circle{background:var(--green);border-color:var(--green);color:#fff}
+.sn-label{font-size:.7rem;font-weight:600;color:var(--muted);display:none}
+@media(min-width:500px){.sn-label{display:block}}
+.step-node.active .sn-label{color:var(--navy)}
+.step-node.done .sn-label{color:var(--green)}
+
+/* STEP PANELS */
+.step-panel{display:none;animation:fadeIn .3s ease}
+.step-panel.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+.step-header{margin-bottom:2rem}
+.step-num{font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:.4rem;font-family:var(--fm)}
+.step-title{font-family:var(--fh);font-size:1.5rem;font-weight:800;color:var(--navy);letter-spacing:-.02em;line-height:1.15;margin-bottom:.4rem}
+.step-desc{font-size:.85rem;color:var(--muted);line-height:1.6}
+
+/* FORM ELEMENTS */
+.field{margin-bottom:1.4rem}
+.field-label{font-size:.8rem;font-weight:600;color:var(--navy);margin-bottom:.5rem;display:flex;align-items:center;gap:6px}
+.field-label .req{color:var(--red);font-size:.7rem}
+.field-label .opt{color:var(--muted);font-size:.7rem;font-weight:400}
+.field-label .rec{color:var(--amber);font-size:.68rem;font-weight:700;background:var(--abg);border:1px solid #E8C585;padding:1px 7px;border-radius:100px}
+.field-note{font-size:.74rem;color:var(--muted);margin-top:.4rem;line-height:1.5}
+.field-note.warn{color:var(--amber);background:var(--abg);border:1px solid #E8C585;border-radius:7px;padding:8px 12px;display:flex;align-items:flex-start;gap:7px}
+.field-note.warn::before{content:'⚠️';flex-shrink:0;margin-top:1px}
+
+input[type="date"],input[type="email"],input[type="text"],select{
+  width:100%;padding:11px 14px;border:2px solid var(--border);border-radius:9px;font-family:var(--fb);font-size:.9rem;color:var(--navy);background:var(--cream);transition:border-color .2s,box-shadow .2s;outline:none;appearance:none;-webkit-appearance:none
+}
+input:focus,select:focus{border-color:var(--navy);box-shadow:0 0 0 3px rgba(26,35,50,.08)}
+input.error,select.error{border-color:var(--red)}
+input[type="date"]::-webkit-calendar-picker-indicator{opacity:.4;cursor:pointer}
+select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%237A7060' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:36px}
+
+.field-error{font-size:.74rem;color:var(--red);margin-top:.35rem;display:none}
+.field-error.show{display:block}
+
+/* STREAM GRID */
+.stream-grid{display:grid;grid-template-columns:1fr 1fr;gap:.7rem}
+.stream-opt{border:2px solid var(--border);border-radius:10px;padding:12px 14px;cursor:pointer;transition:all .2s;position:relative}
+.stream-opt:hover{border-color:var(--border2);background:var(--cream2)}
+.stream-opt.selected{border-color:var(--navy);background:var(--navy);color:#fff}
+.stream-opt.selected .so-sub{color:rgba(255,255,255,.5)}
+.stream-opt.selected .so-avg{color:rgba(255,255,255,.6)}
+.stream-opt input{position:absolute;opacity:0;pointer-events:none}
+.so-icon{font-size:1.2rem;margin-bottom:6px}
+.so-name{font-family:var(--fh);font-size:.88rem;font-weight:800;color:var(--navy);margin-bottom:2px}
+.stream-opt.selected .so-name{color:#fff}
+.so-sub{font-size:.7rem;color:var(--muted);margin-bottom:6px}
+.so-avg{font-size:.7rem;color:var(--green);font-weight:700;font-family:var(--fm)}
+.stream-opt.selected .so-avg{color:#4ade80}
+
+/* TYPE TOGGLE */
+.type-toggle{display:grid;grid-template-columns:1fr 1fr;gap:.6rem}
+.type-opt{border:2px solid var(--border);border-radius:9px;padding:12px 14px;cursor:pointer;transition:all .2s;text-align:center}
+.type-opt:hover{border-color:var(--border2)}
+.type-opt.selected{border-color:var(--green);background:var(--gbg)}
+.type-opt input{position:absolute;opacity:0;pointer-events:none}
+.to-icon{font-size:1.3rem;margin-bottom:5px}
+.to-name{font-family:var(--fh);font-size:.9rem;font-weight:700;color:var(--navy);margin-bottom:2px}
+.to-desc{font-size:.7rem;color:var(--muted)}
+
+/* MILESTONE CHECKLIST */
+.milestone-list{display:flex;flex-direction:column;gap:.6rem}
+.ms-item{border:2px solid var(--border);border-radius:10px;overflow:hidden;transition:border-color .2s}
+.ms-item.checked{border-color:var(--green)}
+.ms-header{display:flex;align-items:center;gap:12px;padding:12px 14px;cursor:pointer;background:var(--cream)}
+.ms-item.checked .ms-header{background:var(--gbg)}
+.ms-checkbox{width:20px;height:20px;border-radius:5px;border:2px solid var(--border);background:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s;font-size:.7rem;color:#fff}
+.ms-item.checked .ms-checkbox{background:var(--green);border-color:var(--green)}
+.ms-item.checked .ms-checkbox::after{content:'✓';font-weight:800}
+.ms-label{font-size:.85rem;font-weight:600;color:var(--navy);flex:1}
+.ms-item.checked .ms-label{color:var(--green)}
+.ms-date{font-size:.72rem;color:var(--muted);font-family:var(--fm)}
+.ms-datefield{padding:10px 14px;background:var(--cream2);border-top:1px solid var(--border);display:none}
+.ms-item.checked .ms-datefield{display:block}
+.ms-datefield input{background:#fff}
+.ms-datefield .field-note{margin-top:.3rem}
+
+/* EMAIL SECTION */
+.email-option{border:2px solid var(--border);border-radius:11px;padding:16px 18px;margin-bottom:.7rem;cursor:pointer;transition:all .2s}
+.email-option.selected{border-color:var(--navy);background:var(--cream2)}
+.eo-header{display:flex;align-items:flex-start;gap:12px}
+.eo-radio{width:18px;height:18px;border-radius:50%;border:2px solid var(--border);flex-shrink:0;margin-top:2px;display:flex;align-items:center;justify-content:center;transition:all .2s}
+.email-option.selected .eo-radio{border-color:var(--navy);background:var(--navy)}
+.email-option.selected .eo-radio::after{content:'';width:6px;height:6px;border-radius:50%;background:#fff}
+.eo-content{flex:1}
+.eo-title{font-size:.88rem;font-weight:700;color:var(--navy);margin-bottom:3px}
+.eo-desc{font-size:.76rem;color:var(--muted);line-height:1.55}
+.eo-tag{display:inline-flex;align-items:center;gap:4px;font-size:.65rem;font-weight:700;padding:2px 8px;border-radius:100px;margin-top:5px}
+.tag-rec{background:var(--abg);color:var(--amber);border:1px solid #E8C585}
+.tag-anon{background:var(--cream3);color:var(--muted);border:1px solid var(--border2)}
+.email-input-wrap{margin-top:12px;display:none}
+.email-option.selected.with-email .email-input-wrap{display:block}
+
+/* ANON WARNING */
+.anon-warning{background:var(--abg);border:2px solid #E8C585;border-radius:10px;padding:14px 16px;margin-top:.7rem;display:none}
+.anon-warning.show{display:block}
+.aw-title{font-size:.82rem;font-weight:700;color:var(--amber);margin-bottom:4px;display:flex;align-items:center;gap:6px}
+.aw-body{font-size:.76rem;color:var(--amber);line-height:1.55;opacity:.85}
+
+/* BUTTONS */
+.btn-primary{width:100%;padding:14px 24px;background:var(--navy);color:#fff;border:2px solid var(--navy);border-radius:10px;font-family:var(--fh);font-size:1rem;font-weight:800;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px}
+.btn-primary:hover{background:var(--navy2)}
+.btn-primary:disabled{opacity:.5;cursor:not-allowed}
+.btn-secondary{width:100%;padding:12px 24px;background:transparent;color:var(--muted);border:2px solid var(--border);border-radius:10px;font-family:var(--fb);font-size:.88rem;font-weight:600;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px;margin-top:.7rem}
+.btn-secondary:hover{border-color:var(--border2);color:var(--navy)}
+.btn-submit{background:var(--red);border-color:var(--red)}
+.btn-submit:hover{background:var(--red2);border-color:var(--red2)}
+
+/* PROGRESS BAR */
+.form-progress{height:3px;background:var(--border);border-radius:100px;margin-bottom:2.5rem;overflow:hidden}
+.form-progress-fill{height:100%;border-radius:100px;background:linear-gradient(90deg,var(--green),#4ade80);transition:width .5s ease}
+
+/* SUMMARY CARD (step 3 preview) */
+.summary-card{background:var(--navy);border-radius:13px;padding:20px 22px;margin-bottom:1.5rem}
+.sc-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid rgba(255,255,255,.09)}
+.sc-stream{font-family:var(--fh);font-size:.95rem;font-weight:800;color:#fff}
+.sc-type{font-size:.72rem;color:rgba(255,255,255,.4);margin-top:2px}
+.sc-aor{text-align:right}
+.sc-aor-val{font-family:var(--fm);font-size:.82rem;color:rgba(255,255,255,.7)}
+.sc-aor-label{font-size:.67rem;color:rgba(255,255,255,.3)}
+.sc-stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0}
+.sc-stat{text-align:center;padding:0 8px;border-right:1px solid rgba(255,255,255,.07)}
+.sc-stat:last-child{border-right:none}
+.sc-stat-val{font-family:var(--fh);font-size:1.4rem;font-weight:900;color:#fff;line-height:1}
+.sc-stat-val.green{color:#4ade80}
+.sc-stat-label{font-size:.62rem;color:rgba(255,255,255,.35);margin-top:3px;font-family:var(--fm);text-transform:uppercase;letter-spacing:.04em}
+
+/* MILESTONE SUMMARY */
+.ms-summary{margin-bottom:1.5rem}
+.ms-sum-title{font-size:.78rem;font-weight:700;color:var(--muted);margin-bottom:.7rem;text-transform:uppercase;letter-spacing:.06em;font-family:var(--fm)}
+.ms-sum-list{display:flex;flex-direction:column;gap:5px}
+.ms-sum-row{display:flex;align-items:center;gap:10px;font-size:.82rem}
+.ms-sum-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.ms-sum-dot.done{background:var(--green)}
+.ms-sum-dot.pending{background:var(--border2)}
+.ms-sum-name{flex:1;color:var(--navy)}
+.ms-sum-date{font-family:var(--fm);font-size:.75rem;color:var(--muted)}
+.ms-sum-est{font-size:.72rem;color:var(--blue);font-style:italic}
+
+/* CONSENT */
+.consent-box{display:flex;align-items:flex-start;gap:10px;background:var(--cream2);border:1.5px solid var(--border);border-radius:9px;padding:12px 14px;margin-bottom:1.4rem;cursor:pointer}
+.consent-check{width:18px;height:18px;border-radius:4px;border:2px solid var(--border);flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center;transition:all .2s;font-size:.7rem;color:#fff}
+.consent-box.checked .consent-check{background:var(--green);border-color:var(--green)}
+.consent-box.checked .consent-check::after{content:'✓';font-weight:800}
+.consent-text{font-size:.77rem;color:var(--muted);line-height:1.55}
+.consent-text a{color:var(--blue);text-decoration:underline;text-underline-offset:2px}
+
+/* SUCCESS STATE */
+.success-panel{display:none;animation:fadeIn .4s ease}
+.success-panel.show{display:block}
+.success-icon{width:56px;height:56px;border-radius:50%;background:var(--gbg);border:2px solid var(--green);display:flex;align-items:center;justify-content:center;font-size:1.4rem;margin-bottom:1.2rem}
+.success-h{font-family:var(--fh);font-size:1.4rem;font-weight:800;color:var(--navy);margin-bottom:.5rem}
+.success-sub{font-size:.88rem;color:var(--muted);line-height:1.6;margin-bottom:1.5rem}
+.next-actions{display:flex;flex-direction:column;gap:.6rem}
+.na-card{display:flex;align-items:center;gap:12px;padding:14px 16px;border:2px solid var(--border);border-radius:10px;transition:all .2s;cursor:pointer}
+.na-card:hover{border-color:var(--navy);background:var(--cream2)}
+.na-ic{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:.95rem;flex-shrink:0}
+.na-navy{background:var(--navy);color:#fff}
+.na-green{background:var(--gbg);border:1px solid #90d4b0}
+.na-blue{background:var(--bbg);border:1px solid #b8d8f0}
+.na-text{flex:1}
+.na-title{font-size:.88rem;font-weight:700;color:var(--navy);margin-bottom:2px}
+.na-desc{font-size:.75rem;color:var(--muted)}
+.na-arrow{color:var(--muted);font-size:.85rem}
+
+/* LOADING SPINNER */
+.spinner{display:inline-block;width:16px;height:16px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .6s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* PROVINCE SELECT - SHOWN CONDITIONALLY */
+.province-field{display:none}
+.province-field.show{display:block}
+
+/* RESPONSIVE */
+@media(max-width:900px){
+  .page{grid-template-columns:1fr}
+  .left{padding:clamp(32px,5vw,48px) clamp(20px,5vw,40px);min-height:auto}
+  .left::after{font-size:120px}
+  .preview-stats{grid-template-columns:1fr 1fr 1fr 1fr}
+  .right{padding:clamp(24px,4vw,40px) clamp(20px,4vw,32px)}
+}
+@media(max-width:600px){
+  .preview-stats{grid-template-columns:1fr 1fr}
+  .stream-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <a href="/" class="nav-brand">
+    <svg class="nav-logo" viewBox="0 0 100 100" fill="none">
+      <path d="M50 5C50 5 30 35 8 38L18 48L10 55L30 52L28 70L50 58L72 70L70 52L90 55L82 48L92 38C70 35 50 5 50 5Z" fill="#C8281E"/>
+      <rect x="44" y="68" width="12" height="22" rx="2" fill="#C8281E"/>
+    </svg>
+    <div>
+      <div class="nav-name">AORTrack</div>
+      <div class="nav-sub">by GetNorthPath</div>
+    </div>
+  </a>
+  <a href="/" class="nav-back">
+    <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+    Back to home
+  </a>
+</nav>
+
+<!-- PAGE -->
+<div class="page">
+
+  <!-- LEFT PANEL -->
+  <div class="left">
+    <div class="left-content">
+      <div class="left-eyebrow">
+        <div class="left-dot"></div>
+        <span id="cohort-live-count">14,827 timelines live</span>
+      </div>
+
+      <h1>Track your <em>exact position</em> in the queue.</h1>
+      <p class="left-sub">Real data from applicants like you. Gemini-verified submissions only. No guesswork — your cohort, your stream, your actual estimate.</p>
+
+      <div class="preview-stats">
+        <div class="ps-card">
+          <div class="ps-val">184<span>d</span></div>
+          <div class="ps-label">CEC General avg</div>
+          <div class="ps-sub">+2d this week</div>
+        </div>
+        <div class="ps-card">
+          <div class="ps-val">162<span>d</span></div>
+          <div class="ps-label">CEC STEM avg</div>
+          <div class="ps-sub">-4d this week</div>
+        </div>
+        <div class="ps-card">
+          <div class="ps-val">96<span>%</span></div>
+          <div class="ps-label">Accuracy rate</div>
+        </div>
+        <div class="ps-card">
+          <div class="ps-val">39<span>%</span></div>
+          <div class="ps-label">Feb cohort PPR'd</div>
+        </div>
+      </div>
+
+      <div class="cohort-preview">
+        <div class="cp-label">CEC General — Days to PPR Distribution</div>
+        <div class="cp-bars">
+          <div class="cp-bar" style="height:20%"></div>
+          <div class="cp-bar" style="height:35%"></div>
+          <div class="cp-bar active" style="height:65%"></div>
+          <div class="cp-bar active" style="height:90%"></div>
+          <div class="cp-bar active" style="height:100%"></div>
+          <div class="cp-bar active" style="height:82%"></div>
+          <div class="cp-bar you" style="height:60%"></div>
+          <div class="cp-bar" style="height:40%"></div>
+          <div class="cp-bar" style="height:22%"></div>
+          <div class="cp-bar" style="height:10%"></div>
+        </div>
+        <div class="cp-labels">
+          <div class="cp-lbl">120d</div>
+          <div class="cp-lbl">135d</div>
+          <div class="cp-lbl active">150d</div>
+          <div class="cp-lbl active">165d</div>
+          <div class="cp-lbl active">180d</div>
+          <div class="cp-lbl active">195d</div>
+          <div class="cp-lbl you">210d ←</div>
+          <div class="cp-lbl">225d</div>
+          <div class="cp-lbl">240d</div>
+          <div class="cp-lbl">255d</div>
+        </div>
+        <div class="cp-legend">
+          <div class="cp-leg"><div class="cp-leg-dot" style="background:var(--green)"></div>Most common range</div>
+          <div class="cp-leg"><div class="cp-leg-dot" style="background:#f87171"></div>Your estimated window</div>
+        </div>
+      </div>
+
+      <div class="trust-list">
+        <div class="trust-item">
+          <div class="trust-ic">🔒</div>
+          Your email is stored as a SHA-256 hash only — never readable by anyone
+        </div>
+        <div class="trust-item">
+          <div class="trust-ic">✓</div>
+          All community submissions are Gemini-verified before affecting your estimates
+        </div>
+        <div class="trust-item">
+          <div class="trust-ic">🗑️</div>
+          Delete your data at any time from your dashboard — PIPEDA compliant
+        </div>
+        <div class="trust-item">
+          <div class="trust-ic">⭐</div>
+          Open source under MIT licence — <a href="https://github.com/Get-North-Path/AOR-tracker" target="_blank" style="color:#4ade80;text-decoration:underline;text-underline-offset:3px">review the code on GitHub</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT PANEL -->
+  <div class="right">
+
+    <!-- PROGRESS BAR -->
+    <div class="form-progress">
+      <div class="form-progress-fill" id="progress-fill" style="width:33%"></div>
+    </div>
+
+    <!-- STEP INDICATOR -->
+    <div class="steps-nav">
+      <div class="step-node active" id="node-1">
+        <div class="sn-circle">1</div>
+        <div class="sn-label">Application</div>
+      </div>
+      <div class="step-node" id="node-2">
+        <div class="sn-circle">2</div>
+        <div class="sn-label">Milestones</div>
+      </div>
+      <div class="step-node" id="node-3">
+        <div class="sn-circle">3</div>
+        <div class="sn-label">Review</div>
+      </div>
+    </div>
+
+    <!-- ── STEP 1: APPLICATION DETAILS ── -->
+    <div class="step-panel active" id="step-1">
+      <div class="step-header">
+        <div class="step-num">Step 1 of 3</div>
+        <div class="step-title">Your application details</div>
+        <div class="step-desc">This sets up your cohort — the group of applicants we compare you to. Takes 60 seconds.</div>
+      </div>
+
+      <!-- AOR DATE -->
+      <div class="field">
+        <label class="field-label" for="aor-date">
+          AOR Date <span class="req">Required</span>
+        </label>
+        <input type="date" id="aor-date" name="aor-date" max="" placeholder="yyyy-mm-dd"/>
+        <div class="field-note">Your Acknowledgement of Receipt date from the IRCC portal.</div>
+        <div class="field-error" id="aor-error">Please enter a valid AOR date that is not in the future.</div>
+      </div>
+
+      <!-- STREAM -->
+      <div class="field">
+        <label class="field-label">
+          Immigration Stream <span class="req">Required</span>
+        </label>
+        <div class="stream-grid" id="stream-grid">
+          <div class="stream-opt" data-stream="cec-general" onclick="selectStream(this)">
+            <input type="radio" name="stream" value="cec-general"/>
+            <div class="so-icon">🍁</div>
+            <div class="so-name">CEC General</div>
+            <div class="so-sub">Canadian Experience Class</div>
+            <div class="so-avg">184d avg · 1,240 tracked</div>
+          </div>
+          <div class="stream-opt" data-stream="cec-stem" onclick="selectStream(this)">
+            <input type="radio" name="stream" value="cec-stem"/>
+            <div class="so-icon">💻</div>
+            <div class="so-name">CEC STEM</div>
+            <div class="so-sub">Science, Tech, Engineering, Math</div>
+            <div class="so-avg">162d avg · 847 tracked</div>
+          </div>
+          <div class="stream-opt" data-stream="cec-french" onclick="selectStream(this)">
+            <input type="radio" name="stream" value="cec-french"/>
+            <div class="so-icon">🇫🇷</div>
+            <div class="so-name">CEC French</div>
+            <div class="so-sub">Francophone Priority</div>
+            <div class="so-avg">134d avg · 312 tracked</div>
+          </div>
+          <div class="stream-opt" data-stream="fsw-general" onclick="selectStream(this)">
+            <input type="radio" name="stream" value="fsw-general"/>
+            <div class="so-icon">🌐</div>
+            <div class="so-name">FSW General</div>
+            <div class="so-sub">Federal Skilled Worker</div>
+            <div class="so-avg">198d avg · 623 tracked</div>
+          </div>
+          <div class="stream-opt" data-stream="pnp" onclick="selectStream(this)">
+            <input type="radio" name="stream" value="pnp"/>
+            <div class="so-icon">🏛️</div>
+            <div class="so-name">PNP</div>
+            <div class="so-sub">Provincial Nominee Program</div>
+            <div class="so-avg">216d avg · 489 tracked</div>
+          </div>
+          <div class="stream-opt" data-stream="cec-healthcare" onclick="selectStream(this)">
+            <input type="radio" name="stream" value="cec-healthcare"/>
+            <div class="so-icon">🏥</div>
+            <div class="so-name">CEC Healthcare</div>
+            <div class="so-sub">Healthcare Occupations</div>
+            <div class="so-avg">Limited data · 89 tracked</div>
+          </div>
+        </div>
+        <div class="field-error" id="stream-error">Please select your immigration stream.</div>
+      </div>
+
+      <!-- APPLICATION TYPE -->
+      <div class="field">
+        <label class="field-label">Application Type <span class="req">Required</span></label>
+        <div class="type-toggle">
+          <div class="type-opt" data-type="inland" onclick="selectType(this)">
+            <input type="radio" name="app-type" value="inland"/>
+            <div class="to-icon">🏠</div>
+            <div class="to-name">Inland</div>
+            <div class="to-desc">Applying from within Canada</div>
+          </div>
+          <div class="type-opt" data-type="outland" onclick="selectType(this)">
+            <input type="radio" name="app-type" value="outland"/>
+            <div class="to-icon">✈️</div>
+            <div class="to-name">Outland</div>
+            <div class="to-desc">Applying from outside Canada</div>
+          </div>
+        </div>
+        <div class="field-error" id="type-error">Please select your application type.</div>
+      </div>
+
+      <!-- PROVINCE (PNP only) -->
+      <div class="field province-field" id="province-field">
+        <label class="field-label" for="province">Province / Territory <span class="req">Required for PNP</span></label>
+        <select id="province">
+          <option value="">Select province…</option>
+          <option value="ON">Ontario (OINP)</option>
+          <option value="BC">British Columbia (BCPNP)</option>
+          <option value="AB">Alberta (AINP)</option>
+          <option value="MB">Manitoba (MPNP)</option>
+          <option value="SK">Saskatchewan (SINP)</option>
+          <option value="NS">Nova Scotia (NSNP)</option>
+          <option value="NB">New Brunswick (NBPNP)</option>
+          <option value="PE">PEI (PEI PNP)</option>
+          <option value="NL">Newfoundland (NLPNP)</option>
+          <option value="NT">Northwest Territories</option>
+          <option value="YK">Yukon (YNP)</option>
+          <option value="NU">Nunavut</option>
+        </select>
+      </div>
+
+      <button class="btn-primary" onclick="goToStep2()">
+        Continue — Add Milestones
+        <svg style="width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+    </div>
+
+    <!-- ── STEP 2: MILESTONES ── -->
+    <div class="step-panel" id="step-2">
+      <div class="step-header">
+        <div class="step-num">Step 2 of 3</div>
+        <div class="step-title">Completed milestones</div>
+        <div class="step-desc">Check any milestones you've already received and enter the date. All optional — skip any you haven't reached yet.</div>
+      </div>
+
+      <div class="field">
+        <div class="milestone-list" id="milestone-list">
+
+          <div class="ms-item" id="ms-bil">
+            <div class="ms-header" onclick="toggleMilestone('ms-bil')">
+              <div class="ms-checkbox"></div>
+              <div class="ms-label">BIL — Background Initiated Letter</div>
+              <div class="ms-date" id="ms-bil-display">Not yet received</div>
+            </div>
+            <div class="ms-datefield">
+              <input type="date" id="ms-bil-date" placeholder="yyyy-mm-dd" onchange="updateMilestoneDisplay('ms-bil')"/>
+              <div class="field-note">The date IRCC sent your BIL email.</div>
+            </div>
+          </div>
+
+          <div class="ms-item" id="ms-biometrics">
+            <div class="ms-header" onclick="toggleMilestone('ms-biometrics')">
+              <div class="ms-checkbox"></div>
+              <div class="ms-label">Biometrics Confirmed</div>
+              <div class="ms-date" id="ms-biometrics-display">Not yet confirmed</div>
+            </div>
+            <div class="ms-datefield">
+              <input type="date" id="ms-biometrics-date" placeholder="yyyy-mm-dd" onchange="updateMilestoneDisplay('ms-biometrics')"/>
+              <div class="field-note">When IRCC confirmed your biometrics in the portal.</div>
+            </div>
+          </div>
+
+          <div class="ms-item" id="ms-bgc">
+            <div class="ms-header" onclick="toggleMilestone('ms-bgc')">
+              <div class="ms-checkbox"></div>
+              <div class="ms-label">Background Check Started</div>
+              <div class="ms-date" id="ms-bgc-display">Not yet started</div>
+            </div>
+            <div class="ms-datefield">
+              <input type="date" id="ms-bgc-date" placeholder="yyyy-mm-dd" onchange="updateMilestoneDisplay('ms-bgc')"/>
+              <div class="field-note">Date background check was initiated.</div>
+            </div>
+          </div>
+
+          <div class="ms-item" id="ms-medical">
+            <div class="ms-header" onclick="toggleMilestone('ms-medical')">
+              <div class="ms-checkbox"></div>
+              <div class="ms-label">Medical Results Passed</div>
+              <div class="ms-date" id="ms-medical-display">Not yet received</div>
+            </div>
+            <div class="ms-datefield">
+              <input type="date" id="ms-medical-date" placeholder="yyyy-mm-dd" onchange="updateMilestoneDisplay('ms-medical')"/>
+              <div class="field-note">Date your medical results were accepted.</div>
+            </div>
+          </div>
+
+          <div class="ms-item" id="ms-ppr">
+            <div class="ms-header" onclick="toggleMilestone('ms-ppr')">
+              <div class="ms-checkbox"></div>
+              <div class="ms-label">PPR — Passport Request Received 🎉</div>
+              <div class="ms-date" id="ms-ppr-display">Not yet received</div>
+            </div>
+            <div class="ms-datefield">
+              <input type="date" id="ms-ppr-date" placeholder="yyyy-mm-dd" onchange="updateMilestoneDisplay('ms-ppr')"/>
+              <div class="field-note warn" id="ppr-biometrics-warn" style="display:none">PPR submissions without a biometrics date are excluded from community statistics. Please add your biometrics date above.</div>
+              <div class="field-note">Congratulations! The date you received your PPR email.</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div style="display:flex;gap:.7rem">
+        <button class="btn-secondary" style="width:auto;flex:0 0 auto;padding:12px 20px" onclick="goToStep1()">
+          <svg style="width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:round" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+          Back
+        </button>
+        <button class="btn-primary" onclick="goToStep3()">
+          Review & Submit
+          <svg style="width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+      </div>
+      <button class="btn-secondary" onclick="goToStep3()" style="color:var(--muted2)">Skip — I haven't reached any milestones yet</button>
+    </div>
+
+    <!-- ── STEP 3: REVIEW & EMAIL ── -->
+    <div class="step-panel" id="step-3">
+      <div class="step-header">
+        <div class="step-num">Step 3 of 3</div>
+        <div class="step-title">Review & save your profile</div>
+        <div class="step-desc">Confirm your details below, then choose how to save your profile.</div>
+      </div>
+
+      <!-- SUMMARY CARD -->
+      <div class="summary-card" id="summary-card">
+        <div class="sc-top">
+          <div>
+            <div class="sc-stream" id="sum-stream">—</div>
+            <div class="sc-type" id="sum-type">—</div>
+          </div>
+          <div class="sc-aor">
+            <div class="sc-aor-val" id="sum-aor">—</div>
+            <div class="sc-aor-label">AOR Date</div>
+          </div>
+        </div>
+        <div class="sc-stats">
+          <div class="sc-stat">
+            <div class="sc-stat-val" id="sum-days">—</div>
+            <div class="sc-stat-label">Days elapsed</div>
+          </div>
+          <div class="sc-stat">
+            <div class="sc-stat-val green" id="sum-avg">—</div>
+            <div class="sc-stat-label">Stream avg</div>
+          </div>
+          <div class="sc-stat">
+            <div class="sc-stat-val" id="sum-window">—</div>
+            <div class="sc-stat-label">Est. PPR window</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MILESTONE SUMMARY -->
+      <div class="ms-summary" id="ms-summary">
+        <div class="ms-sum-title">Your milestones</div>
+        <div class="ms-sum-list" id="ms-sum-list"></div>
+      </div>
+
+      <!-- EMAIL OPTIONS -->
+      <div class="field">
+        <label class="field-label">How do you want to save your profile?</label>
+
+        <div class="email-option with-email selected" id="opt-email" onclick="selectEmailOpt(this,'email')">
+          <div class="eo-header">
+            <div class="eo-radio"></div>
+            <div class="eo-content">
+              <div class="eo-title">Save with my email (recommended)</div>
+              <div class="eo-desc">Get a magic link to access your dashboard from any device. Your email is hashed — we never store it in readable form.</div>
+              <span class="eo-tag tag-rec">Recommended</span>
+            </div>
+          </div>
+          <div class="email-input-wrap">
+            <input type="email" id="user-email" placeholder="your@email.com" style="margin-top:8px"/>
+            <div class="field-note">We'll send you a link to resume from any device. No password. No spam.</div>
+            <div class="field-error" id="email-error">Please enter a valid email address.</div>
+          </div>
+        </div>
+
+        <div class="email-option" id="opt-anon" onclick="selectEmailOpt(this,'anon')">
+          <div class="eo-header">
+            <div class="eo-radio"></div>
+            <div class="eo-content">
+              <div class="eo-title">Continue without email (this device only)</div>
+              <div class="eo-desc">Your profile is saved in this browser only. Clearing cookies or switching devices means losing your data permanently.</div>
+              <span class="eo-tag tag-anon">Cookie-only · 90 days</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="anon-warning" id="anon-warning">
+          <div class="aw-title">⚠️ Cookie-only storage</div>
+          <div class="aw-body">If you clear your browser history, use private mode, or switch to another device, your AORTrack data <strong>cannot be recovered</strong>. You would need to start a new profile. We strongly recommend saving your email.</div>
+        </div>
+      </div>
+
+      <!-- CONSENT -->
+      <div class="consent-box" id="consent" onclick="toggleConsent()">
+        <div class="consent-check"></div>
+        <div class="consent-text">I agree to the <a href="/privacy" onclick="event.stopPropagation()">Privacy Policy</a>. I understand my data contributes anonymously to community cohort statistics and can be deleted at any time from my dashboard.</div>
+      </div>
+      <div class="field-error" id="consent-error">Please agree to the privacy policy to continue.</div>
+
+      <div style="display:flex;gap:.7rem">
+        <button class="btn-secondary" style="width:auto;flex:0 0 auto;padding:12px 20px" onclick="goToStep2()">
+          <svg style="width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:round" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+          Back
+        </button>
+        <button class="btn-primary btn-submit" id="submit-btn" onclick="submitForm()">
+          Start Tracking My Application →
+        </button>
+      </div>
+    </div>
+
+    <!-- ── SUCCESS STATE ── -->
+    <div class="success-panel" id="success">
+      <div class="success-icon">🍁</div>
+      <div class="success-h">You're now tracking!</div>
+      <div class="success-sub" id="success-sub">Your profile has been created. Your dashboard is ready — we're calculating your cohort position now.</div>
+
+      <div class="next-actions">
+        <a href="/dashboard" class="na-card">
+          <div class="na-ic na-navy">📊</div>
+          <div class="na-text">
+            <div class="na-title">View my dashboard →</div>
+            <div class="na-desc">See your cohort position, progress ring, and PPR window estimate</div>
+          </div>
+          <div class="na-arrow">›</div>
+        </a>
+        <a href="/community" class="na-card">
+          <div class="na-ic na-green">👥</div>
+          <div class="na-text">
+            <div class="na-title">Browse the community feed</div>
+            <div class="na-desc">See recent milestones from applicants in your stream</div>
+          </div>
+          <div class="na-arrow">›</div>
+        </a>
+        <a href="/feedback" class="na-card">
+          <div class="na-ic na-blue">💬</div>
+          <div class="na-text">
+            <div class="na-title">Give feedback on AORTrack</div>
+            <div class="na-desc">Help us improve — no GitHub account needed</div>
+          </div>
+          <div class="na-arrow">›</div>
+        </a>
+      </div>
+    </div>
+
+  </div><!-- /right -->
+</div><!-- /page -->
+
+<script>
+// ── STATE ─────────────────────────────────────────────────────────────────────
+const state = {
+  step: 1,
+  aorDate: null,
+  stream: null,
+  appType: null,
+  province: null,
+  milestones: {},
+  emailMode: 'email',
+  email: null,
+  consent: false
+};
+
+const streamData = {
+  'cec-general':   { name:'CEC General',   avg:184, label:'Canadian Experience Class' },
+  'cec-stem':      { name:'CEC STEM',      avg:162, label:'CEC — STEM Occupations'    },
+  'cec-french':    { name:'CEC French',    avg:134, label:'CEC — Francophone'         },
+  'fsw-general':   { name:'FSW General',   avg:198, label:'Federal Skilled Worker'    },
+  'pnp':           { name:'PNP',           avg:216, label:'Provincial Nominee Program'},
+  'cec-healthcare':{ name:'CEC Healthcare',avg:172, label:'CEC — Healthcare'          },
+};
+
+const milestones = [
+  { id:'ms-bil',        name:'BIL',              label:'Background Initiated Letter' },
+  { id:'ms-biometrics', name:'Biometrics',       label:'Biometrics Confirmed'        },
+  { id:'ms-bgc',        name:'Background Check', label:'BGC Started'                 },
+  { id:'ms-medical',    name:'Medical',          label:'Medical Results Passed'      },
+  { id:'ms-ppr',        name:'PPR',              label:'Passport Request Received'   },
+];
+
+// ── NAVIGATION ────────────────────────────────────────────────────────────────
+function setStep(n) {
+  document.querySelectorAll('.step-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('step-'+n).classList.add('active');
+
+  // Update nodes
+  for(let i=1;i<=3;i++){
+    const node = document.getElementById('node-'+i);
+    node.classList.remove('active','done');
+    if(i < n) node.classList.add('done');
+    else if(i === n) node.classList.add('active');
+  }
+
+  // Update progress
+  const pct = { 1:33, 2:66, 3:100 };
+  document.getElementById('progress-fill').style.width = pct[n]+'%';
+
+  state.step = n;
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function goToStep1(){ setStep(1); }
+
+function goToStep2(){
+  // Validate step 1
+  let valid = true;
+
+  const aorInput = document.getElementById('aor-date');
+  const aorErr = document.getElementById('aor-error');
+  const today = new Date().toISOString().split('T')[0];
+
+  if(!aorInput.value || aorInput.value > today){
+    aorInput.classList.add('error');
+    aorErr.classList.add('show');
+    valid = false;
+  } else {
+    aorInput.classList.remove('error');
+    aorErr.classList.remove('show');
+    state.aorDate = aorInput.value;
+  }
+
+  if(!state.stream){
+    document.getElementById('stream-error').classList.add('show');
+    valid = false;
+  } else {
+    document.getElementById('stream-error').classList.remove('show');
+  }
+
+  if(!state.appType){
+    document.getElementById('type-error').classList.add('show');
+    valid = false;
+  } else {
+    document.getElementById('type-error').classList.remove('show');
+  }
+
+  if(valid) setStep(2);
+}
+
+function goToStep3(){
+  // PPR without biometrics check
+  const pprChecked = document.getElementById('ms-ppr').classList.contains('checked');
+  const bioChecked = document.getElementById('ms-biometrics').classList.contains('checked');
+  const pprWarn = document.getElementById('ppr-biometrics-warn');
+  if(pprChecked && !bioChecked){
+    pprWarn.style.display = 'flex';
+  } else {
+    pprWarn.style.display = 'none';
+  }
+  buildSummary();
+  setStep(3);
+}
+
+// ── STREAM SELECTION ──────────────────────────────────────────────────────────
+function selectStream(el){
+  document.querySelectorAll('.stream-opt').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+  state.stream = el.dataset.stream;
+  document.getElementById('stream-error').classList.remove('show');
+
+  // Show province field for PNP
+  const pf = document.getElementById('province-field');
+  pf.classList.toggle('show', state.stream === 'pnp');
+}
+
+// ── TYPE SELECTION ────────────────────────────────────────────────────────────
+function selectType(el){
+  document.querySelectorAll('.type-opt').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+  state.appType = el.dataset.type;
+  document.getElementById('type-error').classList.remove('show');
+}
+
+// ── MILESTONE TOGGLE ──────────────────────────────────────────────────────────
+function toggleMilestone(id){
+  const el = document.getElementById(id);
+  const isChecked = el.classList.contains('checked');
+  el.classList.toggle('checked', !isChecked);
+
+  if(isChecked){
+    const input = el.querySelector('input[type="date"]');
+    input.value = '';
+    const displayId = id + '-display';
+    const displays = { 'ms-bil':'Not yet received', 'ms-biometrics':'Not yet confirmed', 'ms-bgc':'Not yet started', 'ms-medical':'Not yet received', 'ms-ppr':'Not yet received' };
+    document.getElementById(displayId).textContent = displays[id] || 'Not yet received';
+    delete state.milestones[id];
+  }
+}
+
+function updateMilestoneDisplay(id){
+  const input = document.getElementById(id+'-date');
+  const display = document.getElementById(id+'-display');
+  if(input.value){
+    const d = new Date(input.value + 'T12:00:00');
+    display.textContent = d.toLocaleDateString('en-CA',{year:'numeric',month:'short',day:'numeric'});
+    state.milestones[id] = input.value;
+  }
+}
+
+// ── EMAIL OPTIONS ─────────────────────────────────────────────────────────────
+function selectEmailOpt(el, mode){
+  document.querySelectorAll('.email-option').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+  state.emailMode = mode;
+
+  const warn = document.getElementById('anon-warning');
+  warn.classList.toggle('show', mode === 'anon');
+}
+
+// ── CONSENT ───────────────────────────────────────────────────────────────────
+function toggleConsent(){
+  const box = document.getElementById('consent');
+  box.classList.toggle('checked');
+  state.consent = box.classList.contains('checked');
+  if(state.consent) document.getElementById('consent-error').style.display = 'none';
+}
+
+// ── SUMMARY BUILD ─────────────────────────────────────────────────────────────
+function buildSummary(){
+  const sd = streamData[state.stream] || {};
+  const aor = state.aorDate;
+  const today = new Date();
+  const aorD = new Date(aor + 'T12:00:00');
+  const daysElapsed = Math.floor((today - aorD) / 86400000);
+  const avg = sd.avg || 180;
+  const remaining = Math.max(avg - daysElapsed, 14);
+  const windowStart = new Date(today.getTime() + remaining * 0.75 * 86400000);
+  const windowEnd = new Date(today.getTime() + remaining * 1.25 * 86400000);
+  const monthFmt = (d) => d.toLocaleDateString('en-CA',{month:'short',year:'numeric'});
+
+  document.getElementById('sum-stream').textContent = sd.name || state.stream;
+  document.getElementById('sum-type').textContent = (state.appType === 'inland' ? '🏠 Inland' : '✈️ Outland') + (state.province ? ' · ' + state.province : '');
+  document.getElementById('sum-aor').textContent = new Date(aor+'T12:00:00').toLocaleDateString('en-CA',{year:'numeric',month:'short',day:'numeric'});
+  document.getElementById('sum-days').textContent = daysElapsed + 'd';
+  document.getElementById('sum-avg').textContent = avg + 'd';
+  document.getElementById('sum-window').textContent = monthFmt(windowStart) + '–' + monthFmt(windowEnd);
+
+  // Milestone summary
+  const list = document.getElementById('ms-sum-list');
+  list.innerHTML = '';
+  milestones.forEach(m => {
+    const row = document.createElement('div');
+    row.className = 'ms-sum-row';
+    const done = !!state.milestones[m.id];
+    const dateStr = done ? new Date(state.milestones[m.id]+'T12:00:00').toLocaleDateString('en-CA',{month:'short',day:'numeric',year:'numeric'}) : null;
+    row.innerHTML = `
+      <div class="ms-sum-dot ${done?'done':'pending'}"></div>
+      <div class="ms-sum-name">${m.label}</div>
+      ${done ? `<div class="ms-sum-date">${dateStr}</div>` : `<span class="ms-sum-est">Pending</span>`}
+    `;
+    list.appendChild(row);
+  });
+}
+
+// ── SUBMIT ────────────────────────────────────────────────────────────────────
+function submitForm(){
+  let valid = true;
+
+  // Email validation
+  if(state.emailMode === 'email'){
+    const emailInput = document.getElementById('user-email');
+    const emailErr = document.getElementById('email-error');
+    const emailVal = emailInput.value.trim();
+    const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if(!emailRe.test(emailVal)){
+      emailErr.classList.add('show');
+      emailInput.classList.add('error');
+      valid = false;
+    } else {
+      emailErr.classList.remove('show');
+      emailInput.classList.remove('error');
+      state.email = emailVal;
+    }
+  }
+
+  // Consent
+  if(!state.consent){
+    document.getElementById('consent-error').style.display = 'block';
+    valid = false;
+  }
+
+  if(!valid) return;
+
+  // Show loading
+  const btn = document.getElementById('submit-btn');
+  btn.innerHTML = '<span class="spinner"></span> Creating your profile…';
+  btn.disabled = true;
+
+  // Simulate API call
+  setTimeout(() => {
+    // Show success
+    document.getElementById('step-3').style.display = 'none';
+    document.querySelectorAll('.steps-nav,.form-progress').forEach(el => el.style.display = 'none');
+
+    const successSub = document.getElementById('success-sub');
+    if(state.emailMode === 'email'){
+      successSub.textContent = 'Check your inbox — we\'ve sent you a magic link to access your dashboard from any device. Your profile is live now.';
+    } else {
+      successSub.textContent = 'Your profile is saved in this browser for 90 days. Bookmark your dashboard link so you can come back easily.';
+    }
+
+    document.getElementById('success').classList.add('show');
+  }, 1800);
+}
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+// Set max date to today
+document.getElementById('aor-date').max = new Date().toISOString().split('T')[0];
+
+// Live counter animation
+let count = 14800;
+const counter = document.getElementById('cohort-live-count');
+setInterval(() => {
+  if(Math.random() > 0.7){ count += Math.floor(Math.random() * 3 + 1); counter.textContent = count.toLocaleString() + ' timelines live'; }
+}, 4000);
+</script>
+</body>
+</html>

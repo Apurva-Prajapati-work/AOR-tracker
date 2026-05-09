@@ -134,9 +134,31 @@ function baseCohort(key: string): CohortStats {
   };
 }
 
-export async function ensureSeed(db: Db): Promise<void> {
+/** Idempotent indexes — invoked from `getDb()` on first use. */
+export async function ensureIndexes(db: Db): Promise<void> {
   const cohorts = db.collection("cohort_stats");
   const posts = db.collection("community_posts");
+  await db.collection("profiles").createIndex({ emailNorm: 1 }, { unique: true });
+  await db.collection("profiles").createIndex({ cohortKey: 1 });
+  await cohorts.createIndex({ cohortKey: 1 }, { unique: true });
+  await posts.createIndex({ createdAt: -1 });
+}
+
+export type SeedDemoResult = {
+  cohortsInserted: number;
+  postsInserted: number;
+};
+
+/**
+ * Inserts sample cohorts and community posts only when those collections are empty.
+ * Call from the dev seed API — not from every server action.
+ */
+export async function seedDemoDataIfEmpty(db: Db): Promise<SeedDemoResult> {
+  const cohorts = db.collection("cohort_stats");
+  const posts = db.collection("community_posts");
+
+  let cohortsInserted = 0;
+  let postsInserted = 0;
 
   const cohortCount = await cohorts.estimatedDocumentCount();
   if (cohortCount === 0) {
@@ -148,12 +170,14 @@ export async function ensureSeed(db: Db): Promise<void> {
       "FSW_GENERAL:1:2025:outland",
     ];
     samples.forEach((k) => keys.add(k));
+    const list = [...keys];
     await cohorts.insertMany(
-      [...keys].map((cohortKey) => ({
+      list.map((cohortKey) => ({
         ...baseCohort(cohortKey),
         last_updated: new Date(),
       })),
     );
+    cohortsInserted = list.length;
   }
 
   const postCount = await posts.estimatedDocumentCount();
@@ -167,12 +191,10 @@ export async function ensureSeed(db: Db): Promise<void> {
         createdAt: new Date(),
       })),
     );
+    postsInserted = SEED_POSTS.length;
   }
 
-  await db.collection("profiles").createIndex({ emailNorm: 1 }, { unique: true });
-  await db.collection("profiles").createIndex({ cohortKey: 1 });
-  await cohorts.createIndex({ cohortKey: 1 }, { unique: true });
-  await posts.createIndex({ createdAt: -1 });
+  return { cohortsInserted, postsInserted };
 }
 
 export function serializeCohort(doc: Record<string, unknown>): CohortStats {

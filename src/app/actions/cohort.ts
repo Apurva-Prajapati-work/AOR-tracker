@@ -2,7 +2,7 @@
 
 import { getDb } from "@/lib/db";
 import { buildCohortKey, streamFallbackKey } from "@/lib/cohort";
-import { ensureSeed, serializeCohort } from "@/lib/seed";
+import { serializeCohort } from "@/lib/seed";
 import type { CohortStats } from "@/lib/types";
 import type { UserProfile } from "@/lib/types";
 
@@ -10,7 +10,6 @@ export async function getCohortStatsForProfileAction(
   profile: Pick<UserProfile, "aorDate" | "stream" | "type">,
 ): Promise<CohortStats> {
   const db = await getDb();
-  await ensureSeed(db);
   const col = db.collection("cohort_stats");
   const primaryKey = profile.aorDate
     ? buildCohortKey({

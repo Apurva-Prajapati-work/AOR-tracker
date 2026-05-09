@@ -7,7 +7,7 @@ import {
   COMMUNITY_FEED_PAGE_SIZE,
   type CommunityFeedPage,
 } from "@/lib/community-feed";
-import { ensureSeed, serializePost } from "@/lib/seed";
+import { serializePost } from "@/lib/seed";
 import { normalizeEmail, isValidEmail } from "@/lib/profile";
 import type { MilestoneKey, UserProfile } from "@/lib/types";
 import { getProfileAction } from "@/app/actions/profile";
@@ -86,7 +86,6 @@ export async function getCommunityFeedAction(
   },
 ): Promise<CommunityFeedPage> {
   const db = await getDb();
-  await ensureSeed(db);
   const viewerNorm = viewerEmail && isValidEmail(viewerEmail)
     ? normalizeEmail(viewerEmail)
     : null;
@@ -144,7 +143,6 @@ export async function createCommunityPostAction(
 
   const norm = normalizeEmail(email);
   const db = await getDb();
-  await ensureSeed(db);
   const p = prof.profile;
   const col = db.collection("community_posts");
 
@@ -214,7 +212,6 @@ export async function markCommunityHelpfulAction(
 
   const norm = normalizeEmail(email);
   const db = await getDb();
-  await ensureSeed(db);
   const col = db.collection("community_posts");
 
   const res = await col.updateOne(

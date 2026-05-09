@@ -1,7 +1,6 @@
 "use server";
 
 import { getDb } from "@/lib/db";
-import { ensureSeed } from "@/lib/seed";
 
 export type LandingTickerItem = {
   id: string;
@@ -44,7 +43,6 @@ export async function getLandingHomeAction(): Promise<{
   ticker: LandingTickerItem[];
 }> {
   const db = await getDb();
-  await ensureSeed(db);
 
   const profileCount = await db.collection("profiles").countDocuments();
 

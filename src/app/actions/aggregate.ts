@@ -1,7 +1,6 @@
 "use server";
 
 import { getDb } from "@/lib/db";
-import { ensureSeed } from "@/lib/seed";
 import { humanizeCohortKey, streamSlugFromLabel } from "@/lib/cohort";
 import type { MilestoneKey } from "@/lib/types";
 
@@ -44,7 +43,6 @@ export async function getLiveCohortAggregateAction(
   cohortKey: string,
 ): Promise<LiveCohortAggregate> {
   const db = await getDb();
-  await ensureSeed(db);
 
   const groupStage: Record<string, unknown> = {
     _id: null,
@@ -88,7 +86,6 @@ export async function listRelatedCohortSummariesAction(
   limit = 4,
 ): Promise<Omit<CohortSummaryRow, "isCurrent">[]> {
   const db = await getDb();
-  await ensureSeed(db);
   const col = db.collection("cohort_stats");
   const slug = streamSlugFromLabel(streamLabel);
   const escaped = slug.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");

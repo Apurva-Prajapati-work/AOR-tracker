@@ -44,6 +44,55 @@ function TimelineRowSkeleton({
   );
 }
 
+function SidebarSkeleton() {
+  return (
+    <aside className="dsb" aria-hidden>
+      <div className="sk sk-line mb-2 h-3 w-16 opacity-60" />
+      {Array.from({ length: 5 }).map((_, i) => (
+        <div key={i} className="sk mb-1 h-8 w-full rounded-lg opacity-80" />
+      ))}
+      <div className="sbdiv" />
+      <div className="sk sk-line mb-2 mt-2 h-3 w-24 opacity-60" />
+      {Array.from({ length: 3 }).map((_, i) => (
+        <div key={i} className="sk mb-1 h-8 w-full rounded-lg opacity-70" />
+      ))}
+      <div className="mt-auto rounded-[10px] border border-[var(--border)] bg-[var(--navy3)] p-3">
+        <div className="flex gap-2">
+          <div className="sk h-7 w-7 shrink-0 rounded-full" />
+          <div className="min-w-0 flex-1 space-y-2">
+            <div className="sk sk-line w-24" />
+            <div className="sk sk-line sm w-full max-w-[140px]" />
+          </div>
+        </div>
+        <div className="sk mt-3 h-5 w-full max-w-[180px] rounded" />
+      </div>
+    </aside>
+  );
+}
+
+function RightRailSkeleton() {
+  return (
+    <aside className="dr" aria-hidden>
+      <div className="rc">
+        <div className="sk sk-line mx-auto mb-2 h-3 w-20" />
+        <div className="sk sk-ring mx-auto opacity-90" />
+        <div className="sk sk-line mx-auto mt-2 w-16" />
+        <div className="sk sk-line sm mx-auto mt-1 w-24" />
+        <div className="sk mt-3 h-16 w-full rounded-lg" />
+      </div>
+      <div className="rc space-y-2">
+        <div className="sk sk-line h-3 w-28" />
+        {Array.from({ length: 3 }).map((_, i) => (
+          <div key={i} className="flex gap-2 py-1">
+            <div className="sk mt-1 h-1.5 w-1.5 shrink-0 rounded-full" />
+            <div className="sk h-8 flex-1 rounded-md" />
+          </div>
+        ))}
+      </div>
+    </aside>
+  );
+}
+
 export function DashboardLoadingSkeleton() {
   return (
     <div
@@ -63,10 +112,10 @@ export function DashboardLoadingSkeleton() {
             AOR<span>Track</span>
           </span>
         </Link>
-        <div className="nav pointer-events-none opacity-70">
+        <div className="nav pointer-events-none opacity-60">
           <span className="sk h-7 w-[4.5rem] rounded-md" />
           <span className="sk h-7 w-20 rounded-md" />
-          <span className="sk h-7 w-14 rounded-md max-md:hidden" />
+          <span className="sk h-7 max-md:hidden w-[7.5rem] rounded-md" />
           <span className="sk h-7 w-14 rounded-md" />
         </div>
         <div className="tr pointer-events-none">
@@ -74,21 +123,26 @@ export function DashboardLoadingSkeleton() {
         </div>
       </div>
 
-      <div className="flex flex-1 flex-col overflow-hidden">
-        <div className="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-4 px-3.5 py-4 md:px-5 md:py-5">
-          <header className="text-center">
-            <p className="text-[15px] font-semibold tracking-tight text-[var(--t1)]">
-              Loading your timeline
+      <div className="dlayout flex-1 min-h-0">
+        <SidebarSkeleton />
+
+        <main className="dmain">
+          <div className="flex flex-col items-center gap-3 py-1 text-center sm:flex-row sm:justify-between sm:text-left">
+            <div className="flex items-center gap-3">
+              <div className="sk-loader" aria-hidden />
+              <div>
+                <p className="text-[14px] font-semibold tracking-tight text-[var(--t1)]">
+                  Loading your dashboard
+                </p>
+                <p className="mt-0.5 max-w-md text-[12px] leading-snug text-[var(--t2)]">
+                  Fetching profile, cohort stats, and timeline…
+                </p>
+              </div>
+            </div>
+            <p className="text-[10px] font-medium uppercase tracking-wider text-[var(--t3)]">
+              <span className="dlive" aria-hidden /> One moment
             </p>
-            <p className="mx-auto mt-1.5 max-w-sm text-[13px] font-light leading-snug text-[var(--t2)]">
-              Syncing your profile, cohort statistics, and community feed from
-              the server.
-            </p>
-            <p className="mt-2 inline-flex items-center gap-2 text-[11px] font-medium uppercase tracking-wider text-[var(--t3)]">
-              <span className="dlive" aria-hidden />
-              Please wait
-            </p>
-          </header>
+          </div>
 
           <div className="srow">
             <StatCardSkeleton />
@@ -130,26 +184,20 @@ export function DashboardLoadingSkeleton() {
                 <div className="sk sk-line h-4 w-28" />
                 <div className="sk sk-line sm h-3 w-24" />
               </div>
-              <div className="flex flex-wrap gap-1.5 pt-1">
-                {Array.from({ length: 48 }).map((_, i) => (
+              <div className="cgrid pt-1">
+                {Array.from({ length: 40 }).map((_, i) => (
                   <div
                     key={i}
-                    className="sk h-3 w-3 rounded-sm"
-                    style={{ animationDelay: `${(i % 8) * 0.08}s` }}
+                    className="sk cdot"
+                    style={{ animationDelay: `${(i % 8) * 0.06}s` }}
                   />
                 ))}
               </div>
             </div>
           </div>
+        </main>
 
-          <div className="mt-auto flex justify-center pb-2 lg:hidden">
-            <div className="flex max-w-xs flex-col items-center gap-3 rounded-xl border border-[var(--border)] bg-[var(--navy2)] px-5 py-4">
-              <div className="sk sk-ring" />
-              <div className="sk sk-line w-28" />
-              <div className="sk sk-line sm w-40" />
-            </div>
-          </div>
-        </div>
+        <RightRailSkeleton />
       </div>
     </div>
   );

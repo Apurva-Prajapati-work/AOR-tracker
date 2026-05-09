@@ -19,7 +19,10 @@ const DEFAULT_STREAM_MEDIANS = [
   { name: "PNP", median: 248 },
 ];
 
-const SEED_POSTS: Omit<CommunityPost, "id">[] = [
+const SEED_POSTS: Omit<
+  CommunityPost,
+  "id" | "bodyIsHtml" | "viewerHasMarkedHelpful"
+>[] = [
   {
     initials: "AK",
     name: "Applicant #4821",
@@ -107,6 +110,14 @@ const SEED_POSTS: Omit<CommunityPost, "id">[] = [
   },
 ];
 
+/** Synthetic stats when Mongo has no `cohort_stats` row yet (e.g. before dev seed). */
+export function cohortStatsFallback(cohortKey: string): CohortStats {
+  return {
+    ...baseCohort(cohortKey),
+    last_updated: new Date().toISOString(),
+  };
+}
+
 function baseCohort(key: string): CohortStats {
   return {
     cohortKey: key,
@@ -131,26 +142,53 @@ function baseCohort(key: string): CohortStats {
   };
 }
 
-export async function ensureSeed(db: Db): Promise<void> {
+/** Idempotent indexes — invoked from `getDb()` on first use. */
+export async function ensureIndexes(db: Db): Promise<void> {
   const cohorts = db.collection("cohort_stats");
   const posts = db.collection("community_posts");
+  await db.collection("profiles").createIndex({ emailNorm: 1 }, { unique: true });
+  await db.collection("profiles").createIndex({ cohortKey: 1 });
+  await db
+    .collection("profiles")
+    .createIndex({ shareToken: 1 }, { unique: true, sparse: true });
+  await cohorts.createIndex({ cohortKey: 1 }, { unique: true });
+  await posts.createIndex({ createdAt: -1 });
+}
+
+export type SeedDemoResult = {
+  cohortsInserted: number;
+  postsInserted: number;
+};
+
+/**
+ * Inserts sample cohorts and community posts only when those collections are empty.
+ * Call from the dev seed API — not from every server action.
+ */
+export async function seedDemoDataIfEmpty(db: Db): Promise<SeedDemoResult> {
+  const cohorts = db.collection("cohort_stats");
+  const posts = db.collection("community_posts");
+
+  let cohortsInserted = 0;
+  let postsInserted = 0;
 
   const cohortCount = await cohorts.estimatedDocumentCount();
   if (cohortCount === 0) {
     const keys = new Set<string>();
     const samples = [
-      "CEC_GENERAL:2:2025:inland",
-      "CEC_GENERAL:2025",
-      "CEC_STEM:2:2025:inland",
-      "FSW_GENERAL:1:2025:outland",
+      "CEC_GENERAL:2:2025:inland:ON",
+      "CEC_GENERAL:0:2025:inland:ON",
+      "CEC_STEM:2:2025:inland:BC",
+      "FSW_GENERAL:1:2025:outland:ON",
     ];
     samples.forEach((k) => keys.add(k));
+    const list = [...keys];
     await cohorts.insertMany(
-      [...keys].map((cohortKey) => ({
+      list.map((cohortKey) => ({
         ...baseCohort(cohortKey),
         last_updated: new Date(),
       })),
     );
+    cohortsInserted = list.length;
   }
 
   const postCount = await posts.estimatedDocumentCount();
@@ -158,17 +196,25 @@ export async function ensureSeed(db: Db): Promise<void> {
     await posts.insertMany(
       SEED_POSTS.map((p) => ({
         ...p,
+        bodyIsHtml: true,
+        helpfulVoters: [] as string[],
         approved: true,
         createdAt: new Date(),
       })),
     );
+    postsInserted = SEED_POSTS.length;
   }
 
-  await db.collection("profiles").createIndex({ emailNorm: 1 }, { unique: true });
-  await cohorts.createIndex({ cohortKey: 1 }, { unique: true });
+  return { cohortsInserted, postsInserted };
 }
 
-export function serializeCohort(doc: Record<string, unknown>): CohortStats {
+export function serializeCohort(
+  doc: Record<string, unknown> | null | undefined,
+  fallbackCohortKey = "CEC_GENERAL:2025",
+): CohortStats {
+  if (!doc) {
+    return cohortStatsFallback(fallbackCohortKey);
+  }
   const c = doc as CohortStats & { last_updated?: Date };
   return {
     ...c,
@@ -179,7 +225,28 @@ export function serializeCohort(doc: Record<string, unknown>): CohortStats {
   };
 }
 
-export function serializePost(doc: Record<string, unknown>): CommunityPost {
+export function serializePost(
+  doc: Record<string, unknown>,
+  viewerEmailNorm?: string | null,
+): CommunityPost {
+  const voters = (doc.helpfulVoters as string[] | undefined) ?? [];
+  const helpfulStored =
+    typeof doc.helpful === "number" ? doc.helpful : voters.length;
+  const helpful = Math.max(helpfulStored, voters.length);
+  let replyTo: CommunityPost["replyTo"];
+  const rtId = doc.replyToId;
+  const rtPrev = doc.replyToPreview as
+    | { initials?: string; name?: string; snippet?: string }
+    | undefined;
+  if (rtId && rtPrev && typeof rtPrev === "object") {
+    replyTo = {
+      id: String(rtId),
+      initials: String(rtPrev.initials ?? "?"),
+      name: String(rtPrev.name ?? ""),
+      snippet: String(rtPrev.snippet ?? ""),
+    };
+  }
+
   return {
     id: String(doc._id),
     initials: doc.initials as string,
@@ -188,7 +255,12 @@ export function serializePost(doc: Record<string, unknown>): CommunityPost {
     ms: doc.ms as string,
     msl: doc.msl as string,
     body: doc.body as string,
+    bodyIsHtml: doc.bodyIsHtml !== false,
     tl: doc.tl as CommunityPost["tl"],
-    helpful: doc.helpful as number,
+    helpful,
+    viewerHasMarkedHelpful: viewerEmailNorm
+      ? voters.includes(viewerEmailNorm)
+      : false,
+    ...(replyTo ? { replyTo } : {}),
   };
 }

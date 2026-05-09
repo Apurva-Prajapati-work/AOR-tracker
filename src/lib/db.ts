@@ -1,11 +1,14 @@
 import { Db, MongoClient } from "mongodb";
+import { ensureIndexes } from "@/lib/seed";
 
 const uri = process.env.MONGODB_URI;
-const dbName = process.env.MONGODB_DB ?? "aortrack";
+const dbName = process.env.MONGODB_DB ?? "aor-tracker-dev";
 
 const globalForMongo = globalThis as typeof globalThis & {
   _mongoClientPromise?: Promise<MongoClient>;
 };
+
+let indexesEnsured: Promise<void> | undefined;
 
 function requireUri(): string {
   if (!uri) {
@@ -23,5 +26,11 @@ export async function getDb(): Promise<Db> {
     globalForMongo._mongoClientPromise = client.connect();
   }
   const client = await globalForMongo._mongoClientPromise;
-  return client.db(dbName);
+  const db = client.db(dbName);
+  indexesEnsured ??= ensureIndexes(db).catch((err) => {
+    indexesEnsured = undefined;
+    throw err;
+  });
+  await indexesEnsured;
+  return db;
 }

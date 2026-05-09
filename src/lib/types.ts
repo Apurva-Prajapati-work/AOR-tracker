@@ -37,6 +37,14 @@ export type CohortStats = {
   last_updated: string;
 };
 
+/** Shown above a reply (Discord-style); snippet is plain text only. */
+export type CommunityReplyRef = {
+  id: string;
+  initials: string;
+  name: string;
+  snippet: string;
+};
+
 export type CommunityPost = {
   id: string;
   initials: string;
@@ -45,6 +53,12 @@ export type CommunityPost = {
   ms: string;
   msl: string;
   body: string;
+  /** Seed posts use HTML; user posts are plain text (rendered safely). */
+  bodyIsHtml: boolean;
   tl: { label: string; done: boolean }[];
   helpful: number;
+  /** Present when the feed was loaded for a signed-in viewer. */
+  viewerHasMarkedHelpful?: boolean;
+  /** When this post is a reply to another approved post. */
+  replyTo?: CommunityReplyRef;
 };

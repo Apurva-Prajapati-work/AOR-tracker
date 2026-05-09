@@ -2,19 +2,39 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { getProfileAction, ensureDemoProfileAction } from "@/app/actions/profile";
-import { TICKER } from "@/lib/constants";
+import { getLandingHomeAction } from "@/app/actions/landing";
 import { isValidEmail } from "@/lib/profile";
 import { writeSessionEmail } from "@/lib/session-client";
 import { useToast } from "@/components/ToastContext";
 import { LogoMark } from "@/components/LogoMark";
+
+function fmtCompactK(n: number): string {
+  if (n < 1000) return String(n);
+  const k = n / 1000;
+  const s = k >= 10 ? String(Math.round(k)) : k.toFixed(1).replace(/\.0$/, "");
+  return `${s}k`;
+}
 
 export function LandingClient() {
   const router = useRouter();
   const toast = useToast();
   const [resumeEmail, setResumeEmail] = useState("");
   const [resumeErr, setResumeErr] = useState(false);
+  const [profileCount, setProfileCount] = useState<number | null>(null);
+  const [medianSample, setMedianSample] = useState<number | null>(null);
+  const [ticker, setTicker] = useState<
+    Awaited<ReturnType<typeof getLandingHomeAction>>["ticker"]
+  >([]);
+
+  useEffect(() => {
+    void getLandingHomeAction().then((d) => {
+      setProfileCount(d.profileCount);
+      setMedianSample(d.medianSample);
+      setTicker(d.ticker);
+    });
+  }, []);
 
   const goDashboard = useCallback(
     (email: string) => {
@@ -58,7 +78,9 @@ export function LandingClient() {
         </Link>
         <span className="hidden items-center gap-1 text-[12px] text-[var(--t3)] md:inline-flex">
           <span className="dlive" />
-          14,872 timelines live
+          {profileCount != null
+            ? `${profileCount.toLocaleString()} timelines live`
+            : "…"}
         </span>
         <div className="tr">
           <button type="button" className="bg" onClick={onDemo}>
@@ -76,8 +98,9 @@ export function LandingClient() {
           Know exactly where you stand in your <span className="ac">PR journey</span>
         </h1>
         <p className="hs">
-          AORTrack uses crowd-sourced data from 14,872 applicants to show real
-          processing timelines — not IRCC&apos;s generic 6–8 month estimate.
+          AORTrack uses crowd-sourced data from{" "}
+          {profileCount != null ? profileCount.toLocaleString() : "…"} applicants to
+          show real processing timelines — not IRCC&apos;s generic 6–8 month estimate.
         </p>
         <div className="hcta">
           <Link href="/track" className="bh no-underline">
@@ -89,11 +112,15 @@ export function LandingClient() {
         </div>
         <div className="hstats">
           <div>
-            <div className="hsv">14.8k</div>
+            <div className="hsv">
+              {profileCount != null ? fmtCompactK(profileCount) : "—"}
+            </div>
             <div className="hsl">Active timelines</div>
           </div>
           <div>
-            <div className="hsv">184d</div>
+            <div className="hsv">
+              {medianSample != null ? `${Math.round(medianSample)}d` : "—"}
+            </div>
             <div className="hsl">Avg. CEC General</div>
           </div>
           <div>
@@ -159,8 +186,8 @@ export function LandingClient() {
           Live community reports
         </div>
         <div>
-          {TICKER.map((t) => (
-            <div key={t.text} className="ti">
+          {ticker.map((t) => (
+            <div key={t.id} className="ti">
               <span className="ttime">{t.time}</span>
               <span className={`tbg ${t.type}`}>{t.label}</span>
               <span className="ttxt">{t.text}</span>

@@ -2,7 +2,6 @@
 
 import { getDb } from "@/lib/db";
 import { buildCohortKey, streamFallbackKey } from "@/lib/cohort";
-import { ensureSeed } from "@/lib/seed";
 import {
   emptyMilestones,
   isValidEmail,
@@ -38,7 +37,6 @@ export async function getProfileAction(
     return { ok: false, error: "Invalid email" };
   }
   const db = await getDb();
-  await ensureSeed(db);
   const norm = normalizeEmail(email);
   const doc = await db.collection("profiles").findOne({ emailNorm: norm });
   if (!doc) return { ok: false, error: "not_found" };
@@ -51,7 +49,6 @@ export async function saveProfileAction(profile: UserProfile): Promise<{
 }> {
   if (!isValidEmail(profile.email)) return { ok: false, error: "Invalid email" };
   const db = await getDb();
-  await ensureSeed(db);
   const norm = normalizeEmail(profile.email);
   const now = new Date();
   await db.collection("profiles").updateOne(
@@ -69,8 +66,13 @@ export async function saveProfileAction(profile: UserProfile): Promise<{
               aorDate: profile.aorDate,
               stream: profile.stream,
               type: profile.type,
+              province: profile.province,
             })
-          : streamFallbackKey(profile.stream),
+          : streamFallbackKey(
+              profile.stream,
+              profile.province,
+              profile.type,
+            ),
         updatedAt: now,
       },
       $setOnInsert: {
@@ -87,7 +89,6 @@ export async function createDraftProfileAction(
 ): Promise<{ ok: true; profile: UserProfile } | { ok: false; error: string }> {
   if (!isValidEmail(email)) return { ok: false, error: "Invalid email" };
   const db = await getDb();
-  await ensureSeed(db);
   const norm = normalizeEmail(email);
   const existing = await db.collection("profiles").findOne({ emailNorm: norm });
   if (existing) {
@@ -103,7 +104,11 @@ export async function createDraftProfileAction(
     type: profile.type,
     province: profile.province,
     milestones: profile.milestones,
-    cohortKey: streamFallbackKey(profile.stream),
+    cohortKey: streamFallbackKey(
+      profile.stream,
+      profile.province,
+      profile.type,
+    ),
   });
   return { ok: true, profile };
 }
@@ -115,7 +120,6 @@ export async function updateMilestoneAction(
 ): Promise<{ ok: boolean; error?: string; profile?: UserProfile }> {
   if (!isValidEmail(email)) return { ok: false, error: "Invalid email" };
   const db = await getDb();
-  await ensureSeed(db);
   const norm = normalizeEmail(email);
   const now = new Date().toISOString();
   const update: Record<string, unknown> = {
@@ -139,6 +143,7 @@ export async function updateMilestoneAction(
             aorDate: profile.aorDate,
             stream: profile.stream,
             type: profile.type,
+            province: profile.province,
           }),
         },
       },
@@ -151,7 +156,6 @@ const DEMO_EMAIL = "demo@aortrack.ca";
 
 export async function ensureDemoProfileAction(): Promise<UserProfile> {
   const db = await getDb();
-  await ensureSeed(db);
   const norm = normalizeEmail(DEMO_EMAIL);
   const now = new Date().toISOString();
   const milestones = emptyMilestones();
@@ -182,6 +186,7 @@ export async function ensureDemoProfileAction(): Promise<UserProfile> {
           aorDate: profile.aorDate,
           stream: profile.stream,
           type: profile.type,
+          province: profile.province,
         }),
         updatedAt: new Date(),
       },

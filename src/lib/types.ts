@@ -45,6 +45,10 @@ export type CommunityPost = {
   ms: string;
   msl: string;
   body: string;
+  /** Seed posts use HTML; user posts are plain text (rendered safely). */
+  bodyIsHtml: boolean;
   tl: { label: string; done: boolean }[];
   helpful: number;
+  /** Present when the feed was loaded for a signed-in viewer. */
+  viewerHasMarkedHelpful?: boolean;
 };

@@ -19,7 +19,10 @@ const DEFAULT_STREAM_MEDIANS = [
   { name: "PNP", median: 248 },
 ];
 
-const SEED_POSTS: Omit<CommunityPost, "id">[] = [
+const SEED_POSTS: Omit<
+  CommunityPost,
+  "id" | "bodyIsHtml" | "viewerHasMarkedHelpful"
+>[] = [
   {
     initials: "AK",
     name: "Applicant #4821",
@@ -158,6 +161,8 @@ export async function ensureSeed(db: Db): Promise<void> {
     await posts.insertMany(
       SEED_POSTS.map((p) => ({
         ...p,
+        bodyIsHtml: true,
+        helpfulVoters: [] as string[],
         approved: true,
         createdAt: new Date(),
       })),
@@ -165,7 +170,9 @@ export async function ensureSeed(db: Db): Promise<void> {
   }
 
   await db.collection("profiles").createIndex({ emailNorm: 1 }, { unique: true });
+  await db.collection("profiles").createIndex({ cohortKey: 1 });
   await cohorts.createIndex({ cohortKey: 1 }, { unique: true });
+  await posts.createIndex({ createdAt: -1 });
 }
 
 export function serializeCohort(doc: Record<string, unknown>): CohortStats {
@@ -179,7 +186,14 @@ export function serializeCohort(doc: Record<string, unknown>): CohortStats {
   };
 }
 
-export function serializePost(doc: Record<string, unknown>): CommunityPost {
+export function serializePost(
+  doc: Record<string, unknown>,
+  viewerEmailNorm?: string | null,
+): CommunityPost {
+  const voters = (doc.helpfulVoters as string[] | undefined) ?? [];
+  const helpfulStored =
+    typeof doc.helpful === "number" ? doc.helpful : voters.length;
+  const helpful = Math.max(helpfulStored, voters.length);
   return {
     id: String(doc._id),
     initials: doc.initials as string,
@@ -188,7 +202,11 @@ export function serializePost(doc: Record<string, unknown>): CommunityPost {
     ms: doc.ms as string,
     msl: doc.msl as string,
     body: doc.body as string,
+    bodyIsHtml: doc.bodyIsHtml !== false,
     tl: doc.tl as CommunityPost["tl"],
-    helpful: doc.helpful as number,
+    helpful,
+    viewerHasMarkedHelpful: viewerEmailNorm
+      ? voters.includes(viewerEmailNorm)
+      : false,
   };
 }

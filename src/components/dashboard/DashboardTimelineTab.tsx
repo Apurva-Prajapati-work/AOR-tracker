@@ -1,0 +1,286 @@
+"use client";
+
+import { MILESTONE_DEFS } from "@/lib/constants";
+import { useDashboard } from "@/components/dashboard/DashboardContext";
+import { DashboardRails } from "@/components/dashboard/DashboardRails";
+import { ProfileCompletenessCard } from "@/components/dashboard/ProfileCompletenessCard";
+import type { MilestoneKey } from "@/lib/types";
+import { fmtDate, fmtShortUpdated } from "@/lib/format";
+
+function dotClass(
+  profile: { milestones: Record<MilestoneKey, { date: string | null }> },
+  idx: number,
+  key: MilestoneKey,
+  hasDate: boolean,
+): string {
+  if (!hasDate) return "pend";
+  let lastDone = -1;
+  MILESTONE_DEFS.forEach((d, i) => {
+    if (profile.milestones[d.key]?.date) lastDone = i;
+  });
+  if (idx === lastDone) return "now";
+  return "done";
+}
+
+export function DashboardTimelineTab() {
+  const {
+    email,
+    profile,
+    cohort,
+    cohortDisplay,
+    completeness,
+    refreshAfterProfileUpdate,
+    onSaveMilestone,
+    openPicker,
+    setOpenPicker,
+    savedFlash,
+    days,
+    median,
+    ppr,
+    pct,
+    ringOffset,
+    similarCohortsDisplay,
+    cohortInsightHtml,
+    cohortTotal,
+  } = useDashboard();
+
+  return (
+    <div className="flex flex-col gap-4">
+      <div className="srow">
+        <div className="sc hi">
+          <div className="slbl">Days since AOR</div>
+          <div className="sval">{days}</div>
+          <div className="ssub">{fmtDate(profile.aorDate) || "—"}</div>
+        </div>
+        <div className="sc">
+          <div className="slbl">Median PPR (cohort)</div>
+          <div className="sval">{median}</div>
+          <div className="ssub">days · {profile.stream}</div>
+        </div>
+        <div className="sc">
+          <div className="slbl">Est. PPR window</div>
+          <div className="sval mt-1 text-base leading-tight">
+            {ppr?.windowLabel ?? "—"}
+          </div>
+          <div className="ssub">
+            {cohortDisplay.n_verified} similar profiles
+            {ppr?.limitedData ? " · Limited data (n < 30)" : ""}
+          </div>
+        </div>
+        <div className="sc">
+          <div className="slbl">Cohort PPR rate</div>
+          <div className="sval">
+            {Math.round((cohort.completion_rate ?? 0) * 100)}%
+          </div>
+          <div className="ssub text-[#5de494]">
+            ↑ {Math.round((cohort.weekly_delta ?? 0) * 100)}% this week
+          </div>
+        </div>
+      </div>
+
+      <div className="mb-4 flex flex-col gap-3 lg:hidden">
+        <DashboardRails
+          days={days}
+          pct={pct}
+          ringOffset={ringOffset}
+          median={median}
+          ppr={ppr}
+          cohort={cohortDisplay}
+          similarCohorts={similarCohortsDisplay}
+          cohortInsightHtml={cohortInsightHtml}
+        />
+      </div>
+
+      {completeness && completeness.remaining.length > 0 ? (
+        <ProfileCompletenessCard
+          key={profile.updatedAt}
+          email={email}
+          profile={profile}
+          completeness={completeness}
+          onProfileUpdated={refreshAfterProfileUpdate}
+        />
+      ) : null}
+
+      <div className="card">
+        <div className="chd">
+          <span className="ctit">Your milestone timeline</span>
+          <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:gap-2">
+            <span className="hidden text-[11px] text-[var(--t3)] sm:inline">
+              Hover any row → click to edit date
+            </span>
+            <span className="text-[10px] text-[var(--t3)] sm:hidden">
+              Tap a row to add or edit dates
+            </span>
+            <span className="ctag">
+              {profile.stream} · {profile.type}
+            </span>
+          </div>
+        </div>
+        <div>
+          {MILESTONE_DEFS.map((def, i) => {
+            const m = profile.milestones[def.key];
+            const hasDate = !!m.date;
+            const isLast = i === MILESTONE_DEFS.length - 1;
+            const n = cohortDisplay.per_milestone_n[def.key] ?? 0;
+            const cp = Math.round((n / cohortTotal) * 100);
+            return (
+              <div key={def.key} className="tlrow">
+                <div className="tll">
+                  <div className="tldw">
+                    <span className="tldt">
+                      {hasDate ? fmtDate(m.date) : def.est}
+                    </span>
+                    <button
+                      type="button"
+                      className="tledit"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setOpenPicker((k) => (k === def.key ? null : def.key));
+                      }}
+                    >
+                      {hasDate ? "✏ Edit date" : "+ Add date"}
+                    </button>
+                    <input
+                      className={`tldp ${openPicker === def.key ? "open" : ""}`}
+                      type="date"
+                      value={m.date ?? ""}
+                      onChange={(e) =>
+                        void onSaveMilestone(def.key, e.target.value)
+                      }
+                    />
+                  </div>
+                </div>
+                <div className="tlc">
+                  <div
+                    className={`tldot ${dotClass(profile, i, def.key, hasDate)}`}
+                  />
+                  {!isLast ? (
+                    <div className={`tlln ${hasDate ? "done" : ""}`} />
+                  ) : null}
+                </div>
+                <div className="tlr">
+                  <div className="tltrow">
+                    <span className="tltit">{def.label}</span>
+                    <span className={`tltag ${hasDate ? "done" : "est"}`}>
+                      {hasDate ? "Completed" : "Estimated"}
+                    </span>
+                  </div>
+                  <div className="tldesc">{def.desc}</div>
+                  <div
+                    className={`tlsaved ${savedFlash === def.key ? "is-visible" : ""}`}
+                  >
+                    {m.updatedAt
+                      ? `✓ Saved ${fmtShortUpdated(m.updatedAt)}`
+                      : ""}
+                  </div>
+                  {!isLast ? (
+                    <div className="tlcrowd">
+                      <div className="tlcbw">
+                        <div className="tlcb" style={{ width: `${cp}%` }} />
+                      </div>
+                      <span className="tlctxt">
+                        <b>{n}</b> of {cohortTotal} ({cp}%) past this
+                      </span>
+                    </div>
+                  ) : null}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 gap-3.5 md:grid-cols-2">
+        <div className="card">
+          <div className="chd">
+            <span className="ctit">Days to PPR distribution</span>
+            <span className="ctag">your cohort</span>
+          </div>
+          {cohort.dist.map((r) => (
+            <div key={r.range} className="drow">
+              <span className="dlbl">{r.range}</span>
+              <div className="dtrk">
+                <div
+                  className={`dfil ${r.you ? "y" : "n"}`}
+                  style={{ width: `${r.pct}%` }}
+                >
+                  <span className="dcnt">{r.count}</span>
+                  {r.you ? <span className="dytag">← You</span> : null}
+                </div>
+              </div>
+            </div>
+          ))}
+          <p className="mt-2 text-[10px] text-[var(--t3)]">
+            {cohort.n_verified} completed applications · {cohort.cohortKey}
+          </p>
+        </div>
+        <div className="card">
+          <div className="chd">
+            <span className="ctit">Cohort map</span>
+            <span className="ctag">{cohortTotal} applicants</span>
+          </div>
+          <div className="cgrid">
+            {Array.from({
+              length: Math.min(Math.max(cohortTotal, 1), 400),
+            }).map((_, i) => {
+              const cap = Math.min(Math.max(cohortTotal, 1), 400) - 1;
+              const pos = Math.min(Math.max(days - 1, 0), cap);
+              let bg = "var(--navy4)";
+              let title = "Early stage";
+              if (i === pos) {
+                bg = "var(--red)";
+                title = `You — Day ${days}`;
+              } else if (i < 94) {
+                bg = "var(--red)";
+                title = "PPR received";
+              } else if (i < 204) {
+                bg = "rgba(192,57,43,.38)";
+                title = "In progress";
+              }
+              return (
+                <div
+                  key={i}
+                  className="cdot"
+                  style={{
+                    background: bg,
+                    outline: i === pos ? "2.5px solid #fff" : undefined,
+                    outlineOffset: i === pos ? -2 : undefined,
+                  }}
+                  title={title}
+                />
+              );
+            })}
+          </div>
+          <div className="cleg">
+            <div className="cli">
+              <div className="cld" style={{ background: "var(--red)" }} />
+              PPR received
+            </div>
+            <div className="cli">
+              <div
+                className="cld"
+                style={{ background: "rgba(192,57,43,.38)" }}
+              />
+              In progress
+            </div>
+            <div className="cli">
+              <div className="cld" style={{ background: "var(--navy4)" }} />
+              Early stage
+            </div>
+            <div className="cli">
+              <div
+                className="cld"
+                style={{
+                  background: "var(--red)",
+                  outline: "2.5px solid #fff",
+                  outlineOffset: -2,
+                }}
+              />
+              You
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}

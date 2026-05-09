@@ -1,9 +1,5 @@
-import { DashboardClient } from "./DashboardClient";
+import { DashboardTimelineTab } from "@/components/dashboard/DashboardTimelineTab";
 
-export const metadata = {
-  title: "Dashboard — AORTrack",
-};
-
-export default function DashboardPage() {
-  return <DashboardClient />;
+export default function DashboardTimelinePage() {
+  return <DashboardTimelineTab />;
 }

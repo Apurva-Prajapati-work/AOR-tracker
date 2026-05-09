@@ -3,9 +3,13 @@
 import { ObjectId } from "mongodb";
 import { getDb } from "@/lib/db";
 import { broadcastCommunityFeedRefresh } from "@/lib/community-broadcast";
+import {
+  COMMUNITY_FEED_PAGE_SIZE,
+  type CommunityFeedPage,
+} from "@/lib/community-feed";
 import { ensureSeed, serializePost } from "@/lib/seed";
 import { normalizeEmail, isValidEmail } from "@/lib/profile";
-import type { CommunityPost, MilestoneKey, UserProfile } from "@/lib/types";
+import type { MilestoneKey, UserProfile } from "@/lib/types";
 import { getProfileAction } from "@/app/actions/profile";
 
 const MS_OPTIONS = ["ppr", "bil", "bg", "med"] as const;
@@ -60,28 +64,72 @@ function metaFromProfile(p: UserProfile): string {
   return parts.join(" · ");
 }
 
+function postPlainSnippet(
+  body: string,
+  bodyIsHtml: boolean,
+  max = 100,
+): string {
+  const raw = bodyIsHtml
+    ? body.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim()
+    : body.replace(/\s+/g, " ").trim();
+  if (raw.length <= max) return raw;
+  return `${raw.slice(0, max - 1)}…`;
+}
+
 export async function getCommunityFeedAction(
   viewerEmail?: string | null,
-): Promise<CommunityPost[]> {
+  opts?: {
+    page?: number;
+    pageSize?: number;
+    /** When set (not `all`), only posts with this `ms` value. */
+    msFilter?: string | null;
+  },
+): Promise<CommunityFeedPage> {
   const db = await getDb();
   await ensureSeed(db);
   const viewerNorm = viewerEmail && isValidEmail(viewerEmail)
     ? normalizeEmail(viewerEmail)
     : null;
-  const rows = await db
-    .collection("community_posts")
-    .find({ approved: true })
-    .sort({ createdAt: -1 })
-    .limit(50)
-    .toArray();
-  return rows.map((r) =>
-    serializePost(r as Record<string, unknown>, viewerNorm),
+
+  const pageSize = Math.min(
+    100,
+    Math.max(1, opts?.pageSize ?? COMMUNITY_FEED_PAGE_SIZE),
   );
+  const requestedPage = Math.max(1, Math.floor(opts?.page ?? 1));
+
+  const filter: Record<string, unknown> = { approved: true };
+  const mf = opts?.msFilter?.trim();
+  if (mf && mf !== "all" && MS_OPTIONS.includes(mf as CommunityMs)) {
+    filter.ms = mf;
+  }
+
+  const col = db.collection("community_posts");
+  const total = await col.countDocuments(filter);
+  const totalPages = Math.max(1, Math.ceil(total / pageSize));
+  const page = Math.min(requestedPage, totalPages);
+  const skip = (page - 1) * pageSize;
+
+  const rows = await col
+    .find(filter)
+    .sort({ createdAt: -1 })
+    .skip(skip)
+    .limit(pageSize)
+    .toArray();
+
+  return {
+    posts: rows.map((r) =>
+      serializePost(r as Record<string, unknown>, viewerNorm),
+    ),
+    total,
+    page,
+    pageSize,
+    totalPages,
+  };
 }
 
 export async function createCommunityPostAction(
   email: string,
-  input: { body: string; ms: CommunityMs },
+  input: { body: string; ms: CommunityMs; replyToId?: string | null },
 ): Promise<
   { ok: true } | { ok: false; error: string }
 > {
@@ -98,8 +146,35 @@ export async function createCommunityPostAction(
   const db = await getDb();
   await ensureSeed(db);
   const p = prof.profile;
+  const col = db.collection("community_posts");
 
-  await db.collection("community_posts").insertOne({
+  let replyToId: ObjectId | undefined;
+  let replyToPreview:
+    | { initials: string; name: string; snippet: string }
+    | undefined;
+
+  const rawReply = input.replyToId?.trim();
+  if (rawReply) {
+    let parentOid: ObjectId;
+    try {
+      parentOid = new ObjectId(rawReply);
+    } catch {
+      return { ok: false, error: "Invalid reply target" };
+    }
+    const parent = await col.findOne({ _id: parentOid, approved: true });
+    if (!parent) return { ok: false, error: "Original post not found" };
+    replyToId = parentOid;
+    replyToPreview = {
+      initials: String(parent.initials ?? "?"),
+      name: String(parent.name ?? "Member"),
+      snippet: postPlainSnippet(
+        String(parent.body ?? ""),
+        parent.bodyIsHtml !== false,
+      ),
+    };
+  }
+
+  await col.insertOne({
     initials: initialsFromEmail(email),
     name: displayNameFromEmail(email),
     meta: metaFromProfile(p),
@@ -113,6 +188,9 @@ export async function createCommunityPostAction(
     approved: true,
     authorEmailNorm: norm,
     createdAt: new Date(),
+    ...(replyToId && replyToPreview
+      ? { replyToId, replyToPreview }
+      : {}),
   });
 
   broadcastCommunityFeedRefresh();

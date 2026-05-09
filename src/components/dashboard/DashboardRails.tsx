@@ -1,7 +1,7 @@
-import { INSIGHTS } from "@/lib/constants";
 import type { CohortStats } from "@/lib/types";
 import type { CohortSummaryRow } from "@/app/actions/aggregate";
 import type { PprEstimate } from "@/lib/ppr-estimate";
+import type { CohortInsight } from "@/lib/cohort-dynamic";
 import { fmtDate } from "@/lib/format";
 
 export function DashboardRails({
@@ -12,7 +12,7 @@ export function DashboardRails({
   ppr,
   cohort,
   similarCohorts,
-  cohortInsightHtml,
+  cohortInsights,
 }: {
   days: number;
   pct: number;
@@ -21,7 +21,7 @@ export function DashboardRails({
   ppr: PprEstimate | null;
   cohort: CohortStats;
   similarCohorts: CohortSummaryRow[];
-  cohortInsightHtml: string | null;
+  cohortInsights: CohortInsight[];
 }) {
   return (
     <>
@@ -70,17 +70,8 @@ export function DashboardRails({
       </div>
       <div className="rc">
         <div className="rct">Community insights</div>
-        {cohortInsightHtml ? (
-          <div className="iitem">
-            <div className="idot g" />
-            <div
-              className="itxt"
-              dangerouslySetInnerHTML={{ __html: cohortInsightHtml }}
-            />
-          </div>
-        ) : null}
-        {INSIGHTS.map((i) => (
-          <div key={i.txt} className="iitem">
+        {cohortInsights.map((i, idx) => (
+          <div key={`${i.t}-${idx}`} className="iitem">
             <div className={`idot ${i.t}`} />
             <div
               className="itxt"

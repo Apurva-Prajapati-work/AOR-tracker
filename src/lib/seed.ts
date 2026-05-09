@@ -194,6 +194,20 @@ export function serializePost(
   const helpfulStored =
     typeof doc.helpful === "number" ? doc.helpful : voters.length;
   const helpful = Math.max(helpfulStored, voters.length);
+  let replyTo: CommunityPost["replyTo"];
+  const rtId = doc.replyToId;
+  const rtPrev = doc.replyToPreview as
+    | { initials?: string; name?: string; snippet?: string }
+    | undefined;
+  if (rtId && rtPrev && typeof rtPrev === "object") {
+    replyTo = {
+      id: String(rtId),
+      initials: String(rtPrev.initials ?? "?"),
+      name: String(rtPrev.name ?? ""),
+      snippet: String(rtPrev.snippet ?? ""),
+    };
+  }
+
   return {
     id: String(doc._id),
     initials: doc.initials as string,
@@ -208,5 +222,6 @@ export function serializePost(
     viewerHasMarkedHelpful: viewerEmailNorm
       ? voters.includes(viewerEmailNorm)
       : false,
+    ...(replyTo ? { replyTo } : {}),
   };
 }

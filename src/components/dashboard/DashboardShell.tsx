@@ -26,6 +26,10 @@ import { DashboardLoadingSkeleton } from "@/components/dashboard/DashboardLoadin
 import { DashboardProvider } from "@/components/dashboard/DashboardContext";
 import { DashboardRails } from "@/components/dashboard/DashboardRails";
 import { useToast } from "@/components/ToastContext";
+import {
+  buildCohortInsights,
+  mergeMilestoneDefsForCohort,
+} from "@/lib/cohort-dynamic";
 import { MILESTONE_DEFS } from "@/lib/constants";
 import { dashboardHref, dashboardNavActive } from "@/lib/dashboard-nav";
 import { humanizeCohortKey } from "@/lib/cohort";
@@ -142,12 +146,18 @@ export function DashboardShell({ children }: { children: ReactNode }) {
     return [current, ...rest].slice(0, 5);
   }, [cohort, relatedCohorts]);
 
-  const cohortInsightHtml = useMemo(() => {
-    if (!liveAggregate || !cohort || liveAggregate.profileCount < 1) return null;
-    const n = liveAggregate.profileCount;
-    const bio = liveAggregate.perMilestoneFilled.biometrics;
-    return `<strong>Your cohort on AOR Track</strong> — ${n} saved profile${n === 1 ? "" : "s"} in ${humanizeCohortKey(cohort.cohortKey)}. ${bio} logged biometrics completed.`;
-  }, [liveAggregate, cohort]);
+  const cohortInsights = useMemo(() => {
+    if (!cohort) return [];
+    return buildCohortInsights(cohort, liveAggregate);
+  }, [cohort, liveAggregate]);
+
+  const milestoneDefsForCohort = useMemo(() => {
+    if (!profile?.aorDate?.trim()) {
+      return [...MILESTONE_DEFS];
+    }
+    const med = cohortDisplay?.median_days_to_ppr ?? 184;
+    return mergeMilestoneDefsForCohort(profile.aorDate, med);
+  }, [profile, cohortDisplay?.median_days_to_ppr]);
 
   const days = profile?.aorDate ? daysSinceAor(profile.aorDate) : 0;
   const median = cohortDisplay?.median_days_to_ppr ?? 184;
@@ -220,7 +230,8 @@ export function DashboardShell({ children }: { children: ReactNode }) {
     ppr,
     completeness,
     similarCohortsDisplay,
-    cohortInsightHtml,
+    cohortInsights,
+    milestoneDefsForCohort,
     cohortTotal,
     ringOffset,
     shareUrl,
@@ -348,7 +359,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
               ppr={ppr}
               cohort={cohortDisplay}
               similarCohorts={similarCohortsDisplay}
-              cohortInsightHtml={cohortInsightHtml}
+              cohortInsights={cohortInsights}
             />
           </aside>
         </div>

@@ -113,7 +113,9 @@ h1.ht .ac{color:var(--red)}
 .msitem.ck .mscb{background:var(--red);border-color:var(--red)}
 .msck{font-size:10px;color:white;opacity:0;transition:.15s}
 .msitem.ck .msck{opacity:1}
-.mslbl{font-size:13px;color:var(--t2);flex:1}
+.ms-text-col{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}
+.mslbl{font-size:13px;color:var(--t2)}
+.msest{font-size:10px;font-family:var(--m);color:var(--t3);line-height:1.35}
 .msdate{font-family:var(--m);font-size:12px;color:var(--t1);background:var(--navy);border:1px solid var(--border);border-radius:6px;padding:4px 8px;outline:none;width:140px;display:none;transition:border-color .15s}
 .msdate:focus{border-color:var(--red)}
 .msitem.ck .msdate{display:block}
@@ -255,11 +257,32 @@ h1.ht .ac{color:var(--red)}
 .pc-milestone + .pc-milestone {
   margin-top: 12px;
 }
+.pc-milestone-main {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 14px;
+}
+.pc-milestone-labelwrap {
+  flex: 1 1 auto;
+  min-width: min(100%, 160px);
+}
+.pc-milestone-datewrap {
+  flex: 0 1 auto;
+  min-width: min(100%, 260px);
+}
+.pc-milestone-datewrap .pc-date-row {
+  justify-content: flex-end;
+}
 .pc-milestone-head {
   font-size: 13px;
   font-weight: 600;
   color: var(--w);
-  margin: 0 0 4px;
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 6px 8px;
 }
 .pc-milestone-badge {
   font-size: 9px;
@@ -267,13 +290,12 @@ h1.ht .ac{color:var(--red)}
   text-transform: uppercase;
   letter-spacing: 0.04em;
   color: var(--t3);
-  margin-left: 8px;
 }
 .pc-milestone-hint {
   font-size: 11px;
   color: var(--t3);
   line-height: 1.45;
-  margin: 0 0 12px;
+  margin: 8px 0 0;
 }
 .pc-date-row {
   display: flex;
@@ -282,9 +304,10 @@ h1.ht .ac{color:var(--red)}
   gap: 10px;
 }
 .pc-date-row .aor-date-input {
-  flex: 1;
+  flex: 1 1 auto;
   min-width: 140px;
   max-width: 220px;
+  width: auto;
 }
 .pc-btn-primary {
   font-family: var(--f);
@@ -413,8 +436,26 @@ h1.ht .ac{color:var(--red)}
 .fch{font-family:var(--f);font-size:12px;font-weight:500;color:var(--t2);background:var(--navy2);border:1px solid var(--border);padding:5px 11px;border-radius:99px;cursor:pointer;transition:all .15s}
 .fch:hover{border-color:rgba(255,255,255,.2);color:var(--t1)}
 .fch.on{background:rgba(192,57,43,.15);border-color:rgba(192,57,43,.4);color:var(--w)}
-.fitem{background:var(--navy2);border:1px solid var(--border);border-radius:12px;padding:13px;margin-bottom:9px;transition:border-color .15s}
+.fitem{background:var(--navy2);border:1px solid var(--border);border-radius:12px;padding:13px;margin-bottom:9px;transition:border-color .15s,box-shadow .2s;scroll-margin-top:88px}
 .fitem:hover{border-color:rgba(255,255,255,.1)}
+.fitem.fitem--flash{animation:fitem-flash 1.35s ease}
+@keyframes fitem-flash{
+  0%,100%{box-shadow:none;border-color:var(--border)}
+  15%{box-shadow:0 0 0 2px rgba(91,184,247,.4);border-color:rgba(91,184,247,.45)}
+  40%{box-shadow:0 0 0 1px rgba(91,184,247,.2)}
+}
+/* Discord-style reply reference */
+.freply-bar{display:flex;align-items:flex-start;gap:8px;width:100%;margin:0 0 10px 0;padding:6px 8px 6px 6px;text-align:left;background:rgba(0,0,0,.18);border:none;border-radius:8px;cursor:pointer;transition:background .15s;position:relative}
+.freply-bar:hover{background:rgba(255,255,255,.06)}
+.freply-l{width:15px;min-width:15px;height:22px;margin-top:2px;margin-left:2px;border-left:2px solid rgba(255,255,255,.22);border-top:2px solid rgba(255,255,255,.22);border-radius:7px 0 0 0;flex-shrink:0;opacity:.85}
+.fav.freply-mini{width:18px;height:18px;font-size:8px;margin-top:1px;flex-shrink:0}
+.freply-main{min-width:0;flex:1;display:flex;flex-direction:column;gap:1px}
+.freply-name{font-size:12px;font-weight:600;color:#8ab4ff;line-height:1.25}
+.freply-snippet{font-size:11px;color:var(--t3);line-height:1.35;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.freply-banner{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 10px;margin-bottom:8px;background:rgba(91,184,247,.08);border:1px solid rgba(91,184,247,.22);border-radius:8px;font-size:12px;color:var(--t2)}
+.freply-banner strong{color:#8ab4ff;font-weight:600}
+.freply-banner-x{font:inherit;color:var(--t3);background:none;border:none;cursor:pointer;padding:2px 6px;border-radius:4px}
+.freply-banner-x:hover{color:var(--t1);background:rgba(255,255,255,.06)}
 .ftop{display:flex;align-items:center;gap:8px;margin-bottom:7px}
 .fav{width:29px;height:29px;border-radius:50%;background:var(--navy4);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:var(--t2);flex-shrink:0}
 .fname{font-size:13px;font-weight:500;color:var(--w)}

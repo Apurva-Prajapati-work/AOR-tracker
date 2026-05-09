@@ -1,12 +1,14 @@
 "use client";
 
-import { WES_ROWS } from "@/lib/constants";
+import { buildWesRowsForCohort } from "@/lib/cohort-dynamic";
 import { humanizeCohortKey, pulseTitleFromAor } from "@/lib/cohort";
 import { useDashboard } from "@/components/dashboard/DashboardContext";
 import { fmtDate } from "@/lib/format";
+import { useMemo } from "react";
 
 export function DashboardStatsTab() {
   const { profile, cohort } = useDashboard();
+  const wesRows = useMemo(() => buildWesRowsForCohort(cohort), [cohort]);
 
   return (
     <>
@@ -86,7 +88,7 @@ export function DashboardStatsTab() {
               </tr>
             </thead>
             <tbody>
-              {WES_ROWS.flatMap((r) => [
+                    {wesRows.flatMap((r) => [
                 <tr key={`${r.t}-row`}>
                   <td className="font-medium text-[var(--t1)]">{r.t}</td>
                   <td className="font-[family-name:var(--m)]">{r.d}</td>

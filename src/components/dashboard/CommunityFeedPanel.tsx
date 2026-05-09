@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { io, type Socket } from "socket.io-client";
 import {
   createCommunityPostAction,
@@ -8,8 +8,9 @@ import {
   markCommunityHelpfulAction,
   type CommunityMs,
 } from "@/app/actions/community";
+import { COMMUNITY_FEED_PAGE_SIZE } from "@/lib/community-feed";
 import { useToast } from "@/components/ToastContext";
-import type { CommunityPost, UserProfile } from "@/lib/types";
+import type { CommunityPost, CommunityReplyRef, UserProfile } from "@/lib/types";
 
 const SAVED_KEY = "aortrack.community.savedIds";
 const MS_CHOICES: { v: CommunityMs; label: string }[] = [
@@ -35,6 +36,10 @@ function persistSavedIds(ids: Set<string>) {
   window.localStorage.setItem(SAVED_KEY, JSON.stringify([...ids]));
 }
 
+function communityPostElId(id: string): string {
+  return `community-post-${id}`;
+}
+
 export function CommunityFeedPanel({
   email,
   profile,
@@ -44,6 +49,9 @@ export function CommunityFeedPanel({
 }) {
   const toast = useToast();
   const [feed, setFeed] = useState<CommunityPost[]>([]);
+  const [total, setTotal] = useState(0);
+  const [totalPages, setTotalPages] = useState(1);
+  const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(true);
   const [feedFilter, setFeedFilter] = useState<string>("all");
   const [composer, setComposer] = useState("");
@@ -51,18 +59,43 @@ export function CommunityFeedPanel({
   const [posting, setPosting] = useState(false);
   const [socketLive, setSocketLive] = useState(false);
   const [savedIds, setSavedIds] = useState<Set<string>>(() => loadSavedIds());
+  const [replyTarget, setReplyTarget] = useState<CommunityPost | null>(null);
+  const [flashPostId, setFlashPostId] = useState<string | null>(null);
+  const flashTimerRef = useRef<number | null>(null);
+  const composerAnchorRef = useRef<HTMLDivElement | null>(null);
+  const composerTextareaRef = useRef<HTMLTextAreaElement | null>(null);
+  const pageRef = useRef(page);
+  const feedFilterRef = useRef(feedFilter);
 
-  const refresh = useCallback(async () => {
-    const rows = await getCommunityFeedAction(email);
-    setFeed(rows);
-  }, [email]);
+  useEffect(() => {
+    pageRef.current = page;
+  }, [page]);
+  useEffect(() => {
+    feedFilterRef.current = feedFilter;
+  }, [feedFilter]);
+
+  const fetchFeed = useCallback(
+    async (pageNum: number) => {
+      const data = await getCommunityFeedAction(email, {
+        page: pageNum,
+        pageSize: COMMUNITY_FEED_PAGE_SIZE,
+        msFilter: feedFilter === "all" ? null : feedFilter,
+      });
+      setFeed(data.posts);
+      setTotal(data.total);
+      setTotalPages(data.totalPages);
+      setPage(data.page);
+      return data;
+    },
+    [email, feedFilter],
+  );
 
   useEffect(() => {
     let cancelled = false;
     void (async () => {
       setLoading(true);
       try {
-        await refresh();
+        await fetchFeed(page);
       } finally {
         if (!cancelled) setLoading(false);
       }
@@ -70,7 +103,7 @@ export function CommunityFeedPanel({
     return () => {
       cancelled = true;
     };
-  }, [refresh]);
+  }, [page, fetchFeed]);
 
   useEffect(() => {
     const socket: Socket = io({
@@ -82,19 +115,57 @@ export function CommunityFeedPanel({
     socket.on("disconnect", () => setSocketLive(false));
     socket.on("connect_error", () => setSocketLive(false));
     socket.on("feed:refresh", () => {
-      void refresh();
+      const p = pageRef.current;
+      const f = feedFilterRef.current;
+      void (async () => {
+        const data = await getCommunityFeedAction(email, {
+          page: p,
+          pageSize: COMMUNITY_FEED_PAGE_SIZE,
+          msFilter: f === "all" ? null : f,
+        });
+        setFeed(data.posts);
+        setTotal(data.total);
+        setTotalPages(data.totalPages);
+        setPage(data.page);
+      })();
     });
     return () => {
       socket.disconnect();
     };
-  }, [refresh]);
+  }, [email]);
 
-  const filteredFeed = useMemo(() => {
-    if (feedFilter === "all") return feed;
-    return feed.filter(
-      (x) => x.ms === feedFilter || (feedFilter === "bg" && x.ms === "bg"),
-    );
-  }, [feed, feedFilter]);
+  useEffect(() => {
+    return () => {
+      if (flashTimerRef.current) window.clearTimeout(flashTimerRef.current);
+    };
+  }, []);
+
+  const jumpToPost = useCallback(
+    (id: string) => {
+      const el = document.getElementById(communityPostElId(id));
+      if (!el) {
+        toast.show(
+          "That post isn’t visible with the current filter — try “All”.",
+        );
+        return;
+      }
+      el.scrollIntoView({ behavior: "smooth", block: "center" });
+      setFlashPostId(id);
+      if (flashTimerRef.current) window.clearTimeout(flashTimerRef.current);
+      flashTimerRef.current = window.setTimeout(() => {
+        setFlashPostId(null);
+        flashTimerRef.current = null;
+      }, 1400);
+    },
+    [toast],
+  );
+
+  const rangeLabel = useMemo(() => {
+    if (total === 0) return null;
+    const start = (page - 1) * COMMUNITY_FEED_PAGE_SIZE + 1;
+    const end = Math.min(page * COMMUNITY_FEED_PAGE_SIZE, total);
+    return `${start}–${end} of ${total}`;
+  }, [page, total]);
 
   const toggleSaved = (id: string) => {
     setSavedIds((prev) => {
@@ -110,14 +181,23 @@ export function CommunityFeedPanel({
     if (posting) return;
     setPosting(true);
     try {
-      const res = await createCommunityPostAction(email, { body: composer, ms });
+      const res = await createCommunityPostAction(email, {
+        body: composer,
+        ms,
+        replyToId: replyTarget?.id ?? null,
+      });
       if (!res.ok) {
         toast.show(res.error);
         return;
       }
       setComposer("");
+      setReplyTarget(null);
       toast.show("Posted to community");
-      await refresh();
+      if (page !== 1) {
+        setPage(1);
+      } else {
+        await fetchFeed(1);
+      }
     } finally {
       setPosting(false);
     }
@@ -146,12 +226,18 @@ export function CommunityFeedPanel({
     );
   };
 
-  const replyPrefill = (post: CommunityPost) => {
-    const who = post.name.replace(/^Applicant\s*·\s*/i, "").trim() || "member";
-    setComposer((c) =>
-      c.trim() ? `${c}\n\nRe @${who}: ` : `Re @${who}: `,
-    );
-    toast.show("Reply draft ready — add your message and post");
+  const startReply = (post: CommunityPost) => {
+    setReplyTarget(post);
+    toast.show("Replying — type below, then post");
+    requestAnimationFrame(() => {
+      composerAnchorRef.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+      window.setTimeout(() => {
+        composerTextareaRef.current?.focus({ preventScroll: true });
+      }, 400);
+    });
   };
 
   return (
@@ -185,7 +271,10 @@ export function CommunityFeedPanel({
               key={f}
               type="button"
               className={`fch ${feedFilter === f ? "on" : ""}`}
-              onClick={() => setFeedFilter(f)}
+              onClick={() => {
+                setFeedFilter(f);
+                setPage(1);
+              }}
             >
               {f === "all"
                 ? "All"
@@ -197,7 +286,12 @@ export function CommunityFeedPanel({
         </div>
       </div>
 
-      <div className="card">
+      <div
+        ref={composerAnchorRef}
+        id="community-composer"
+        className="scroll-mt-[88px]"
+      >
+        <div className="card">
         <div className="chd">
           <span className="ctit">New report</span>
           <span className="ctag">
@@ -217,7 +311,22 @@ export function CommunityFeedPanel({
           ))}
         </div>
         <div className="px-3 pb-3">
+          {replyTarget ? (
+            <div className="freply-banner">
+              <span>
+                Replying to <strong>{replyTarget.name}</strong>
+              </span>
+              <button
+                type="button"
+                className="freply-banner-x"
+                onClick={() => setReplyTarget(null)}
+              >
+                Cancel
+              </button>
+            </div>
+          ) : null}
           <textarea
+            ref={composerTextareaRef}
             className="mb-2 min-h-[88px] w-full resize-y rounded-md border border-[var(--navy4)] bg-[var(--navy2)] px-3 py-2 text-[13px] text-[var(--t1)] placeholder:text-[var(--t3)]"
             placeholder="What changed on your application? (plain text — no HTML)"
             value={composer}
@@ -240,15 +349,30 @@ export function CommunityFeedPanel({
           </div>
         </div>
       </div>
+      </div>
 
-      {loading ? (
+      {loading && feed.length === 0 ? (
         <div className="py-8 text-center text-sm text-[var(--t3)]">
           Loading community…
         </div>
       ) : null}
 
-      {filteredFeed.map((c) => (
-        <div key={c.id} className="fitem" data-ms={c.ms}>
+      {loading && feed.length > 0 ? (
+        <div className="py-2 text-center text-[11px] text-[var(--t3)]">
+          Updating feed…
+        </div>
+      ) : null}
+
+      {feed.map((c) => (
+        <div
+          key={c.id}
+          id={communityPostElId(c.id)}
+          className={`fitem ${flashPostId === c.id ? "fitem--flash" : ""}`}
+          data-ms={c.ms}
+        >
+          {c.replyTo ? (
+            <ReplyReferenceBar refData={c.replyTo} onJump={jumpToPost} />
+          ) : null}
           <div className="ftop">
             <div className="fav">{c.initials}</div>
             <div>
@@ -284,7 +408,7 @@ export function CommunityFeedPanel({
             <button
               type="button"
               className="fabtn"
-              onClick={() => replyPrefill(c)}
+              onClick={() => startReply(c)}
             >
               💬 Reply
             </button>
@@ -298,6 +422,72 @@ export function CommunityFeedPanel({
           </div>
         </div>
       ))}
+
+      {!loading && total === 0 ? (
+        <div className="py-8 text-center text-sm text-[var(--t3)]">
+          No posts match this filter yet.
+        </div>
+      ) : null}
+
+      {total > 0 ? (
+        <div className="flex flex-wrap items-center justify-between gap-3 border-t border-[var(--border)] pt-4">
+          <span className="text-[12px] text-[var(--t2)]">
+            Showing {rangeLabel}
+            <span className="text-[var(--t3)]">
+              {" "}
+              · {COMMUNITY_FEED_PAGE_SIZE} per page
+            </span>
+          </span>
+          <div className="flex flex-wrap items-center gap-2">
+            <button
+              type="button"
+              className="fch"
+              disabled={loading || page <= 1}
+              onClick={() => setPage((p) => Math.max(1, p - 1))}
+            >
+              Previous
+            </button>
+            <span className="px-1 text-[11px] text-[var(--t3)]">
+              Page {page} / {totalPages}
+            </span>
+            <button
+              type="button"
+              className="fch"
+              disabled={loading || page >= totalPages}
+              onClick={() => setPage((p) => p + 1)}
+            >
+              Next
+            </button>
+          </div>
+        </div>
+      ) : null}
     </div>
+  );
+}
+
+function ReplyReferenceBar({
+  refData,
+  onJump,
+}: {
+  refData: CommunityReplyRef;
+  onJump: (postId: string) => void;
+}) {
+  const shortName =
+    refData.name.replace(/^Applicant\s*·\s*/i, "").trim() || refData.name;
+  const label = shortName.startsWith("@") ? shortName : `@${shortName}`;
+  return (
+    <button
+      type="button"
+      className="freply-bar"
+      onClick={() => onJump(refData.id)}
+      aria-label={`Jump to original message from ${refData.name}`}
+    >
+      <span className="freply-l" aria-hidden />
+      <div className="fav freply-mini">{refData.initials}</div>
+      <div className="freply-main">
+        <span className="freply-name">{label}</span>
+        <span className="freply-snippet">{refData.snippet}</span>
+      </div>
+    </button>
   );
 }

@@ -7,6 +7,7 @@ import type {
 } from "@/app/actions/aggregate";
 import type { ProfileCompleteness } from "@/lib/profile-completeness";
 import type { PprEstimate } from "@/lib/ppr-estimate";
+import type { CohortInsight, MilestoneDefRow } from "@/lib/cohort-dynamic";
 import type { CohortStats, MilestoneKey, UserProfile } from "@/lib/types";
 
 export type DashboardContextValue = {
@@ -36,7 +37,8 @@ export type DashboardContextValue = {
   ppr: PprEstimate | null;
   completeness: ProfileCompleteness | null;
   similarCohortsDisplay: CohortSummaryRow[];
-  cohortInsightHtml: string | null;
+  cohortInsights: CohortInsight[];
+  milestoneDefsForCohort: MilestoneDefRow[];
   cohortTotal: number;
   ringOffset: number;
   shareUrl: string;

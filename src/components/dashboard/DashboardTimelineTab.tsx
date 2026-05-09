@@ -1,21 +1,22 @@
 "use client";
 
-import { MILESTONE_DEFS } from "@/lib/constants";
 import { useDashboard } from "@/components/dashboard/DashboardContext";
 import { DashboardRails } from "@/components/dashboard/DashboardRails";
 import { ProfileCompletenessCard } from "@/components/dashboard/ProfileCompletenessCard";
+import type { MilestoneDefRow } from "@/lib/cohort-dynamic";
 import type { MilestoneKey } from "@/lib/types";
 import { fmtDate, fmtShortUpdated } from "@/lib/format";
 
 function dotClass(
   profile: { milestones: Record<MilestoneKey, { date: string | null }> },
+  defs: MilestoneDefRow[],
   idx: number,
   key: MilestoneKey,
   hasDate: boolean,
 ): string {
   if (!hasDate) return "pend";
   let lastDone = -1;
-  MILESTONE_DEFS.forEach((d, i) => {
+  defs.forEach((d, i) => {
     if (profile.milestones[d.key]?.date) lastDone = i;
   });
   if (idx === lastDone) return "now";
@@ -40,7 +41,8 @@ export function DashboardTimelineTab() {
     pct,
     ringOffset,
     similarCohortsDisplay,
-    cohortInsightHtml,
+    cohortInsights,
+    milestoneDefsForCohort,
     cohortTotal,
   } = useDashboard();
 
@@ -87,7 +89,7 @@ export function DashboardTimelineTab() {
           ppr={ppr}
           cohort={cohortDisplay}
           similarCohorts={similarCohortsDisplay}
-          cohortInsightHtml={cohortInsightHtml}
+          cohortInsights={cohortInsights}
         />
       </div>
 
@@ -101,58 +103,46 @@ export function DashboardTimelineTab() {
         />
       ) : null}
 
-      <div className="card">
+      <div className="card card-timeline">
         <div className="chd">
           <span className="ctit">Your milestone timeline</span>
-          <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:gap-2">
-            <span className="hidden text-[11px] text-[var(--t3)] sm:inline">
-              Hover any row → click to edit date
+          <div className="flex flex-col gap-1.5 sm:flex-row sm:items-center sm:gap-3">
+            <span className="hidden text-[11px] leading-snug text-[var(--t3)] sm:inline">
+              Estimates use your <strong className="text-[var(--t2)]">AOR date</strong>{" "}
+              and this cohort&apos;s median PPR ({median}d). Add dates below to
+              replace estimates.
             </span>
-            <span className="text-[10px] text-[var(--t3)] sm:hidden">
-              Tap a row to add or edit dates
+            <span className="text-[10px] leading-snug text-[var(--t3)] sm:hidden">
+              Estimates from cohort median <strong className="text-[var(--t2)]">{median}d</strong> PPR.
             </span>
-            <span className="ctag">
+            <span className="ctag shrink-0">
               {profile.stream} · {profile.type}
             </span>
           </div>
         </div>
         <div>
-          {MILESTONE_DEFS.map((def, i) => {
+          {milestoneDefsForCohort.map((def, i) => {
             const m = profile.milestones[def.key];
             const hasDate = !!m.date;
-            const isLast = i === MILESTONE_DEFS.length - 1;
+            const isLast = i === milestoneDefsForCohort.length - 1;
             const n = cohortDisplay.per_milestone_n[def.key] ?? 0;
             const cp = Math.round((n / cohortTotal) * 100);
+            const pickerOpen = openPicker === def.key;
             return (
               <div key={def.key} className="tlrow">
                 <div className="tll">
-                  <div className="tldw">
-                    <span className="tldt">
-                      {hasDate ? fmtDate(m.date) : def.est}
+                  <div className="tl-date-stack">
+                    <span className="tldt-main">
+                      {hasDate ? fmtDate(m.date) : "Not set"}
                     </span>
-                    <button
-                      type="button"
-                      className="tledit"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setOpenPicker((k) => (k === def.key ? null : def.key));
-                      }}
-                    >
-                      {hasDate ? "✏ Edit date" : "+ Add date"}
-                    </button>
-                    <input
-                      className={`tldp ${openPicker === def.key ? "open" : ""}`}
-                      type="date"
-                      value={m.date ?? ""}
-                      onChange={(e) =>
-                        void onSaveMilestone(def.key, e.target.value)
-                      }
-                    />
+                    {!hasDate ? (
+                      <span className="tldt-est">Est. {def.est}</span>
+                    ) : null}
                   </div>
                 </div>
                 <div className="tlc">
                   <div
-                    className={`tldot ${dotClass(profile, i, def.key, hasDate)}`}
+                    className={`tldot ${dotClass(profile, milestoneDefsForCohort, i, def.key, hasDate)}`}
                   />
                   {!isLast ? (
                     <div className={`tlln ${hasDate ? "done" : ""}`} />
@@ -166,6 +156,43 @@ export function DashboardTimelineTab() {
                     </span>
                   </div>
                   <div className="tldesc">{def.desc}</div>
+                  {pickerOpen ? (
+                    <div className="tl-date-panel">
+                      <span className="tl-date-panel-lbl">
+                        {hasDate ? "Change date" : "Set milestone date"}
+                      </span>
+                      <div className="tl-date-panel-row">
+                        <input
+                          type="date"
+                          className="tl-date-input"
+                          value={m.date ?? ""}
+                          onChange={(e) =>
+                            void onSaveMilestone(def.key, e.target.value)
+                          }
+                          autoFocus
+                        />
+                        <button
+                          type="button"
+                          className="tl-date-dismiss"
+                          onClick={() => setOpenPicker(null)}
+                        >
+                          Close
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <button
+                      type="button"
+                      className="tl-set-date"
+                      onClick={() =>
+                        setOpenPicker((k) =>
+                          k === def.key ? null : def.key,
+                        )
+                      }
+                    >
+                      {hasDate ? "Change date" : "Add date"}
+                    </button>
+                  )}
                   <div
                     className={`tlsaved ${savedFlash === def.key ? "is-visible" : ""}`}
                   >

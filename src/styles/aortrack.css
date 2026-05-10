@@ -1,9 +1,9 @@
 :root {
   --red:#c0392b;--navy:#0f1923;--navy2:#162030;--navy3:#1e2d3d;--navy4:#253547;
   --w:#fff;--border:rgba(255,255,255,.08);--bl:rgba(255,255,255,.04);
-  --t1:#f5f8fb;--t2:#c4d0dc;--t3:#8fa3b8;
+  --t1:#e8edf2;--t2:#8fa3b8;--t3:#4a6070;
   --gb:#1d5c35;--ab:#5a3d0e;
-  --f: var(--font-dm-sans), "DM Sans", system-ui, sans-serif;
+  --f: var(--font-sora), "Sora", sans-serif;
   --m: var(--font-dm-mono), "DM Mono", monospace;
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -417,7 +417,7 @@ h1.ht .ac{color:var(--red)}
 .ebox{text-align:center;background:rgba(192,57,43,.08);border:1px solid rgba(192,57,43,.2);border-radius:8px;padding:10px;margin-top:10px}
 .elbl{font-size:9px;color:var(--t3);text-transform:uppercase;letter-spacing:.06em}
 .eval{font-size:16px;font-weight:700;font-family:var(--m);color:var(--red);margin-top:3px}
-.ebox .esub{font-size:10px;color:var(--t3);margin-top:2px}
+.esub{font-size:10px;color:var(--t3);margin-top:2px}
 .iitem{display:flex;gap:8px;padding:7px 0;border-bottom:1px solid var(--bl)}
 .iitem:last-child{border-bottom:none;padding-bottom:0}
 .idot{width:6px;height:6px;border-radius:50%;flex-shrink:0;margin-top:5px}

@@ -1,0 +1,1380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>AORTrack — Free, Open-Source Canadian PR Processing Time Tracker</title>
+<meta name="description" content="Track your Canadian permanent residency processing time with real crowd-sourced data from 14,847 applicants. Free forever, open-source, no signup."/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,ital,wght@9..144,0,400;9..144,0,700;9..144,0,800;9..144,0,900;9..144,1,400;9..144,1,800&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --cream:#FFFCF5;--cream2:#F5F0E6;--cream3:#EDE8DC;
+  --navy:#1A2332;--navy2:#253347;--navy3:#0D1824;
+  --red:#C8281E;--red2:#a81f17;
+  --green:#2D6A4F;--g4:#4ade80;--gbg:#EAF4EE;
+  --amber:#B5651D;--abg:#FDF3E3;
+  --blue:#1E5F8C;--bbg:#E8F2FB;
+  --purple:#5B21B6;--pbg:#EDE9FE;
+  --teal:#0D7377;--tbg:#E0F4F4;
+  --border:#D5CFBF;--border2:#C8C0AF;
+  --muted:#7A7060;--muted2:#9A8E7E;
+  --fh:'Fraunces',Georgia,serif;
+  --fb:'DM Sans',sans-serif;
+  --fm:'DM Mono',monospace;
+  --max:1160px;
+}
+html{scroll-behavior:smooth}
+body{background:var(--cream);color:var(--navy);font-family:var(--fb);font-size:16px;line-height:1.65;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:5px}
+
+/* ══════════════════════════════
+   NAV
+══════════════════════════════ */
+.nav{position:sticky;top:0;z-index:100;background:var(--navy);border-bottom:1px solid rgba(255,255,255,.07);padding:0 clamp(16px,4vw,48px);display:flex;align-items:center;justify-content:space-between;height:62px}
+.nav-left{display:flex;align-items:center;gap:32px}
+.nav-brand{display:flex;align-items:center;gap:9px}
+.nav-logo{width:26px;height:26px}
+.nav-name{font-family:var(--fh);font-size:1rem;font-weight:800;color:#fff;letter-spacing:-.02em}
+.nav-links{display:flex;gap:4px}
+.nav-links a{font-size:.82rem;font-weight:500;color:rgba(255,255,255,.5);padding:6px 10px;border-radius:6px;transition:all .15s}
+.nav-links a:hover{color:#fff;background:rgba(255,255,255,.06)}
+.nav-right{display:flex;align-items:center;gap:8px}
+.nav-oss{display:flex;align-items:center;gap:5px;font-size:.73rem;color:rgba(255,255,255,.4);border:1px solid rgba(255,255,255,.1);border-radius:100px;padding:5px 12px;transition:all .15s}
+.nav-oss:hover{color:#c4b5fd;border-color:rgba(91,33,182,.5)}
+.nav-oss svg{width:12px;height:12px;fill:currentColor;flex-shrink:0}
+.nav-free{font-size:.72rem;font-weight:700;color:#fbbf24;border:1px solid rgba(181,101,29,.4);border-radius:100px;padding:5px 12px;background:rgba(181,101,29,.1);}
+.nav-cta{background:var(--red);color:#fff;padding:8px 18px;border-radius:7px;font-size:.82rem;font-weight:700;transition:background .15s}
+.nav-cta:hover{background:var(--red2)}
+
+/* ══════════════════════════════
+   HERO
+══════════════════════════════ */
+.hero{background:var(--navy);padding:clamp(52px,7vw,88px) clamp(16px,4vw,48px) 0;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 65% at 85% 30%,rgba(45,106,79,.15) 0%,transparent 65%),radial-gradient(ellipse 40% 40% at 8% 75%,rgba(30,95,140,.07) 0%,transparent 55%);pointer-events:none}
+.hero-maple{position:absolute;right:clamp(400px,36%,580px);top:30px;font-size:clamp(90px,14vw,180px);opacity:.03;pointer-events:none;line-height:1}
+.hero-grid-bg{position:absolute;inset:0;background-image:repeating-linear-gradient(0deg,transparent,transparent 44px,rgba(255,255,255,.018) 44px,rgba(255,255,255,.018) 45px),repeating-linear-gradient(90deg,transparent,transparent 44px,rgba(255,255,255,.018) 44px,rgba(255,255,255,.018) 45px);pointer-events:none}
+
+.hero-inner{max-width:var(--max);margin:0 auto;display:grid;grid-template-columns:1fr 480px;gap:3.5rem;align-items:end;position:relative;z-index:2}
+.hero-left{}
+
+/* Badge row */
+.hero-badges{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:1.2rem}
+.hb{display:inline-flex;align-items:center;gap:5px;padding:4px 12px;border-radius:100px;font-size:.67rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase}
+.hb-oss{color:#c4b5fd;background:rgba(91,33,182,.2);border:1px solid rgba(91,33,182,.4)}
+.hb-oss svg{width:10px;height:10px;fill:currentColor}
+.hb-free{color:#fbbf24;background:rgba(181,101,29,.18);border:1px solid rgba(181,101,29,.38)}
+.hb-live{color:var(--g4);background:rgba(45,106,79,.22);border:1px solid rgba(45,106,79,.45)}
+.hb-dot{width:5px;height:5px;border-radius:50%;background:var(--g4);animation:blink 2s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
+
+.hero-h1{font-family:var(--fh);font-size:clamp(2.4rem,4.5vw,3.6rem);font-weight:900;color:#fff;line-height:1.03;letter-spacing:-.04em;margin-bottom:1.2rem}
+.hero-h1 em{font-style:italic;color:var(--g4)}
+.hero-sub{font-size:1.05rem;color:rgba(255,255,255,.55);line-height:1.75;font-weight:300;max-width:500px;margin-bottom:2rem}
+
+/* OS strip */
+.hero-os-strip{display:flex;align-items:center;gap:0;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:10px;overflow:hidden;margin-bottom:2rem;width:fit-content}
+.hos-item{display:flex;align-items:center;gap:6px;padding:9px 16px;font-size:.72rem;font-weight:600;color:rgba(255,255,255,.55);border-right:1px solid rgba(255,255,255,.07)}
+.hos-item:last-child{border-right:none}
+.hos-item svg{width:11px;height:11px;fill:currentColor;flex-shrink:0}
+.hos-item.oss{color:#c4b5fd}
+.hos-item.free{color:#fbbf24}
+.hos-item.nosig{color:var(--g4)}
+
+.hero-actions{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:2.8rem}
+.btn-hero-red{padding:13px 28px;border-radius:8px;font-size:.95rem;font-weight:700;background:var(--red);color:#fff;border:2px solid var(--red);display:inline-flex;align-items:center;gap:8px;transition:all .15s}
+.btn-hero-red:hover{background:var(--red2);transform:translateY(-2px)}
+.btn-hero-out{padding:13px 22px;border-radius:8px;font-size:.9rem;font-weight:500;background:transparent;color:#fff;border:2px solid rgba(255,255,255,.2);display:inline-flex;align-items:center;gap:8px;transition:all .15s}
+.btn-hero-out:hover{border-color:rgba(255,255,255,.5)}
+.btn-hero-gh{padding:13px 22px;border-radius:8px;font-size:.9rem;font-weight:600;background:transparent;color:#c4b5fd;border:2px solid rgba(91,33,182,.35);display:inline-flex;align-items:center;gap:7px;transition:all .15s}
+.btn-hero-gh:hover{border-color:#c4b5fd;background:rgba(91,33,182,.08)}
+.btn-hero-gh svg{width:14px;height:14px;fill:currentColor}
+
+.hero-trust{display:flex;gap:18px;flex-wrap:wrap;padding-bottom:3rem}
+.ht{display:flex;align-items:center;gap:6px;font-size:.79rem;color:rgba(255,255,255,.38);font-weight:500}
+.ht::before{content:'✓';color:var(--g4);font-weight:700;font-size:.84rem}
+.ht.oss-t::before{content:'★';color:#c4b5fd}
+.ht.free-t::before{content:'♥';color:#fbbf24}
+
+/* Hero right: mini dashboard card */
+.hero-card{background:var(--cream);border:2px solid var(--navy2);border-radius:16px;overflow:hidden;margin-bottom:-2px;box-shadow:0 24px 64px rgba(0,0,0,.4)}
+.hc-hd{background:var(--green);padding:13px 18px;display:flex;align-items:center;justify-content:space-between}
+.hc-hd-t{font-family:var(--fh);font-size:.88rem;font-weight:800;color:#fff}
+.hc-live{display:flex;align-items:center;gap:5px;font-size:.68rem;font-weight:700;color:rgba(255,255,255,.8);background:rgba(0,0,0,.2);padding:3px 9px;border-radius:100px}
+.hc-live-dot{width:5px;height:5px;border-radius:50%;background:var(--g4);animation:blink 2s infinite}
+.hc-body{padding:16px 18px}
+.hc-stats{display:grid;grid-template-columns:1fr 1px 1fr 1px 1fr;margin-bottom:14px}
+.hc-stat{text-align:center;padding:0 6px}
+.hc-sv{font-family:var(--fh);font-size:1.5rem;font-weight:900;color:var(--navy);line-height:1}
+.hc-sl{font-size:.58rem;color:var(--muted);margin-top:3px;font-family:var(--fm);text-transform:uppercase;letter-spacing:.04em}
+.hc-div{background:var(--border)}
+.hc-pl{display:flex;justify-content:space-between;font-size:.72rem;margin-bottom:5px}
+.hc-pk{color:var(--muted)}.hc-pv{font-weight:700;color:var(--navy);font-family:var(--fm)}
+.hc-bar{height:7px;background:var(--cream3);border-radius:100px;overflow:hidden;margin-bottom:4px}
+.hc-bar-fill{height:100%;border-radius:100px;background:linear-gradient(90deg,var(--green),var(--g4));width:39%}
+.hc-note{font-size:.64rem;color:var(--muted);margin-bottom:12px}
+.hc-feed{border-top:1px solid var(--border)}
+.hc-row{display:flex;align-items:center;gap:9px;padding:7px 0;border-bottom:1px solid var(--border);font-size:.74rem}
+.hc-row:last-child{border-bottom:none}
+.hc-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.dg{background:var(--green)}.db{background:var(--blue)}.da{background:var(--amber)}
+.hc-txt{flex:1;color:var(--muted)}.hc-txt strong{color:var(--navy)}
+.hc-badge{font-size:.6rem;font-weight:700;background:var(--cream2);color:var(--muted);border:1px solid var(--border);padding:2px 7px;border-radius:100px}
+.hc-cta{display:block;width:100%;margin-top:12px;padding:11px;background:var(--red);color:#fff;border:none;border-radius:8px;font-family:var(--fh);font-size:.88rem;font-weight:800;cursor:pointer;text-align:center;transition:background .15s}
+.hc-cta:hover{background:var(--red2)}
+
+/* ══════════════════════════════
+   STATS TICKER
+══════════════════════════════ */
+.stats-bar{background:var(--cream2);border-top:2px solid var(--navy);border-bottom:2px solid var(--border)}
+.stats-inner{max-width:var(--max);margin:0 auto;padding:0 clamp(16px,4vw,48px);display:grid;grid-template-columns:repeat(5,1fr)}
+.stat-cell{padding:22px 0;text-align:center;border-right:1px solid var(--border);position:relative}
+.stat-cell:last-child{border-right:none}
+.stat-num{font-family:var(--fh);font-size:1.9rem;font-weight:900;color:var(--navy);line-height:1}
+.stat-num span{color:var(--red)}
+.stat-desc{font-size:.72rem;color:var(--muted);margin-top:4px;font-weight:500}
+
+/* ══════════════════════════════
+   HOW IT WORKS
+══════════════════════════════ */
+.section{padding:clamp(60px,7vw,96px) clamp(16px,4vw,48px)}
+.inner{max-width:var(--max);margin:0 auto}
+.eye{font-size:.7rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:.7rem}
+.h2{font-family:var(--fh);font-size:clamp(1.8rem,3vw,2.5rem);font-weight:800;letter-spacing:-.03em;line-height:1.1;margin-bottom:1rem}
+.sub-text{font-size:1rem;color:var(--muted);line-height:1.7;font-weight:300;max-width:620px}
+
+.hiw-section{background:var(--cream2);border-top:2px solid var(--border)}
+.hiw-steps{display:grid;grid-template-columns:repeat(4,1fr);gap:0;position:relative;margin-top:2.5rem}
+.hiw-steps::before{content:'';position:absolute;top:27px;left:8%;right:8%;height:2px;background:var(--border)}
+.hiw-step{text-align:center;padding:0 14px;position:relative}
+.hs-num{width:54px;height:54px;border-radius:50%;background:var(--cream);border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-family:var(--fh);font-size:1.2rem;font-weight:900;color:var(--navy);margin:0 auto 14px}
+.hiw-step.active .hs-num{background:var(--green);border-color:var(--green);color:#fff}
+.hs-title{font-family:var(--fh);font-size:.92rem;font-weight:700;color:var(--navy);margin-bottom:7px}
+.hs-body{font-size:.79rem;color:var(--muted);line-height:1.65}
+.hs-tag{font-size:.64rem;font-weight:700;padding:3px 9px;border-radius:100px;margin-top:9px;display:inline-block;border:1px solid}
+.tag-g{color:var(--green);background:var(--gbg);border-color:#90d4b0}
+.tag-b{color:var(--blue);background:var(--bbg);border-color:#b8d8f0}
+.tag-p{color:var(--purple);background:var(--pbg);border-color:rgba(91,33,182,.3)}
+
+/* ══════════════════════════════
+   FEATURES GRID
+══════════════════════════════ */
+.features-section{border-top:2px solid var(--border)}
+.feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;margin-top:2.5rem}
+.feat-card{border:2px solid var(--border);border-radius:14px;overflow:hidden;transition:box-shadow .2s,transform .2s;background:#fff}
+.feat-card:hover{box-shadow:5px 5px 0 var(--navy);transform:translate(-2px,-2px)}
+.feat-card.featured{border-color:var(--green)}
+.feat-card.featured:hover{box-shadow:5px 5px 0 var(--green)}
+.feat-card.oss-card{border-color:var(--purple)}
+.feat-card.oss-card:hover{box-shadow:5px 5px 0 var(--purple)}
+.feat-card.msg-card{border-color:var(--blue)}
+.feat-card.msg-card:hover{box-shadow:5px 5px 0 var(--blue)}
+.fc-head{padding:16px 20px;display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.fc-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0}
+.ico-g{background:var(--gbg)}.ico-b{background:var(--bbg)}.ico-a{background:var(--abg)}.ico-p{background:var(--pbg)}.ico-n{background:var(--navy2)}.ico-t{background:var(--tbg)}
+.fc-label{font-size:.63rem;font-weight:700;padding:3px 9px;border-radius:100px;border:1px solid}
+.lbl-new{color:var(--red);background:rgba(200,40,30,.08);border-color:rgba(200,40,30,.25)}
+.lbl-oss{color:var(--purple);background:var(--pbg);border-color:rgba(91,33,182,.25)}
+.lbl-free{color:var(--amber);background:var(--abg);border-color:rgba(181,101,29,.3)}
+.lbl-core{color:var(--green);background:var(--gbg);border-color:#90d4b0}
+.fc-body{padding:0 20px 18px}
+.fc-title{font-family:var(--fh);font-size:1rem;font-weight:800;color:var(--navy);margin-bottom:6px}
+.fc-desc{font-size:.82rem;color:var(--muted);line-height:1.65;margin-bottom:12px}
+.fc-facts{display:flex;flex-direction:column;gap:4px}
+.fc-fact{font-size:.77rem;color:var(--muted);display:flex;gap:7px;align-items:flex-start}
+.fc-fact::before{content:'→';color:var(--green);font-weight:700;flex-shrink:0;margin-top:1px}
+
+/* ══════════════════════════════
+   COHORT SHOWCASE
+══════════════════════════════ */
+.cohort-section{background:var(--navy);border-top:2px solid var(--navy2)}
+.cohort-inner{max-width:var(--max);margin:0 auto;padding:clamp(60px,7vw,96px) clamp(16px,4vw,48px);display:grid;grid-template-columns:1fr 500px;gap:4rem;align-items:center}
+.cohort-text .eye{color:rgba(255,255,255,.3)}
+.cohort-text .h2{color:#fff}
+.cohort-text .h2 em{font-style:italic;color:var(--g4)}
+.cohort-text .sub-text{color:rgba(255,255,255,.5)}
+.cohort-points{display:flex;flex-direction:column;gap:14px;margin-top:2rem}
+.cp{display:flex;gap:12px;align-items:flex-start}
+.cp-icon{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:.9rem;flex-shrink:0}
+.cp-body{}
+.cp-title{font-size:.88rem;font-weight:700;color:#fff;margin-bottom:2px}
+.cp-desc{font-size:.78rem;color:rgba(255,255,255,.45);line-height:1.55}
+
+/* Cohort visual card */
+.cohort-card{background:var(--cream);border-radius:16px;overflow:hidden;border:2px solid var(--border);box-shadow:0 20px 60px rgba(0,0,0,.35)}
+.cc-nav{background:var(--navy);padding:11px 16px;display:flex;align-items:center;gap:8px;border-bottom:1px solid rgba(255,255,255,.07)}
+.cc-nav-title{font-family:var(--fh);font-size:.82rem;font-weight:800;color:#fff;flex:1}
+.cc-tag{font-size:.62rem;font-weight:700;padding:2px 8px;border-radius:100px;font-family:var(--fm)}
+.cc-tag-cec{color:var(--g4);background:rgba(45,106,79,.25);border:1px solid rgba(45,106,79,.5)}
+.cc-tag-cnt{color:rgba(255,255,255,.4);background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12)}
+.cc-body{padding:14px 16px;display:flex;flex-direction:column;gap:12px}
+/* KPIs */
+.cc-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.cc-kpi{background:#fff;border:1.5px solid var(--border);border-radius:8px;padding:9px;text-align:center}
+.cc-kval{font-family:var(--fh);font-size:1.1rem;font-weight:900;line-height:1}
+.cc-kval.g{color:var(--green)}.cc-kval.b{color:var(--blue)}.cc-kval.a{color:var(--amber)}.cc-kval.r{color:var(--red)}
+.cc-klbl{font-size:.56rem;color:var(--muted);font-family:var(--fm);text-transform:uppercase;letter-spacing:.04em;margin-top:3px}
+/* Histogram */
+.cc-chart-hd{display:flex;justify-content:space-between;align-items:center;font-size:.66rem;color:var(--muted);margin-bottom:7px}
+.cc-chart-hd strong{color:var(--navy);font-size:.7rem}
+.cc-hist{display:flex;align-items:flex-end;gap:3px;height:60px}
+.cc-hcol{display:flex;flex-direction:column;align-items:center;flex:1;gap:2px}
+.cc-hbar{width:100%;border-radius:3px 3px 0 0;min-height:3px}
+.cc-hbar.you{outline:2px solid var(--red);outline-offset:1px}
+.cc-hlbl{font-size:.5rem;color:var(--muted2);font-family:var(--fm)}
+/* Percentile */
+.cc-pct{background:var(--cream2);border:1.5px solid var(--border);border-radius:9px;padding:10px 13px}
+.cc-pct-hd{display:flex;justify-content:space-between;align-items:center;margin-bottom:7px}
+.cc-pct-title{font-size:.7rem;font-weight:700;color:var(--navy)}
+.cc-pct-badge{font-size:.64rem;font-weight:700;color:var(--amber);background:var(--abg);border:1px solid rgba(181,101,29,.25);padding:2px 8px;border-radius:100px;font-family:var(--fm)}
+.cc-rank-bar{height:9px;background:linear-gradient(90deg,var(--green) 0%,#fbbf24 50%,var(--red) 100%);border-radius:100px;position:relative;margin-bottom:5px}
+.cc-rank-dot{position:absolute;top:-4px;width:17px;height:17px;border-radius:50%;background:#fff;border:3px solid var(--navy);left:28%;transform:translateX(-50%);box-shadow:0 2px 6px rgba(0,0,0,.2)}
+.cc-rank-lbls{display:flex;justify-content:space-between;font-size:.58rem;color:var(--muted);font-family:var(--fm)}
+/* Stream compare */
+.cc-compare{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.cc-cmp{background:#fff;border:1.5px solid var(--border);border-radius:8px;padding:8px 11px;display:flex;align-items:center;gap:8px}
+.cc-cmp.active{border-color:var(--green);background:var(--gbg)}
+.cc-cmp-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.cc-cmp-info{flex:1}
+.cc-cmp-name{font-size:.7rem;font-weight:700;color:var(--navy)}
+.cc-cmp-days{font-size:.62rem;color:var(--muted);font-family:var(--fm)}
+.cc-cmp-bar{height:4px;background:var(--cream3);border-radius:100px;overflow:hidden;margin-top:4px}
+.cc-cmp-fill{height:100%;border-radius:100px}
+
+/* ══════════════════════════════
+   MESSAGING SHOWCASE
+══════════════════════════════ */
+.msg-section{border-top:2px solid var(--border);background:var(--cream2)}
+.msg-inner{max-width:var(--max);margin:0 auto;padding:clamp(60px,7vw,96px) clamp(16px,4vw,48px);display:grid;grid-template-columns:500px 1fr;gap:4rem;align-items:center}
+.msg-card{background:var(--cream);border-radius:16px;overflow:hidden;border:2px solid var(--border);box-shadow:0 12px 40px rgba(26,35,50,.12)}
+.msg-hd{background:var(--navy);padding:12px 16px;display:flex;align-items:center;justify-content:space-between}
+.msg-hd-title{font-family:var(--fh);font-size:.85rem;font-weight:800;color:#fff}
+.msg-new{font-size:.62rem;font-weight:700;color:#fff;background:var(--red);padding:2px 8px;border-radius:100px;font-family:var(--fm)}
+.msg-channels{display:flex;background:#fff;border-bottom:1px solid var(--border)}
+.msg-ch{flex:1;text-align:center;padding:9px 6px;font-size:.65rem;font-weight:700;color:var(--muted);border-bottom:2px solid transparent;font-family:var(--fm);display:flex;align-items:center;justify-content:center;gap:4px}
+.msg-ch.active{color:var(--navy);border-bottom-color:var(--navy)}
+.msg-alerts{padding:0 14px}
+.msg-alert{display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);align-items:flex-start}
+.msg-alert:last-child{border-bottom:none}
+.ma-icon{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:.82rem;flex-shrink:0;margin-top:1px}
+.ma-g{background:var(--gbg)}.ma-b{background:var(--bbg)}.ma-a{background:var(--abg)}.ma-p{background:var(--pbg)}
+.ma-body{flex:1}
+.ma-title{font-size:.75rem;font-weight:700;color:var(--navy);line-height:1.35;margin-bottom:2px}
+.ma-sub{font-size:.65rem;color:var(--muted);line-height:1.4}
+.ma-time{font-size:.6rem;color:var(--muted2);font-family:var(--fm);margin-top:2px}
+.ma-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;margin-top:5px}
+.dot-unread{background:var(--blue)}
+.dot-read{background:var(--border)}
+.msg-prefs{padding:10px 14px 14px;background:var(--cream2);border-top:1px solid var(--border)}
+.mp-head{font-size:.63rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;font-family:var(--fm);margin-bottom:8px}
+.mp-toggles{display:flex;flex-direction:column;gap:6px}
+.mp-toggle{display:flex;align-items:center;justify-content:space-between}
+.mp-label{font-size:.7rem;color:var(--navy);font-weight:600}
+.mp-sub{font-size:.61rem;color:var(--muted)}
+.mp-pill{width:30px;height:17px;border-radius:100px;position:relative;flex-shrink:0}
+.mp-pill.on{background:var(--green)}.mp-pill.off{background:var(--border)}
+.mp-pill::after{content:'';position:absolute;top:2px;width:13px;height:13px;border-radius:50%;background:#fff}
+.mp-pill.on::after{left:15px}.mp-pill.off::after{left:2px}
+
+/* Messaging text side */
+.msg-text .eye{color:var(--muted)}
+.msg-points{display:flex;flex-direction:column;gap:16px;margin-top:2rem}
+.mp-point{display:flex;gap:12px;align-items:flex-start}
+.mpp-icon{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:.95rem;border:1.5px solid var(--border);background:var(--cream);flex-shrink:0}
+.mpp-title{font-size:.88rem;font-weight:700;color:var(--navy);margin-bottom:3px}
+.mpp-desc{font-size:.78rem;color:var(--muted);line-height:1.55}
+.msg-channels-promo{display:flex;gap:8px;flex-wrap:wrap;margin-top:2rem}
+.mcp{display:flex;align-items:center;gap:6px;padding:8px 14px;border:1.5px solid var(--border);border-radius:8px;font-size:.78rem;font-weight:600;color:var(--navy);background:#fff;transition:all .15s}
+.mcp:hover{border-color:var(--navy);transform:translateY(-1px)}
+
+/* ══════════════════════════════
+   STREAMS
+══════════════════════════════ */
+.stream-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.2rem;margin-top:2.5rem}
+.stream-card{border:2px solid var(--navy);border-radius:13px;overflow:hidden;transition:box-shadow .15s,transform .15s;cursor:pointer}
+.stream-card:hover{box-shadow:4px 4px 0 var(--navy);transform:translate(-2px,-2px)}
+.stream-card.feat{border-color:var(--green)}
+.stream-card.feat:hover{box-shadow:4px 4px 0 var(--green)}
+.sc-hd{padding:16px 18px;display:flex;align-items:flex-start;justify-content:space-between;gap:8px}
+.sc-hd-g{background:var(--green)}.sc-hd-n{background:var(--navy)}.sc-hd-b{background:var(--blue)}.sc-hd-t{background:var(--teal)}.sc-hd-a{background:var(--amber)}
+.sc-title{font-family:var(--fh);font-size:.95rem;font-weight:800;color:#fff;margin-bottom:3px}
+.sc-sub{font-size:.7rem;color:rgba(255,255,255,.5)}
+.sc-icon{font-size:1.5rem}
+.sc-bd{padding:14px 18px;background:var(--cream)}
+.sc-avg{font-family:var(--fm);font-size:.77rem;color:var(--muted);margin-bottom:8px}
+.sc-avg strong{color:var(--navy);font-size:1.05rem;font-family:var(--fh);font-weight:800}
+.sc-bar{height:5px;background:var(--cream3);border-radius:100px;overflow:hidden;margin-bottom:10px}
+.sc-fill{height:100%;border-radius:100px;background:linear-gradient(90deg,var(--green),var(--g4))}
+.sc-facts{display:flex;flex-direction:column;gap:4px}
+.sc-fact{font-size:.77rem;display:flex;align-items:flex-start;gap:7px;color:var(--muted)}
+.sc-fact::before{content:'→';color:var(--green);font-weight:700;flex-shrink:0;margin-top:1px}
+
+/* ══════════════════════════════
+   OPEN SOURCE SECTION
+══════════════════════════════ */
+.oss-section{background:var(--navy);border-top:2px solid var(--navy2)}
+.oss-inner{max-width:var(--max);margin:0 auto;padding:clamp(60px,7vw,96px) clamp(16px,4vw,48px);display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:start}
+.oss-text .eye{color:rgba(255,255,255,.3)}
+.oss-text .h2{color:#fff}
+.oss-text .h2 em{font-style:italic;color:#c4b5fd}
+.oss-text .sub-text{color:rgba(255,255,255,.45)}
+.oss-feats{display:flex;flex-direction:column;gap:16px;margin-top:2rem}
+.oss-feat{display:flex;gap:13px;align-items:flex-start}
+.oss-ic{width:38px;height:38px;border-radius:9px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0}
+.oss-ft-title{font-size:.86rem;font-weight:700;color:#fff;margin-bottom:3px}
+.oss-ft-desc{font-size:.78rem;color:rgba(255,255,255,.42);line-height:1.55}
+
+/* GitHub card */
+.gh-card{background:rgba(255,255,255,.04);border:1.5px solid rgba(255,255,255,.09);border-radius:14px;overflow:hidden}
+.gh-bar{background:rgba(255,255,255,.05);padding:12px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,.07)}
+.gh-repo{font-size:.78rem;font-weight:700;color:#fff;display:flex;align-items:center;gap:7px}
+.gh-repo svg{width:13px;height:13px;fill:rgba(255,255,255,.5)}
+.gh-meta{display:flex;gap:12px;font-size:.7rem;color:rgba(255,255,255,.38);font-family:var(--fm)}
+.gh-issue{display:flex;align-items:flex-start;gap:10px;padding:10px 16px;border-bottom:1px solid rgba(255,255,255,.05)}
+.gh-issue:last-child{border-bottom:none}
+.gh-dot-iss{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:4px}
+.dot-open{background:#3fb950}.dot-merged{background:#a371f7}
+.gh-it{font-size:.77rem;color:rgba(255,255,255,.75);margin-bottom:2px}
+.gh-im{font-size:.67rem;color:rgba(255,255,255,.28);font-family:var(--fm)}
+.gh-lbl{font-size:.6rem;font-weight:700;padding:2px 7px;border-radius:100px;flex-shrink:0;margin-top:2px;white-space:nowrap}
+.l-feat{background:rgba(56,139,253,.15);color:#58a6ff;border:1px solid rgba(56,139,253,.3)}
+.l-data{background:rgba(63,185,80,.15);color:#3fb950;border:1px solid rgba(63,185,80,.3)}
+.l-bug{background:rgba(248,81,73,.15);color:#f85149;border:1px solid rgba(248,81,73,.3)}
+.l-ux{background:rgba(163,113,247,.15);color:#a371f7;border:1px solid rgba(163,113,247,.3)}
+.gh-contrib{padding:12px 16px;border-top:1px solid rgba(255,255,255,.06);display:flex;align-items:center;gap:10px}
+.gh-avs{display:flex}
+.gh-av{width:24px;height:24px;border-radius:50%;border:2px solid rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;font-size:.58rem;font-weight:700;color:#fff;margin-left:-7px;font-family:var(--fm)}
+.gh-av:first-child{margin-left:0}
+.gh-contrib-txt{font-size:.73rem;color:rgba(255,255,255,.4);flex:1}
+.gh-contrib-txt strong{color:rgba(255,255,255,.75)}
+.gh-star-btn{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);border-radius:7px;padding:6px 12px;font-size:.7rem;font-weight:700;color:#fff;cursor:pointer;font-family:var(--fm);transition:all .15s;white-space:nowrap}
+.gh-star-btn:hover{background:rgba(255,255,255,.14)}
+
+/* ══════════════════════════════
+   GROWTH GOALS
+══════════════════════════════ */
+.growth-section{border-top:2px solid var(--navy2);background:var(--navy2)}
+.growth-inner{max-width:var(--max);margin:0 auto;padding:clamp(60px,7vw,96px) clamp(16px,4vw,48px)}
+.growth-inner .eye{color:rgba(255,255,255,.3)}
+.growth-inner .h2{color:#fff}
+.growth-inner .sub-text{color:rgba(255,255,255,.42)}
+.g-table{background:rgba(255,255,255,.04);border:1.5px solid rgba(255,255,255,.08);border-radius:12px;overflow:hidden;margin-top:2.5rem}
+.gt-head{display:grid;grid-template-columns:1.8fr 1fr 1fr 1fr 1fr;background:rgba(255,255,255,.04);padding:11px 20px;font-size:.65rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.28);font-family:var(--fm)}
+.gt-row{display:grid;grid-template-columns:1.8fr 1fr 1fr 1fr 1fr;padding:10px 20px;border-top:1px solid rgba(255,255,255,.05);font-size:.8rem;align-items:center}
+.gt-row:hover{background:rgba(255,255,255,.02)}
+.gt-k{color:rgba(255,255,255,.55);font-weight:500}
+.gt-v{color:rgba(255,255,255,.65);font-family:var(--fm);font-size:.77rem}
+.gt-v.goal{color:var(--g4);font-weight:700}
+.gt-v.current{color:#fff;font-weight:600}
+
+/* ══════════════════════════════
+   CTA
+══════════════════════════════ */
+.cta-section{background:var(--green);padding:clamp(64px,8vw,96px) clamp(16px,4vw,48px)}
+.cta-inner{max-width:var(--max);margin:0 auto;display:grid;grid-template-columns:1fr auto;gap:3rem;align-items:center}
+.cta-h2{font-family:var(--fh);font-size:clamp(1.8rem,3vw,2.6rem);font-weight:900;color:#fff;letter-spacing:-.03em;line-height:1.1}
+.cta-sub{font-size:1rem;color:rgba(255,255,255,.65);margin-top:.8rem;font-weight:300}
+.cta-note{margin-top:1rem;padding-top:1rem;border-top:1px solid rgba(255,255,255,.2);font-size:.8rem;color:rgba(255,255,255,.55)}
+.cta-note a{color:#fff;font-weight:600;text-decoration:underline;text-underline-offset:3px}
+.cta-btns{display:flex;flex-direction:column;gap:10px;align-items:flex-end}
+.btn-white{padding:13px 28px;border-radius:8px;font-size:.95rem;font-weight:700;background:#fff;color:var(--green);border:2px solid #fff;display:inline-flex;align-items:center;gap:8px;transition:all .15s;white-space:nowrap}
+.btn-white:hover{background:rgba(255,255,255,.92)}
+.btn-ghost-w{padding:10px 22px;border-radius:8px;font-size:.84rem;font-weight:600;background:transparent;color:rgba(255,255,255,.8);border:2px solid rgba(255,255,255,.3);display:inline-flex;align-items:center;gap:7px;transition:all .15s;white-space:nowrap}
+.btn-ghost-w:hover{border-color:rgba(255,255,255,.7);color:#fff}
+
+/* ══════════════════════════════
+   FOOTER
+══════════════════════════════ */
+.footer{background:var(--navy3);padding:clamp(48px,6vw,72px) clamp(16px,4vw,48px) 0}
+.footer-top{max-width:var(--max);margin:0 auto;display:grid;grid-template-columns:2fr 1fr 1fr 1fr 1fr;gap:3rem;padding-bottom:3rem;border-bottom:1px solid rgba(255,255,255,.06)}
+
+/* Brand col */
+.fg-brand{display:flex;align-items:center;gap:8px;margin-bottom:.6rem}
+.fg-brand-name{font-family:var(--fh);font-size:1.05rem;font-weight:800;color:#fff}
+.fg-desc{font-size:.77rem;color:rgba(255,255,255,.32);line-height:1.7;margin-bottom:1.2rem;max-width:280px}
+.fg-badges{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:1.2rem}
+.fg-b{display:inline-flex;align-items:center;gap:5px;font-size:.67rem;color:rgba(255,255,255,.35);border:1px solid rgba(255,255,255,.1);border-radius:100px;padding:4px 10px}
+.fg-b svg{width:10px;height:10px;fill:currentColor}
+.fg-b.oss{color:#c4b5fd;border-color:rgba(91,33,182,.35)}
+.fg-b.free{color:#fbbf24;border-color:rgba(181,101,29,.35)}
+.fg-social{display:flex;gap:8px}
+.fg-soc-link{width:32px;height:32px;border-radius:7px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.09);display:flex;align-items:center;justify-content:center;font-size:.8rem;transition:all .15s;color:rgba(255,255,255,.45)}
+.fg-soc-link:hover{background:rgba(255,255,255,.12);color:#fff}
+.fg-soc-link svg{width:14px;height:14px;fill:currentColor}
+
+/* Link cols */
+.fg-col-head{font-size:.66rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.28);margin-bottom:14px;font-family:var(--fm)}
+.fg-link{display:flex;align-items:center;gap:6px;font-size:.81rem;color:rgba(255,255,255,.45);margin-bottom:9px;transition:color .15s}
+.fg-link:hover{color:#fff}
+.fg-link-badge{font-size:.58rem;font-weight:700;padding:1px 6px;border-radius:100px;font-family:var(--fm)}
+.lb-new{background:rgba(200,40,30,.2);color:#f87171;border:1px solid rgba(200,40,30,.3)}
+.lb-oss{background:rgba(91,33,182,.2);color:#c4b5fd;border:1px solid rgba(91,33,182,.3)}
+.lb-free{background:rgba(181,101,29,.2);color:#fbbf24;border:1px solid rgba(181,101,29,.3)}
+
+/* Bottom bar */
+.footer-bottom{max-width:var(--max);margin:0 auto;padding:22px 0 28px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
+.fb-left{font-size:.73rem;color:rgba(255,255,255,.25)}
+.fb-links{display:flex;gap:16px}
+.fb-link{font-size:.72rem;color:rgba(255,255,255,.25);transition:color .15s}
+.fb-link:hover{color:rgba(255,255,255,.6)}
+.fb-disclaimer{font-size:.68rem;color:rgba(255,255,255,.18);margin-top:4px}
+
+/* Not affiliated badge */
+.not-affiliated{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:6px;padding:10px 16px;margin-top:1.5rem;font-size:.72rem;color:rgba(255,255,255,.28);line-height:1.5;max-width:320px}
+
+/* ══════════════════════════════
+   STICKY / REVEAL / RESPONSIVE
+══════════════════════════════ */
+.sticky{position:fixed;bottom:0;left:0;right:0;z-index:90;background:var(--navy);border-top:2px solid rgba(255,255,255,.07);padding:12px clamp(16px,4vw,48px);display:flex;align-items:center;justify-content:space-between;transform:translateY(100%);transition:transform .3s;gap:1rem}
+.sticky.show{transform:translateY(0)}
+.sticky-text{font-size:.86rem;font-weight:600;color:#fff}
+.sticky-sub{font-size:.73rem;color:rgba(255,255,255,.45)}
+.reveal{opacity:0;transform:translateY(20px);transition:opacity .5s,transform .5s}
+.reveal.shown{opacity:1;transform:none}
+
+@media(max-width:1024px){
+  .hero-inner{grid-template-columns:1fr;gap:2rem}
+  .hero-card{max-width:480px}
+  .cohort-inner{grid-template-columns:1fr}
+  .msg-inner{grid-template-columns:1fr}
+  .oss-inner{grid-template-columns:1fr}
+  .cta-inner{grid-template-columns:1fr;gap:2rem}
+  .cta-btns{align-items:flex-start;flex-direction:row;flex-wrap:wrap}
+  .footer-top{grid-template-columns:1fr 1fr 1fr}
+}
+@media(max-width:768px){
+  .nav-links{display:none}
+  .nav-oss,.nav-free{display:none}
+  .feat-grid{grid-template-columns:1fr}
+  .stream-grid{grid-template-columns:1fr 1fr}
+  .hiw-steps{grid-template-columns:1fr 1fr;gap:1.5rem}
+  .stats-inner{grid-template-columns:repeat(3,1fr)}
+  .stat-cell:nth-child(4),.stat-cell:nth-child(5){display:none}
+  .footer-top{grid-template-columns:1fr 1fr}
+  .hero-os-strip{flex-wrap:wrap}
+}
+@media(max-width:560px){
+  .stream-grid{grid-template-columns:1fr}
+  .hiw-steps{grid-template-columns:1fr}
+  .hero-actions{flex-direction:column}
+  .btn-hero-red,.btn-hero-out,.btn-hero-gh{width:100%;justify-content:center}
+}
+</style>
+</head>
+<body>
+
+<!-- ══════════ NAV ══════════ -->
+<nav class="nav">
+  <div class="nav-left">
+    <a href="/" class="nav-brand">
+      <svg class="nav-logo" viewBox="0 0 100 100" fill="none">
+        <path d="M50 5C50 5 30 35 8 38L18 48L10 55L30 52L28 70L50 58L72 70L70 52L90 55L82 48L92 38C70 35 50 5 50 5Z" fill="#C8281E"/>
+        <rect x="44" y="68" width="12" height="22" rx="2" fill="#C8281E"/>
+      </svg>
+      <span class="nav-name">AORTrack</span>
+    </a>
+    <div class="nav-links">
+      <a href="#features">Features</a>
+      <a href="#streams">Streams</a>
+      <a href="#cohort">Cohort</a>
+      <a href="#messaging">Alerts</a>
+      <a href="/roadmap">Roadmap</a>
+      <a href="/changelog">Changelog</a>
+    </div>
+  </div>
+  <div class="nav-right">
+    <a class="nav-oss" href="https://github.com/Get-North-Path/AOR-tracker" target="_blank">
+      <svg viewBox="0 0 16 16"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+      Open Source
+    </a>
+    <span class="nav-free">♥ Free Forever</span>
+    <a href="/track" class="nav-cta">Track My AOR →</a>
+  </div>
+</nav>
+
+<!-- ══════════ HERO ══════════ -->
+<section class="hero">
+  <div class="hero-grid-bg"></div>
+  <div class="hero-maple">🍁</div>
+  <div class="hero-inner">
+    <div class="hero-left">
+      <!-- Badges -->
+      <div class="hero-badges">
+        <span class="hb hb-oss"><svg viewBox="0 0 16 16"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>Open Source · MIT</span>
+        <span class="hb hb-free">♥ Free Forever · No Ads</span>
+        <span class="hb hb-live"><span class="hb-dot"></span>14,847 Applicants Live</span>
+      </div>
+
+      <h1 class="hero-h1">Know exactly where<br>your <em>PR stands.</em></h1>
+      <p class="hero-sub">Real processing timelines from 14,847 Express Entry applicants — not IRCC's generic estimate. Community-powered, open-source, and free forever.</p>
+
+      <!-- OS strip -->
+      <div class="hero-os-strip">
+        <div class="hos-item oss">
+          <svg viewBox="0 0 16 16"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+          Open Source on GitHub
+        </div>
+        <div class="hos-item free">♥ Free Forever</div>
+        <div class="hos-item nosig">✓ No Signup Required</div>
+        <div class="hos-item">MIT Licensed</div>
+      </div>
+
+      <div class="hero-actions">
+        <a href="/track" class="btn-hero-red">Track My AOR — Free →</a>
+        <a href="#features" class="btn-hero-out">See All Features ↓</a>
+        <a href="https://github.com/Get-North-Path/AOR-tracker" target="_blank" class="btn-hero-gh">
+          <svg viewBox="0 0 16 16"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+          ⭐ Star on GitHub
+        </a>
+      </div>
+
+      <div class="hero-trust">
+        <span class="ht oss-t">Open Source (MIT)</span>
+        <span class="ht free-t">Free Forever · No Ads</span>
+        <span class="ht">No signup required</span>
+        <span class="ht">14,847 data points</span>
+        <span class="ht">Updated daily</span>
+      </div>
+    </div>
+
+    <!-- Hero right: live data card -->
+    <div class="hero-card">
+      <div class="hc-hd">
+        <span class="hc-hd-t">Express Entry — Live Tracker</span>
+        <span class="hc-live"><span class="hc-live-dot"></span>Updated 3 min ago</span>
+      </div>
+      <div class="hc-body">
+        <div class="hc-stats">
+          <div class="hc-stat"><div class="hc-sv">14,847</div><div class="hc-sl">Applicants</div></div>
+          <div class="hc-div"></div>
+          <div class="hc-stat"><div class="hc-sv">247</div><div class="hc-sl">Avg Days</div></div>
+          <div class="hc-div"></div>
+          <div class="hc-stat"><div class="hc-sv">39%</div><div class="hc-sl">PPR'd</div></div>
+        </div>
+        <div class="hc-pl"><span class="hc-pk">Applicants who received PPR</span><span class="hc-pv">39.2%</span></div>
+        <div class="hc-bar"><div class="hc-bar-fill"></div></div>
+        <div class="hc-note">Based on 14,847 verified data points · Jan 2024 cohort</div>
+        <div class="hc-feed">
+          <div class="hc-row"><div class="hc-dot dg"></div><div class="hc-txt"><strong>Ahmed R.</strong> received PPR — Day 198 · CEC</div><span class="hc-badge">2 min ago</span></div>
+          <div class="hc-row"><div class="hc-dot db"></div><div class="hc-txt"><strong>Priya S.</strong> submitted AOR — Federal Skilled Worker</div><span class="hc-badge">11 min ago</span></div>
+          <div class="hc-row"><div class="hc-dot da"></div><div class="hc-txt"><strong>Wei C.</strong> medicals requested — Day 143</div><span class="hc-badge">24 min ago</span></div>
+        </div>
+        <a href="/track" class="hc-cta">Track Your AOR — Free →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ STATS BAR ══════════ -->
+<div class="stats-bar">
+  <div class="stats-inner">
+    <div class="stat-cell">
+      <div class="stat-num">14<span>.8k</span></div>
+      <div class="stat-desc">Active timelines tracked</div>
+    </div>
+    <div class="stat-cell">
+      <div class="stat-num">241<span>d</span></div>
+      <div class="stat-desc">Avg. CEC processing time</div>
+    </div>
+    <div class="stat-cell">
+      <div class="stat-num">96<span>%</span></div>
+      <div class="stat-desc">Within predicted PPR window</div>
+    </div>
+    <div class="stat-cell">
+      <div class="stat-num">7</div>
+      <div class="stat-desc">Feature-rich tools, all free</div>
+    </div>
+    <div class="stat-cell">
+      <div class="stat-num">100<span>%</span></div>
+      <div class="stat-desc">Open source · MIT licensed</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ HOW IT WORKS ══════════ -->
+<section class="hiw-section" id="how">
+  <div class="inner" style="padding:clamp(60px,7vw,96px) 0">
+    <p class="eye reveal">How It Works</p>
+    <h2 class="h2 reveal">From AOR to PPR — tracked every step.</h2>
+    <p class="sub-text reveal">No account needed. 30 seconds to set up. Your anonymised data automatically improves estimates for your whole cohort.</p>
+    <div class="hiw-steps" style="margin-top:2.5rem">
+      <div class="hiw-step active">
+        <div class="hs-num">01</div>
+        <div class="hs-title">Enter your AOR date</div>
+        <div class="hs-body">Input your Acknowledgement of Receipt date and immigration stream. No account, no email, no password — 30 seconds flat.</div>
+        <span class="hs-tag tag-g">Free · No account</span>
+      </div>
+      <div class="hiw-step">
+        <div class="hs-num">02</div>
+        <div class="hs-title">See your cohort position</div>
+        <div class="hs-body">Instantly compare against everyone who applied in the same month and stream. See your percentile rank in the queue.</div>
+        <span class="hs-tag tag-g">Real data · Not IRCC averages</span>
+      </div>
+      <div class="hiw-step">
+        <div class="hs-num">03</div>
+        <div class="hs-title">Log your milestones</div>
+        <div class="hs-body">Update biometrics, medicals, background checks, and PPR as they happen. Each entry sharpens the model for your whole cohort.</div>
+        <span class="hs-tag tag-b">Contributes to community</span>
+      </div>
+      <div class="hiw-step">
+        <div class="hs-num">04</div>
+        <div class="hs-title">Get smart alerts</div>
+        <div class="hs-body">Receive notifications when your cohort hits milestones, when processing times shift, or when your PPR window updates.</div>
+        <span class="hs-tag tag-p">Email · Discord · In-app</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ FEATURES ══════════ -->
+<section class="features-section section" id="features">
+  <div class="inner">
+    <p class="eye reveal">7 Powerful Features</p>
+    <h2 class="h2 reveal">Everything you need to navigate your PR journey.</h2>
+    <p class="sub-text reveal">From live community data to smart alerts — all free, all open source, no signup required.</p>
+
+    <div class="feat-grid">
+
+      <!-- 1 Live Feed -->
+      <div class="feat-card featured reveal">
+        <div class="fc-head">
+          <div class="fc-icon ico-g">📊</div>
+          <span class="fc-label lbl-core">Live</span>
+        </div>
+        <div class="fc-body">
+          <div class="fc-title">Live Community Feed</div>
+          <div class="fc-desc">Real-time stream of PPR receipts, milestone updates, and processing events from 14,847 applicants — updated every few minutes, not weekly.</div>
+          <div class="fc-facts">
+            <div class="fc-fact">Community-reported PPR receipts in real time</div>
+            <div class="fc-fact">Biometrics, medicals, BGC events tracked</div>
+            <div class="fc-fact">Filter by stream, cohort month, or milestone</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2 Dashboard -->
+      <div class="feat-card reveal">
+        <div class="fc-head">
+          <div class="fc-icon ico-n">🗂</div>
+          <span class="fc-label lbl-core">Core</span>
+        </div>
+        <div class="fc-body">
+          <div class="fc-title">Personal Dashboard</div>
+          <div class="fc-desc">Your own command centre — days since AOR, your cohort rank, PPR probability trend, and a live breakdown of where your cohort stands today.</div>
+          <div class="fc-facts">
+            <div class="fc-fact">Days elapsed counter with cohort benchmark</div>
+            <div class="fc-fact">Real-time cohort progress: PPR'd vs waiting</div>
+            <div class="fc-fact">Stream rank: Top 28% of Jan 2024 cohort</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3 PPR Window -->
+      <div class="feat-card reveal">
+        <div class="fc-head">
+          <div class="fc-icon ico-b">📅</div>
+          <span class="fc-label lbl-core">Core</span>
+        </div>
+        <div class="fc-body">
+          <div class="fc-title">PPR Window Estimator</div>
+          <div class="fc-desc">Stop guessing. Know your earliest, most likely, and latest PPR date — calculated from real cohort velocity, not IRCC's generic 6-month estimate.</div>
+          <div class="fc-facts">
+            <div class="fc-fact">Earliest / Median / Latest PPR dates</div>
+            <div class="fc-fact">Full milestone timeline: ITA → AOR → Medicals → PPR</div>
+            <div class="fc-fact">Recalculates as new community data arrives</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4 Submit AOR -->
+      <div class="feat-card reveal">
+        <div class="fc-head">
+          <div class="fc-icon ico-g">✍️</div>
+          <span class="fc-label lbl-free">Free · No Account</span>
+        </div>
+        <div class="fc-body">
+          <div class="fc-title">Submit Your AOR</div>
+          <div class="fc-desc">Enter your AOR date, pick your immigration stream, and get instant cohort placement — in under 60 seconds, zero friction, no account needed.</div>
+          <div class="fc-facts">
+            <div class="fc-fact">CEC, FSW, FST, PNP, and more streams</div>
+            <div class="fc-fact">Instant cohort rank calculation on submit</div>
+            <div class="fc-fact">Anonymous by design — no PII collected</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 5 Cohort Analytics -->
+      <div class="feat-card reveal">
+        <div class="fc-head">
+          <div class="fc-icon ico-a">👥</div>
+          <span class="fc-label lbl-new">Deep Dive</span>
+        </div>
+        <div class="fc-body">
+          <div class="fc-title">Cohort Analytics</div>
+          <div class="fc-desc">Full statistical breakdown of your cohort — processing day histogram, percentile rank bar, and stream-vs-stream comparison to put your wait time in context.</div>
+          <div class="fc-facts">
+            <div class="fc-fact">Processing day distribution histogram</div>
+            <div class="fc-fact">Your percentile on a colour-coded rank bar</div>
+            <div class="fc-fact">CEC vs FSW vs PNP vs FST comparison</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 6 Messaging -->
+      <div class="feat-card msg-card reveal">
+        <div class="fc-head">
+          <div class="fc-icon ico-b">💬</div>
+          <span class="fc-label lbl-new">New</span>
+        </div>
+        <div class="fc-body">
+          <div class="fc-title">Smart Alerts & Messaging</div>
+          <div class="fc-desc">Get notified the moment your cohort hits a milestone, when processing times shift, or when your PPR window narrows. Delivered in-app, by email, or on Discord.</div>
+          <div class="fc-facts">
+            <div class="fc-fact">Cohort milestone alerts (25% / 50% / 75% PPR'd)</div>
+            <div class="fc-fact">PPR window update notifications</div>
+            <div class="fc-fact">In-app · Email · Discord — your choice</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 7 Open Source -->
+      <div class="feat-card oss-card reveal" style="grid-column:1/-1">
+        <div class="fc-head" style="padding-bottom:6px">
+          <div style="display:flex;align-items:center;gap:12px">
+            <div class="fc-icon ico-p">🔓</div>
+            <div>
+              <div class="fc-title" style="margin-bottom:3px">Open Source · Free Forever · Built in Public</div>
+              <div style="font-size:.8rem;color:var(--muted)">Every line of code on GitHub · MIT licensed · No ads · No subscriptions · No data selling · 12 contributors</div>
+            </div>
+          </div>
+          <span class="fc-label lbl-oss">MIT License</span>
+        </div>
+        <div class="fc-body" style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;padding-top:0">
+          <div style="border:1.5px solid var(--border);border-radius:9px;padding:12px;background:var(--cream2)">
+            <div style="font-size:.95rem;margin-bottom:5px">🔓</div>
+            <div style="font-size:.8rem;font-weight:700;color:var(--navy);margin-bottom:3px">Fully Open Source</div>
+            <div style="font-size:.72rem;color:var(--muted)">Fork it, audit it, build on it. MIT licensed.</div>
+          </div>
+          <div style="border:1.5px solid var(--border);border-radius:9px;padding:12px;background:var(--cream2)">
+            <div style="font-size:.95rem;margin-bottom:5px">♥</div>
+            <div style="font-size:.8rem;font-weight:700;color:var(--navy);margin-bottom:3px">Free Forever</div>
+            <div style="font-size:.72rem;color:var(--muted)">No paywalls. No ads. No subscriptions. Ever.</div>
+          </div>
+          <div style="border:1.5px solid var(--border);border-radius:9px;padding:12px;background:var(--cream2)">
+            <div style="font-size:.95rem;margin-bottom:5px">🔭</div>
+            <div style="font-size:.8rem;font-weight:700;color:var(--navy);margin-bottom:3px">Built in Public</div>
+            <div style="font-size:.72rem;color:var(--muted)">Roadmap, goals, and changelog are all public.</div>
+          </div>
+          <div style="border:1.5px solid var(--border);border-radius:9px;padding:12px;background:var(--cream2)">
+            <div style="font-size:.95rem;margin-bottom:5px">🌍</div>
+            <div style="font-size:.8rem;font-weight:700;color:var(--navy);margin-bottom:3px">Community Data</div>
+            <div style="font-size:.72rem;color:var(--muted)">Data belongs to the community. Transparent methodology.</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ COHORT SHOWCASE ══════════ -->
+<section class="cohort-section" id="cohort">
+  <div class="cohort-inner">
+    <div class="cohort-text">
+      <p class="eye reveal">Cohort Analytics</p>
+      <h2 class="h2 reveal">See exactly where you sit<br><em>in your cohort.</em></h2>
+      <p class="sub-text reveal">Don't just know your day count. Understand your position in the full distribution — who's ahead, who's behind, and what the real processing curve looks like for your stream and month.</p>
+      <div class="cohort-points reveal">
+        <div class="cp">
+          <div class="cp-icon" style="background:rgba(45,106,79,.2)">📊</div>
+          <div class="cp-body">
+            <div class="cp-title">Processing day histogram</div>
+            <div class="cp-desc">See the full bell curve of when people in your cohort got PPR. Spot the peak window and understand where you fall on the distribution.</div>
+          </div>
+        </div>
+        <div class="cp">
+          <div class="cp-icon" style="background:rgba(181,101,29,.2)">🎯</div>
+          <div class="cp-body">
+            <div class="cp-title">Your percentile rank — visualised</div>
+            <div class="cp-desc">A colour-coded gradient bar from fastest to slowest, with your marker pinned to your exact position. "Top 28%" becomes something you can see.</div>
+          </div>
+        </div>
+        <div class="cp">
+          <div class="cp-icon" style="background:rgba(30,95,140,.2)">⚡</div>
+          <div class="cp-body">
+            <div class="cp-title">Stream-by-stream comparison</div>
+            <div class="cp-desc">How does CEC compare to FSW, PNP, and FST right now? See average processing days and PPR completion rates side by side.</div>
+          </div>
+        </div>
+        <div class="cp">
+          <div class="cp-icon" style="background:rgba(91,33,182,.2)">🔄</div>
+          <div class="cp-body">
+            <div class="cp-title">Live KPIs — updated as data arrives</div>
+            <div class="cp-desc">Median PPR day, fastest PPR, cohort % complete, and your rank all update in real time as community members log new milestones.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Cohort visual -->
+    <div class="cohort-card reveal">
+      <div class="cc-nav">
+        <span class="cc-nav-title">Cohort Deep Dive — CEC · Jan 2024</span>
+        <span class="cc-tag cc-tag-cec">CEC</span>
+        <span class="cc-tag cc-tag-cnt">14,847</span>
+      </div>
+      <div class="cc-body">
+        <!-- KPIs -->
+        <div class="cc-kpis">
+          <div class="cc-kpi"><div class="cc-kval g">241</div><div class="cc-klbl">Median PPR</div></div>
+          <div class="cc-kpi"><div class="cc-kval">148</div><div class="cc-klbl">Fastest PPR</div></div>
+          <div class="cc-kpi"><div class="cc-kval a">39%</div><div class="cc-klbl">PPR'd</div></div>
+          <div class="cc-kpi"><div class="cc-kval b">Top 28%</div><div class="cc-klbl">Your Rank</div></div>
+        </div>
+        <!-- Histogram -->
+        <div>
+          <div class="cc-chart-hd"><strong>Processing day distribution</strong><span>Jan 2024 · PPR'd applicants</span></div>
+          <div class="cc-hist">
+            <div class="cc-hcol"><div class="cc-hbar" style="height:12px;background:var(--blue);opacity:.65"></div><div class="cc-hlbl">148</div></div>
+            <div class="cc-hcol"><div class="cc-hbar" style="height:20px;background:var(--blue);opacity:.7"></div><div class="cc-hlbl">160</div></div>
+            <div class="cc-hcol"><div class="cc-hbar" style="height:30px;background:var(--blue);opacity:.75"></div><div class="cc-hlbl">180</div></div>
+            <div class="cc-hcol"><div class="cc-hbar" style="height:46px;background:var(--blue);opacity:.82"></div><div class="cc-hlbl">200</div></div>
+            <div class="cc-hcol"><div class="cc-hbar" style="height:60px;background:var(--green)"></div><div class="cc-hlbl">220</div></div>
+            <div class="cc-hcol"><div class="cc-hbar" style="height:54px;background:var(--green);opacity:.9"></div><div class="cc-hlbl">241</div></div>
+            <div class="cc-hcol"><div class="cc-hbar you" style="height:42px;background:var(--amber)"></div><div class="cc-hlbl" style="color:var(--red);font-weight:700">247</div></div>
+            <div class="cc-hcol"><div class="cc-hbar" style="height:32px;background:var(--amber);opacity:.75"></div><div class="cc-hlbl">260</div></div>
+            <div class="cc-hcol"><div class="cc-hbar" style="height:20px;background:var(--amber);opacity:.6"></div><div class="cc-hlbl">280</div></div>
+            <div class="cc-hcol"><div class="cc-hbar" style="height:12px;background:var(--red);opacity:.55"></div><div class="cc-hlbl">300+</div></div>
+          </div>
+        </div>
+        <!-- Percentile -->
+        <div class="cc-pct">
+          <div class="cc-pct-hd">
+            <span class="cc-pct-title">Your Percentile Rank — Jan 2024 Cohort</span>
+            <span class="cc-pct-badge">Top 28%</span>
+          </div>
+          <div class="cc-rank-bar"><div class="cc-rank-dot"></div></div>
+          <div class="cc-rank-lbls"><span>Fastest</span><span>Median (Day 241)</span><span>Slowest</span></div>
+        </div>
+        <!-- Stream comparison -->
+        <div class="cc-compare">
+          <div class="cc-cmp active">
+            <div class="cc-cmp-dot" style="background:var(--green)"></div>
+            <div class="cc-cmp-info">
+              <div class="cc-cmp-name">CEC ← You</div>
+              <div class="cc-cmp-days">Avg 241 days</div>
+              <div class="cc-cmp-bar"><div class="cc-cmp-fill" style="width:76%;background:var(--green)"></div></div>
+            </div>
+          </div>
+          <div class="cc-cmp">
+            <div class="cc-cmp-dot" style="background:var(--blue)"></div>
+            <div class="cc-cmp-info">
+              <div class="cc-cmp-name">FSW</div>
+              <div class="cc-cmp-days">Avg 267 days</div>
+              <div class="cc-cmp-bar"><div class="cc-cmp-fill" style="width:60%;background:var(--blue)"></div></div>
+            </div>
+          </div>
+          <div class="cc-cmp">
+            <div class="cc-cmp-dot" style="background:var(--amber)"></div>
+            <div class="cc-cmp-info">
+              <div class="cc-cmp-name">PNP</div>
+              <div class="cc-cmp-days">Avg 312 days</div>
+              <div class="cc-cmp-bar"><div class="cc-cmp-fill" style="width:40%;background:var(--amber)"></div></div>
+            </div>
+          </div>
+          <div class="cc-cmp">
+            <div class="cc-cmp-dot" style="background:var(--purple)"></div>
+            <div class="cc-cmp-info">
+              <div class="cc-cmp-name">FST</div>
+              <div class="cc-cmp-days">Avg 284 days</div>
+              <div class="cc-cmp-bar"><div class="cc-cmp-fill" style="width:52%;background:var(--purple)"></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ MESSAGING SHOWCASE ══════════ -->
+<section class="msg-section" id="messaging">
+  <div class="msg-inner">
+    <!-- Visual card -->
+    <div class="msg-card reveal">
+      <div class="msg-hd">
+        <span class="msg-hd-title">Smart Alerts & Messaging</span>
+        <span class="msg-new">4 new</span>
+      </div>
+      <div class="msg-channels">
+        <div class="msg-ch active">📥 In-App</div>
+        <div class="msg-ch">📧 Email</div>
+        <div class="msg-ch">💬 Discord</div>
+      </div>
+      <div class="msg-alerts">
+        <div class="msg-alert">
+          <div class="ma-icon ma-g">🎉</div>
+          <div class="ma-body">
+            <div class="ma-title">Your cohort just hit 40% PPR'd — you're entering the next wave</div>
+            <div class="ma-sub">CEC Jan 2024 accelerating. Window narrows to Aug–Sep 2025 based on cohort velocity.</div>
+            <div class="ma-time">12 min ago</div>
+          </div>
+          <div class="ma-dot dot-unread"></div>
+        </div>
+        <div class="msg-alert">
+          <div class="ma-icon ma-b">📊</div>
+          <div class="ma-body">
+            <div class="ma-title">CEC processing times dropped 8 days this week</div>
+            <div class="ma-sub">New data: median dropped 249 → 241 days. Your estimated PPR window updated.</div>
+            <div class="ma-time">3 hrs ago</div>
+          </div>
+          <div class="ma-dot dot-unread"></div>
+        </div>
+        <div class="msg-alert">
+          <div class="ma-icon ma-a">⚡</div>
+          <div class="ma-body">
+            <div class="ma-title">3 people from your exact cohort got PPR today</div>
+            <div class="ma-sub">Day 244, 247, 251 — all CEC Jan 2024. You're in the same window.</div>
+            <div class="ma-time">Yesterday</div>
+          </div>
+          <div class="ma-dot dot-unread"></div>
+        </div>
+        <div class="msg-alert">
+          <div class="ma-icon ma-p">📅</div>
+          <div class="ma-body">
+            <div class="ma-title">Your estimated PPR window updated: Sep → Aug 2025</div>
+            <div class="ma-sub">Recalculated from 312 new community data points this week.</div>
+            <div class="ma-time">2 days ago</div>
+          </div>
+          <div class="ma-dot dot-read"></div>
+        </div>
+      </div>
+      <div class="msg-prefs">
+        <div class="mp-head">Notification preferences</div>
+        <div class="mp-toggles">
+          <div class="mp-toggle">
+            <div><div class="mp-label">Cohort milestone alerts</div><div class="mp-sub">When your cohort hits 25%, 50%, 75% PPR'd</div></div>
+            <div class="mp-pill on"></div>
+          </div>
+          <div class="mp-toggle">
+            <div><div class="mp-label">PPR window updates</div><div class="mp-sub">When estimated dates shift by 7+ days</div></div>
+            <div class="mp-pill on"></div>
+          </div>
+          <div class="mp-toggle">
+            <div><div class="mp-label">Weekly digest</div><div class="mp-sub">Processing trends every Monday</div></div>
+            <div class="mp-pill off"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Text side -->
+    <div class="msg-text">
+      <p class="eye reveal">Smart Alerts & Messaging</p>
+      <h2 class="h2 reveal">Know the moment<br>something changes.</h2>
+      <p class="sub-text reveal">The PR process is opaque. AORTrack makes it transparent — by telling you in real time when your cohort accelerates, when processing times shift, and when your PPR window narrows.</p>
+      <div class="msg-points reveal">
+        <div class="mp-point">
+          <div class="mpp-icon">🎉</div>
+          <div>
+            <div class="mpp-title">Cohort milestone alerts</div>
+            <div class="mpp-desc">Get notified when your cohort hits 25%, 50%, or 75% PPR'd — so you know when the wave is coming before it arrives.</div>
+          </div>
+        </div>
+        <div class="mp-point">
+          <div class="mpp-icon">📅</div>
+          <div>
+            <div class="mpp-title">PPR window updates</div>
+            <div class="mpp-desc">When new community data shifts your estimated PPR window by 7+ days, you'll know immediately — not when you remember to check.</div>
+          </div>
+        </div>
+        <div class="mp-point">
+          <div class="mpp-icon">⚡</div>
+          <div>
+            <div class="mpp-title">Real-time cohort signals</div>
+            <div class="mpp-desc">See when people in your exact cohort — same stream, same month — are getting PPR. Understand where the momentum is building.</div>
+          </div>
+        </div>
+        <div class="mp-point">
+          <div class="mpp-icon">🔔</div>
+          <div>
+            <div class="mpp-title">Your channel, your choice</div>
+            <div class="mpp-desc">Receive alerts where you actually read them — in-app notification, email digest, or a ping in our Discord community.</div>
+          </div>
+        </div>
+      </div>
+      <div class="msg-channels-promo reveal">
+        <div class="mcp">📥 In-App</div>
+        <div class="mcp">📧 Email</div>
+        <div class="mcp">💬 Discord</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ STREAMS ══════════ -->
+<section class="section" id="streams" style="border-top:2px solid var(--border)">
+  <div class="inner">
+    <p class="eye reveal">Immigration Streams</p>
+    <h2 class="h2 reveal">Track any Canadian PR pathway.</h2>
+    <p class="sub-text reveal">Community data across all major Express Entry and provincial streams — updated in real time as applicants log milestones.</p>
+    <div class="stream-grid">
+      <div class="stream-card feat reveal">
+        <div class="sc-hd sc-hd-g">
+          <div><div class="sc-title">CEC — Canadian Experience Class</div><div class="sc-sub">General &amp; STEM streams</div></div>
+          <span class="sc-icon">🍁</span>
+        </div>
+        <div class="sc-bd">
+          <div class="sc-avg">Avg processing <strong>241</strong> days</div>
+          <div class="sc-bar"><div class="sc-fill" style="width:76%"></div></div>
+          <div class="sc-facts">
+            <div class="sc-fact">6,420 applicants currently tracked</div>
+            <div class="sc-fact">39% of Jan 2024 cohort received PPR</div>
+            <div class="sc-fact">Fastest PPR: Day 148</div>
+          </div>
+        </div>
+      </div>
+      <div class="stream-card reveal">
+        <div class="sc-hd sc-hd-n">
+          <div><div class="sc-title">FSW — Federal Skilled Worker</div><div class="sc-sub">International applicants</div></div>
+          <span class="sc-icon">🌍</span>
+        </div>
+        <div class="sc-bd">
+          <div class="sc-avg">Avg processing <strong>267</strong> days</div>
+          <div class="sc-bar"><div class="sc-fill" style="width:62%"></div></div>
+          <div class="sc-facts">
+            <div class="sc-fact">4,210 applicants tracked</div>
+            <div class="sc-fact">Slightly longer wait than CEC</div>
+            <div class="sc-fact">Biometrics typically Day 30–60</div>
+          </div>
+        </div>
+      </div>
+      <div class="stream-card reveal">
+        <div class="sc-hd sc-hd-b">
+          <div><div class="sc-title">PNP — Provincial Nominee</div><div class="sc-sub">Province-backed nominees</div></div>
+          <span class="sc-icon">🏔</span>
+        </div>
+        <div class="sc-bd">
+          <div class="sc-avg">Avg processing <strong>312</strong> days</div>
+          <div class="sc-bar"><div class="sc-fill" style="width:44%"></div></div>
+          <div class="sc-facts">
+            <div class="sc-fact">2,841 applicants tracked</div>
+            <div class="sc-fact">Longer due to provincial verification</div>
+            <div class="sc-fact">Varies significantly by province</div>
+          </div>
+        </div>
+      </div>
+      <div class="stream-card reveal">
+        <div class="sc-hd sc-hd-t">
+          <div><div class="sc-title">FST — Federal Skilled Trades</div><div class="sc-sub">Skilled tradespeople</div></div>
+          <span class="sc-icon">🎓</span>
+        </div>
+        <div class="sc-bd">
+          <div class="sc-avg">Avg processing <strong>284</strong> days</div>
+          <div class="sc-bar"><div class="sc-fill" style="width:54%"></div></div>
+          <div class="sc-facts">
+            <div class="sc-fact">876 applicants tracked</div>
+            <div class="sc-fact">Similar profile to FSW</div>
+            <div class="sc-fact">Medicals typically requested Day 90–140</div>
+          </div>
+        </div>
+      </div>
+      <div class="stream-card reveal">
+        <div class="sc-hd sc-hd-a">
+          <div><div class="sc-title">Atlantic Immigration</div><div class="sc-sub">Atlantic provinces</div></div>
+          <span class="sc-icon">🌊</span>
+        </div>
+        <div class="sc-bd">
+          <div class="sc-avg">Avg processing <strong>228</strong> days</div>
+          <div class="sc-bar"><div class="sc-fill" style="width:84%"></div></div>
+          <div class="sc-facts">
+            <div class="sc-fact">500+ applicants tracked</div>
+            <div class="sc-fact">Often faster than main streams</div>
+            <div class="sc-fact">NS, NB, NL, PEI data included</div>
+          </div>
+        </div>
+      </div>
+      <div style="border:2px dashed var(--border2);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2.5rem 1.5rem;text-align:center;border-radius:13px;background:var(--cream2)">
+        <div style="font-size:1.8rem;margin-bottom:8px">➕</div>
+        <div style="font-family:var(--fh);font-size:.9rem;font-weight:700;color:var(--navy);margin-bottom:5px">More streams coming</div>
+        <div style="font-size:.78rem;color:var(--muted)">Rural &amp; Northern, Agri-Food, RNIP — vote on our roadmap</div>
+        <a href="/roadmap" style="font-size:.75rem;font-weight:700;color:var(--green);margin-top:10px;text-decoration:underline;text-underline-offset:3px">View Roadmap →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ OPEN SOURCE ══════════ -->
+<section class="oss-section" id="opensource">
+  <div class="oss-inner">
+    <div class="oss-text">
+      <p class="eye reveal">Open Source · MIT</p>
+      <h2 class="h2 reveal">Built in public.<br><em>Owned by everyone.</em></h2>
+      <p class="sub-text reveal">AORTrack is fully open source — every line of code is on GitHub, every decision is made in public, and every feature is driven by the community. No black boxes. No corporate agenda.</p>
+      <div class="oss-feats reveal">
+        <div class="oss-feat">
+          <div class="oss-ic">🔓</div>
+          <div>
+            <div class="oss-ft-title">MIT Licensed</div>
+            <div class="oss-ft-desc">Use it, fork it, build on it. The code belongs to everyone, forever.</div>
+          </div>
+        </div>
+        <div class="oss-feat">
+          <div class="oss-ic">♥</div>
+          <div>
+            <div class="oss-ft-title">Free Forever — No Ads, No Selling Data</div>
+            <div class="oss-ft-desc">AORTrack products are ad-free. We will never sell your data or put features behind a paywall.</div>
+          </div>
+        </div>
+        <div class="oss-feat">
+          <div class="oss-ic">🔭</div>
+          <div>
+            <div class="oss-ft-title">Public Roadmap & Changelog</div>
+            <div class="oss-ft-desc">Growth targets, feature plans, and every release are tracked in the open. No hidden surprises.</div>
+          </div>
+        </div>
+        <div class="oss-feat">
+          <div class="oss-ic">🤝</div>
+          <div>
+            <div class="oss-ft-title">Community Governed</div>
+            <div class="oss-ft-desc">Features are prioritised by community votes. File issues, submit PRs, and shape the roadmap yourself.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- GitHub card -->
+    <div class="gh-card reveal">
+      <div class="gh-bar">
+        <div class="gh-repo">
+          <svg viewBox="0 0 16 16"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+          Get-North-Path / AOR-tracker
+        </div>
+        <div class="gh-meta">
+          <span>⭐ 147</span>
+          <span>🍴 12</span>
+          <span>MIT</span>
+        </div>
+      </div>
+      <div class="gh-issue">
+        <div class="gh-dot-iss dot-open"></div>
+        <div style="flex:1">
+          <div class="gh-it">Add CEC STEM stream processing data</div>
+          <div class="gh-im">opened 2 days ago · 8 comments</div>
+        </div>
+        <span class="gh-lbl l-feat">enhancement</span>
+      </div>
+      <div class="gh-issue">
+        <div class="gh-dot-iss dot-merged"></div>
+        <div style="flex:1">
+          <div class="gh-it">Messaging system: Discord + Email notifications</div>
+          <div class="gh-im">merged 5 days ago · PR #84</div>
+        </div>
+        <span class="gh-lbl l-data">feature</span>
+      </div>
+      <div class="gh-issue">
+        <div class="gh-dot-iss dot-open"></div>
+        <div style="flex:1">
+          <div class="gh-it">Cohort histogram: add "you are here" marker</div>
+          <div class="gh-im">opened 1 week ago · 14 comments</div>
+        </div>
+        <span class="gh-lbl l-ux">UX</span>
+      </div>
+      <div class="gh-issue">
+        <div class="gh-dot-iss dot-open"></div>
+        <div style="flex:1">
+          <div class="gh-it">Fix: Atlantic Immigration avg days calculation</div>
+          <div class="gh-im">opened 3 days ago · 3 comments</div>
+        </div>
+        <span class="gh-lbl l-bug">bug</span>
+      </div>
+      <div class="gh-contrib">
+        <div class="gh-avs">
+          <div class="gh-av" style="background:#2D6A4F">GK</div>
+          <div class="gh-av" style="background:#1E5F8C">PV</div>
+          <div class="gh-av" style="background:#B5651D">MR</div>
+          <div class="gh-av" style="background:#5B21B6">JS</div>
+          <div class="gh-av" style="background:#0D7377">+8</div>
+        </div>
+        <div class="gh-contrib-txt"><strong>12 contributors</strong> have shipped code. PRs welcome.</div>
+        <a href="https://github.com/Get-North-Path/AOR-tracker" target="_blank" class="gh-star-btn">⭐ Star on GitHub</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ GROWTH GOALS ══════════ -->
+<section class="growth-section">
+  <div class="growth-inner">
+    <p class="eye reveal">Built in Public — Growth Goals</p>
+    <h2 class="h2 reveal">Our 6-month targets are public and tracked.</h2>
+    <p class="sub-text reveal">We believe in radical transparency. Our growth targets, Discord link, and GitHub issues are all public. Vote on features, file bugs, or just watch us build.</p>
+    <div class="g-table reveal">
+      <div class="gt-head">
+        <div>Metric</div><div>Month 1</div><div>Month 3</div><div>Month 6 ★</div><div>Current</div>
+      </div>
+      <div class="gt-row">
+        <div class="gt-k">Active Timelines</div>
+        <div class="gt-v">15,500</div><div class="gt-v">19,000</div>
+        <div class="gt-v goal">25,000</div><div class="gt-v current">14,847</div>
+      </div>
+      <div class="gt-row">
+        <div class="gt-k">Monthly Active Users</div>
+        <div class="gt-v">8,000</div><div class="gt-v">13,000</div>
+        <div class="gt-v goal">22,000</div><div class="gt-v current">7,412</div>
+      </div>
+      <div class="gt-row">
+        <div class="gt-k">GitHub Stars</div>
+        <div class="gt-v">50</div><div class="gt-v">350</div>
+        <div class="gt-v goal">1,500</div><div class="gt-v current">147</div>
+      </div>
+      <div class="gt-row">
+        <div class="gt-k">Community Issues Filed</div>
+        <div class="gt-v">5</div><div class="gt-v">50</div>
+        <div class="gt-v goal">250</div><div class="gt-v current">58</div>
+      </div>
+      <div class="gt-row">
+        <div class="gt-k">Discord Members</div>
+        <div class="gt-v">200</div><div class="gt-v">800</div>
+        <div class="gt-v goal">3,000</div><div class="gt-v current">641</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ CTA ══════════ -->
+<section class="cta-section">
+  <div class="cta-inner">
+    <div>
+      <h2 class="cta-h2">Start tracking your PR application today.<br>It's free. It always will be.</h2>
+      <p class="cta-sub">Join 14,847 applicants using real community data — not IRCC's generic estimate. Open source, no signup, no ads.</p>
+      <div class="cta-note">Need more than tracking? <a href="https://www.getnorthpath.com/contact">Our consultants manage your full application from ITA to PPR →</a></div>
+    </div>
+    <div class="cta-btns">
+      <a href="/track" class="btn-white">Track My AOR — Free →</a>
+      <a href="https://github.com/Get-North-Path/AOR-tracker" target="_blank" class="btn-ghost-w">⭐ Star on GitHub</a>
+      <a href="/community" class="btn-ghost-w">💬 Join Discord</a>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ FOOTER ══════════ -->
+<footer class="footer">
+  <div class="footer-top">
+
+    <!-- Brand col -->
+    <div>
+      <div class="fg-brand">
+        <svg style="width:22px;height:22px" viewBox="0 0 100 100" fill="none">
+          <path d="M50 5C50 5 30 35 8 38L18 48L10 55L30 52L28 70L50 58L72 70L70 52L90 55L82 48L92 38C70 35 50 5 50 5Z" fill="#C8281E"/>
+          <rect x="44" y="68" width="12" height="22" rx="2" fill="#C8281E"/>
+        </svg>
+        <span class="fg-brand-name">AORTrack</span>
+      </div>
+      <p class="fg-desc">Free, open-source Canadian PR processing time tracker. Community-powered data from 14,847 real applicants. Built with love by GetNorthPath.</p>
+      <div class="fg-badges">
+        <span class="fg-b oss">
+          <svg viewBox="0 0 16 16"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+          Open Source · MIT
+        </span>
+        <span class="fg-b free">♥ Free Forever · No Ads</span>
+        <span class="fg-b">✓ No Signup Required</span>
+      </div>
+      <div class="fg-social">
+        <a class="fg-soc-link" href="https://github.com/Get-North-Path/AOR-tracker" target="_blank" title="GitHub">
+          <svg viewBox="0 0 16 16"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+        </a>
+        <a class="fg-soc-link" href="#" title="Discord">💬</a>
+        <a class="fg-soc-link" href="https://www.getnorthpath.com/blog" target="_blank" title="Blog">📝</a>
+        <a class="fg-soc-link" href="https://twitter.com" target="_blank" title="X / Twitter">𝕏</a>
+      </div>
+      <div class="not-affiliated">Not affiliated with or endorsed by IRCC (Immigration, Refugees and Citizenship Canada). Data is crowd-sourced from community members and not official government data.</div>
+    </div>
+
+    <!-- Tracker col -->
+    <div>
+      <div class="fg-col-head">Tracker</div>
+      <a href="/track" class="fg-link">Start Tracking <span class="fg-link-badge lb-free">Free</span></a>
+      <a href="/dashboard" class="fg-link">My Dashboard</a>
+      <a href="/streams" class="fg-link">All Streams</a>
+      <a href="/stats" class="fg-link">Processing Stats</a>
+      <a href="#cohort" class="fg-link">Cohort Analytics <span class="fg-link-badge lb-new">New</span></a>
+      <a href="#messaging" class="fg-link">Smart Alerts <span class="fg-link-badge lb-new">New</span></a>
+    </div>
+
+    <!-- Community col -->
+    <div>
+      <div class="fg-col-head">Community</div>
+      <a href="/community" class="fg-link">💬 Discord Server</a>
+      <a href="/feedback" class="fg-link">Give Feedback</a>
+      <a href="/contributors" class="fg-link">Contributors</a>
+      <a href="https://github.com/Get-North-Path/AOR-tracker" target="_blank" class="fg-link">
+        GitHub <span class="fg-link-badge lb-oss">OSS</span>
+      </a>
+      <a href="/roadmap" class="fg-link">Public Roadmap</a>
+      <a href="/changelog" class="fg-link">Changelog</a>
+    </div>
+
+    <!-- Resources col -->
+    <div>
+      <div class="fg-col-head">Resources</div>
+      <a href="https://www.getnorthpath.com/blog" target="_blank" class="fg-link">Blog</a>
+      <a href="https://www.getnorthpath.com/pathways" target="_blank" class="fg-link">PR Pathways Guide</a>
+      <a href="#" class="fg-link">Processing Time FAQ</a>
+      <a href="#" class="fg-link">IRCC Updates</a>
+      <a href="/privacy" class="fg-link">Privacy Policy</a>
+      <a href="/terms" class="fg-link">Terms of Use</a>
+    </div>
+
+    <!-- GetNorthPath col -->
+    <div>
+      <div class="fg-col-head">GetNorthPath</div>
+      <a href="https://www.getnorthpath.com" target="_blank" class="fg-link">Main Site</a>
+      <a href="https://www.getnorthpath.com/contact" target="_blank" class="fg-link">Book a Consultation</a>
+      <a href="https://www.getnorthpath.com/pathways" target="_blank" class="fg-link">All PR Pathways</a>
+      <a href="https://www.getnorthpath.com/blog" target="_blank" class="fg-link">Immigration Blog</a>
+      <a href="https://www.getnorthpath.com/about" target="_blank" class="fg-link">About Us</a>
+    </div>
+
+  </div>
+
+  <div class="footer-bottom">
+    <div>
+      <div class="fb-left">© 2026 GetNorthPath Inc. · AORTrack is free &amp; open source (MIT License)</div>
+      <div class="fb-disclaimer">Not affiliated with IRCC. Community data only. Processing times are estimates based on crowd-sourced reports — not official government data.</div>
+    </div>
+    <div class="fb-links">
+      <a href="/privacy" class="fb-link">Privacy</a>
+      <a href="/terms" class="fb-link">Terms</a>
+      <a href="/cookies" class="fb-link">Cookies</a>
+      <a href="/sitemap" class="fb-link">Sitemap</a>
+      <a href="mailto:hello@getnorthpath.com" class="fb-link">Contact</a>
+    </div>
+  </div>
+</footer>
+
+<!-- STICKY CTA -->
+<div class="sticky" id="sticky">
+  <div>
+    <div class="sticky-text">AORTrack — Free PR Tracker</div>
+    <div class="sticky-sub">Open source · 14,847 applicants · No signup</div>
+  </div>
+  <a href="/track" class="btn-hero-red" style="font-size:.83rem;padding:10px 20px">Track My AOR →</a>
+</div>
+
+<script>
+// Scroll reveal
+const io = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('shown');io.unobserve(e.target);}});
+},{threshold:0.1});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+// Sticky CTA
+const sticky=document.getElementById('sticky');
+window.addEventListener('scroll',()=>{
+  sticky.classList.toggle('show',window.scrollY>600);
+},{passive:true});
+</script>
+</body>
+</html>

@@ -1,0 +1,1275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>AORTrack — Hero Animation</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,ital,wght@9..144,0,700;9..144,0,800;9..144,0,900;9..144,1,400;9..144,1,800&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --cream:#FFFCF5;--cream2:#F5F0E6;--cream3:#EDE8DC;
+  --navy:#1A2332;--navy2:#253347;
+  --red:#C8281E;--red2:#a81f17;
+  --green:#2D6A4F;--gbg:#EAF4EE;
+  --amber:#B5651D;--abg:#FDF3E3;
+  --blue:#1E5F8C;--bbg:#E8F2FB;
+  --purple:#5B21B6;--pbg:#EDE9FE;
+  --teal:#0D7377;--tbg:#E0F4F4;
+  --border:#D5CFBF;
+  --muted:#7A7060;--muted2:#9A8E7E;
+  --fh:'Fraunces',Georgia,serif;
+  --fb:'DM Sans',sans-serif;
+  --fm:'DM Mono',monospace;
+  --g4:#4ade80;
+}
+
+html,body{width:100%;min-height:100vh;background:var(--navy);font-family:var(--fb);overflow-x:hidden}
+
+/* ─── HERO WRAPPER ─── */
+.hero{
+  position:relative;
+  width:100%;
+  min-height:600px;
+  background:var(--navy);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  padding:48px 20px 64px;
+  overflow:hidden;
+}
+
+/* Maple leaf watermark */
+.maple{
+  position:absolute;
+  right:clamp(280px,30%,440px);
+  top:30px;
+  font-size:clamp(100px,18vw,200px);
+  opacity:.03;
+  pointer-events:none;
+  line-height:1;
+  user-select:none;
+}
+
+/* Radial glow */
+.glow{
+  position:absolute;inset:0;
+  background:
+    radial-gradient(ellipse 55% 60% at 90% 30%,rgba(45,106,79,.16) 0%,transparent 65%),
+    radial-gradient(ellipse 35% 40% at 10% 80%,rgba(30,95,140,.08) 0%,transparent 55%);
+  pointer-events:none;
+}
+
+/* Grid */
+.grid-bg{
+  position:absolute;inset:0;
+  background-image:
+    repeating-linear-gradient(0deg,transparent,transparent 44px,rgba(255,255,255,.02) 44px,rgba(255,255,255,.02) 45px),
+    repeating-linear-gradient(90deg,transparent,transparent 44px,rgba(255,255,255,.02) 44px,rgba(255,255,255,.02) 45px);
+  pointer-events:none;
+}
+
+/* ─── TOP BADGES ROW ─── */
+.badges-row{
+  display:flex;gap:8px;flex-wrap:wrap;justify-content:center;
+  position:relative;z-index:2;
+  margin-bottom:1rem;
+}
+.badge-oss{
+  display:inline-flex;align-items:center;gap:6px;
+  background:rgba(91,33,182,.25);
+  border:1px solid rgba(91,33,182,.5);
+  padding:5px 14px;border-radius:100px;
+  font-size:.68rem;font-weight:700;
+  color:#c4b5fd;letter-spacing:.06em;text-transform:uppercase;
+}
+.badge-oss svg{width:11px;height:11px;fill:#c4b5fd;flex-shrink:0;}
+.badge-free{
+  display:inline-flex;align-items:center;gap:6px;
+  background:rgba(181,101,29,.22);
+  border:1px solid rgba(181,101,29,.45);
+  padding:5px 14px;border-radius:100px;
+  font-size:.68rem;font-weight:700;
+  color:#fbbf24;letter-spacing:.06em;text-transform:uppercase;
+}
+
+/* ─── EYEBROW ─── */
+.eyebrow{
+  display:inline-flex;align-items:center;gap:7px;
+  background:rgba(45,106,79,.25);
+  border:1px solid rgba(45,106,79,.5);
+  padding:4px 14px;border-radius:100px;
+  font-size:.7rem;font-weight:700;
+  color:var(--g4);letter-spacing:.08em;text-transform:uppercase;
+  margin-bottom:1.2rem;
+  position:relative;z-index:2;
+}
+.ey-dot{width:6px;height:6px;border-radius:50%;background:var(--g4);animation:blink 2s infinite;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+
+/* ─── HEADLINE ─── */
+.h1{
+  font-family:var(--fh);
+  font-size:clamp(2rem,5.5vw,3.4rem);
+  font-weight:900;line-height:1.05;
+  letter-spacing:-.04em;
+  color:#fff;
+  text-align:center;
+  margin-bottom:.7rem;
+  position:relative;z-index:2;
+}
+.h1 em{font-style:italic;color:var(--g4);}
+
+.sub{
+  font-size:clamp(.82rem,2vw,1rem);
+  color:rgba(255,255,255,.5);
+  line-height:1.75;font-weight:300;
+  text-align:center;
+  max-width:560px;
+  margin-bottom:2rem;
+  position:relative;z-index:2;
+}
+
+/* ─── OPEN SOURCE + FREE CALLOUT STRIP ─── */
+.os-strip{
+  display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:center;
+  background:rgba(255,255,255,.04);
+  border:1px solid rgba(255,255,255,.09);
+  border-radius:10px;
+  padding:10px 20px;
+  margin-bottom:1.8rem;
+  position:relative;z-index:2;
+  max-width:560px;
+  width:100%;
+}
+.os-item{display:flex;align-items:center;gap:6px;font-size:.73rem;font-weight:600;color:rgba(255,255,255,.65);}
+.os-item svg{flex-shrink:0;}
+.os-sep{width:1px;height:16px;background:rgba(255,255,255,.12);}
+.os-item.oss{color:#c4b5fd;}
+.os-item.free{color:#fbbf24;}
+.os-item.nosignup{color:#4ade80;}
+.os-item.mit{color:rgba(255,255,255,.5);}
+
+/* ─── SCENE TABS ─── */
+.tabs{
+  display:flex;gap:5px;
+  position:relative;z-index:2;
+  margin-bottom:1.6rem;
+  flex-wrap:wrap;
+  justify-content:center;
+}
+.tab{
+  font-size:.65rem;font-weight:700;
+  letter-spacing:.05em;text-transform:uppercase;
+  padding:6px 13px;border-radius:100px;
+  border:1.5px solid rgba(255,255,255,.1);
+  color:rgba(255,255,255,.32);
+  cursor:pointer;
+  transition:all .25s;
+  font-family:var(--fm);
+  display:flex;align-items:center;gap:5px;
+}
+.tab.active{
+  background:var(--green);
+  border-color:var(--green);
+  color:#fff;
+}
+.tab:hover:not(.active){border-color:rgba(255,255,255,.3);color:rgba(255,255,255,.7);}
+
+/* ─── CARD STAGE ─── */
+.stage{
+  width:100%;
+  max-width:620px;
+  position:relative;z-index:2;
+  min-height:310px;
+}
+.scene{
+  position:absolute;inset:0;
+  opacity:0;
+  transform:translateY(18px) scale(.97);
+  transition:opacity .5s ease, transform .5s cubic-bezier(.34,1.2,.64,1);
+  pointer-events:none;
+}
+.scene.vis{
+  opacity:1;transform:translateY(0) scale(1);
+  pointer-events:auto;
+  position:relative;
+}
+
+/* ════════════════════
+   SCENE 1 — Live Community Feed
+   ════════════════════ */
+.s1{background:var(--cream);border:2px solid var(--navy2);border-radius:16px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.35);}
+.s1-head{background:var(--green);padding:13px 18px;display:flex;align-items:center;justify-content:space-between;}
+.s1h-title{font-family:var(--fh);font-size:.9rem;font-weight:800;color:#fff;}
+.s1h-live{display:flex;align-items:center;gap:5px;font-size:.68rem;font-weight:700;color:rgba(255,255,255,.8);background:rgba(0,0,0,.2);padding:3px 9px;border-radius:100px;}
+.s1h-dot{width:5px;height:5px;border-radius:50%;background:var(--g4);animation:blink 2s infinite;}
+.s1-stats{display:grid;grid-template-columns:1fr 1px 1fr 1px 1fr;padding:14px 18px 12px;border-bottom:1px solid var(--border);}
+.s1-stat{text-align:center;padding:0 6px;}
+.s1-val{font-family:var(--fh);font-size:1.5rem;font-weight:900;color:var(--navy);line-height:1;}
+.s1-lbl{font-size:.58rem;color:var(--muted);font-family:var(--fm);text-transform:uppercase;letter-spacing:.04em;margin-top:3px;}
+.s1-sep{background:var(--border);}
+.s1-bar-wrap{padding:12px 18px 0;}
+.s1-bar-row{display:flex;justify-content:space-between;font-size:.7rem;margin-bottom:5px;}
+.s1-bar-key{color:var(--muted);}
+.s1-bar-val{font-weight:700;font-family:var(--fm);color:var(--navy);}
+.s1-track{height:7px;background:var(--cream3);border-radius:100px;overflow:hidden;margin-bottom:4px;}
+.s1-fill{height:100%;border-radius:100px;background:linear-gradient(90deg,var(--green),var(--g4));width:0%;animation:barGrow 1.8s cubic-bezier(.4,0,.2,1) forwards;}
+@keyframes barGrow{from{width:4%;}to{width:39%;}}
+.s1-bar-note{font-size:.62rem;color:var(--muted);margin-bottom:10px;}
+.s1-feed{border-top:1px solid var(--border);padding:0 18px;}
+.s1-row{display:flex;align-items:center;gap:9px;padding:8px 0;border-bottom:1px solid var(--border);font-size:.74rem;}
+.s1-row:last-child{border-bottom:none;}
+.fd{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.fd-g{background:var(--green);}
+.fd-b{background:var(--blue);}
+.fd-a{background:var(--amber);}
+.fd-p{background:var(--purple);}
+.s1-txt{flex:1;color:var(--muted);}
+.s1-txt strong{color:var(--navy);}
+.s1-badge{font-size:.6rem;font-weight:700;background:var(--cream2);color:var(--muted);border:1px solid var(--border);padding:2px 7px;border-radius:100px;white-space:nowrap;}
+.s1-cta{display:block;width:calc(100% - 36px);margin:10px 18px 12px;padding:11px;background:var(--red);color:#fff;border:none;border-radius:8px;font-family:var(--fh);font-size:.9rem;font-weight:800;cursor:pointer;text-align:center;animation:ctaGlow 3s ease infinite;text-decoration:none;}
+@keyframes ctaGlow{0%,100%{box-shadow:0 0 0 0 rgba(200,40,30,.4);}50%{box-shadow:0 0 0 7px rgba(200,40,30,0);}}
+
+/* ════════════════════
+   SCENE 2 — Personal Dashboard
+   ════════════════════ */
+.s2{background:var(--cream);border:2px solid var(--border);border-radius:16px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.3);}
+.s2-nav{background:var(--navy);padding:10px 16px;display:flex;align-items:center;gap:10px;border-bottom:1px solid rgba(255,255,255,.07);}
+.s2-logo{width:20px;height:20px;border-radius:5px;background:var(--green);display:flex;align-items:center;justify-content:center;font-size:.6rem;font-weight:700;color:#fff;flex-shrink:0;}
+.s2-brand{font-family:var(--fh);font-size:.82rem;font-weight:800;color:#fff;}
+.s2-sep{width:1px;height:14px;background:rgba(255,255,255,.12);margin:0 6px;}
+.s2-page{font-size:.65rem;color:rgba(255,255,255,.35);font-family:var(--fm);}
+.s2-pill{margin-left:auto;display:flex;align-items:center;gap:4px;font-size:.65rem;font-weight:700;color:var(--g4);background:rgba(45,106,79,.2);border:1px solid rgba(45,106,79,.4);padding:3px 9px;border-radius:100px;}
+.s2-pdot{width:5px;height:5px;border-radius:50%;background:var(--g4);animation:blink 2s infinite;}
+.s2-body{padding:14px 16px;display:flex;flex-direction:column;gap:10px;}
+.s2-top{display:grid;grid-template-columns:116px 1fr;gap:10px;}
+.days-box{background:var(--navy);border-radius:11px;padding:16px;text-align:center;}
+.days-n{font-family:var(--fh);font-size:2.6rem;font-weight:900;color:#fff;line-height:1;letter-spacing:-.04em;}
+.days-lbl{font-size:.58rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:rgba(255,255,255,.35);margin-top:4px;font-family:var(--fm);}
+.stat-mini-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
+.sm-card{background:#fff;border:1.5px solid var(--border);border-radius:9px;padding:10px 12px;}
+.sm-lbl{font-size:.57rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--muted2);font-family:var(--fm);margin-bottom:4px;}
+.sm-val{font-family:var(--fh);font-size:1.2rem;font-weight:900;color:var(--navy);line-height:1;}
+.sm-val.green{color:var(--green);}
+.sm-val.amber{color:var(--amber);}
+.sm-sub{font-size:.64rem;color:var(--muted);margin-top:2px;}
+.cohort-card{background:#fff;border:1.5px solid var(--border);border-radius:9px;padding:12px 14px;}
+.cc-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:9px;font-size:.65rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--muted2);font-family:var(--fm);}
+.cc-row{margin-bottom:7px;}
+.cc-row:last-child{margin-bottom:0;}
+.cc-hd{display:flex;justify-content:space-between;margin-bottom:3px;}
+.cc-name{font-size:.74rem;font-weight:600;color:var(--navy);}
+.cc-stat{font-size:.68rem;color:var(--muted);font-family:var(--fm);}
+.cc-track{height:6px;background:var(--cream3);border-radius:100px;overflow:hidden;}
+.cc-fill{height:100%;border-radius:100px;}
+.cg{background:linear-gradient(90deg,var(--green),var(--g4));}
+.cb{background:linear-gradient(90deg,var(--blue),#7dd3fc);}
+.ca{background:linear-gradient(90deg,var(--amber),#fbbf24);}
+
+/* ════════════════════
+   SCENE 3 — PPR Timeline Estimator
+   ════════════════════ */
+.s3{background:var(--cream);border:2px solid var(--border);border-radius:16px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.3);}
+.s3-head{background:var(--navy);padding:13px 18px;display:flex;align-items:center;justify-content:space-between;}
+.s3-title{font-family:var(--fh);font-size:.88rem;font-weight:800;color:#fff;}
+.s3-badge{font-size:.64rem;font-weight:700;background:rgba(45,106,79,.25);color:var(--g4);border:1px solid rgba(45,106,79,.5);padding:3px 9px;border-radius:100px;font-family:var(--fm);}
+.s3-ppr{background:var(--navy2);padding:13px 16px;border-bottom:1px solid rgba(255,255,255,.07);}
+.s3-ppr-label{font-size:.6rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.3);margin-bottom:7px;font-family:var(--fm);}
+.s3-ppr-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
+.ppr-cell{text-align:center;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:8px;padding:9px;}
+.ppr-val{font-family:var(--fh);font-size:1rem;font-weight:800;color:#fff;line-height:1;}
+.ppr-lbl{font-size:.58rem;color:rgba(255,255,255,.35);font-family:var(--fm);text-transform:uppercase;letter-spacing:.04em;margin-top:3px;}
+.ppr-cell.mid .ppr-val{color:var(--g4);}
+.tl-body{padding:12px 16px;display:flex;flex-direction:column;gap:0;}
+.tl-row{display:flex;gap:12px;position:relative;padding-bottom:13px;}
+.tl-row:not(:last-child)::before{content:'';position:absolute;left:15px;top:30px;bottom:0;width:2px;background:rgba(26,35,50,.08);}
+.tl-dot{width:30px;height:30px;border-radius:50%;border:2px solid;display:flex;align-items:center;justify-content:center;font-size:.7rem;flex-shrink:0;z-index:1;background:var(--cream);}
+.td-done{background:var(--gbg)!important;border-color:var(--green)!important;color:var(--green);}
+.td-now{background:var(--bbg)!important;border-color:var(--blue)!important;color:var(--blue);animation:ring 2.5s infinite;}
+@keyframes ring{0%,100%{box-shadow:0 0 0 0 rgba(30,95,140,.3);}60%{box-shadow:0 0 0 5px rgba(30,95,140,0);}}
+.td-wait{border-color:var(--border)!important;color:var(--muted2)!important;}
+.tl-bd{flex:1;padding-top:4px;}
+.tl-name{font-size:.82rem;font-weight:700;color:var(--navy);}
+.tl-desc{font-size:.7rem;color:var(--muted);line-height:1.45;margin-top:1px;}
+.tl-date{font-size:.7rem;font-weight:700;color:var(--navy);font-family:var(--fm);}
+.tl-est{font-size:.64rem;color:var(--blue);background:var(--bbg);border:1px solid #b8d8f0;padding:1px 7px;border-radius:100px;font-family:var(--fm);display:inline-block;margin-top:3px;}
+.badge-v{display:inline-flex;align-items:center;gap:3px;font-size:.61rem;font-weight:700;color:var(--green);background:var(--gbg);border:1px solid #90d4b0;padding:1px 7px;border-radius:100px;margin-top:2px;}
+
+/* ════════════════════
+   SCENE 4 — Submit AOR / Entry Form
+   ════════════════════ */
+.s4{background:var(--cream);border:2px solid var(--border);border-radius:16px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.3);}
+.s4-head{background:var(--navy);padding:13px 18px;display:flex;align-items:center;gap:10px;}
+.s4-ico{width:28px;height:28px;border-radius:7px;background:var(--green);display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:700;color:#fff;}
+.s4-title{font-family:var(--fh);font-size:.88rem;font-weight:800;color:#fff;}
+.s4-sub{font-size:.64rem;color:rgba(255,255,255,.35);margin-top:1px;}
+.s4-free-tag{margin-left:auto;font-size:.62rem;font-weight:700;color:#fbbf24;background:rgba(181,101,29,.2);border:1px solid rgba(181,101,29,.35);padding:3px 9px;border-radius:100px;font-family:var(--fm);}
+.s4-body{padding:16px 18px;display:flex;flex-direction:column;gap:11px;}
+.steps-row{display:flex;align-items:center;gap:0;margin-bottom:4px;}
+.sn{width:26px;height:26px;border-radius:50%;border:2px solid var(--border);background:var(--cream);display:flex;align-items:center;justify-content:center;font-size:.68rem;font-weight:700;color:var(--muted);font-family:var(--fm);}
+.sn.done{background:var(--green);border-color:var(--green);color:#fff;}
+.sn.active{background:var(--navy);border-color:var(--navy);color:#fff;}
+.s-line{flex:1;height:2px;background:var(--border);}
+.s-line.done{background:var(--green);}
+.stream-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;}
+.stream-opt{border:2px solid var(--border);border-radius:9px;padding:10px 12px;cursor:pointer;transition:all .2s;}
+.stream-opt.sel{border-color:var(--navy);background:var(--navy);}
+.so-icon{font-size:1rem;margin-bottom:4px;}
+.so-name{font-family:var(--fh);font-size:.82rem;font-weight:800;color:var(--navy);margin-bottom:1px;}
+.stream-opt.sel .so-name{color:#fff;}
+.so-avg{font-size:.66rem;color:var(--green);font-weight:700;font-family:var(--fm);}
+.stream-opt.sel .so-avg{color:var(--g4);}
+.f-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.f-field label{font-size:.72rem;font-weight:600;color:var(--navy);display:block;margin-bottom:4px;}
+.f-input{width:100%;padding:9px 12px;border:2px solid var(--border);border-radius:8px;font-family:var(--fm);font-size:.8rem;color:var(--navy);background:var(--cream);}
+.f-input.filled{border-color:var(--green);background:#fff;}
+.s4-submit{width:100%;padding:12px;background:var(--red);color:#fff;border:none;border-radius:9px;font-family:var(--fh);font-size:.92rem;font-weight:800;cursor:pointer;animation:ctaGlow 3s ease infinite;}
+.s4-no-signup{text-align:center;font-size:.65rem;color:var(--muted);margin-top:-2px;}
+.s4-no-signup span{color:var(--green);font-weight:700;}
+
+/* ════════════════════
+   SCENE 5 — Open Source & Community
+   ════════════════════ */
+.s5{background:var(--cream);border:2px solid var(--border);border-radius:16px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.3);}
+.s5-head{background:var(--navy);padding:13px 18px;display:flex;align-items:center;justify-content:space-between;}
+.s5-title{font-family:var(--fh);font-size:.88rem;font-weight:800;color:#fff;}
+.s5-mit{font-size:.64rem;font-weight:700;color:#c4b5fd;background:rgba(91,33,182,.2);border:1px solid rgba(91,33,182,.4);padding:3px 9px;border-radius:100px;font-family:var(--fm);}
+
+.s5-body{padding:16px 18px;display:flex;flex-direction:column;gap:12px;}
+
+/* GitHub card */
+.gh-card{background:var(--navy);border-radius:11px;padding:14px 16px;display:flex;align-items:center;gap:12px;}
+.gh-icon{width:36px;height:36px;border-radius:9px;background:rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.gh-icon svg{width:20px;height:20px;fill:#fff;}
+.gh-info{flex:1;}
+.gh-repo{font-family:var(--fh);font-size:.84rem;font-weight:800;color:#fff;margin-bottom:2px;}
+.gh-desc{font-size:.65rem;color:rgba(255,255,255,.4);line-height:1.4;}
+.gh-stats{display:flex;gap:10px;margin-top:5px;}
+.gh-stat{display:flex;align-items:center;gap:4px;font-size:.64rem;color:rgba(255,255,255,.5);font-family:var(--fm);}
+.gh-stat svg{width:11px;height:11px;fill:currentColor;}
+.gh-star-btn{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);border-radius:7px;padding:7px 12px;font-size:.7rem;font-weight:700;color:#fff;cursor:pointer;white-space:nowrap;font-family:var(--fm);}
+
+/* Principles grid */
+.principles{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.p-card{border:1.5px solid var(--border);border-radius:9px;padding:11px 13px;background:#fff;}
+.p-icon{font-size:1.1rem;margin-bottom:5px;}
+.p-title{font-family:var(--fh);font-size:.78rem;font-weight:800;color:var(--navy);margin-bottom:3px;}
+.p-body{font-size:.67rem;color:var(--muted);line-height:1.45;}
+
+/* Contributors */
+.contrib-row{display:flex;align-items:center;gap:10px;}
+.contrib-avatars{display:flex;}
+.c-av{width:26px;height:26px;border-radius:50%;border:2px solid var(--cream2);display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:700;color:#fff;margin-left:-8px;font-family:var(--fm);}
+.c-av:first-child{margin-left:0;}
+.contrib-text{flex:1;font-size:.7rem;color:var(--muted);}
+.contrib-text strong{color:var(--navy);}
+.contrib-cta{font-size:.68rem;font-weight:700;color:var(--purple);background:var(--pbg);border:1px solid rgba(91,33,182,.2);padding:5px 10px;border-radius:100px;white-space:nowrap;font-family:var(--fm);}
+
+/* ─── SCENE LABEL ─── */
+.scene-label{
+  position:relative;z-index:2;
+  text-align:center;
+  margin-top:1.2rem;
+  min-height:52px;
+}
+.sl-wrap{
+  position:absolute;inset:0;
+  display:flex;flex-direction:column;align-items:center;
+  opacity:0;transform:translateY(6px);
+  transition:opacity .4s ease, transform .4s ease;
+  pointer-events:none;
+}
+.sl-wrap.vis{opacity:1;transform:translateY(0);pointer-events:auto;}
+.sl-num{font-size:.6rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.25);font-family:var(--fm);margin-bottom:2px;}
+.sl-name{font-family:var(--fh);font-size:clamp(.95rem,2.5vw,1.2rem);font-weight:700;color:#fff;}
+.sl-sub{font-size:.67rem;color:rgba(255,255,255,.35);margin-top:3px;font-family:var(--fm);}
+
+/* ─── CTA ROW ─── */
+.cta-row{
+  position:relative;z-index:2;
+  display:flex;gap:10px;justify-content:center;flex-wrap:wrap;
+  margin-top:1.8rem;
+}
+.btn-red{
+  background:var(--red);color:#fff;
+  padding:13px 28px;border-radius:8px;
+  font-size:.9rem;font-weight:700;
+  text-decoration:none;
+  border:2px solid var(--red);
+  display:inline-flex;align-items:center;gap:7px;
+  transition:all .2s;
+}
+.btn-red:hover{background:var(--red2);transform:translateY(-2px);}
+.btn-outline{
+  background:transparent;color:#fff;
+  padding:13px 22px;border-radius:8px;
+  font-size:.9rem;font-weight:400;
+  text-decoration:none;
+  border:2px solid rgba(255,255,255,.2);
+  display:inline-flex;align-items:center;gap:7px;
+  transition:all .2s;
+}
+.btn-outline:hover{border-color:rgba(255,255,255,.5);}
+.btn-oss{
+  background:transparent;color:#c4b5fd;
+  padding:13px 22px;border-radius:8px;
+  font-size:.9rem;font-weight:600;
+  text-decoration:none;
+  border:2px solid rgba(91,33,182,.4);
+  display:inline-flex;align-items:center;gap:7px;
+  transition:all .2s;
+}
+.btn-oss:hover{border-color:#c4b5fd;background:rgba(91,33,182,.1);}
+.btn-oss svg{width:15px;height:15px;fill:currentColor;}
+
+/* ─── TRUST PILLS ─── */
+.trust-row{
+  display:flex;gap:14px;flex-wrap:wrap;justify-content:center;
+  margin-top:1rem;
+  position:relative;z-index:2;
+}
+.trust-item{
+  display:flex;align-items:center;gap:6px;
+  font-size:.73rem;font-weight:500;
+  color:rgba(255,255,255,.38);
+}
+.trust-item::before{content:'✓';color:var(--g4);font-weight:700;font-size:.78rem;}
+.trust-item.oss-tag::before{content:'★';color:#c4b5fd;}
+.trust-item.free-tag::before{content:'♥';color:#fbbf24;}
+
+/* ─── PROGRESS BAR ─── */
+.prog-bar{position:absolute;bottom:0;left:0;right:0;height:3px;background:rgba(255,255,255,.05);z-index:10;}
+.pb-fill{height:100%;background:var(--green);width:0%;transition:width linear;}
+
+/* ════════════════════
+   SCENE 6 — Cohort Analytics
+   ════════════════════ */
+.s6{background:var(--cream);border:2px solid var(--border);border-radius:16px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.3);}
+.s6-head{background:var(--navy);padding:13px 18px;display:flex;align-items:center;justify-content:space-between;gap:10px;}
+.s6-title{font-family:var(--fh);font-size:.88rem;font-weight:800;color:#fff;}
+.s6-stream{display:flex;align-items:center;gap:6px;}
+.s6-tag{font-size:.62rem;font-weight:700;padding:3px 9px;border-radius:100px;font-family:var(--fm);}
+.s6-tag-cec{color:var(--g4);background:rgba(45,106,79,.25);border:1px solid rgba(45,106,79,.5);}
+.s6-tag-jan{color:rgba(255,255,255,.5);background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);}
+.s6-body{padding:14px 18px;display:flex;flex-direction:column;gap:12px;}
+
+/* Cohort summary cards */
+.s6-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;}
+.s6-kpi{background:#fff;border:1.5px solid var(--border);border-radius:9px;padding:9px 10px;text-align:center;}
+.s6-kpi-val{font-family:var(--fh);font-size:1.15rem;font-weight:900;color:var(--navy);line-height:1;}
+.s6-kpi-val.g{color:var(--green);}
+.s6-kpi-val.b{color:var(--blue);}
+.s6-kpi-val.a{color:var(--amber);}
+.s6-kpi-lbl{font-size:.57rem;color:var(--muted);font-family:var(--fm);text-transform:uppercase;letter-spacing:.04em;margin-top:3px;}
+
+/* Distribution histogram */
+.s6-chart-head{display:flex;justify-content:space-between;align-items:center;font-size:.67rem;color:var(--muted);}
+.s6-chart-head strong{color:var(--navy);font-size:.72rem;}
+.s6-histogram{display:flex;align-items:flex-end;gap:3px;height:64px;padding:0 2px;}
+.s6-bar-col{display:flex;flex-direction:column;align-items:center;flex:1;gap:2px;}
+.s6-hbar{width:100%;border-radius:3px 3px 0 0;min-height:3px;transition:opacity .2s;}
+.s6-hbar.me{outline:2px solid var(--red);outline-offset:1px;}
+.s6-hlbl{font-size:.52rem;color:var(--muted2);font-family:var(--fm);white-space:nowrap;}
+.s6-legend{display:flex;gap:12px;justify-content:center;margin-top:-2px;}
+.s6-leg{display:flex;align-items:center;gap:5px;font-size:.65rem;color:var(--muted);}
+.s6-leg-dot{width:8px;height:8px;border-radius:2px;flex-shrink:0;}
+
+/* Percentile rank bar */
+.s6-rank-wrap{background:var(--cream2);border:1.5px solid var(--border);border-radius:9px;padding:11px 13px;}
+.s6-rank-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
+.s6-rank-title{font-size:.72rem;font-weight:700;color:var(--navy);}
+.s6-rank-badge{font-size:.65rem;font-weight:700;color:var(--amber);background:var(--abg);border:1px solid rgba(181,101,29,.25);padding:2px 8px;border-radius:100px;font-family:var(--fm);}
+.s6-rank-track{position:relative;height:10px;background:linear-gradient(90deg,var(--green) 0%,#fbbf24 50%,var(--red) 100%);border-radius:100px;margin-bottom:5px;}
+.s6-rank-marker{position:absolute;top:-4px;width:18px;height:18px;border-radius:50%;background:#fff;border:3px solid var(--navy);left:28%;transform:translateX(-50%);box-shadow:0 2px 6px rgba(0,0,0,.2);}
+.s6-rank-labels{display:flex;justify-content:space-between;font-size:.6rem;color:var(--muted);font-family:var(--fm);}
+
+/* Stream comparison */
+.s6-compare{display:grid;grid-template-columns:1fr 1fr;gap:7px;}
+.s6-comp-row{background:#fff;border:1.5px solid var(--border);border-radius:8px;padding:9px 11px;display:flex;align-items:center;gap:8px;}
+.s6-comp-row.active-stream{border-color:var(--green);background:var(--gbg);}
+.s6-comp-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.s6-comp-info{flex:1;}
+.s6-comp-name{font-size:.72rem;font-weight:700;color:var(--navy);}
+.s6-comp-days{font-size:.65rem;color:var(--muted);font-family:var(--fm);}
+.s6-comp-bar-wrap{width:48px;}
+.s6-comp-mini{height:5px;background:var(--cream3);border-radius:100px;overflow:hidden;}
+.s6-comp-fill{height:100%;border-radius:100px;}
+
+/* ════════════════════
+   SCENE 7 — Messaging / Alerts
+   ════════════════════ */
+.s7{background:var(--cream);border:2px solid var(--border);border-radius:16px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.3);}
+.s7-head{background:var(--navy);padding:13px 18px;display:flex;align-items:center;justify-content:space-between;}
+.s7-title{font-family:var(--fh);font-size:.88rem;font-weight:800;color:#fff;}
+.s7-badge-new{font-size:.62rem;font-weight:700;color:#fff;background:var(--red);padding:2px 8px;border-radius:100px;font-family:var(--fm);animation:blink 2s infinite;}
+
+.s7-channels{display:flex;gap:0;border-bottom:1px solid var(--border);background:#fff;}
+.s7-ch{flex:1;text-align:center;padding:9px 6px;font-size:.67rem;font-weight:700;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;font-family:var(--fm);display:flex;align-items:center;justify-content:center;gap:5px;}
+.s7-ch.active{color:var(--navy);border-bottom-color:var(--navy);}
+
+.s7-alerts{padding:0 16px;}
+.s7-alert{display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);align-items:flex-start;}
+.s7-alert:last-child{border-bottom:none;}
+.s7-alert-icon{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:.85rem;flex-shrink:0;margin-top:1px;}
+.ai-green{background:var(--gbg);}
+.ai-blue{background:var(--bbg);}
+.ai-amber{background:var(--abg);}
+.ai-purple{background:var(--pbg);}
+.s7-alert-body{flex:1;}
+.s7-alert-title{font-size:.76rem;font-weight:700;color:var(--navy);line-height:1.3;margin-bottom:2px;}
+.s7-alert-sub{font-size:.67rem;color:var(--muted);line-height:1.4;}
+.s7-alert-time{font-size:.6rem;color:var(--muted2);font-family:var(--fm);white-space:nowrap;margin-top:2px;}
+.s7-alert-unread{width:7px;height:7px;border-radius:50%;background:var(--blue);flex-shrink:0;margin-top:6px;}
+
+.s7-prefs{padding:10px 16px 14px;background:var(--cream2);border-top:1px solid var(--border);}
+.s7-prefs-head{font-size:.65rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;font-family:var(--fm);margin-bottom:8px;}
+.s7-toggles{display:flex;flex-direction:column;gap:6px;}
+.s7-toggle{display:flex;align-items:center;justify-content:space-between;}
+.s7-tgl-label{font-size:.72rem;color:var(--navy);font-weight:500;}
+.s7-tgl-sub{font-size:.62rem;color:var(--muted);}
+.s7-pill{width:32px;height:18px;border-radius:100px;position:relative;cursor:pointer;flex-shrink:0;}
+.s7-pill.on{background:var(--green);}
+.s7-pill.off{background:var(--border);}
+.s7-pill::after{content:'';position:absolute;top:3px;width:12px;height:12px;border-radius:50%;background:#fff;transition:left .2s;}
+.s7-pill.on::after{left:17px;}
+.s7-pill.off::after{left:3px;}
+
+/* ─── RESPONSIVE ─── */
+@media(max-width:600px){
+  .hero{padding:32px 14px 44px;}
+  .stat-mini-grid{grid-template-columns:1fr 1fr;}
+  .sm-card:last-child{display:none;}
+  .cta-row{flex-direction:column;align-items:center;}
+  .btn-red,.btn-outline,.btn-oss{width:100%;max-width:280px;justify-content:center;}
+  .trust-row{gap:10px;}
+  .s2-top{grid-template-columns:100px 1fr;}
+  .days-n{font-size:2rem;}
+  .principles{grid-template-columns:1fr;}
+  .p-card:last-child{display:none;}
+  .os-strip{padding:9px 14px;}
+  .os-sep{display:none;}
+}
+@media(max-width:420px){
+  .stream-grid{grid-template-columns:1fr 1fr;}
+  .tab{font-size:.58rem;padding:5px 9px;}
+  .s3-ppr-row{grid-template-columns:1fr 1fr;}
+  .ppr-cell:last-child{display:none;}
+  .badges-row{gap:6px;}
+}
+</style>
+</head>
+<body>
+
+<div class="hero" id="hero">
+  <div class="grid-bg"></div>
+  <div class="glow"></div>
+  <div class="maple">🍁</div>
+
+  <!-- Open Source + Free Forever badges -->
+  <div class="badges-row">
+    <span class="badge-oss">
+      <svg viewBox="0 0 16 16"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+      Open Source · MIT
+    </span>
+    <span class="badge-free">♥ Free Forever</span>
+  </div>
+
+  <!-- Eyebrow -->
+  <div class="eyebrow">
+    <span class="ey-dot"></span>
+    14,847 applicants tracked · Community powered
+  </div>
+
+  <!-- Headline -->
+  <h1 class="h1">Know exactly where<br>your <em>PR stands.</em></h1>
+  <p class="sub">Real processing timelines from 14,847 Express Entry applicants — not IRCC's generic estimate. Built by the community, for the community.</p>
+
+  <!-- OS + Free strip -->
+  <div class="os-strip">
+    <span class="os-item oss">
+      <svg width="13" height="13" viewBox="0 0 16 16" fill="#c4b5fd"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+      Open Source on GitHub
+    </span>
+    <span class="os-sep"></span>
+    <span class="os-item free">♥ Free Forever · No Ads</span>
+    <span class="os-sep"></span>
+    <span class="os-item nosignup">✓ No Signup Required</span>
+    <span class="os-sep"></span>
+    <span class="os-item mit">MIT License</span>
+  </div>
+
+  <!-- Scene tabs -->
+  <div class="tabs" id="tabs">
+    <div class="tab active" data-scene="1">📊 Live Feed</div>
+    <div class="tab" data-scene="2">🗂 Dashboard</div>
+    <div class="tab" data-scene="3">📅 PPR Window</div>
+    <div class="tab" data-scene="4">✍️ Submit AOR</div>
+    <div class="tab" data-scene="5">🔓 Open Source</div>
+    <div class="tab" data-scene="6">👥 Cohort</div>
+    <div class="tab" data-scene="7">💬 Messaging</div>
+  </div>
+
+  <!-- Card Stage -->
+  <div class="stage">
+
+    <!-- ══════════════════════════════════════
+         Scene 1: Live Community Feed
+         ══════════════════════════════════════ -->
+    <div class="scene s1 vis" id="scene-1">
+      <div class="s1-head">
+        <span class="s1h-title">Express Entry — Live Community Tracker</span>
+        <span class="s1h-live"><span class="s1h-dot"></span>Updated 3 min ago</span>
+      </div>
+      <div class="s1-stats">
+        <div class="s1-stat"><div class="s1-val">14,847</div><div class="s1-lbl">Applicants</div></div>
+        <div class="s1-sep"></div>
+        <div class="s1-stat"><div class="s1-val">247</div><div class="s1-lbl">Avg Days</div></div>
+        <div class="s1-sep"></div>
+        <div class="s1-stat"><div class="s1-val">39%</div><div class="s1-lbl">PPR'd</div></div>
+      </div>
+      <div class="s1-bar-wrap">
+        <div class="s1-bar-row">
+          <span class="s1-bar-key">Applicants who received PPR</span>
+          <span class="s1-bar-val">39.2%</span>
+        </div>
+        <div class="s1-track"><div class="s1-fill"></div></div>
+        <div class="s1-bar-note">Based on 14,847 verified data points · Jan 2024 cohort · crowd-sourced</div>
+      </div>
+      <div class="s1-feed">
+        <div class="s1-row">
+          <div class="fd fd-g"></div>
+          <div class="s1-txt"><strong>Ahmed R.</strong> received PPR — Day 198 · Canadian Experience Class</div>
+          <span class="s1-badge">2 min ago</span>
+        </div>
+        <div class="s1-row">
+          <div class="fd fd-b"></div>
+          <div class="s1-txt"><strong>Priya S.</strong> submitted AOR — Federal Skilled Worker · PNP</div>
+          <span class="s1-badge">11 min ago</span>
+        </div>
+        <div class="s1-row">
+          <div class="fd fd-a"></div>
+          <div class="s1-txt"><strong>Wei C.</strong> medicals requested — Day 143 · CEC Jan 2024</div>
+          <span class="s1-badge">24 min ago</span>
+        </div>
+      </div>
+      <a class="s1-cta" href="https://track.getnorthpath.com">Track Your AOR — Free →</a>
+    </div>
+
+    <!-- ══════════════════════════════════════
+         Scene 2: Personal Dashboard
+         ══════════════════════════════════════ -->
+    <div class="scene s2" id="scene-2">
+      <div class="s2-nav">
+        <div class="s2-logo">A</div>
+        <span class="s2-brand">AORTrack</span>
+        <div class="s2-sep"></div>
+        <span class="s2-page">My Dashboard</span>
+        <div class="s2-pill"><span class="s2-pdot"></span>Live</div>
+      </div>
+      <div class="s2-body">
+        <div class="s2-top">
+          <div class="days-box">
+            <div class="days-n">247</div>
+            <div class="days-lbl">Days since AOR</div>
+          </div>
+          <div class="stat-mini-grid">
+            <div class="sm-card">
+              <div class="sm-lbl">Stream</div>
+              <div class="sm-val green" style="font-size:.88rem;margin-top:2px;">CEC</div>
+              <div class="sm-sub">Jan 2024 cohort</div>
+            </div>
+            <div class="sm-card">
+              <div class="sm-lbl">Cohort Rank</div>
+              <div class="sm-val amber">Top 28%</div>
+              <div class="sm-sub">of Jan '24</div>
+            </div>
+            <div class="sm-card">
+              <div class="sm-lbl">Avg PPR Day</div>
+              <div class="sm-val">262</div>
+              <div class="sm-sub">↑ 4 days this wk</div>
+            </div>
+          </div>
+        </div>
+        <div class="cohort-card">
+          <div class="cc-head"><span>Jan 2024 Cohort Progress</span><span style="font-family:var(--fm)">14,847 total</span></div>
+          <div class="cc-row">
+            <div class="cc-hd"><span class="cc-name">✅ Got PPR</span><span class="cc-stat"><strong>5,812</strong> of 14,847</span></div>
+            <div class="cc-track"><div class="cc-fill cg" style="width:39%"></div></div>
+          </div>
+          <div class="cc-row">
+            <div class="cc-hd"><span class="cc-name">🩺 Medicals Requested</span><span class="cc-stat"><strong>3,204</strong></span></div>
+            <div class="cc-track"><div class="cc-fill cb" style="width:22%"></div></div>
+          </div>
+          <div class="cc-row">
+            <div class="cc-hd"><span class="cc-name">⏳ Still Waiting</span><span class="cc-stat"><strong>5,831</strong></span></div>
+            <div class="cc-track"><div class="cc-fill ca" style="width:39%"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════
+         Scene 3: PPR Timeline / Window Estimator
+         ══════════════════════════════════════ -->
+    <div class="scene s3" id="scene-3">
+      <div class="s3-head">
+        <span class="s3-title">Your PPR Window — CEC · Jan 2024</span>
+        <span class="s3-badge">Day 247 in queue</span>
+      </div>
+      <div class="s3-ppr">
+        <div class="s3-ppr-label">Estimated PPR window based on your cohort's real data</div>
+        <div class="s3-ppr-row">
+          <div class="ppr-cell">
+            <div class="ppr-val">Jun '25</div>
+            <div class="ppr-lbl">Earliest</div>
+          </div>
+          <div class="ppr-cell mid">
+            <div class="ppr-val">Aug '25</div>
+            <div class="ppr-lbl">Most Likely</div>
+          </div>
+          <div class="ppr-cell">
+            <div class="ppr-val">Nov '25</div>
+            <div class="ppr-lbl">Latest</div>
+          </div>
+        </div>
+      </div>
+      <div class="tl-body">
+        <div class="tl-row">
+          <div class="tl-dot td-done">✓</div>
+          <div class="tl-bd">
+            <div class="tl-name">ITA Received</div>
+            <div class="tl-desc">Invitation to Apply — Express Entry pool</div>
+            <div class="tl-date">Dec 14, 2023</div>
+            <span class="badge-v">✓ Verified</span>
+          </div>
+        </div>
+        <div class="tl-row">
+          <div class="tl-dot td-done">✓</div>
+          <div class="tl-bd">
+            <div class="tl-name">AOR Received</div>
+            <div class="tl-desc">Application received by IRCC</div>
+            <div class="tl-date">Jan 08, 2024</div>
+            <span class="badge-v">✓ Confirmed</span>
+          </div>
+        </div>
+        <div class="tl-row">
+          <div class="tl-dot td-now">→</div>
+          <div class="tl-bd">
+            <div class="tl-name">Medicals / Background Checks</div>
+            <div class="tl-desc">In progress — ranked Top 28% of cohort</div>
+            <div class="tl-date" style="color:var(--muted);font-style:italic;">Day 247 · In progress</div>
+            <span class="tl-est">~4–6 weeks estimated</span>
+          </div>
+        </div>
+        <div class="tl-row">
+          <div class="tl-dot td-wait">🏆</div>
+          <div class="tl-bd">
+            <div class="tl-name">PPR — Passport Request</div>
+            <div class="tl-desc">Final step before PR approval</div>
+            <span class="tl-est">Est. Aug – Nov 2025</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════
+         Scene 4: Submit AOR — Onboarding Form
+         ══════════════════════════════════════ -->
+    <div class="scene s4" id="scene-4">
+      <div class="s4-head">
+        <div class="s4-ico">🍁</div>
+        <div>
+          <div class="s4-title">Track My AOR</div>
+          <div class="s4-sub">Enter your details — see your cohort position instantly</div>
+        </div>
+        <span class="s4-free-tag">Free · No account</span>
+      </div>
+      <div class="s4-body">
+        <div class="steps-row">
+          <div class="sn done">✓</div>
+          <div class="s-line done"></div>
+          <div class="sn active">2</div>
+          <div class="s-line"></div>
+          <div class="sn">3</div>
+        </div>
+        <div>
+          <div style="font-size:.76rem;font-weight:600;color:var(--navy);margin-bottom:7px;">Immigration Stream</div>
+          <div class="stream-grid">
+            <div class="stream-opt sel">
+              <div class="so-icon">⚡</div>
+              <div class="so-name">CEC</div>
+              <div class="so-avg">Avg 241 days</div>
+            </div>
+            <div class="stream-opt">
+              <div class="so-icon">🌍</div>
+              <div class="so-name">FSW</div>
+              <div class="so-avg">Avg 267 days</div>
+            </div>
+            <div class="stream-opt">
+              <div class="so-icon">🎓</div>
+              <div class="so-name">FST</div>
+              <div class="so-avg">Avg 284 days</div>
+            </div>
+            <div class="stream-opt">
+              <div class="so-icon">🏔</div>
+              <div class="so-name">PNP</div>
+              <div class="so-avg">Avg 312 days</div>
+            </div>
+          </div>
+        </div>
+        <div class="f-row">
+          <div class="f-field">
+            <label>AOR Date</label>
+            <input class="f-input filled" type="text" value="2024-01-08" readonly/>
+          </div>
+          <div class="f-field">
+            <label>ITA Date (optional)</label>
+            <input class="f-input" type="text" placeholder="YYYY-MM-DD"/>
+          </div>
+        </div>
+        <button class="s4-submit">Calculate My PPR Window →</button>
+        <div class="s4-no-signup">No account needed · <span>Free forever</span> · Open source · MIT</div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════
+         Scene 5: Open Source & Community
+         ══════════════════════════════════════ -->
+    <div class="scene s5" id="scene-5">
+      <div class="s5-head">
+        <span class="s5-title">Open Source · Built in Public · Free Forever</span>
+        <span class="s5-mit">MIT License</span>
+      </div>
+      <div class="s5-body">
+
+        <!-- GitHub card -->
+        <div class="gh-card">
+          <div class="gh-icon">
+            <svg viewBox="0 0 16 16"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+          </div>
+          <div class="gh-info">
+            <div class="gh-repo">Get-North-Path / AOR-tracker</div>
+            <div class="gh-desc">Free, crowd-sourced Canadian PR processing time tracker</div>
+            <div class="gh-stats">
+              <span class="gh-stat">
+                <svg viewBox="0 0 16 16"><path d="M8 .25a.75.75 0 01.673.418l1.882 3.815 4.21.612a.75.75 0 01.416 1.279l-3.046 2.97.719 4.192a.75.75 0 01-1.088.791L8 12.347l-3.766 1.98a.75.75 0 01-1.088-.79l.72-4.194L.818 6.374a.75.75 0 01.416-1.28l4.21-.611L7.327.668A.75.75 0 018 .25z"/></svg>
+                147 stars
+              </span>
+              <span class="gh-stat">
+                <svg viewBox="0 0 16 16"><path d="M5 3.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm0 2.122a2.25 2.25 0 10-1.5 0v.878A2.25 2.25 0 005.75 8.5h1.5v2.128a2.251 2.251 0 101.5 0V8.5h1.5a2.25 2.25 0 002.25-2.25v-.878a2.25 2.25 0 10-1.5 0v.878a.75.75 0 01-.75.75h-4.5A.75.75 0 015 6.25v-.878zm3.75 7.378a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm3-8.75a.75.75 0 11-1.5 0 .75.75 0 011.5 0z"/></svg>
+                12 forks
+              </span>
+              <span class="gh-stat">MIT License</span>
+            </div>
+          </div>
+          <button class="gh-star-btn">⭐ Star</button>
+        </div>
+
+        <!-- Core principles -->
+        <div class="principles">
+          <div class="p-card">
+            <div class="p-icon">🔓</div>
+            <div class="p-title">Fully Open Source</div>
+            <div class="p-body">Every line of code is public on GitHub. Fork it, audit it, improve it. MIT licensed — use it however you want.</div>
+          </div>
+          <div class="p-card">
+            <div class="p-icon">♥</div>
+            <div class="p-title">Free Forever · No Ads</div>
+            <div class="p-body">No paywalls. No subscriptions. No ads. No data selling. Community-funded and community-run.</div>
+          </div>
+          <div class="p-card">
+            <div class="p-icon">🔭</div>
+            <div class="p-title">Built in Public</div>
+            <div class="p-body">Roadmap, growth goals, and changelog are all public. We ship in the open and listen to the community.</div>
+          </div>
+          <div class="p-card">
+            <div class="p-icon">🌍</div>
+            <div class="p-title">Community Data</div>
+            <div class="p-body">14,847 real applicants. The data belongs to the community. Transparent methodology, no black boxes.</div>
+          </div>
+        </div>
+
+        <!-- Contributors -->
+        <div class="contrib-row">
+          <div class="contrib-avatars">
+            <div class="c-av" style="background:#2D6A4F;">GK</div>
+            <div class="c-av" style="background:#1E5F8C;">PV</div>
+            <div class="c-av" style="background:#B5651D;">MR</div>
+            <div class="c-av" style="background:#5B21B6;">JS</div>
+            <div class="c-av" style="background:#0D7377;">+8</div>
+          </div>
+          <div class="contrib-text"><strong>12 contributors</strong> have shipped code. Your PR is welcome — join us on GitHub or Discord.</div>
+          <span class="contrib-cta">Contribute →</span>
+        </div>
+
+      </div>
+    </div>
+
+
+    <!-- ══════════════════════════════════════
+         Scene 6: Cohort Analytics
+         ══════════════════════════════════════ -->
+    <div class="scene s6" id="scene-6">
+      <div class="s6-head">
+        <span class="s6-title">Cohort Deep Dive — CEC · Jan 2024</span>
+        <span class="s6-stream">
+          <span class="s6-tag s6-tag-cec">CEC</span>
+          <span class="s6-tag s6-tag-jan">14,847 members</span>
+        </span>
+      </div>
+      <div class="s6-body">
+
+        <!-- KPI strip -->
+        <div class="s6-kpis">
+          <div class="s6-kpi">
+            <div class="s6-kpi-val g">241</div>
+            <div class="s6-kpi-lbl">Median PPR Day</div>
+          </div>
+          <div class="s6-kpi">
+            <div class="s6-kpi-val">148</div>
+            <div class="s6-kpi-lbl">Fastest PPR</div>
+          </div>
+          <div class="s6-kpi">
+            <div class="s6-kpi-val a">39%</div>
+            <div class="s6-kpi-lbl">PPR'd So Far</div>
+          </div>
+          <div class="s6-kpi">
+            <div class="s6-kpi-val b">Top 28%</div>
+            <div class="s6-kpi-lbl">Your Rank</div>
+          </div>
+        </div>
+
+        <!-- Distribution histogram -->
+        <div>
+          <div class="s6-chart-head">
+            <strong>Processing day distribution</strong>
+            <span>Jan 2024 cohort · PPR'd applicants</span>
+          </div>
+          <div class="s6-histogram" style="margin-top:8px;">
+            <!-- bars: heights represent % of cohort PPR'd in that window -->
+            <div class="s6-bar-col">
+              <div class="s6-hbar" style="height:14px;background:var(--blue);opacity:.7;"></div>
+              <div class="s6-hlbl">148</div>
+            </div>
+            <div class="s6-bar-col">
+              <div class="s6-hbar" style="height:22px;background:var(--blue);opacity:.75;"></div>
+              <div class="s6-hlbl">160</div>
+            </div>
+            <div class="s6-bar-col">
+              <div class="s6-hbar" style="height:31px;background:var(--blue);opacity:.8;"></div>
+              <div class="s6-hlbl">180</div>
+            </div>
+            <div class="s6-bar-col">
+              <div class="s6-hbar" style="height:48px;background:var(--blue);opacity:.85;"></div>
+              <div class="s6-hlbl">200</div>
+            </div>
+            <div class="s6-bar-col">
+              <div class="s6-hbar" style="height:64px;background:var(--green);"></div>
+              <div class="s6-hlbl">220</div>
+            </div>
+            <div class="s6-bar-col">
+              <div class="s6-hbar" style="height:58px;background:var(--green);opacity:.9;"></div>
+              <div class="s6-hlbl">241</div>
+            </div>
+            <div class="s6-bar-col">
+              <div class="s6-hbar me" style="height:44px;background:var(--amber);"></div>
+              <div class="s6-hlbl" style="color:var(--red);font-weight:700;">247</div>
+            </div>
+            <div class="s6-bar-col">
+              <div class="s6-hbar" style="height:36px;background:var(--amber);opacity:.8;"></div>
+              <div class="s6-hlbl">260</div>
+            </div>
+            <div class="s6-bar-col">
+              <div class="s6-hbar" style="height:24px;background:var(--amber);opacity:.65;"></div>
+              <div class="s6-hlbl">280</div>
+            </div>
+            <div class="s6-bar-col">
+              <div class="s6-hbar" style="height:14px;background:var(--red);opacity:.6;"></div>
+              <div class="s6-hlbl">300+</div>
+            </div>
+          </div>
+          <div class="s6-legend">
+            <span class="s6-leg"><span class="s6-leg-dot" style="background:var(--green)"></span>Peak window</span>
+            <span class="s6-leg"><span class="s6-leg-dot" style="background:var(--amber)"></span>Your position</span>
+            <span class="s6-leg"><span class="s6-leg-dot" style="background:var(--red);opacity:.6;"></span>Late tail</span>
+          </div>
+        </div>
+
+        <!-- Percentile rank -->
+        <div class="s6-rank-wrap">
+          <div class="s6-rank-head">
+            <span class="s6-rank-title">Your Percentile in Jan 2024 Cohort</span>
+            <span class="s6-rank-badge">Top 28%</span>
+          </div>
+          <div class="s6-rank-track">
+            <div class="s6-rank-marker"></div>
+          </div>
+          <div class="s6-rank-labels">
+            <span>Fastest</span><span>Median (Day 241)</span><span>Slowest</span>
+          </div>
+        </div>
+
+        <!-- Stream comparison -->
+        <div class="s6-compare">
+          <div class="s6-comp-row active-stream">
+            <div class="s6-comp-dot" style="background:var(--green)"></div>
+            <div class="s6-comp-info">
+              <div class="s6-comp-name">CEC ← You</div>
+              <div class="s6-comp-days">Avg 241 days</div>
+            </div>
+            <div class="s6-comp-bar-wrap">
+              <div class="s6-comp-mini"><div class="s6-comp-fill" style="width:76%;background:var(--green);"></div></div>
+            </div>
+          </div>
+          <div class="s6-comp-row">
+            <div class="s6-comp-dot" style="background:var(--blue)"></div>
+            <div class="s6-comp-info">
+              <div class="s6-comp-name">FSW</div>
+              <div class="s6-comp-days">Avg 267 days</div>
+            </div>
+            <div class="s6-comp-bar-wrap">
+              <div class="s6-comp-mini"><div class="s6-comp-fill" style="width:60%;background:var(--blue);"></div></div>
+            </div>
+          </div>
+          <div class="s6-comp-row">
+            <div class="s6-comp-dot" style="background:var(--amber)"></div>
+            <div class="s6-comp-info">
+              <div class="s6-comp-name">PNP</div>
+              <div class="s6-comp-days">Avg 312 days</div>
+            </div>
+            <div class="s6-comp-bar-wrap">
+              <div class="s6-comp-mini"><div class="s6-comp-fill" style="width:40%;background:var(--amber);"></div></div>
+            </div>
+          </div>
+          <div class="s6-comp-row">
+            <div class="s6-comp-dot" style="background:var(--purple)"></div>
+            <div class="s6-comp-info">
+              <div class="s6-comp-name">FST</div>
+              <div class="s6-comp-days">Avg 284 days</div>
+            </div>
+            <div class="s6-comp-bar-wrap">
+              <div class="s6-comp-mini"><div class="s6-comp-fill" style="width:52%;background:var(--purple);"></div></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════
+         Scene 7: Messaging & Smart Alerts
+         ══════════════════════════════════════ -->
+    <div class="scene s7" id="scene-7">
+      <div class="s7-head">
+        <span class="s7-title">Smart Alerts &amp; Messaging</span>
+        <span class="s7-badge-new">4 new</span>
+      </div>
+
+      <!-- Channel tabs -->
+      <div class="s7-channels">
+        <div class="s7-ch active">📥 In-App</div>
+        <div class="s7-ch">📧 Email</div>
+        <div class="s7-ch">💬 Discord</div>
+      </div>
+
+      <!-- Alert list -->
+      <div class="s7-alerts">
+        <div class="s7-alert">
+          <div class="s7-alert-icon ai-green">🎉</div>
+          <div class="s7-alert-body">
+            <div class="s7-alert-title">Your cohort just hit 40% PPR'd — you're entering the next wave</div>
+            <div class="s7-alert-sub">CEC Jan 2024 is accelerating. Based on cohort velocity, your window narrows to Aug–Sep 2025.</div>
+            <div class="s7-alert-time">12 min ago</div>
+          </div>
+          <div class="s7-alert-unread"></div>
+        </div>
+        <div class="s7-alert">
+          <div class="s7-alert-icon ai-blue">📊</div>
+          <div class="s7-alert-body">
+            <div class="s7-alert-title">CEC processing times dropped 8 days this week</div>
+            <div class="s7-alert-sub">New IRCC data: median dropped from 249 → 241 days. Your estimated PPR window updated.</div>
+            <div class="s7-alert-time">3 hrs ago</div>
+          </div>
+          <div class="s7-alert-unread"></div>
+        </div>
+        <div class="s7-alert">
+          <div class="s7-alert-icon ai-amber">⚡</div>
+          <div class="s7-alert-body">
+            <div class="s7-alert-title">3 people from your exact Jan 2024 cohort got PPR today</div>
+            <div class="s7-alert-sub">Day 244, 247, 251 — all CEC. You're in the same window. Stay ready.</div>
+            <div class="s7-alert-time">Yesterday</div>
+          </div>
+          <div class="s7-alert-unread"></div>
+        </div>
+        <div class="s7-alert">
+          <div class="s7-alert-icon ai-purple">📅</div>
+          <div class="s7-alert-body">
+            <div class="s7-alert-title">Your estimated PPR window updated: Sep → Aug 2025</div>
+            <div class="s7-alert-sub">Recalculated from 312 new community data points added this week.</div>
+            <div class="s7-alert-time">2 days ago</div>
+          </div>
+          <div class="s7-alert-unread" style="background:var(--border);"></div>
+        </div>
+      </div>
+
+      <!-- Notification preferences -->
+      <div class="s7-prefs">
+        <div class="s7-prefs-head">Notification settings</div>
+        <div class="s7-toggles">
+          <div class="s7-toggle">
+            <div>
+              <div class="s7-tgl-label">Cohort milestone alerts</div>
+              <div class="s7-tgl-sub">When your cohort hits 25%, 50%, 75% PPR'd</div>
+            </div>
+            <div class="s7-pill on"></div>
+          </div>
+          <div class="s7-toggle">
+            <div>
+              <div class="s7-tgl-label">PPR window updates</div>
+              <div class="s7-tgl-sub">When your estimated dates shift by 7+ days</div>
+            </div>
+            <div class="s7-pill on"></div>
+          </div>
+          <div class="s7-toggle">
+            <div>
+              <div class="s7-tgl-label">Weekly digest</div>
+              <div class="s7-tgl-sub">Summary of processing trends every Monday</div>
+            </div>
+            <div class="s7-pill off"></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </div><!-- end stage -->
+
+  <!-- Scene labels -->
+  <div class="scene-label" id="sceneLabel">
+    <div class="sl-wrap vis" id="label-1">
+      <span class="sl-num">Feature 1 of 7</span>
+      <span class="sl-name">Live Community Feed</span>
+      <span class="sl-sub">Real-time PPR reports &amp; updates from 14,847 applicants — crowd-sourced, not IRCC</span>
+    </div>
+    <div class="sl-wrap" id="label-2">
+      <span class="sl-num">Feature 2 of 7</span>
+      <span class="sl-name">Personal Dashboard</span>
+      <span class="sl-sub">Your cohort rank, days in queue, PPR probability &amp; cohort breakdown</span>
+    </div>
+    <div class="sl-wrap" id="label-3">
+      <span class="sl-num">Feature 3 of 7</span>
+      <span class="sl-name">PPR Window Estimator</span>
+      <span class="sl-sub">Know your earliest, median &amp; latest PPR date based on real cohort data</span>
+    </div>
+    <div class="sl-wrap" id="label-4">
+      <span class="sl-num">Feature 4 of 7</span>
+      <span class="sl-name">Submit Your AOR</span>
+      <span class="sl-sub">Free · No account · Instant cohort placement in under 60 seconds</span>
+    </div>
+    <div class="sl-wrap" id="label-5">
+      <span class="sl-num">Feature 5 of 7</span>
+      <span class="sl-name">Open Source · Free Forever</span>
+      <span class="sl-sub">MIT licensed · No ads · No paywalls · 12 contributors · Built in public</span>
+    </div>
+    <div class="sl-wrap" id="label-6">
+      <span class="sl-num">Feature 6 of 7</span>
+      <span class="sl-name">Cohort Analytics</span>
+      <span class="sl-sub">Processing day histogram, percentile rank &amp; stream-by-stream comparison</span>
+    </div>
+    <div class="sl-wrap" id="label-7">
+      <span class="sl-num">Feature 7 of 7</span>
+      <span class="sl-name">Smart Alerts &amp; Messaging</span>
+      <span class="sl-sub">Cohort milestone alerts, PPR window updates &amp; real-time community signals</span>
+    </div>
+  </div><!-- end scene-label -->
+
+  <!-- CTAs -->
+  <div class="cta-row">
+    <a class="btn-red" href="https://track.getnorthpath.com/track">Track My AOR — Free →</a>
+    <a class="btn-outline" href="https://track.getnorthpath.com">View Live Data ↓</a>
+    <a class="btn-oss" href="https://github.com/Get-North-Path/AOR-tracker" target="_blank">
+      <svg viewBox="0 0 16 16"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+      ⭐ Star on GitHub
+    </a>
+  </div>
+
+  <!-- Trust pills -->
+  <div class="trust-row">
+    <span class="trust-item oss-tag">Open Source (MIT)</span>
+    <span class="trust-item free-tag">Free Forever · No Ads</span>
+    <span class="trust-item">No signup required</span>
+    <span class="trust-item">14,847 data points</span>
+    <span class="trust-item">Updated daily</span>
+  </div>
+
+  <!-- Progress bar -->
+  <div class="prog-bar"><div class="pb-fill" id="pbFill"></div></div>
+</div>
+
+<script>
+const SCENES = 7;
+const DURATION = 4500;
+let current = 1;
+let autoTimer = null;
+
+const tabs = document.querySelectorAll('.tab');
+
+function showScene(n){
+  for(let i=1;i<=SCENES;i++){
+    const s = document.getElementById('scene-'+i);
+    const l = document.getElementById('label-'+i);
+    if(i===n){
+      s.classList.add('vis');
+      if(l) l.classList.add('vis');
+    } else {
+      s.classList.remove('vis');
+      if(l) l.classList.remove('vis');
+    }
+  }
+  tabs.forEach((t,idx)=>{ t.classList.toggle('active', idx+1===n); });
+  current = n;
+  startProg();
+
+  // Re-trigger bar animation in scene 1 when revisited
+  if(n===1){
+    const fill = document.querySelector('.s1-fill');
+    if(fill){
+      fill.style.animation='none';
+      void fill.offsetWidth;
+      fill.style.animation='barGrow 1.8s cubic-bezier(.4,0,.2,1) forwards';
+    }
+  }
+}
+
+function startProg(){
+  const fill = document.getElementById('pbFill');
+  fill.style.transition='none';
+  fill.style.width='0%';
+  void fill.offsetWidth;
+  fill.style.transition=`width ${DURATION}ms linear`;
+  fill.style.width='100%';
+}
+
+function next(){ showScene(current >= SCENES ? 1 : current+1); }
+
+function startAuto(){
+  if(autoTimer) clearInterval(autoTimer);
+  autoTimer = setInterval(next, DURATION);
+}
+
+tabs.forEach((t,idx)=>{
+  t.addEventListener('click',()=>{
+    clearInterval(autoTimer);
+    showScene(idx+1);
+    startAuto();
+  });
+});
+
+// Init
+showScene(1);
+startAuto();
+</script>
+</body>
+</html>

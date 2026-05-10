@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Changelog — AORTrack | Canadian PR Processing Tracker</title>
+<meta name="description" content="AORTrack version history — all notable changes, fixes, and additions per release. Follows Keep a Changelog format."/>
+<link rel="canonical" href="https://track.getnorthpath.com/changelog"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,ital,wght@9..144,0,400;9..144,0,700;9..144,0,800;9..144,0,900;9..144,1,400;9..144,1,800&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --cream:#FFFCF5;--cream2:#F5F0E6;--cream3:#EDE8DC;
+  --navy:#1A2332;--navy2:#253347;
+  --red:#C8281E;--red2:#a81f17;--red-pale:#FDECEA;
+  --green:#2D6A4F;--green2:#1f5038;--gbg:#EAF4EE;
+  --amber:#B5651D;--abg:#FDF3E3;
+  --blue:#1E5F8C;--bbg:#E8F2FB;
+  --purple:#5B21B6;--pbg:#EDE9FE;
+  --teal:#0D7377;--tbg:#E0F4F4;
+  --border:#D5CFBF;--border2:#C8C0AF;
+  --muted:#7A7060;--muted2:#9A8E7E;
+  --fh:'Fraunces',Georgia,serif;
+  --fb:'DM Sans',sans-serif;
+  --fm:'DM Mono',monospace;
+}
+html{scroll-behavior:smooth}
+body{background:var(--cream);color:var(--navy);font-family:var(--fb);font-size:15px;line-height:1.65;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:5px}
+
+.nav{background:var(--navy);height:60px;padding:0 clamp(16px,4vw,48px);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;border-bottom:1.5px solid rgba(255,255,255,.07)}
+.nav-brand{display:flex;align-items:center;gap:9px}
+.nav-logo{width:24px;height:24px}
+.nav-name{font-family:var(--fh);font-size:.95rem;font-weight:800;color:#fff;letter-spacing:-.02em}
+.nav-sep{width:1px;height:18px;background:rgba(255,255,255,.12);margin:0 10px}
+.nav-page{font-size:.75rem;color:rgba(255,255,255,.4);font-family:var(--fm)}
+.nav-right{display:flex;align-items:center;gap:8px}
+.nbtn{font-size:.77rem;font-weight:600;color:rgba(255,255,255,.55);padding:6px 12px;border-radius:6px;transition:all .15s;display:flex;align-items:center;gap:5px}
+.nbtn:hover{color:#fff;background:rgba(255,255,255,.08)}
+.nbtn svg{width:12px;height:12px;fill:currentColor;flex-shrink:0}
+
+/* HERO */
+.hero{background:var(--navy);padding:clamp(44px,6vw,72px) clamp(16px,4vw,48px) 0;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 40% 80% at 95% 30%,rgba(30,95,140,.15) 0%,transparent 60%)}
+.hero::after{content:'📋';position:absolute;right:clamp(300px,26%,480px);bottom:-15px;font-size:clamp(90px,12vw,180px);opacity:.04;pointer-events:none;line-height:1}
+.hero-inner{max-width:1000px;margin:0 auto;position:relative;z-index:1}
+.hero h1{font-family:var(--fh);font-size:clamp(1.9rem,3.5vw,2.8rem);font-weight:900;color:#fff;line-height:1.07;letter-spacing:-.04em;margin-bottom:.75rem}
+.hero h1 em{font-style:italic;color:#7dd3fc}
+.hero-sub{font-size:.94rem;color:rgba(255,255,255,.5);line-height:1.72;max-width:480px;margin-bottom:1.5rem;font-weight:300}
+.hero-pills{display:flex;gap:18px;flex-wrap:wrap;padding-bottom:2rem}
+.hp{font-size:.74rem;color:rgba(255,255,255,.36);display:flex;align-items:center;gap:5px}
+.hp b{color:rgba(255,255,255,.75);font-weight:700;font-family:var(--fm)}
+
+/* LAYOUT */
+.layout{max-width:1000px;margin:0 auto;padding:clamp(24px,4vw,48px) clamp(16px,4vw,48px);display:grid;grid-template-columns:174px 1fr;gap:40px;align-items:start}
+
+/* SIDEBAR NAV */
+.cl-nav{position:sticky;top:76px}
+.cl-nav-label{font-size:.62rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted2);margin-bottom:9px;font-family:var(--fm)}
+.cl-link{display:flex;align-items:center;gap:7px;padding:5px 7px;border-radius:6px;font-size:.76rem;font-weight:500;color:var(--muted);transition:all .15s;margin-bottom:2px}
+.cl-link:hover{background:var(--cream2);color:var(--navy)}
+.cl-link.new{font-weight:700;color:var(--navy)}
+.vdot{width:8px;height:8px;border-radius:50%;border:2px solid var(--border);flex-shrink:0}
+.vdot.g{background:var(--green);border-color:var(--green)}
+.vdot.b{background:var(--blue);border-color:var(--blue)}
+.vtag{font-size:.62rem;font-family:var(--fm);color:var(--muted2);margin-left:auto}
+.cl-div{height:1px;background:var(--border);margin:8px 0}
+.cl-link.xs{font-size:.71rem;padding:4px 7px;color:var(--muted2)}
+.cl-link.xs:hover{color:var(--navy)}
+
+/* VERSION BLOCKS */
+.vblock{margin-bottom:52px;scroll-margin-top:80px}
+
+.vhead{display:flex;align-items:flex-start;gap:14px;margin-bottom:18px;padding-bottom:15px;border-bottom:2px solid var(--border)}
+.vbadge-col{flex-shrink:0;text-align:center;min-width:72px}
+.vbadge{font-family:var(--fm);font-size:.76rem;font-weight:700;padding:4px 11px;border-radius:6px;display:inline-block;letter-spacing:.02em}
+.vb-new{background:var(--green);color:#fff}
+.vb-old{background:var(--cream2);color:var(--navy2);border:1.5px solid var(--border)}
+.vdate{font-size:.64rem;color:var(--muted2);font-family:var(--fm);display:block;margin-top:3px;text-align:center}
+.vtitle{flex:1}
+.vtitle h2{font-family:var(--fh);font-size:1.3rem;font-weight:900;color:var(--navy);line-height:1.1;letter-spacing:-.03em;margin-bottom:3px}
+.vtitle p{font-size:.8rem;color:var(--muted);line-height:1.55}
+.vgh{margin-left:auto;flex-shrink:0;display:flex;align-items:center;gap:5px;font-size:.71rem;color:var(--muted);padding:5px 9px;border:1.5px solid var(--border);border-radius:6px;transition:all .2s;cursor:pointer}
+.vgh:hover{border-color:var(--navy);color:var(--navy)}
+.vgh svg{width:11px;height:11px;fill:currentColor}
+
+/* CHANGE SECTIONS */
+.csections{display:flex;flex-direction:column;gap:14px}
+
+.csec-head{display:flex;align-items:center;gap:7px;margin-bottom:7px}
+.ctype{font-size:.66rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:2px 9px;border-radius:100px;font-family:var(--fm)}
+.ct-add{background:var(--gbg);color:var(--green);border:1px solid #90d4b0}
+.ct-fix{background:var(--red-pale);color:var(--red);border:1px solid #f0b0a8}
+.ct-chg{background:var(--bbg);color:var(--blue);border:1px solid #b8d8f0}
+.ct-rem{background:var(--cream3);color:var(--muted);border:1px solid var(--border2)}
+.ct-sec{background:var(--abg);color:var(--amber);border:1px solid #E8C585}
+.ct-prf{background:var(--tbg);color:var(--teal);border:1px solid #a8dfe0}
+
+.clist{display:flex;flex-direction:column}
+.ci{display:flex;align-items:flex-start;gap:9px;padding:7px 0;border-bottom:1px solid var(--border)}
+.ci:last-child{border-bottom:none}
+.ci-d{width:6px;height:6px;border-radius:50%;flex-shrink:0;margin-top:6px}
+.d-g{background:var(--green)}.d-r{background:var(--red)}.d-b{background:var(--blue)}.d-a{background:var(--amber)}.d-t{background:var(--teal)}.d-m{background:var(--muted2)}
+.ci-txt{flex:1;font-size:.8rem;color:var(--navy);line-height:1.55}
+.ci-txt em{color:var(--muted);font-style:normal}
+.ci-n{flex-shrink:0;font-size:.63rem;font-family:var(--fm);color:var(--muted);background:var(--cream2);border:1px solid var(--border);padding:1px 6px;border-radius:4px;white-space:nowrap;transition:all .15s}
+.ci-n:hover{background:var(--bbg);color:var(--blue);border-color:#b8d8f0;cursor:pointer}
+code{font-family:var(--fm);font-size:.73rem;background:var(--cream2);padding:1px 4px;border-radius:3px;border:1px solid var(--border)}
+
+/* CONTRIB ROW */
+.contribs{display:flex;align-items:center;gap:7px;margin-top:13px;padding-top:11px;border-top:1px solid var(--border);flex-wrap:wrap}
+.c-label{font-size:.66rem;color:var(--muted2);font-family:var(--fm)}
+.cav{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.55rem;font-weight:700;color:#fff;font-family:var(--fm);border:2px solid #fff;margin-left:-5px}
+.cav:first-of-type{margin-left:0}
+.cnames{font-size:.68rem;color:var(--muted);font-family:var(--fm)}
+
+/* WHAT'S NEXT BOX */
+.wnext{background:var(--navy);border-radius:10px;padding:14px 18px;margin-top:12px}
+.wnext-t{font-family:var(--fh);font-size:.9rem;font-weight:800;color:#fff;margin-bottom:5px}
+.wnext-i{font-size:.76rem;color:rgba(255,255,255,.45);display:flex;align-items:center;gap:6px;margin-bottom:3px}
+.wnext-i::before{content:'→';color:#4ade80;font-weight:700;flex-shrink:0}
+
+/* UNRELEASED BOX */
+.unreleased{background:linear-gradient(135deg,var(--navy2),var(--navy));border-radius:12px;border:2px solid rgba(255,255,255,.09);padding:16px 20px;margin-bottom:40px}
+.ur-top{display:flex;align-items:center;gap:9px;margin-bottom:10px}
+.ur-badge{font-size:.66rem;font-weight:700;background:rgba(30,95,140,.3);color:#7dd3fc;border:1px solid rgba(30,95,140,.5);padding:2px 9px;border-radius:100px;font-family:var(--fm)}
+.ur-title{font-family:var(--fh);font-size:.92rem;font-weight:800;color:#fff}
+.ur-i{font-size:.76rem;color:rgba(255,255,255,.48);display:flex;align-items:center;gap:6px;margin-bottom:3px}
+.ur-i::before{content:'⟳';color:#7dd3fc;font-weight:700;flex-shrink:0}
+.ur-note{font-size:.68rem;color:rgba(255,255,255,.28);margin-top:9px;border-top:1px solid rgba(255,255,255,.07);padding-top:8px;font-family:var(--fm)}
+
+footer{background:#0D1824;padding:clamp(26px,4vw,40px) clamp(16px,4vw,48px) 18px;margin-top:0}
+.ft-inner{max-width:1000px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px}
+.ft-brand{font-family:var(--fh);font-size:.88rem;font-weight:800;color:#fff;display:flex;align-items:center;gap:7px}
+.ft-links{display:flex;gap:16px;font-size:.72rem;color:rgba(255,255,255,.36)}
+.ft-links a:hover{color:rgba(255,255,255,.72)}
+.ft-note{text-align:center;font-size:.66rem;color:rgba(255,255,255,.2);margin-top:12px;max-width:1000px;margin-left:auto;margin-right:auto}
+
+@media(max-width:800px){.layout{grid-template-columns:1fr}.cl-nav{display:none}}
+@media(max-width:600px){.nav-page,.nav-sep{display:none}}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div style="display:flex;align-items:center">
+    <a href="/" class="nav-brand">
+      <svg class="nav-logo" viewBox="0 0 100 100" fill="none"><path d="M50 5C50 5 30 35 8 38L18 48L10 55L30 52L28 70L50 58L72 70L70 52L90 55L82 48L92 38C70 35 50 5 50 5Z" fill="#C8281E"/><rect x="44" y="68" width="12" height="22" rx="2" fill="#C8281E"/></svg>
+      <div class="nav-name">AORTrack</div>
+    </a>
+    <div class="nav-sep"></div>
+    <div class="nav-page">Changelog</div>
+  </div>
+  <div class="nav-right">
+    <a href="/roadmap" class="nbtn">Roadmap</a>
+    <a href="https://github.com/Get-North-Path/AOR-tracker/releases" target="_blank" class="nbtn">
+      <svg viewBox="0 0 16 16"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+      GitHub Releases
+    </a>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="hero-inner">
+    <h1>What's changed in <em>AORTrack.</em></h1>
+    <p class="hero-sub">All notable changes per <a href="https://keepachangelog.com" target="_blank" style="color:#7dd3fc;text-decoration:underline;text-underline-offset:2px">Keep a Changelog</a>. Versions follow Semantic Versioning.</p>
+    <div class="hero-pills">
+      <div class="hp">Latest <b>v0.4.1</b></div>
+      <div class="hp">Released <b>May 3, 2026</b></div>
+      <div class="hp">Licence <b>MIT</b></div>
+      <div class="hp">Releases <b>6</b></div>
+    </div>
+  </div>
+</section>
+
+<div class="layout">
+  <nav class="cl-nav">
+    <div class="cl-nav-label">Versions</div>
+    <a href="#unreleased" class="cl-link"><div class="vdot b"></div>Unreleased<span class="vtag">v0.5</span></a>
+    <a href="#v041" class="cl-link new"><div class="vdot g"></div>v0.4.1<span class="vtag">Latest</span></a>
+    <a href="#v040" class="cl-link"><div class="vdot"></div>v0.4.0<span class="vtag">May 1</span></a>
+    <a href="#v030" class="cl-link"><div class="vdot"></div>v0.3.0<span class="vtag">Apr 21</span></a>
+    <a href="#v020" class="cl-link"><div class="vdot"></div>v0.2.0<span class="vtag">Apr 10</span></a>
+    <a href="#v011" class="cl-link"><div class="vdot"></div>v0.1.1<span class="vtag">Mar 28</span></a>
+    <a href="#v010" class="cl-link"><div class="vdot"></div>v0.1.0<span class="vtag">Mar 14</span></a>
+    <div class="cl-div"></div>
+    <a href="/roadmap" class="cl-link xs">← Public Roadmap</a>
+    <a href="https://github.com/Get-North-Path/AOR-tracker/releases" target="_blank" class="cl-link xs">GitHub Releases ↗</a>
+    <a href="/feedback" class="cl-link xs">Give Feedback</a>
+  </nav>
+
+  <div>
+
+    <!-- UNRELEASED -->
+    <div id="unreleased" style="scroll-margin-top:80px;margin-bottom:44px">
+      <div class="unreleased">
+        <div class="ur-top">
+          <div class="ur-badge">Unreleased — v0.5</div>
+          <div class="ur-title">In Progress</div>
+        </div>
+        <div class="ur-i">Stream SSR pages with JSON-LD Dataset schema (#49)</div>
+        <div class="ur-i">Discord webhook notifications replacing Slack (#45)</div>
+        <div class="ur-i">OINP stream — first provincial nominee stream launch (#47)</div>
+        <div class="ur-i">90-day anonymous session + POST /api/v1/profile/add-email (#53)</div>
+        <div class="ur-i">Cohort dot map visualisation (#50)</div>
+        <div class="ur-i">sitemap.xml auto-generated with noindex below 50 data points</div>
+        <div class="ur-note">Expected: May 2026 · Track progress on the <a href="/roadmap" style="color:#7dd3fc;text-decoration:underline">Public Roadmap</a></div>
+      </div>
+    </div>
+
+    <!-- v0.4.1 -->
+    <div class="vblock" id="v041">
+      <div class="vhead">
+        <div class="vbadge-col"><div class="vbadge vb-new">v0.4.1</div><span class="vdate">May 3, 2026</span></div>
+        <div class="vtitle"><h2>Gemini Moderation Hotfixes</h2><p>Patch reducing D2 false-positive rate and fixing JSON parse failures on malformed Gemini responses.</p></div>
+        <a href="https://github.com/Get-North-Path/AOR-tracker/releases/tag/v0.4.1" target="_blank" class="vgh"><svg viewBox="0 0 16 16"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>Release</a>
+      </div>
+      <div class="csections">
+        <div><div class="csec-head"><span class="ctype ct-fix">Fixed</span></div>
+          <div class="clist">
+            <div class="ci"><div class="ci-d d-r"></div><div class="ci-txt">D2 (consultant solicitation) false-positive rate reduced from 12% to 3.4% — implicit solicitation detection threshold raised from 0.55 → 0.68. <em>Genuine applicants writing "my consultant said…" no longer flagged</em></div><span class="ci-n" onclick="window.open('https://github.com/Get-North-Path/AOR-tracker/issues/68','_blank')">#68</span></div>
+            <div class="ci"><div class="ci-d d-r"></div><div class="ci-txt">JSON repair prompt retry now fires correctly on malformed Gemini response — previously returned unhandled promise rejection causing submissions to silently drop</div><span class="ci-n" onclick="window.open('https://github.com/Get-North-Path/AOR-tracker/issues/65','_blank')">#65</span></div>
+            <div class="ci"><div class="ci-d d-r"></div><div class="ci-txt">Appeals upheld rate metric on <code>/admin/metrics</code> now computes correctly — was reading from wrong collection after v0.4.0 schema rename</div><span class="ci-n" onclick="window.open('https://github.com/Get-North-Path/AOR-tracker/issues/67','_blank')">#67</span></div>
+            <div class="ci"><div class="ci-d d-r"></div><div class="ci-txt">SSE connection now reconnects with exponential backoff (1s → 4s → 16s) — was retrying immediately causing server overload during IRCC draw day spikes</div><span class="ci-n" onclick="window.open('https://github.com/Get-North-Path/AOR-tracker/issues/69','_blank')">#69</span></div>
+          </div>
+        </div>
+        <div class="contribs"><span class="c-label">Contributors:</span><div class="cav" style="background:var(--green)">gn</div><div class="cav" style="background:var(--blue)">cd</div><span class="cnames">@getnorthpath, @community-dev</span></div>
+      </div>
+    </div>
+
+    <!-- v0.4.0 -->
+    <div class="vblock" id="v040">
+      <div class="vhead">
+        <div class="vbadge-col"><div class="vbadge vb-old">v0.4.0</div><span class="vdate">May 1, 2026</span></div>
+        <div class="vtitle"><h2>Gemini Moderation Pipeline</h2><p>Full 7-category AI moderation, BullMQ queue, admin review UI with keyboard shortcuts, appeal flow, and IP cluster detection.</p></div>
+        <a href="https://github.com/Get-North-Path/AOR-tracker/releases/tag/v0.4.0" target="_blank" class="vgh"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>Release</a>
+      </div>
+      <div class="csections">
+        <div><div class="csec-head"><span class="ctype ct-add">Added</span></div>
+          <div class="clist">
+            <div class="ci"><div class="ci-d d-g"></div><div class="ci-txt">Gemini 2.5 Flash moderation pipeline — all 7 detection categories (D1 date fraud, D2 solicitation, D3 multi-account, D4 off-topic, D5 misinformation, D6 harassment, D7 PII) evaluated per submission. Flash → Pro escalation at confidence 0.55–0.75 or &gt;2 prior violations</div><span class="ci-n" onclick="window.open('https://github.com/Get-North-Path/AOR-tracker/issues/31','_blank')">#31</span></div>
+            <div class="ci"><div class="ci-d d-g"></div><div class="ci-txt">BullMQ queue with token bucket rate limiting — accepts 1,000 submissions/minute, retries with exponential backoff (1s, 4s, 16s, 60s), no silent drops</div></div>
+            <div class="ci"><div class="ci-d d-g"></div><div class="ci-txt">5-tier action-service: APPROVE, SOFT_FLAG, SHADOW_FLAG, REMOVE, BAN — all written to append-only <code>moderation_audit_log</code></div></div>
+            <div class="ci"><div class="ci-d d-g"></div><div class="ci-txt">Admin review queue at <code>/admin/queue</code> — split-panel UI with Gemini evidence spans highlighted amber, cohort mini-chart, account history, keyboard shortcuts A/R/E/P/N</div></div>
+            <div class="ci"><div class="ci-d d-g"></div><div class="ci-txt">Appeal flow — 7-day window for REMOVE, 14-day for BAN. Human-only review (no Gemini reinvocation). Upheld appeals restore post to feed</div></div>
+            <div class="ci"><div class="ci-d d-g"></div><div class="ci-txt">Moderation metrics dashboard at <code>/admin/metrics</code> — precision, recall estimate, appeals upheld rate, queue depth, Flash vs Pro split, P95 latency</div></div>
+            <div class="ci"><div class="ci-d d-g"></div><div class="ci-txt">IP hashing (<code>SHA-256(ip + daily_rotating_salt)</code>) for cluster detection. Rate limit: 5 profiles/24h = flag, 20/24h = HTTP 429</div></div>
+            <div class="ci"><div class="ci-d d-g"></div><div class="ci-txt">Gemini-unavailable fallback: all submissions shadow-flagged with <code>gemini_unavailable</code> status and routed to human review — no data loss</div></div>
+          </div>
+        </div>
+        <div><div class="csec-head"><span class="ctype ct-sec">Security</span></div>
+          <div class="clist">
+            <div class="ci"><div class="ci-d d-a"></div><div class="ci-txt">Admin endpoints: RS256 JWT (15-min expiry) + TOTP MFA + IP allowlist at API gateway — triple defence-in-depth</div></div>
+            <div class="ci"><div class="ci-d d-a"></div><div class="ci-txt">Gemini system prompt moved to environment secrets. Post body HTML-stripped and truncated to 2,000 chars before prompt to mitigate injection attacks</div></div>
+            <div class="ci"><div class="ci-d d-a"></div><div class="ci-txt">GeminiVerdict JSON schema validation before action-service logic runs — unexpected <code>action</code> field values rejected and shadow-flagged</div></div>
+          </div>
+        </div>
+        <div><div class="csec-head"><span class="ctype ct-chg">Changed</span></div>
+          <div class="clist">
+            <div class="ci"><div class="ci-d d-b"></div><div class="ci-txt">Community feed now shows only <code>moderation_status = approved</code> posts. Previously showed all submitted posts pending manual review</div></div>
+            <div class="ci"><div class="ci-d d-b"></div><div class="ci-txt"><code>POST /api/v1/submissions</code> returns HTTP 202 in &lt;500ms — processing is fully async. Dashboard updates optimistically</div></div>
+          </div>
+        </div>
+        <div class="contribs"><span class="c-label">Contributors:</span><div class="cav" style="background:var(--green)">gn</div><div class="cav" style="background:var(--purple)">sc</div><div class="cav" style="background:var(--amber)">jl</div><span class="cnames">@getnorthpath, @sec-contrib, @jl-dev +2</span></div>
+        <div class="wnext"><div class="wnext-t">What came next</div><div class="wnext-i">v0.4.1 hotfix — D2 false-positive fix and JSON parse error handling</div><div class="wnext-i">v0.5 in progress — SEO infrastructure and OINP stream</div></div>
+      </div>
+    </div>
+
+    <!-- v0.3.0 -->
+    <div class="vblock" id="v030">
+      <div class="vhead">
+        <div class="vbadge-col"><div class="vbadge vb-old">v0.3.0</div><span class="vdate">Apr 21, 2026</span></div>
+        <div class="vtitle"><h2>Community Layer</h2><p>Community feed, SSE live updates, 3-step onboarding wizard, share slugs, histogram, dot map, and community insights panel.</p></div>
+        <a href="https://github.com/Get-North-Path/AOR-tracker/releases/tag/v0.3.0" target="_blank" class="vgh"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>Release</a>
+      </div>
+      <div class="csections">
+        <div><div class="csec-head"><span class="ctype ct-add">Added</span></div>
+          <div class="clist">
+            <div class="ci"><div class="ci-d d-g"></div><div class="ci-txt">Community feed at <code>/community</code> — paginated approved-only posts with SSE new-post notification bar (5-second delivery target)</div><span class="ci-n" onclick="window.open('https://github.com/Get-North-Path/AOR-tracker/issues/22','_blank')">#22</span></div>
+            <div class="ci"><div class="ci-d d-g"></div><div class="ci-txt">Filter chips: All, PPR, BIL, BGC, Medical — active filter persisted to localStorage and restored on return</div></div>
+            <div class="ci"><div class="ci-d d-g"></div><div class="ci-txt">Helpful / Reply / Save engagement on feed cards. Replies routed through same Gemini pipeline as primary submissions</div></div>
+            <div class="ci"><div class="ci-d d-g"></div><div class="ci-txt">3-step onboarding: Application Details → Completed Milestones → Review &amp; Email. localStorage draft persists between steps and return sessions</div><span class="ci-n" onclick="window.open('https://github.com/Get-North-Path/AOR-tracker/issues/28','_blank')">#28</span></div>
+            <div class="ci"><div class="ci-d d-g"></div><div class="ci-txt">Share feature — unique slug <code>/t/{adjective}-{noun}-{stream}-{aordate}</code>. Read-only. Copy / WhatsApp / PNG card (1200×630 server-generated)</div><span class="ci-n" onclick="window.open('https://github.com/Get-North-Path/AOR-tracker/issues/25','_blank')">#25</span></div>
+            <div class="ci"><div class="ci-d d-g"></div><div class="ci-txt">PPR celebration prompt auto-shown on PPR milestone log — pre-filled tweet and LinkedIn post with share URL</div></div>
+            <div class="ci"><div class="ci-d d-g"></div><div class="ci-txt">Days-to-PPR histogram in 30-day buckets. User estimated window highlighted red. Gemini-verified submissions only</div></div>
+            <div class="ci"><div class="ci-d d-g"></div><div class="ci-txt">Cohort dot map — 500-sampled grid, colour-coded by stage. User dot: white outline ring. Hover tooltip shows anonymised applicant ID and stage</div></div>
+            <div class="ci"><div class="ci-d d-g"></div><div class="ci-txt">Community Insights panel — alert cards with 72-hour auto-expiry, Gemini-generated ≤140 char summaries, moderated before display</div></div>
+          </div>
+        </div>
+        <div><div class="csec-head"><span class="ctype ct-fix">Fixed</span></div>
+          <div class="clist">
+            <div class="ci"><div class="ci-d d-r"></div><div class="ci-txt">Dashboard cohort stats now refresh in background without blocking initial render — was causing 1.2s layout shift on return visits</div><span class="ci-n" onclick="window.open('https://github.com/Get-North-Path/AOR-tracker/issues/29','_blank')">#29</span></div>
+          </div>
+        </div>
+        <div class="contribs"><span class="c-label">Contributors:</span><div class="cav" style="background:var(--green)">gn</div><div class="cav" style="background:var(--blue)">cd</div><div class="cav" style="background:var(--teal)">mk</div><span class="cnames">@getnorthpath, @community-dev, @mk-dev +3</span></div>
+      </div>
+    </div>
+
+    <!-- v0.2.0 -->
+    <div class="vblock" id="v020">
+      <div class="vhead">
+        <div class="vbadge-col"><div class="vbadge vb-old">v0.2.0</div><span class="vdate">Apr 10, 2026</span></div>
+        <div class="vtitle"><h2>Data Quality & Security</h2><p>SHA-256 hashing, PIPEDA deletion, animated SVG progress ring, P25–P75 PPR window, cohort progress bars, magic-link resume.</p></div>
+        <a href="https://github.com/Get-North-Path/AOR-tracker/releases/tag/v0.2.0" target="_blank" class="vgh"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>Release</a>
+      </div>
+      <div class="csections">
+        <div><div class="csec-head"><span class="ctype ct-add">Added</span></div>
+          <div class="clist">
+            <div class="ci"><div class="ci-d d-g"></div><div class="ci-txt">SVG progress ring — animates from 0% on dashboard load. WCAG 2.1 AA text equivalent for screen readers: "65% of median elapsed (120 of 184 days)"</div><span class="ci-n" onclick="window.open('https://github.com/Get-North-Path/AOR-tracker/issues/19','_blank')">#19</span></div>
+            <div class="ci"><div class="ci-d d-g"></div><div class="ci-txt">PPR window estimate as p25–p75 date range (never a single date). Minimum 2-week buffer applied when p25 is already past. Requires ≥30 verified cohort submissions</div></div>
+            <div class="ci"><div class="ci-d d-g"></div><div class="ci-txt">Per-milestone cohort progress bars with animated fill, absolute count, and percentage ("482 of 1,240 past this stage")</div></div>
+            <div class="ci"><div class="ci-d d-g"></div><div class="ci-txt">Magic link resume via <code>POST /api/v1/auth/resume</code> — single-use HMAC-signed JWT, 24h TTL, Redis invalidation. Works from any device for email-registered users</div><span class="ci-n" onclick="window.open('https://github.com/Get-North-Path/AOR-tracker/issues/17','_blank')">#17</span></div>
+            <div class="ci"><div class="ci-d d-g"></div><div class="ci-txt">Processing stats page at <code>/stats</code> — stream leaderboard with p25–p75 confidence bars, WES verification table, data source labels on all statistics</div></div>
+          </div>
+        </div>
+        <div><div class="csec-head"><span class="ctype ct-sec">Security</span></div>
+          <div class="clist">
+            <div class="ci"><div class="ci-d d-a"></div><div class="ci-txt">Email stored as SHA-256 hash only. Separate AES-256-GCM <code>notifications_blob</code> for transactional email — raw email never persisted anywhere</div><span class="ci-n" onclick="window.open('https://github.com/Get-North-Path/AOR-tracker/issues/14','_blank')">#14</span></div>
+            <div class="ci"><div class="ci-d d-a"></div><div class="ci-txt">One-click PIPEDA data deletion from dashboard — cascades to all collections. Nightly hard-delete of soft-deleted records after 24h</div></div>
+            <div class="ci"><div class="ci-d d-a"></div><div class="ci-txt">IP stored as <code>SHA-256(ip + daily_rotating_salt)</code> — raw IPs never logged to any persistent store</div></div>
+          </div>
+        </div>
+        <div><div class="csec-head"><span class="ctype ct-fix">Fixed</span></div>
+          <div class="clist">
+            <div class="ci"><div class="ci-d d-r"></div><div class="ci-txt">PPR submissions without biometrics date now excluded from community statistics with a clear dashboard warning — was silently included causing inflated estimates</div><span class="ci-n" onclick="window.open('https://github.com/Get-North-Path/AOR-tracker/issues/18','_blank')">#18</span></div>
+          </div>
+        </div>
+        <div class="contribs"><span class="c-label">Contributors:</span><div class="cav" style="background:var(--green)">gn</div><div class="cav" style="background:var(--amber)">jl</div><span class="cnames">@getnorthpath, @jl-dev</span></div>
+      </div>
+    </div>
+
+    <!-- v0.1.1 -->
+    <div class="vblock" id="v011">
+      <div class="vhead">
+        <div class="vbadge-col"><div class="vbadge vb-old">v0.1.1</div><span class="vdate">Mar 28, 2026</span></div>
+        <div class="vtitle"><h2>Critical Cohort Fix</h2><p>Patch fixing cohort key collision that caused FSW General and CEC General data to merge incorrectly.</p></div>
+        <a href="https://github.com/Get-North-Path/AOR-tracker/releases/tag/v0.1.1" target="_blank" class="vgh"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>Release</a>
+      </div>
+      <div class="csections">
+        <div><div class="csec-head"><span class="ctype ct-fix">Fixed</span></div>
+          <div class="clist">
+            <div class="ci"><div class="ci-d d-r"></div><div class="ci-txt"><strong>Critical:</strong> Cohort key collision between <code>FSW_GENERAL:2:2026:inland</code> and <code>CEC_GENERAL:2:2026:inland</code> due to missing stream-type prefix check. FSW estimates were inflated by ~30 days. All affected records re-indexed and cohort stats recomputed</div><span class="ci-n" onclick="window.open('https://github.com/Get-North-Path/AOR-tracker/issues/12','_blank')">#12</span></div>
+            <div class="ci"><div class="ci-d d-r"></div><div class="ci-txt">Live counter now cached at 5-minute TTL server-side — was hitting MongoDB directly on every request causing 120ms latency spike at peak load</div><span class="ci-n" onclick="window.open('https://github.com/Get-North-Path/AOR-tracker/issues/13','_blank')">#13</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- v0.1.0 -->
+    <div class="vblock" id="v010">
+      <div class="vhead">
+        <div class="vbadge-col"><div class="vbadge vb-old">v0.1.0</div><span class="vdate">Mar 14, 2026</span></div>
+        <div class="vtitle"><h2>Initial Public Release 🍁</h2><p>The first public version — core tracker, MongoDB schema, cohort key design, and basic dashboard.</p></div>
+        <a href="https://github.com/Get-North-Path/AOR-tracker/releases/tag/v0.1.0" target="_blank" class="vgh"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>Release</a>
+      </div>
+      <div class="csections">
+        <div><div class="csec-head"><span class="ctype ct-add">Added</span></div>
+          <div class="clist">
+            <div class="ci"><div class="ci-d d-g"></div><div class="ci-txt">AOR date submission at <code>/track</code> — stream dropdown, inland/outland type, optional email, form validation, 202 response</div></div>
+            <div class="ci"><div class="ci-d d-g"></div><div class="ci-txt">MongoDB <code>users</code> collection with cohort key format <code>{stream}:{aor_month}:{aor_year}:{type}</code>. Fallback to annual key when cohort n &lt; 30</div></div>
+            <div class="ci"><div class="ci-d d-g"></div><div class="ci-txt">Personal dashboard — days counter, stream median, cohort rank, 6-milestone timeline with hover-to-edit inline date pickers and optimistic UI</div></div>
+            <div class="ci"><div class="ci-d d-g"></div><div class="ci-txt">Session token (HMAC-signed UUID) in HttpOnly cookie for anonymous user persistence on same device</div></div>
+            <div class="ci"><div class="ci-d d-g"></div><div class="ci-txt">6 streams at launch: CEC General, CEC STEM, CEC French, FSW General, FST, PNP</div></div>
+            <div class="ci"><div class="ci-d d-g"></div><div class="ci-txt">Feedback form → GitHub Issues API with labels <code>source:community</code> and <code>type:[bug/feature/data]</code>. <code>feedback_queue</code> collection for API failure fallback</div></div>
+            <div class="ci"><div class="ci-d d-g"></div><div class="ci-txt">CONTRIBUTING.md, CODE_OF_CONDUCT.md (Contributor Covenant v2.1), 4 GitHub issue templates, MIT LICENSE</div></div>
+            <div class="ci"><div class="ci-d d-g"></div><div class="ci-txt">Landing page — SSR hero with live counter (5-min TTL), How It Works, stream cards, trust signals, consulting cross-sell</div></div>
+          </div>
+        </div>
+        <div class="contribs"><span class="c-label">Founded by:</span><div class="cav" style="background:var(--green)">gn</div><span class="cnames">@getnorthpath — GetNorthPath Inc.</span></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<footer>
+  <div class="ft-inner">
+    <div class="ft-brand">
+      <svg style="width:18px;height:18px" viewBox="0 0 100 100" fill="none"><path d="M50 5C50 5 30 35 8 38L18 48L10 55L30 52L28 70L50 58L72 70L70 52L90 55L82 48L92 38C70 35 50 5 50 5Z" fill="#C8281E"/><rect x="44" y="68" width="12" height="22" rx="2" fill="#C8281E"/></svg>
+      AORTrack
+    </div>
+    <div class="ft-links">
+      <a href="/">Home</a><a href="/roadmap">Roadmap</a><a href="/changelog">Changelog</a><a href="/feedback">Feedback</a>
+      <a href="https://github.com/Get-North-Path/AOR-tracker" target="_blank">GitHub</a>
+      <a href="https://www.getnorthpath.com" target="_blank">GetNorthPath</a>
+    </div>
+  </div>
+  <div class="ft-note">© 2026 GetNorthPath Inc. · MIT Licence · track.getnorthpath.com/changelog · Follows <a href="https://keepachangelog.com" target="_blank" style="color:rgba(255,255,255,.32)">keepachangelog.com</a> and <a href="https://semver.org" target="_blank" style="color:rgba(255,255,255,.32)">semver.org</a></div>
+</footer>
+</body>
+</html>

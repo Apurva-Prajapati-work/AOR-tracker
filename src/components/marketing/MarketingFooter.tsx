@@ -40,6 +40,9 @@ export function MarketingFooter() {
           <Link href="/roadmap" className="fg-link">
             Public Roadmap
           </Link>
+          <Link href="/changelog" className="fg-link">
+            Changelog
+          </Link>
           <Link href="/hero-animation" className="fg-link">
             Hero Animation
           </Link>

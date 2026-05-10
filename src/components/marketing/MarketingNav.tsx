@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 import { NorthBrand } from "./NorthBrand";
 
 const GH = "https://github.com/Get-North-Path/AOR-tracker";
@@ -15,35 +14,6 @@ function GitHubIcon() {
 }
 
 export function MarketingNav() {
-  const pathname = usePathname();
-  const isRoadmap = pathname.startsWith("/roadmap");
-
-  if (isRoadmap) {
-    return (
-      <nav className="nav rm-nav-page-hide">
-        <div className="flex min-w-0 items-center">
-          <NorthBrand />
-          <div className="nav-sep" aria-hidden />
-          <div className="nav-page">Public Roadmap</div>
-        </div>
-        <div className="nav-right">
-          <a href={GH} target="_blank" rel="noopener noreferrer" className="nbtn">
-            <GitHubIcon />
-            GitHub
-          </a>
-          <a
-            href={`${GH}/issues/new`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="nbtn red"
-          >
-            + Request Feature
-          </a>
-        </div>
-      </nav>
-    );
-  }
-
   return (
     <nav className="nav">
       <NorthBrand />

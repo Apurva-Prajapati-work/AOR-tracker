@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Public Roadmap — AORTrack | Canadian PR Tracker</title>
+<meta name="description" content="See what the AORTrack community is building next. Vote on features, claim issues, and track our progress in the open."/>
+<link rel="canonical" href="https://track.getnorthpath.com/roadmap"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,ital,wght@9..144,0,400;9..144,0,700;9..144,0,800;9..144,0,900;9..144,1,400;9..144,1,800&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --cream:#FFFCF5;--cream2:#F5F0E6;--cream3:#EDE8DC;
+  --navy:#1A2332;--navy2:#253347;
+  --red:#C8281E;--red2:#a81f17;--red-pale:#FDECEA;
+  --green:#2D6A4F;--green2:#1f5038;--gbg:#EAF4EE;
+  --amber:#B5651D;--abg:#FDF3E3;
+  --blue:#1E5F8C;--bbg:#E8F2FB;
+  --purple:#5B21B6;--pbg:#EDE9FE;
+  --teal:#0D7377;--tbg:#E0F4F4;
+  --border:#D5CFBF;--border2:#C8C0AF;
+  --muted:#7A7060;--muted2:#9A8E7E;
+  --fh:'Fraunces',Georgia,serif;
+  --fb:'DM Sans',sans-serif;
+  --fm:'DM Mono',monospace;
+}
+html{scroll-behavior:smooth}
+body{background:var(--cream);color:var(--navy);font-family:var(--fb);font-size:15px;line-height:1.6;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+button{font-family:var(--fb);cursor:pointer;border:none;background:none}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:5px}
+
+.nav{background:var(--navy);height:60px;padding:0 clamp(16px,4vw,48px);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;border-bottom:1.5px solid rgba(255,255,255,.07)}
+.nav-brand{display:flex;align-items:center;gap:9px}
+.nav-logo{width:24px;height:24px}
+.nav-name{font-family:var(--fh);font-size:.95rem;font-weight:800;color:#fff;letter-spacing:-.02em}
+.nav-sep{width:1px;height:18px;background:rgba(255,255,255,.12);margin:0 10px}
+.nav-page{font-size:.75rem;color:rgba(255,255,255,.4);font-family:var(--fm)}
+.nav-right{display:flex;align-items:center;gap:8px}
+.nbtn{font-size:.77rem;font-weight:600;color:rgba(255,255,255,.55);padding:6px 12px;border-radius:6px;transition:all .15s;display:flex;align-items:center;gap:5px}
+.nbtn:hover{color:#fff;background:rgba(255,255,255,.08)}
+.nbtn.red{background:var(--red);color:#fff}.nbtn.red:hover{background:var(--red2)}
+.nbtn svg{width:13px;height:13px;fill:currentColor;flex-shrink:0}
+
+/* HERO */
+.hero{background:var(--navy);padding:clamp(48px,6vw,80px) clamp(16px,4vw,48px) 0;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 55% 70% at 95% 50%,rgba(45,106,79,.13) 0%,transparent 60%)}
+.hero::after{content:'🗺';position:absolute;right:clamp(360px,30%,520px);bottom:-10px;font-size:clamp(100px,14vw,200px);opacity:.03;pointer-events:none;line-height:1}
+.hero-inner{max-width:1160px;margin:0 auto;position:relative;z-index:1}
+.eyebrow{display:inline-flex;align-items:center;gap:7px;background:rgba(45,106,79,.2);border:1px solid rgba(45,106,79,.4);padding:4px 12px;border-radius:100px;font-size:.72rem;font-weight:700;color:#4ade80;letter-spacing:.07em;text-transform:uppercase;margin-bottom:1.2rem}
+.eyebrow-dot{width:5px;height:5px;border-radius:50%;background:#4ade80;animation:blink 2s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.hero h1{font-family:var(--fh);font-size:clamp(2rem,4vw,3rem);font-weight:900;color:#fff;line-height:1.07;letter-spacing:-.04em;margin-bottom:.9rem}
+.hero h1 em{font-style:italic;color:#4ade80}
+.hero-sub{font-size:1rem;color:rgba(255,255,255,.52);line-height:1.72;max-width:520px;margin-bottom:1.8rem;font-weight:300}
+.hero-pills{display:flex;gap:16px;flex-wrap:wrap;padding-bottom:2.5rem}
+.hp{display:flex;align-items:center;gap:6px;font-size:.76rem;color:rgba(255,255,255,.38)}
+.hp b{color:rgba(255,255,255,.78);font-weight:700;font-family:var(--fm)}
+
+/* STATS BAR */
+.stats-bar{background:var(--cream2);border-bottom:2px solid var(--border)}
+.sbi{max-width:1160px;margin:0 auto;padding:0 clamp(16px,4vw,48px);display:grid;grid-template-columns:repeat(4,1fr)}
+.sb-cell{padding:16px 0;text-align:center;border-right:1px solid var(--border)}
+.sb-cell:last-child{border-right:none}
+.sb-n{font-family:var(--fh);font-size:1.65rem;font-weight:900;color:var(--navy);line-height:1}
+.sb-n.r{color:var(--red)}.sb-n.b{color:var(--blue)}.sb-n.g{color:var(--green)}
+.sb-l{font-size:.68rem;color:var(--muted);margin-top:3px}
+
+/* FILTER */
+.fbar{background:#fff;border-bottom:2px solid var(--border);position:sticky;top:60px;z-index:90;padding:9px clamp(16px,4vw,48px)}
+.fbar-inner{max-width:1160px;margin:0 auto;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.chip{padding:5px 13px;border-radius:100px;font-size:.74rem;font-weight:600;cursor:pointer;border:1.5px solid var(--border);background:var(--cream);color:var(--muted);transition:all .2s;display:flex;align-items:center;gap:5px;white-space:nowrap}
+.chip:hover{border-color:var(--border2);color:var(--navy)}
+.chip.on{border-color:var(--navy);background:var(--navy);color:#fff}
+.cdot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.fbar-spacer{flex:1}
+.gh-link{font-size:.74rem;font-weight:600;color:var(--blue);display:flex;align-items:center;gap:5px}
+.gh-link svg{width:12px;height:12px}
+
+/* MAIN */
+.main{max-width:1160px;margin:0 auto;padding:clamp(24px,4vw,40px) clamp(16px,4vw,48px)}
+
+/* CTA BAND */
+.cta-band{background:var(--navy);border-radius:13px;padding:18px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:28px}
+.ctab-text h3{font-family:var(--fh);font-size:.98rem;font-weight:800;color:#fff;margin-bottom:3px}
+.ctab-text p{font-size:.75rem;color:rgba(255,255,255,.42);line-height:1.55;max-width:380px}
+.ctab-btns{display:flex;gap:7px;flex-shrink:0}
+.btn{padding:8px 16px;border-radius:7px;font-family:var(--fh);font-size:.82rem;font-weight:800;cursor:pointer;transition:all .15s;display:inline-flex;align-items:center;gap:6px;white-space:nowrap;border:2px solid}
+.btn-r{background:var(--red);color:#fff;border-color:var(--red)}.btn-r:hover{background:var(--red2)}
+.btn-g{background:transparent;color:rgba(255,255,255,.6);border-color:rgba(255,255,255,.18)}.btn-g:hover{color:#fff;border-color:rgba(255,255,255,.45)}
+
+/* KANBAN */
+.kanban{display:grid;grid-template-columns:1fr 1fr 1fr;gap:22px;align-items:start;margin-bottom:56px}
+.col-head{display:flex;align-items:center;gap:8px;margin-bottom:12px}
+.col-h2{font-family:var(--fh);font-size:1rem;font-weight:800;color:var(--navy)}
+.col-badge{font-size:.63rem;font-weight:700;padding:2px 8px;border-radius:100px;font-family:var(--fm)}
+.cb-plan{background:var(--cream3);color:var(--muted);border:1px solid var(--border2)}
+.cb-prog{background:var(--bbg);color:var(--blue);border:1px solid #b8d8f0}
+.cb-done{background:var(--gbg);color:var(--green);border:1px solid #90d4b0}
+.col-bar{height:3px;border-radius:100px;margin-bottom:14px}
+.bar-p{background:linear-gradient(90deg,var(--border),var(--cream3))}
+.bar-i{background:linear-gradient(90deg,var(--blue),#7dd3fc)}
+.bar-d{background:linear-gradient(90deg,var(--green),#4ade80)}
+
+/* ROAD CARD */
+.rc{background:#fff;border:2px solid var(--border);border-radius:12px;padding:14px;margin-bottom:9px;transition:all .2s;cursor:pointer;position:relative}
+.rc:hover{border-color:var(--border2);box-shadow:0 2px 14px rgba(26,35,50,.07);transform:translateY(-1px)}
+.rc.prog{border-color:#b8d8f0}
+.rc.done{border-color:#90d4b0;opacity:.82}
+.rc.pri-h{border-left:3px solid var(--red)}
+.rc.pri-m{border-left:3px solid var(--amber)}
+.rc.pri-l{border-left:3px solid var(--border2)}
+.rc-top{display:flex;justify-content:space-between;gap:8px;margin-bottom:7px}
+.rc-title{font-family:var(--fh);font-size:.88rem;font-weight:800;color:var(--navy);line-height:1.25;flex:1}
+.rc-num{font-size:.63rem;color:var(--muted);font-family:var(--fm);white-space:nowrap}
+.rc-tags{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:7px}
+.tag{font-size:.6rem;font-weight:700;padding:2px 6px;border-radius:100px}
+.t-feat{background:var(--bbg);color:var(--blue);border:1px solid #b8d8f0}
+.t-bug{background:var(--red-pale);color:var(--red);border:1px solid #f0b0a8}
+.t-data{background:var(--gbg);color:var(--green);border:1px solid #90d4b0}
+.t-seo{background:var(--pbg);color:var(--purple);border:1px solid #c4b5fd}
+.t-sec{background:var(--abg);color:var(--amber);border:1px solid #E8C585}
+.t-perf{background:var(--tbg);color:var(--teal);border:1px solid #a8dfe0}
+.t-ux{background:var(--cream3);color:var(--navy2);border:1px solid var(--border2)}
+.rc-desc{font-size:.74rem;color:var(--muted);line-height:1.55;margin-bottom:9px}
+.rc-foot{display:flex;align-items:center;justify-content:space-between}
+.vote-btn{display:flex;align-items:center;gap:4px;padding:4px 9px;border:1.5px solid var(--border);border-radius:6px;font-size:.7rem;font-weight:700;color:var(--muted);cursor:pointer;transition:all .2s;background:var(--cream)}
+.vote-btn:hover,.vote-btn.voted{border-color:var(--green);color:var(--green);background:var(--gbg)}
+.vote-btn svg{width:10px;height:10px;fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:round}
+.rc-meta{display:flex;align-items:center;gap:5px}
+.avatar{width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.56rem;font-weight:700;color:#fff;font-family:var(--fm)}
+.rc-prog-wrap{margin:9px 0 0}
+.rp-label{display:flex;justify-content:space-between;font-size:.63rem;color:var(--muted);margin-bottom:2px;font-family:var(--fm)}
+.rp-track{height:4px;background:var(--cream3);border-radius:100px;overflow:hidden}
+.rp-fill{height:100%;border-radius:100px;background:linear-gradient(90deg,var(--blue),#7dd3fc);transition:width 1.3s ease}
+.rc-note{background:var(--bbg);border-radius:6px;padding:5px 8px;margin-top:7px;font-size:.69rem;color:var(--blue);display:flex;align-items:center;gap:5px}
+.rc-note::before{content:'→';font-weight:700}
+.shipped-tag{font-size:.65rem;font-weight:700;color:var(--green);display:flex;align-items:center;gap:3px}
+.shipped-tag::before{content:'✓'}
+
+/* MILESTONE SECTION */
+.ms-section{margin-bottom:56px}
+.ms-head{margin-bottom:24px}
+.ms-head h2{font-family:var(--fh);font-size:1.55rem;font-weight:800;color:var(--navy);letter-spacing:-.03em}
+.ms-head p{font-size:.82rem;color:var(--muted);margin-top:4px}
+.ms-tl{position:relative;padding-left:0}
+.ms-tl::before{content:'';position:absolute;left:18px;top:8px;bottom:8px;width:2px;background:var(--border);border-radius:1px;z-index:0}
+.ms-node{position:relative;margin-bottom:26px;padding-left:44px}
+.ms-node::before{content:'';position:absolute;left:12px;top:5px;width:13px;height:13px;box-sizing:border-box;border-radius:50%;border:2.5px solid var(--border);background:var(--cream);z-index:1}
+.ms-node.reached::before{background:var(--green);border-color:var(--green)}
+.ms-node.current::before{background:var(--blue);border-color:var(--blue);box-shadow:0 0 0 4px rgba(30,95,140,.14)}
+.ms-lbl{font-size:.63rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--muted2);margin-bottom:2px;font-family:var(--fm)}
+.ms-node.reached .ms-lbl{color:var(--green)}
+.ms-node.current .ms-lbl{color:var(--blue)}
+.ms-title{font-family:var(--fh);font-size:.93rem;font-weight:800;color:var(--navy);margin-bottom:2px}
+.ms-desc{font-size:.75rem;color:var(--muted);line-height:1.55}
+.ms-chips{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}
+.ms-chip{font-size:.63rem;font-weight:600;padding:2px 7px;border-radius:100px;background:var(--cream2);color:var(--muted);border:1px solid var(--border)}
+.ms-node.reached .ms-chip{background:var(--gbg);color:var(--green);border-color:#90d4b0}
+.ms-node.current .ms-chip{background:var(--bbg);color:var(--blue);border-color:#b8d8f0}
+
+/* FOOTER */
+footer{background:#0D1824;padding:clamp(28px,4vw,44px) clamp(16px,4vw,48px) 20px;margin-top:0}
+.ft-inner{max-width:1160px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px}
+.ft-brand{font-family:var(--fh);font-size:.88rem;font-weight:800;color:#fff;display:flex;align-items:center;gap:7px}
+.ft-links{display:flex;gap:18px;font-size:.74rem;color:rgba(255,255,255,.38)}
+.ft-links a:hover{color:rgba(255,255,255,.75)}
+.ft-note{text-align:center;font-size:.68rem;color:rgba(255,255,255,.22);margin-top:14px;max-width:1160px;margin-left:auto;margin-right:auto}
+
+/* TOAST */
+.toast{position:fixed;bottom:20px;right:20px;background:var(--navy);color:#fff;padding:10px 16px;border-radius:8px;font-size:.75rem;font-weight:600;z-index:300;box-shadow:0 4px 20px rgba(0,0,0,.2);animation:up .3s ease;display:flex;align-items:center;gap:7px}
+@keyframes up{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.reveal{opacity:0;transform:translateY(14px);transition:opacity .45s,transform .45s}
+.reveal.shown{opacity:1;transform:none}
+
+@media(max-width:900px){
+  .kanban{grid-template-columns:1fr}
+  .sbi{grid-template-columns:1fr 1fr}
+  .sb-cell:nth-child(2){border-right:none}
+  .sb-cell:nth-child(3){border-top:1px solid var(--border)}
+  .cta-band{flex-direction:column;align-items:flex-start}
+}
+@media(max-width:600px){.nav-page,.nav-sep{display:none}}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div style="display:flex;align-items:center">
+    <a href="/" class="nav-brand">
+      <svg class="nav-logo" viewBox="0 0 100 100" fill="none"><path d="M50 5C50 5 30 35 8 38L18 48L10 55L30 52L28 70L50 58L72 70L70 52L90 55L82 48L92 38C70 35 50 5 50 5Z" fill="#C8281E"/><rect x="44" y="68" width="12" height="22" rx="2" fill="#C8281E"/></svg>
+      <div class="nav-name">AORTrack</div>
+    </a>
+    <div class="nav-sep"></div>
+    <div class="nav-page">Public Roadmap</div>
+  </div>
+  <div class="nav-right">
+    <a href="/changelog" class="nbtn">Changelog</a>
+    <a href="https://github.com/Get-North-Path/AOR-tracker" target="_blank" class="nbtn">
+      <svg viewBox="0 0 16 16"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+      GitHub
+    </a>
+    <a href="/feedback" class="nbtn red">+ Request Feature</a>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="hero-inner">
+    <div class="eyebrow"><div class="eyebrow-dot"></div>Open Source · Built in Public</div>
+    <h1>What we're building <em>next.</em></h1>
+    <p class="hero-sub">Every feature here was requested by the community. Upvote what matters. Claim an issue and ship code. This board syncs live from GitHub.</p>
+    <div class="hero-pills">
+      <div class="hp">Last synced <b>3 min ago</b></div>
+      <div class="hp">Open issues <b>24</b></div>
+      <div class="hp">Contributors <b>8</b></div>
+      <div class="hp">GitHub stars <b>147 ⭐</b></div>
+    </div>
+  </div>
+</section>
+
+<div class="stats-bar">
+  <div class="sbi">
+    <div class="sb-cell"><div class="sb-n">9</div><div class="sb-l">Planned features</div></div>
+    <div class="sb-cell"><div class="sb-n b">6</div><div class="sb-l">In progress</div></div>
+    <div class="sb-cell"><div class="sb-n g">31</div><div class="sb-l">Shipped this cycle</div></div>
+    <div class="sb-cell"><div class="sb-n r">147</div><div class="sb-l">Community votes</div></div>
+  </div>
+</div>
+
+<div class="fbar">
+  <div class="fbar-inner">
+    <div class="chip on" onclick="fc(this,'all')">All</div>
+    <div class="chip" onclick="fc(this,'feat')"><span class="cdot" style="background:var(--blue)"></span>Feature</div>
+    <div class="chip" onclick="fc(this,'bug')"><span class="cdot" style="background:var(--red)"></span>Bug Fix</div>
+    <div class="chip" onclick="fc(this,'data')"><span class="cdot" style="background:var(--green)"></span>Data Quality</div>
+    <div class="chip" onclick="fc(this,'seo')"><span class="cdot" style="background:var(--purple)"></span>SEO</div>
+    <div class="chip" onclick="fc(this,'perf')"><span class="cdot" style="background:var(--teal)"></span>Performance</div>
+    <div class="fbar-spacer"></div>
+    <a href="https://github.com/Get-North-Path/AOR-tracker/issues" target="_blank" class="gh-link">
+      <svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+      All issues on GitHub →
+    </a>
+  </div>
+</div>
+
+<div class="main">
+
+  <div class="cta-band reveal">
+    <div class="ctab-text">
+      <h3>Don't see what you need?</h3>
+      <p>Submit a feature request, bug, or data correction — no GitHub account required. We handle the issue creation automatically.</p>
+    </div>
+    <div class="ctab-btns">
+      <a href="/feedback" class="btn btn-r">+ Request Feature</a>
+      <a href="https://github.com/Get-North-Path/AOR-tracker/issues" target="_blank" class="btn btn-g">View GitHub Issues →</a>
+    </div>
+  </div>
+
+  <div class="kanban">
+
+    <!-- PLANNED -->
+    <div class="reveal">
+      <div class="col-head"><span style="font-size:.95rem">📋</span><h2 class="col-h2">Planned</h2><span class="col-badge cb-plan">9 issues</span></div>
+      <div class="col-bar bar-p"></div>
+
+      <div class="rc pri-h" onclick="gh(47)">
+        <div class="rc-top"><div class="rc-title">Add OINP stream processing data</div><div class="rc-num">#47</div></div>
+        <div class="rc-tags"><span class="tag t-feat">feature</span><span class="tag t-data">data</span></div>
+        <div class="rc-desc">Ontario Immigrant Nominee Program — most requested stream. Requires new cohort key, stream seeding, and province-based cohort grouping.</div>
+        <div class="rc-foot"><button class="vote-btn" onclick="event.stopPropagation();vote(this)"><svg viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"/></svg><span>38</span></button><div class="rc-meta"><span style="font-size:.63rem;color:var(--muted);font-family:var(--fm)">#47</span></div></div>
+      </div>
+
+      <div class="rc pri-h" onclick="gh(61)">
+        <div class="rc-top"><div class="rc-title">Province filter for PNP cohort view</div><div class="rc-num">#61</div></div>
+        <div class="rc-tags"><span class="tag t-feat">feature</span></div>
+        <div class="rc-desc">PNP processing varies significantly by province. Let users filter their cohort by province of nomination for accurate estimates.</div>
+        <div class="rc-foot"><button class="vote-btn" onclick="event.stopPropagation();vote(this)"><svg viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"/></svg><span>22</span></button></div>
+      </div>
+
+      <div class="rc pri-m" onclick="gh(58)">
+        <div class="rc-top"><div class="rc-title">Weekly email digest</div><div class="rc-num">#58</div></div>
+        <div class="rc-tags"><span class="tag t-feat">feature</span></div>
+        <div class="rc-desc">Opt-in weekly email with stream average change, cohort PPR rate, and active community alerts. Sent Monday 8am ET.</div>
+        <div class="rc-foot"><button class="vote-btn" onclick="event.stopPropagation();vote(this)"><svg viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"/></svg><span>19</span></button></div>
+      </div>
+
+      <div class="rc pri-m" onclick="gh(63)">
+        <div class="rc-top"><div class="rc-title">WES verification timeline table</div><div class="rc-num">#63</div></div>
+        <div class="rc-tags"><span class="tag t-data">data</span><span class="tag t-feat">feature</span></div>
+        <div class="rc-desc">Community-sourced table showing WES report type, IRCC acceptance status, and timing notes. Clarifies the Course-by-Course vs Regular report confusion.</div>
+        <div class="rc-foot"><button class="vote-btn" onclick="event.stopPropagation();vote(this)"><svg viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"/></svg><span>15</span></button></div>
+      </div>
+
+      <div class="rc pri-l" onclick="gh(70)">
+        <div class="rc-top"><div class="rc-title">JSON open data export endpoint</div><div class="rc-num">#70</div></div>
+        <div class="rc-tags"><span class="tag t-data">data</span></div>
+        <div class="rc-desc">Anonymized aggregate dataset as downloadable JSON/CSV, updated weekly. Supports independent research and journalism on Canadian immigration.</div>
+        <div class="rc-foot"><button class="vote-btn" onclick="event.stopPropagation();vote(this)"><svg viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"/></svg><span>11</span></button></div>
+      </div>
+    </div>
+
+    <!-- IN PROGRESS -->
+    <div class="reveal">
+      <div class="col-head"><span style="font-size:.95rem">⚡</span><h2 class="col-h2">In Progress</h2><span class="col-badge cb-prog">6 issues</span></div>
+      <div class="col-bar bar-i"></div>
+
+      <div class="rc prog pri-h" onclick="gh(52)">
+        <div class="rc-top"><div class="rc-title">Fix BIL date not saving on mobile Safari</div><div class="rc-num">#52</div></div>
+        <div class="rc-tags"><span class="tag t-bug">bug</span></div>
+        <div class="rc-desc">Mobile Safari blocks the inline date picker onChange event. Affects iOS 17+ users logging milestone dates from dashboard.</div>
+        <div class="rc-prog-wrap"><div class="rp-label"><span>Progress</span><span>70%</span></div><div class="rp-track"><div class="rp-fill" data-w="70"></div></div></div>
+        <div class="rc-note">PR #66 open — native input fallback fix</div>
+        <div class="rc-foot" style="margin-top:9px"><button class="vote-btn voted" onclick="event.stopPropagation()"><svg viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"/></svg><span>12</span></button><div class="rc-meta"><div class="avatar" style="background:var(--blue)">cd</div><span style="font-size:.63rem;color:var(--muted)">@community-dev</span></div></div>
+      </div>
+
+      <div class="rc prog pri-h" onclick="gh(49)">
+        <div class="rc-top"><div class="rc-title">Stream SSR pages with JSON-LD schema</div><div class="rc-num">#49</div></div>
+        <div class="rc-tags"><span class="tag t-seo">SEO</span><span class="tag t-feat">feature</span></div>
+        <div class="rc-desc">Each stream gets a unique SSR URL, title, meta description, canonical, and Dataset JSON-LD schema for Google indexing.</div>
+        <div class="rc-prog-wrap"><div class="rp-label"><span>Progress</span><span>85%</span></div><div class="rp-track"><div class="rp-fill" data-w="85"></div></div></div>
+        <div class="rc-note">All stream pages built — schema validation in QA</div>
+        <div class="rc-foot" style="margin-top:9px"><button class="vote-btn" onclick="event.stopPropagation();vote(this)"><svg viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"/></svg><span>18</span></button><div class="rc-meta"><div class="avatar" style="background:var(--purple)">sc</div></div></div>
+      </div>
+
+      <div class="rc prog pri-m" onclick="gh(45)">
+        <div class="rc-top"><div class="rc-title">Discord webhook notifications</div><div class="rc-num">#45</div></div>
+        <div class="rc-tags"><span class="tag t-feat">feature</span></div>
+        <div class="rc-desc">Colour-coded Discord embeds to #aortrack-issues. Bug = red, feature = blue, data = green. High demand alert at 10+ upvotes.</div>
+        <div class="rc-prog-wrap"><div class="rp-label"><span>Progress</span><span>95%</span></div><div class="rp-track"><div class="rp-fill" data-w="95"></div></div></div>
+        <div class="rc-note">PR #64 merged — deploying to staging today</div>
+        <div class="rc-foot" style="margin-top:9px"><button class="vote-btn voted" onclick="event.stopPropagation()"><svg viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"/></svg><span>14</span></button><div class="rc-meta"><div class="avatar" style="background:var(--amber)">dd</div></div></div>
+      </div>
+
+      <div class="rc prog pri-m" onclick="gh(55)">
+        <div class="rc-top"><div class="rc-title">Feb 2025 CEC STEM average audit</div><div class="rc-num">#55</div></div>
+        <div class="rc-tags"><span class="tag t-data">data</span></div>
+        <div class="rc-desc">3 members report the Feb 2025 CEC STEM cohort average is ~20d too high. Investigating outliers not caught by Z-score filter.</div>
+        <div class="rc-prog-wrap"><div class="rp-label"><span>Progress</span><span>40%</span></div><div class="rp-track"><div class="rp-fill" data-w="40"></div></div></div>
+        <div class="rc-note">Gemini audit running on flagged submissions</div>
+        <div class="rc-foot" style="margin-top:9px"><button class="vote-btn" onclick="event.stopPropagation();vote(this)"><svg viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"/></svg><span>7</span></button><div class="rc-meta"><div class="avatar" style="background:var(--green)">gn</div></div></div>
+      </div>
+
+      <div class="rc prog pri-m" onclick="gh(50)">
+        <div class="rc-top"><div class="rc-title">Cohort dot map visualisation</div><div class="rc-num">#50</div></div>
+        <div class="rc-tags"><span class="tag t-feat">feature</span><span class="tag t-perf">performance</span></div>
+        <div class="rc-desc">500-dot interactive grid colour-coded by milestone stage. User's dot has white outline ring. Sampled for performance.</div>
+        <div class="rc-prog-wrap"><div class="rp-label"><span>Progress</span><span>60%</span></div><div class="rp-track"><div class="rp-fill" data-w="60"></div></div></div>
+        <div class="rc-note">Dot grid rendering complete — legend in progress</div>
+        <div class="rc-foot" style="margin-top:9px"><button class="vote-btn" onclick="event.stopPropagation();vote(this)"><svg viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"/></svg><span>9</span></button></div>
+      </div>
+
+      <div class="rc prog pri-l" onclick="gh(53)">
+        <div class="rc-top"><div class="rc-title">90-day anonymous session + add-email upgrade</div><div class="rc-num">#53</div></div>
+        <div class="rc-tags"><span class="tag t-feat">feature</span><span class="tag t-sec">security</span></div>
+        <div class="rc-desc">Extend anon session from 7 to 90 days. Add dashboard warning when no email saved. Implement POST /api/v1/profile/add-email.</div>
+        <div class="rc-prog-wrap"><div class="rp-label"><span>Progress</span><span>50%</span></div><div class="rp-track"><div class="rp-fill" data-w="50"></div></div></div>
+        <div class="rc-foot" style="margin-top:9px"><button class="vote-btn" onclick="event.stopPropagation();vote(this)"><svg viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"/></svg><span>6</span></button></div>
+      </div>
+    </div>
+
+    <!-- DONE -->
+    <div class="reveal">
+      <div class="col-head"><span style="font-size:.95rem">✅</span><h2 class="col-h2">Done</h2><span class="col-badge cb-done">31 shipped</span></div>
+      <div class="col-bar bar-d"></div>
+
+      <div class="rc done" onclick="window.location='/changelog'">
+        <div class="rc-top"><div class="rc-title">Gemini moderation pipeline v1</div><div class="rc-num">#31 · v0.4.0</div></div>
+        <div class="rc-tags"><span class="tag t-feat">feature</span><span class="tag t-sec">security</span></div>
+        <div class="rc-desc">Full 7-category Gemini 2.5 Flash/Pro pipeline, BullMQ queue, 5-tier action-service verdict execution.</div>
+        <div class="rc-foot"><div class="shipped-tag">Shipped May 1, 2026</div><a href="/changelog" onclick="event.stopPropagation()" style="font-size:.65rem;color:var(--blue)">Changelog →</a></div>
+      </div>
+
+      <div class="rc done" onclick="window.location='/changelog'">
+        <div class="rc-top"><div class="rc-title">3-step onboarding wizard</div><div class="rc-num">#28 · v0.3.0</div></div>
+        <div class="rc-tags"><span class="tag t-feat">feature</span><span class="tag t-ux">UX</span></div>
+        <div class="rc-desc">Application Details → Milestones → Review with localStorage draft persistence and stream average previews.</div>
+        <div class="rc-foot"><div class="shipped-tag">Shipped Apr 21, 2026</div></div>
+      </div>
+
+      <div class="rc done">
+        <div class="rc-top"><div class="rc-title">Community feed with SSE live updates</div><div class="rc-num">#22 · v0.3.0</div></div>
+        <div class="rc-tags"><span class="tag t-feat">feature</span><span class="tag t-perf">performance</span></div>
+        <div class="rc-desc">Paginated feed of Gemini-approved posts with SSE real-time new post bar. Filter chips persisted to localStorage.</div>
+        <div class="rc-foot"><div class="shipped-tag">Shipped Apr 21, 2026</div></div>
+      </div>
+
+      <div class="rc done">
+        <div class="rc-top"><div class="rc-title">SVG progress ring (WCAG 2.1 AA)</div><div class="rc-num">#19 · v0.2.0</div></div>
+        <div class="rc-tags"><span class="tag t-ux">UX</span></div>
+        <div class="rc-desc">Animated SVG ring with text equivalent for screen readers. Animates from 0% on dashboard load.</div>
+        <div class="rc-foot"><div class="shipped-tag">Shipped Apr 10, 2026</div></div>
+      </div>
+
+      <div class="rc done">
+        <div class="rc-top"><div class="rc-title">SHA-256 email hashing + PIPEDA deletion</div><div class="rc-num">#14 · v0.2.0</div></div>
+        <div class="rc-tags"><span class="tag t-sec">security</span></div>
+        <div class="rc-desc">Email stored as SHA-256 hash only. One-click deletion from dashboard cascades to all collections.</div>
+        <div class="rc-foot"><div class="shipped-tag">Shipped Apr 10, 2026</div></div>
+      </div>
+
+      <div style="text-align:center;margin-top:6px">
+        <a href="/changelog" style="font-size:.75rem;font-weight:700;color:var(--blue)">View full changelog →</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- MILESTONE SECTION -->
+  <div class="ms-section reveal">
+    <div class="ms-head">
+      <h2>Release Milestones</h2>
+      <p>How we think about the next three months of development.</p>
+    </div>
+    <div class="ms-tl">
+      <div class="ms-node reached"><div class="ms-lbl">v0.1 — Mar 2026 · Reached</div><div class="ms-title">Foundation</div><div class="ms-desc">Core tracker, MongoDB schema, cohort key design, basic dashboard with days counter and stream selection.</div><div class="ms-chips"><span class="ms-chip">AOR Submission</span><span class="ms-chip">MongoDB Schema</span><span class="ms-chip">Cohort Keys</span><span class="ms-chip">Basic Dashboard</span></div></div>
+      <div class="ms-node reached"><div class="ms-lbl">v0.2 — Apr 10, 2026 · Reached</div><div class="ms-title">Data Quality & Security</div><div class="ms-desc">SHA-256 hashing, PIPEDA deletion, progress ring, P25–P75 PPR window, cohort progress bars.</div><div class="ms-chips"><span class="ms-chip">SHA-256</span><span class="ms-chip">PIPEDA</span><span class="ms-chip">Progress Ring</span><span class="ms-chip">PPR Window</span><span class="ms-chip">Cohort Bars</span></div></div>
+      <div class="ms-node reached"><div class="ms-lbl">v0.3 — Apr 21, 2026 · Reached</div><div class="ms-title">Community Layer</div><div class="ms-desc">Community feed with SSE, 3-step onboarding, share slugs, histogram and dot map charts.</div><div class="ms-chips"><span class="ms-chip">Community Feed</span><span class="ms-chip">SSE</span><span class="ms-chip">Onboarding</span><span class="ms-chip">Share Slugs</span><span class="ms-chip">Charts</span></div></div>
+      <div class="ms-node reached"><div class="ms-lbl">v0.4 — May 1, 2026 · Reached</div><div class="ms-title">Gemini Moderation</div><div class="ms-desc">Full pipeline, 7 categories, BullMQ queue, action-service verdict execution, admin review queue with appeal flow.</div><div class="ms-chips"><span class="ms-chip">Gemini Pipeline</span><span class="ms-chip">7 Categories</span><span class="ms-chip">BullMQ</span><span class="ms-chip">Admin Queue</span><span class="ms-chip">Appeals</span></div></div>
+      <div class="ms-node current"><div class="ms-lbl">v0.5 — May 2026 · In Progress</div><div class="ms-title">SEO & Growth Infrastructure</div><div class="ms-desc">Stream SSR pages, sitemap.xml, OG images, Discord webhooks, OINP stream launch, 90-day sessions.</div><div class="ms-chips"><span class="ms-chip">Stream SSR</span><span class="ms-chip">Sitemap</span><span class="ms-chip">OG Images</span><span class="ms-chip">Discord</span><span class="ms-chip">OINP</span></div></div>
+      <div class="ms-node"><div class="ms-lbl">v0.6 — June 2026 · Planned</div><div class="ms-title">Data Richness</div><div class="ms-desc">PNP province filter, WES table, weekly email digest, open data JSON export, PPR pulse chart.</div><div class="ms-chips"><span class="ms-chip">PNP Province</span><span class="ms-chip">WES Table</span><span class="ms-chip">Email Digest</span><span class="ms-chip">Open Data</span></div></div>
+      <div class="ms-node"><div class="ms-lbl">v1.0 — Aug 2026 · Target</div><div class="ms-title">25,000 Timelines & Community Governance</div><div class="ms-desc">All planned items shipped. 25k active timelines, 1,500 GitHub stars. Full open-source community handover.</div><div class="ms-chips"><span class="ms-chip">25k Timelines</span><span class="ms-chip">Community Gov</span><span class="ms-chip">Full Parity</span></div></div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <div class="ft-inner">
+    <div class="ft-brand">
+      <svg style="width:19px;height:19px" viewBox="0 0 100 100" fill="none"><path d="M50 5C50 5 30 35 8 38L18 48L10 55L30 52L28 70L50 58L72 70L70 52L90 55L82 48L92 38C70 35 50 5 50 5Z" fill="#C8281E"/><rect x="44" y="68" width="12" height="22" rx="2" fill="#C8281E"/></svg>
+      AORTrack
+    </div>
+    <div class="ft-links">
+      <a href="/">Home</a><a href="/roadmap">Roadmap</a><a href="/changelog">Changelog</a><a href="/feedback">Feedback</a>
+      <a href="https://github.com/Get-North-Path/AOR-tracker" target="_blank">GitHub</a>
+      <a href="https://www.getnorthpath.com" target="_blank">GetNorthPath</a>
+    </div>
+  </div>
+  <div class="ft-note">© 2026 GetNorthPath Inc. · MIT Licence · track.getnorthpath.com/roadmap · Not affiliated with IRCC.</div>
+</footer>
+
+<script>
+function fc(el, f) {
+  document.querySelectorAll('.chip').forEach(c => c.classList.remove('on'));
+  el.classList.add('on');
+  toast('Filtering: ' + f);
+}
+function vote(btn) {
+  const v = btn.classList.toggle('voted');
+  const n = parseInt(btn.querySelector('span').textContent);
+  btn.querySelector('span').textContent = v ? n + 1 : n - 1;
+  if (v) toast('Upvoted ✓');
+}
+function gh(n) { window.open('https://github.com/Get-North-Path/AOR-tracker/issues/' + n, '_blank'); }
+function toast(msg) {
+  document.querySelectorAll('.toast').forEach(t => t.remove());
+  const el = document.createElement('div');
+  el.className = 'toast'; el.textContent = msg;
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 2600);
+}
+const io = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('shown'); io.unobserve(e.target); } });
+}, { threshold: 0.08 });
+document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    document.querySelectorAll('.rp-fill[data-w]').forEach((el, i) => {
+      setTimeout(() => { el.style.width = el.dataset.w + '%'; }, i * 80);
+    });
+  }, 400);
+});
+</script>
+</body>
+</html>

@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { startTransition, useEffect, useMemo, useState } from "react";
-import { FaChevronDown, FaChevronUp } from "react-icons/fa";
+import { FaArrowRight, FaCheck, FaChevronDown, FaChevronUp } from "react-icons/fa";
 import { getProfileAction, saveProfileAction } from "@/app/actions/profile";
 import {
   MILESTONE_DEFS,
@@ -154,7 +154,7 @@ export function OnboardingClient() {
     }
     await saveProfileAction(profile);
     router.push("/dashboard");
-    toast.show("Profile saved! Welcome to AORTrack 🇨🇦");
+    toast.show("Profile saved! Welcome to AORTrack");
   };
 
   if (!email) {
@@ -265,7 +265,7 @@ export function OnboardingClient() {
             </div>
           </div>
           <button type="button" className="bf" onClick={onStep1}>
-            Continue →
+            Continue <FaArrowRight aria-hidden />
           </button>
         </div>
       ) : (
@@ -292,7 +292,9 @@ export function OnboardingClient() {
               }}
             >
               <div className="mscb">
-                <span className="msck">✓</span>
+                <span className="msck">
+                  <FaCheck aria-hidden />
+                </span>
               </div>
               <span className="mslbl">{m.label}</span>
               <input
@@ -311,7 +313,7 @@ export function OnboardingClient() {
             className="bf mt-3.5"
             onClick={() => void onFinish()}
           >
-            Build my timeline →
+            Build my timeline <FaArrowRight aria-hidden />
           </button>
         </div>
       )}

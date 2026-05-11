@@ -3,7 +3,17 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
-import { getProfileAction, ensureDemoProfileAction } from "@/app/actions/profile";
+import {
+  FaArrowRight,
+  FaExclamationTriangle,
+  FaCanadianMapleLeaf,
+  FaMapMarkerAlt,
+  FaUsers,
+} from "react-icons/fa";
+import {
+  getProfileAction,
+  ensureDemoProfileAction,
+} from "@/app/actions/profile";
 import { getLandingHomeAction } from "@/app/actions/landing";
 import { isValidEmail } from "@/lib/profile";
 import { writeSessionEmail } from "@/lib/session-client";
@@ -56,7 +66,7 @@ export function LandingClient() {
       return;
     }
     goDashboard(resumeEmail);
-    toast.show(`Welcome back, ${resumeEmail.split("@")[0]}! 🇨🇦`);
+    toast.show(`Welcome back, ${resumeEmail.split("@")[0]}!`);
   };
 
   const onDemo = async () => {
@@ -84,25 +94,30 @@ export function LandingClient() {
           <button type="button" className="bg" onClick={onDemo}>
             Try demo
           </button>
-          <Link href="/track" className="br inline-block no-underline">
-            Track my application →
+          <Link href="/track" className="br inline-flex no-underline">
+            Track my application <FaArrowRight aria-hidden />
           </Link>
         </div>
       </div>
 
       <div className="hero">
-        <div className="eyebrow">🍁 Free · No signup · Community powered</div>
+        <div className="eyebrow">
+          <FaCanadianMapleLeaf aria-hidden /> Free · No signup · Community
+          powered
+        </div>
         <h1 className="ht">
-          Know exactly where you stand in your <span className="ac">PR journey</span>
+          Know exactly where you stand in your{" "}
+          <span className="ac">PR journey</span>
         </h1>
         <p className="hs">
           AORTrack uses crowd-sourced data from{" "}
-          {profileCount != null ? profileCount.toLocaleString() : "…"} applicants to
-          show real processing timelines — not IRCC&apos;s generic 6–8 month estimate.
+          {profileCount != null ? profileCount.toLocaleString() : "…"}{" "}
+          applicants to show real processing timelines — not IRCC&apos;s generic
+          6–8 month estimate.
         </p>
         <div className="hcta">
           <Link href="/track" className="bh no-underline">
-            Track my AOR <span>→</span>
+            Track my AOR <FaArrowRight aria-hidden />
           </Link>
           <button type="button" className="bhs" onClick={onDemo}>
             See a sample dashboard
@@ -140,20 +155,22 @@ export function LandingClient() {
             onKeyDown={(e) => e.key === "Enter" && void onResume()}
           />
           <button type="button" className="rb" onClick={() => void onResume()}>
-            Load my timeline →
+            Load my timeline <FaArrowRight aria-hidden />
           </button>
         </div>
         <div className={`rerr ${resumeErr ? "is-visible" : ""}`}>
           No profile found for that email.{" "}
           <Link href="/track" className="text-[var(--red)]">
-            Start tracking →
+            Start tracking <FaArrowRight aria-hidden className="inline-block" />
           </Link>
         </div>
       </div>
 
       <div className="fg">
         <div className="fc">
-          <div className="fi">📍</div>
+          <div className="fi">
+            <FaMapMarkerAlt aria-hidden />
+          </div>
           <div className="ft">See your real position</div>
           <div className="fd">
             Know exactly how far you are in your cohort&apos;s queue — not a
@@ -161,7 +178,9 @@ export function LandingClient() {
           </div>
         </div>
         <div className="fc">
-          <div className="fi">👥</div>
+          <div className="fi">
+            <FaUsers aria-hidden />
+          </div>
           <div className="ft">Cohort comparisons</div>
           <div className="fd">
             Compare milestones with applicants sharing your AOR date, stream,
@@ -169,7 +188,9 @@ export function LandingClient() {
           </div>
         </div>
         <div className="fc">
-          <div className="fi">⚠️</div>
+          <div className="fi">
+            <FaExclamationTriangle aria-hidden />
+          </div>
           <div className="ft">Live issue alerts</div>
           <div className="fd">
             WES delays, IRCC tracker bugs, and anomalies reported by the

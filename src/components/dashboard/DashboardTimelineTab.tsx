@@ -1,6 +1,6 @@
 "use client";
 
-import { FaArrowUp, FaCheck } from "react-icons/fa";
+import { FaArrowLeft, FaArrowUp, FaCheck } from "react-icons/fa";
 import { useDashboard } from "@/components/dashboard/DashboardContext";
 import { DashboardRails } from "@/components/dashboard/DashboardRails";
 import { ProfileCompletenessCard } from "@/components/dashboard/ProfileCompletenessCard";
@@ -257,7 +257,11 @@ export function DashboardTimelineTab() {
                   style={{ width: `${r.pct}%` }}
                 >
                   <span className="dcnt">{r.count}</span>
-                  {r.you ? <span className="dytag">← You</span> : null}
+                  {r.you ? (
+                    <span className="dytag">
+                      <FaArrowLeft aria-hidden /> You
+                    </span>
+                  ) : null}
                 </div>
               </div>
             </div>

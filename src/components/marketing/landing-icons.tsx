@@ -14,7 +14,7 @@ import {
   FaLandmark,
   FaLanguage,
   FaLaptopCode,
-  FaLeaf,
+  FaCanadianMapleLeaf,
   FaLock,
   FaMountain,
   FaPlus,
@@ -34,7 +34,7 @@ function ReactIcon(Icon: IconType, size: number, props: IconProps) {
 }
 
 export function IconMaple({ size = 22, ...p }: IconProps) {
-  return ReactIcon(FaLeaf, size, p);
+  return ReactIcon(FaCanadianMapleLeaf, size, p);
 }
 
 export function IconLanguages({ size = 20, ...p }: IconProps) {

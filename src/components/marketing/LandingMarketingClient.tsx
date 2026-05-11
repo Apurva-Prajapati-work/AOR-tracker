@@ -80,6 +80,7 @@ export function LandingMarketingClient() {
   return (
     <div className="mkt-landing-page">
       <section className="mkt-landing-hero">
+        <IconMaple className="mkt-hero-watermark" size={160} />
         <div className="hero-inner">
           <div className="mkt-hero-copy mkt-hero-col">
             <div className="hero-breadcrumb">
@@ -314,9 +315,18 @@ export function LandingMarketingClient() {
                   <div className="sc-bar-fill" style={{ width: "72%" }} />
                 </div>
                 <div className="sc-facts">
-                  <div className="sc-fact">Largest tracked Express Entry stream</div>
-                  <div className="sc-fact">Cohort progress and P25–P75 windows</div>
-                  <div className="sc-fact">Start free from the tracker</div>
+                  <div className="sc-fact">
+                    <IconArrowRight size={11} />
+                    Largest tracked Express Entry stream
+                  </div>
+                  <div className="sc-fact">
+                    <IconArrowRight size={11} />
+                    Cohort progress and P25–P75 windows
+                  </div>
+                  <div className="sc-fact">
+                    <IconArrowRight size={11} />
+                    Start free from the tracker
+                  </div>
                 </div>
               </div>
             </Link>
@@ -339,8 +349,14 @@ export function LandingMarketingClient() {
                   <div className="sc-bar-fill" style={{ width: "61%" }} />
                 </div>
                 <div className="sc-facts">
-                  <div className="sc-fact">Dedicated STEM cohort keys</div>
-                  <div className="sc-fact">Often faster median than CEC General</div>
+                  <div className="sc-fact">
+                    <IconArrowRight size={11} />
+                    Dedicated STEM cohort keys
+                  </div>
+                  <div className="sc-fact">
+                    <IconArrowRight size={11} />
+                    Often faster median than CEC General
+                  </div>
                 </div>
               </div>
             </Link>
@@ -363,7 +379,10 @@ export function LandingMarketingClient() {
                   <div className="sc-bar-fill" style={{ width: "52%" }} />
                 </div>
                 <div className="sc-facts">
-                  <div className="sc-fact">Priority francophone streams</div>
+                  <div className="sc-fact">
+                    <IconArrowRight size={11} />
+                    Priority francophone streams
+                  </div>
                 </div>
               </div>
             </Link>
@@ -386,7 +405,10 @@ export function LandingMarketingClient() {
                   <div className="sc-bar-fill" style={{ width: "45%" }} />
                 </div>
                 <div className="sc-facts">
-                  <div className="sc-fact">Includes WES verification variability</div>
+                  <div className="sc-fact">
+                    <IconArrowRight size={11} />
+                    Includes WES verification variability
+                  </div>
                 </div>
               </div>
             </Link>
@@ -409,7 +431,10 @@ export function LandingMarketingClient() {
                   <div className="sc-bar-fill" style={{ width: "38%" }} />
                 </div>
                 <div className="sc-facts">
-                  <div className="sc-fact">Higher variance by province</div>
+                  <div className="sc-fact">
+                    <IconArrowRight size={11} />
+                    Higher variance by province
+                  </div>
                 </div>
               </div>
             </Link>

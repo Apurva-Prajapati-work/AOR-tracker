@@ -21,16 +21,15 @@
   pointer-events: none;
   z-index: 0;
 }
-/* Maple watermark — matches sample .hero::after */
-.mkt-landing-hero::after {
-  content: "🍁";
+.mkt-hero-watermark {
   position: absolute;
   right: clamp(440px, 38%, 580px);
   top: 40px;
-  font-size: clamp(80px, 12vw, 160px);
+  width: clamp(80px, 12vw, 160px);
+  height: clamp(80px, 12vw, 160px);
   opacity: 0.04;
   pointer-events: none;
-  line-height: 1;
+  color: #fff;
   z-index: 0;
   user-select: none;
 }
@@ -612,12 +611,10 @@
   line-height: 1.5;
   color: var(--muted);
 }
-.sc-fact::before {
-  content: "→";
+.sc-fact svg {
   color: var(--green);
-  font-weight: 700;
   flex-shrink: 0;
-  margin-top: 1px;
+  margin-top: 5px;
 }
 .stream-add {
   background: var(--cream2);

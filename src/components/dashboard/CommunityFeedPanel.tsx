@@ -1,6 +1,13 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import {
+  FaBookmark,
+  FaRegBookmark,
+  FaRegCommentDots,
+  FaThumbsUp,
+  FaTrophy,
+} from "react-icons/fa";
 import { io, type Socket } from "socket.io-client";
 import {
   createCommunityPostAction,
@@ -14,7 +21,7 @@ import type { CommunityPost, CommunityReplyRef, UserProfile } from "@/lib/types"
 
 const SAVED_KEY = "aortrack.community.savedIds";
 const MS_CHOICES: { v: CommunityMs; label: string }[] = [
-  { v: "ppr", label: "PPR 🎉" },
+  { v: "ppr", label: "PPR" },
   { v: "bil", label: "BIL" },
   { v: "bg", label: "BG" },
   { v: "med", label: "Med" },
@@ -279,7 +286,12 @@ export function CommunityFeedPanel({
               {f === "all"
                 ? "All"
                 : f === "ppr"
-                  ? "PPR 🎉"
+                  ? (
+                      <span className="inline-flex items-center gap-1">
+                        <FaTrophy aria-hidden />
+                        PPR
+                      </span>
+                    )
                   : f.toUpperCase()}
             </button>
           ))}
@@ -306,7 +318,14 @@ export function CommunityFeedPanel({
               className={`fch ${ms === c.v ? "on" : ""}`}
               onClick={() => setMs(c.v)}
             >
-              {c.label}
+              {c.v === "ppr" ? (
+                <span className="inline-flex items-center gap-1">
+                  <FaTrophy aria-hidden />
+                  {c.label}
+                </span>
+              ) : (
+                c.label
+              )}
             </button>
           ))}
         </div>
@@ -403,21 +422,22 @@ export function CommunityFeedPanel({
               className={`fabtn ${c.viewerHasMarkedHelpful ? "opacity-70" : ""}`}
               onClick={() => void onHelpful(c)}
             >
-              👍 Helpful ({c.helpful})
+              <FaThumbsUp aria-hidden /> Helpful ({c.helpful})
             </button>
             <button
               type="button"
               className="fabtn"
               onClick={() => startReply(c)}
             >
-              💬 Reply
+              <FaRegCommentDots aria-hidden /> Reply
             </button>
             <button
               type="button"
               className={`fabtn ${savedIds.has(c.id) ? "ring-1 ring-[var(--red)]" : ""}`}
               onClick={() => toggleSaved(c.id)}
             >
-              🔖 {savedIds.has(c.id) ? "Saved" : "Save"}
+              {savedIds.has(c.id) ? <FaBookmark aria-hidden /> : <FaRegBookmark aria-hidden />}
+              {savedIds.has(c.id) ? "Saved" : "Save"}
             </button>
           </div>
         </div>

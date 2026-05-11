@@ -1,5 +1,11 @@
 "use client";
 
+import {
+  FaImage,
+  FaCanadianMapleLeaf,
+  FaRedditAlien,
+  FaWhatsapp,
+} from "react-icons/fa";
 import { useDashboard } from "@/components/dashboard/DashboardContext";
 import { useToast } from "@/components/ToastContext";
 import { fmtDate } from "@/lib/format";
@@ -16,7 +22,9 @@ export function DashboardShareTab() {
       </div>
       <div className="sharewrap">
         <div className="sprev">
-          <div className="spflag">🇨🇦</div>
+          <div className="spflag">
+            <FaCanadianMapleLeaf aria-hidden />
+          </div>
           <div className="sptit">{email.split("@")[0]}&apos;s PR Timeline</div>
           <div className="spsub">
             {profile.stream} · {profile.province} ·{" "}
@@ -70,21 +78,21 @@ export function DashboardShareTab() {
             className="shopt"
             onClick={() => toast.show("WhatsApp deep link (placeholder)")}
           >
-            💬 WhatsApp
+            <FaWhatsapp aria-hidden /> WhatsApp
           </button>
           <button
             type="button"
             className="shopt"
             onClick={() => toast.show("Reddit format (placeholder)")}
           >
-            📋 Reddit
+            <FaRedditAlien aria-hidden /> Reddit
           </button>
           <button
             type="button"
             className="shopt"
             onClick={() => toast.show("PNG export (placeholder)")}
           >
-            🖼 Save image
+            <FaImage aria-hidden /> Save image
           </button>
         </div>
       </div>

@@ -1,5 +1,6 @@
 "use client";
 
+import { FaArrowLeft, FaArrowUp, FaCheck } from "react-icons/fa";
 import { useDashboard } from "@/components/dashboard/DashboardContext";
 import { DashboardRails } from "@/components/dashboard/DashboardRails";
 import { ProfileCompletenessCard } from "@/components/dashboard/ProfileCompletenessCard";
@@ -77,9 +78,14 @@ export function DashboardTimelineTab() {
             {Math.round((cohort.completion_rate ?? 0) * 100)}%
           </div>
           <div className="ssub text-[#5de494]">
-            {cohortDataSparse
-              ? "Low sample — sync cohorts"
-              : `↑ ${Math.round((cohort.weekly_delta ?? 0) * 100)}% this week`}
+            {cohortDataSparse ? (
+              "Low sample — sync cohorts"
+            ) : (
+              <span className="inline-flex items-center gap-1">
+                <FaArrowUp aria-hidden />
+                {Math.round((cohort.weekly_delta ?? 0) * 100)}% this week
+              </span>
+            )}
           </div>
         </div>
       </div>
@@ -201,9 +207,14 @@ export function DashboardTimelineTab() {
                   <div
                     className={`tlsaved ${savedFlash === def.key ? "is-visible" : ""}`}
                   >
-                    {m.updatedAt
-                      ? `✓ Saved ${fmtShortUpdated(m.updatedAt)}`
-                      : ""}
+                    {m.updatedAt ? (
+                      <span className="inline-flex items-center gap-1">
+                        <FaCheck aria-hidden />
+                        Saved {fmtShortUpdated(m.updatedAt)}
+                      </span>
+                    ) : (
+                      ""
+                    )}
                   </div>
                   {!isLast ? (
                     <div
@@ -246,7 +257,11 @@ export function DashboardTimelineTab() {
                   style={{ width: `${r.pct}%` }}
                 >
                   <span className="dcnt">{r.count}</span>
-                  {r.you ? <span className="dytag">← You</span> : null}
+                  {r.you ? (
+                    <span className="dytag">
+                      <FaArrowLeft aria-hidden /> You
+                    </span>
+                  ) : null}
                 </div>
               </div>
             </div>

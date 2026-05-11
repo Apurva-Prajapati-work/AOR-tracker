@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { FaArrowRight, FaCanadianMapleLeaf } from "react-icons/fa";
 import { getPublicSharePayloadAction } from "@/app/actions/share";
 import { LogoMark } from "@/components/LogoMark";
 import { fmtDate } from "@/lib/format";
@@ -26,12 +27,13 @@ export default async function PublicShareTimelinePage({ params }: Props) {
   const aorLabel = data.aorDate ? fmtDate(data.aorDate) : "—";
 
   return (
-    <div id="screen-public-share" className="screen active flex min-h-screen flex-col">
+    <div
+      id="screen-public-share"
+      className="screen active flex min-h-screen flex-col"
+    >
       <div className="topbar">
         <Link href="/" className="logo">
-          <div className="logo-icon text-white">
-            <LogoMark />
-          </div>
+          <LogoMark />
           <span className="logo-name">
             AOR<span>Track</span>
           </span>
@@ -40,8 +42,8 @@ export default async function PublicShareTimelinePage({ params }: Props) {
           Public share · read-only
         </span>
         <div className="tr">
-          <Link href="/track" className="br inline-block no-underline">
-            Track your AOR →
+          <Link href="/track" className="br inline-flex no-underline">
+            Track your AOR <FaArrowRight aria-hidden />
           </Link>
         </div>
       </div>
@@ -49,7 +51,9 @@ export default async function PublicShareTimelinePage({ params }: Props) {
       <main className="flex flex-1 flex-col items-center px-4 py-10">
         <div className="sharewrap w-full max-w-[490px]">
           <div className="sprev">
-            <div className="spflag">🇨🇦</div>
+            <div className="spflag">
+              <FaCanadianMapleLeaf aria-hidden />
+            </div>
             <div className="sptit">{data.displayName}&apos;s PR Timeline</div>
             <div className="spsub">
               {data.stream} · {data.province} · {aorLabel} AOR · Day {data.days}{" "}
@@ -76,12 +80,12 @@ export default async function PublicShareTimelinePage({ params }: Props) {
             ) : null}
           </div>
           <p className="mt-5 text-center text-[12px] text-[var(--t2)] leading-relaxed">
-            This is a read-only snapshot. Numbers use cohort models and may differ
-            from IRCC processing times.
+            This is a read-only snapshot. Numbers use cohort models and may
+            differ from IRCC processing times.
           </p>
           <div className="mt-6 flex flex-wrap justify-center gap-3">
             <Link href="/track" className="bh no-underline">
-              Start tracking →
+              Start tracking <FaArrowRight aria-hidden />
             </Link>
             <Link
               href="/"

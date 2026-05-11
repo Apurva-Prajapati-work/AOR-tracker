@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { startTransition, useEffect, useMemo, useState } from "react";
+import { FaArrowRight, FaCheck, FaChevronDown, FaChevronUp } from "react-icons/fa";
 import { getProfileAction, saveProfileAction } from "@/app/actions/profile";
 import {
   MILESTONE_DEFS,
@@ -15,6 +16,8 @@ import { useToast } from "@/components/ToastContext";
 import { LogoMark } from "@/components/LogoMark";
 import { emptyMilestones } from "@/lib/profile";
 
+type SelectField = "type" | "stream" | "province";
+
 export function OnboardingClient() {
   const router = useRouter();
   const toast = useToast();
@@ -24,6 +27,7 @@ export function OnboardingClient() {
   const [type, setType] = useState("Inland");
   const [stream, setStream] = useState<string>("CEC General");
   const [province, setProvince] = useState("Ontario");
+  const [activeSelect, setActiveSelect] = useState<SelectField | null>(null);
   const [checked, setChecked] = useState<Record<MilestoneKey, boolean>>(() => ({
     aor: true,
     bil: false,
@@ -150,7 +154,7 @@ export function OnboardingClient() {
     }
     await saveProfileAction(profile);
     router.push("/dashboard");
-    toast.show("Profile saved! Welcome to AORTrack 🇨🇦");
+    toast.show("Profile saved! Welcome to AORTrack");
   };
 
   if (!email) {
@@ -168,9 +172,7 @@ export function OnboardingClient() {
     >
       <div className="topbar fixed top-0 right-0 left-0">
         <Link href="/" className="logo">
-          <div className="logo-icon text-white">
-            <LogoMark />
-          </div>
+          <LogoMark />
           <span className="logo-name">
             AOR<span>Track</span>
           </span>
@@ -204,42 +206,66 @@ export function OnboardingClient() {
             </div>
             <div className="fg2">
               <label className="fl">Application type</label>
-              <select
-                className="fsel"
-                value={type}
-                onChange={(e) => setType(e.target.value)}
-              >
-                <option value="Inland">Inland</option>
-                <option value="Outland">Outland</option>
-              </select>
+              <div className="fsel-wrap">
+                <select
+                  className="fsel"
+                  value={type}
+                  onBlur={() => setActiveSelect(null)}
+                  onChange={(e) => setType(e.target.value)}
+                  onFocus={() => setActiveSelect("type")}
+                >
+                  <option value="Inland">Inland</option>
+                  <option value="Outland">Outland</option>
+                </select>
+                <span className={`fsel-arrow ${activeSelect === "type" ? "is-open" : ""}`}>
+                  <FaChevronDown className="fsel-arrow-icon arrow-down" />
+                  <FaChevronUp className="fsel-arrow-icon arrow-up" />
+                </span>
+              </div>
             </div>
           </div>
           <div className="fg2">
             <label className="fl">Immigration stream</label>
-            <select
-              className="fsel"
-              value={stream}
-              onChange={(e) => setStream(e.target.value)}
-            >
-              {streamSelect}
-            </select>
+            <div className="fsel-wrap">
+              <select
+                className="fsel"
+                value={stream}
+                onBlur={() => setActiveSelect(null)}
+                onChange={(e) => setStream(e.target.value)}
+                onFocus={() => setActiveSelect("stream")}
+              >
+                {streamSelect}
+              </select>
+              <span className={`fsel-arrow ${activeSelect === "stream" ? "is-open" : ""}`}>
+                <FaChevronDown className="fsel-arrow-icon arrow-down" />
+                <FaChevronUp className="fsel-arrow-icon arrow-up" />
+              </span>
+            </div>
           </div>
           <div className="fg2">
             <label className="fl">Province</label>
-            <select
-              className="fsel"
-              value={province}
-              onChange={(e) => setProvince(e.target.value)}
-            >
-              {PROVINCES.map((p) => (
-                <option key={p} value={p}>
-                  {p}
-                </option>
-              ))}
-            </select>
+            <div className="fsel-wrap">
+              <select
+                className="fsel"
+                value={province}
+                onBlur={() => setActiveSelect(null)}
+                onChange={(e) => setProvince(e.target.value)}
+                onFocus={() => setActiveSelect("province")}
+              >
+                {PROVINCES.map((p) => (
+                  <option key={p} value={p}>
+                    {p}
+                  </option>
+                ))}
+              </select>
+              <span className={`fsel-arrow ${activeSelect === "province" ? "is-open" : ""}`}>
+                <FaChevronDown className="fsel-arrow-icon arrow-down" />
+                <FaChevronUp className="fsel-arrow-icon arrow-up" />
+              </span>
+            </div>
           </div>
           <button type="button" className="bf" onClick={onStep1}>
-            Continue →
+            Continue <FaArrowRight aria-hidden />
           </button>
         </div>
       ) : (
@@ -266,7 +292,9 @@ export function OnboardingClient() {
               }}
             >
               <div className="mscb">
-                <span className="msck">✓</span>
+                <span className="msck">
+                  <FaCheck aria-hidden />
+                </span>
               </div>
               <span className="mslbl">{m.label}</span>
               <input
@@ -285,7 +313,7 @@ export function OnboardingClient() {
             className="bf mt-3.5"
             onClick={() => void onFinish()}
           >
-            Build my timeline →
+            Build my timeline <FaArrowRight aria-hidden />
           </button>
         </div>
       )}

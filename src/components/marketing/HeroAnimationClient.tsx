@@ -2,6 +2,22 @@
 
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
+import {
+  IconArrowDown,
+  IconArrowRight,
+  IconArrowUp,
+  IconBolt,
+  IconCalendar,
+  IconChart,
+  IconCheck,
+  IconDashboard,
+  IconEdit,
+  IconGlobe,
+  IconGraduation,
+  IconMaple,
+  IconMountain,
+  IconTrophy,
+} from "@/components/marketing/landing-icons";
 
 const SCENES = 4;
 const DURATION_MS = 4200;
@@ -12,6 +28,13 @@ const labels: { num: string; name: string; sub: string }[] = [
   { num: "View 3 of 4", name: "Submit Your AOR", sub: "Free · No account · Instant cohort placement" },
   { num: "View 4 of 4", name: "PPR Window Estimator", sub: "Earliest, median & latest PPR date" },
 ];
+
+const tabs = [
+  { label: "Live Feed", Icon: IconChart },
+  { label: "Dashboard", Icon: IconDashboard },
+  { label: "Submit AOR", Icon: IconEdit },
+  { label: "PPR Timeline", Icon: IconCalendar },
+] as const;
 
 export function HeroAnimationClient() {
   const [scene, setScene] = useState(1);
@@ -61,7 +84,7 @@ export function HeroAnimationClient() {
     <div className="ha-hero" id="hero">
       <div className="grid-bg" />
       <div className="glow" />
-      <div className="maple">🍁</div>
+        <IconMaple className="maple" />
 
       <div className="eyebrow">
         <span className="ey-dot" />
@@ -79,18 +102,17 @@ export function HeroAnimationClient() {
       </p>
 
       <div className="tabs" id="tabs">
-        {(["📊 Live Feed", "🗂 Dashboard", "✍️ Submit AOR", "📅 PPR Timeline"] as const).map(
-          (label, i) => (
+        {tabs.map(({ label, Icon }, i) => (
             <button
               key={label}
               type="button"
               className={`tab ${scene === i + 1 ? "active" : ""}`}
               onClick={() => onTab(i + 1)}
             >
+              <Icon size={12} />
               {label}
             </button>
-          ),
-        )}
+        ))}
       </div>
 
       <div className="stage">
@@ -152,7 +174,7 @@ export function HeroAnimationClient() {
             </div>
           </div>
           <Link href="/track" className="s1-cta">
-            Track Your AOR — Free →
+            Track Your AOR — Free <IconArrowRight />
           </Link>
         </div>
 
@@ -189,7 +211,9 @@ export function HeroAnimationClient() {
                 <div className="sm-card">
                   <div className="sm-lbl">Avg PPR Day</div>
                   <div className="sm-val">262</div>
-                  <div className="sm-sub">↑ 4 days this week</div>
+                  <div className="sm-sub">
+                    <IconArrowUp size={9} /> 4 days this week
+                  </div>
                 </div>
               </div>
             </div>
@@ -237,7 +261,9 @@ export function HeroAnimationClient() {
 
         <div className={`scene s3 ${scene === 3 ? "vis" : ""}`} id="scene-3">
           <div className="s3-head">
-            <div className="s3-ico">🍁</div>
+            <div className="s3-ico">
+              <IconMaple size={15} />
+            </div>
             <div>
               <div className="s3-title">Track My AOR</div>
               <div className="s3-sub">Enter your details — see your position instantly</div>
@@ -245,7 +271,9 @@ export function HeroAnimationClient() {
           </div>
           <div className="s3-body">
             <div className="steps-row">
-              <div className="sn done">✓</div>
+              <div className="sn done">
+                <IconCheck size={11} />
+              </div>
               <div className="s-line done" />
               <div className="sn active">2</div>
               <div className="s-line" />
@@ -257,22 +285,30 @@ export function HeroAnimationClient() {
               </div>
               <div className="ha-stream-grid">
                 <div className="stream-opt sel">
-                  <div className="so-icon">⚡</div>
+                  <div className="so-icon">
+                    <IconBolt />
+                  </div>
                   <div className="so-name">CEC</div>
                   <div className="so-avg">Avg 241 days</div>
                 </div>
                 <div className="stream-opt">
-                  <div className="so-icon">🌍</div>
+                  <div className="so-icon">
+                    <IconGlobe />
+                  </div>
                   <div className="so-name">FSW</div>
                   <div className="so-avg">Avg 267 days</div>
                 </div>
                 <div className="stream-opt">
-                  <div className="so-icon">🎓</div>
+                  <div className="so-icon">
+                    <IconGraduation />
+                  </div>
                   <div className="so-name">FST</div>
                   <div className="so-avg">Avg 284 days</div>
                 </div>
                 <div className="stream-opt">
-                  <div className="so-icon">🏔</div>
+                  <div className="so-icon">
+                    <IconMountain />
+                  </div>
                   <div className="so-name">PNP</div>
                   <div className="so-avg">Avg 312 days</div>
                 </div>
@@ -289,7 +325,7 @@ export function HeroAnimationClient() {
               </div>
             </div>
             <Link href="/track" className="s3-submit">
-              Calculate My PPR Window →
+              Calculate My PPR Window <IconArrowRight />
             </Link>
           </div>
         </div>
@@ -318,25 +354,35 @@ export function HeroAnimationClient() {
           </div>
           <div className="ha-tl-body">
             <div className="ha-tl-row">
-              <div className="ha-tl-dot td-done">✓</div>
+              <div className="ha-tl-dot td-done">
+                <IconCheck size={12} />
+              </div>
               <div className="ha-tl-bd">
                 <div className="ha-tl-name">ITA Received</div>
                 <div className="ha-tl-desc">Invitation to Apply · Express Entry pool</div>
                 <div className="ha-tl-date">Dec 14, 2023</div>
-                <span className="badge-v">✓ Verified</span>
+                <span className="badge-v">
+                  <IconCheck size={9} /> Verified
+                </span>
               </div>
             </div>
             <div className="ha-tl-row">
-              <div className="ha-tl-dot td-done">✓</div>
+              <div className="ha-tl-dot td-done">
+                <IconCheck size={12} />
+              </div>
               <div className="ha-tl-bd">
                 <div className="ha-tl-name">AOR Received</div>
                 <div className="ha-tl-desc">Application received by IRCC</div>
                 <div className="ha-tl-date">Jan 08, 2024</div>
-                <span className="badge-v">✓ Confirmed</span>
+                <span className="badge-v">
+                  <IconCheck size={9} /> Confirmed
+                </span>
               </div>
             </div>
             <div className="ha-tl-row">
-              <div className="ha-tl-dot td-now">→</div>
+              <div className="ha-tl-dot td-now">
+                <IconArrowRight size={12} />
+              </div>
               <div className="ha-tl-bd">
                 <div className="ha-tl-name">Medicals / Biometrics</div>
                 <div className="ha-tl-desc">Background checks in progress</div>
@@ -351,7 +397,7 @@ export function HeroAnimationClient() {
             </div>
             <div className="ha-tl-row">
               <div className="ha-tl-dot td-wait" style={{ borderColor: "var(--border)" }}>
-                🏆
+                <IconTrophy size={12} />
               </div>
               <div className="ha-tl-bd">
                 <div className="ha-tl-name">PPR — Passport Request</div>
@@ -381,18 +427,26 @@ export function HeroAnimationClient() {
 
       <div className="cta-row">
         <Link href="/track" className="btn-red">
-          Track My AOR Free →
+          Track My AOR Free <IconArrowRight />
         </Link>
         <Link href="/" className="btn-outline">
-          View home ↓
+          View home <IconArrowDown />
         </Link>
       </div>
 
       <div className="trust-row">
-        <span className="trust-item">No signup required</span>
-        <span className="trust-item">Open source</span>
-        <span className="trust-item">14,847 data points</span>
-        <span className="trust-item">Updated daily</span>
+        <span className="trust-item">
+          <IconCheck size={11} /> No signup required
+        </span>
+        <span className="trust-item">
+          <IconCheck size={11} /> Open source
+        </span>
+        <span className="trust-item">
+          <IconCheck size={11} /> 14,847 data points
+        </span>
+        <span className="trust-item">
+          <IconCheck size={11} /> Updated daily
+        </span>
       </div>
 
       <div className="prog-bar">

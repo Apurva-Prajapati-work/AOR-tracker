@@ -10,6 +10,7 @@ import {
 import { isValidEmail } from "@/lib/profile";
 import { writeSessionEmail } from "@/lib/session-client";
 import { useToast } from "@/components/ToastContext";
+import { IconArrowRight, IconLock } from "@/components/marketing/landing-icons";
 
 export function TrackClient() {
   const router = useRouter();
@@ -84,9 +85,11 @@ export function TrackClient() {
           Please enter a valid email address.
         </div>
         <button type="button" className="bf" onClick={() => void onContinue()}>
-          Continue →
+          Continue <IconArrowRight />
         </button>
-        <div className="enote">🔒 Persists in MongoDB for your return visits.</div>
+        <div className="enote">
+          <IconLock /> Persists in MongoDB for your return visits.
+        </div>
         <div className="eor">or</div>
         <button
           type="button"

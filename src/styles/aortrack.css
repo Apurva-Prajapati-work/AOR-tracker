@@ -75,7 +75,7 @@ h1.ht .ac{color:var(--red)}
 .tstream{font-family:var(--m);font-size:10px;color:var(--t3);flex-shrink:0}
 
 /* ═══ EMAIL GATE ═══ */
-#screen-email{align-items:center;justify-content:center;padding:56px 24px;background:var(--navy)}
+#screen-email{--red:#c0392b;--navy:#0f1923;--navy2:#162030;--navy3:#1e2d3d;--navy4:#253547;--w:#fff;--border:rgba(255,255,255,.08);--bl:rgba(255,255,255,.04);--t1:#e8edf2;--t2:#8fa3b8;--t3:#4a6070;--gb:#1d5c35;--ab:#5a3d0e;--f:var(--font-sora),"Sora",sans-serif;--m:var(--font-dm-mono),"DM Mono",monospace;align-items:center;justify-content:center;padding:56px 24px;background:var(--navy)}
 .ec{background:var(--navy2);border:1px solid var(--border);border-radius:20px;padding:42px;width:100%;max-width:450px;animation:fadeUp .35s ease}
 .estep{font-size:11px;font-weight:500;color:var(--red);text-transform:uppercase;letter-spacing:.1em;margin-bottom:7px}
 .etitle{font-size:23px;font-weight:700;color:var(--w);letter-spacing:-.5px;margin-bottom:7px}

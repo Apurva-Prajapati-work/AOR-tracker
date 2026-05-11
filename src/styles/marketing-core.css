@@ -1,5 +1,5 @@
 /* Shared marketing shell: tokens, North brand, nav, footer — scoped to .marketing-site */
-:root {
+.marketing-site {
   --cream: #fffcf5;
   --cream2: #f5f0e6;
   --cream3: #ede8dc;
@@ -27,13 +27,6 @@
   --fb: var(--font-dm-sans), "DM Sans", system-ui, sans-serif;
   --fm: var(--font-dm-mono), "DM Mono", monospace;
   --max: 1160px;
-}
-
-html {
-  scroll-behavior: smooth;
-}
-
-.marketing-site {
   background: var(--cream);
   color: var(--navy);
   font-family: var(--fb);
@@ -43,6 +36,10 @@ html {
   min-height: 100%;
   display: flex;
   flex-direction: column;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 .marketing-site a {
@@ -99,7 +96,7 @@ html {
   }
 }
 
-.nav {
+.marketing-site .nav {
   position: sticky;
   top: 0;
   z-index: 100;
@@ -113,7 +110,7 @@ html {
   min-height: 64px;
 }
 
-.nav-links {
+.marketing-site .nav-links {
   display: flex;
   align-items: center;
   gap: 24px;
@@ -121,18 +118,18 @@ html {
   justify-content: center;
 }
 
-.nav-links a {
+.marketing-site .nav-links a {
   font-size: 0.84rem;
   font-weight: 500;
   color: rgba(255, 255, 255, 0.65);
   transition: color 0.15s;
 }
 
-.nav-links a:hover {
+.marketing-site .nav-links a:hover {
   color: #fff;
 }
 
-.nav-oss {
+.marketing-site .nav-oss {
   display: flex;
   align-items: center;
   gap: 6px;
@@ -144,19 +141,19 @@ html {
   transition: all 0.15s;
 }
 
-.nav-oss:hover {
+.marketing-site .nav-oss:hover {
   color: rgba(255, 255, 255, 0.8);
   border-color: rgba(255, 255, 255, 0.3);
 }
 
-.nav-oss svg {
+.marketing-site .nav-oss svg {
   width: 13px;
   height: 13px;
   fill: currentColor;
   flex-shrink: 0;
 }
 
-.nav-cta {
+.marketing-site .nav-cta {
   display: inline-flex;
   align-items: center;
   gap: 7px;
@@ -178,7 +175,7 @@ html {
   color: #fff;
 }
 
-.nav-cta:hover {
+.marketing-site .nav-cta:hover {
   background: var(--red2);
   border-color: var(--red2);
   color: #fff;
@@ -188,7 +185,7 @@ html {
   color: #fff;
 }
 
-.nav-sep {
+.marketing-site .nav-sep {
   width: 1px;
   height: 18px;
   background: rgba(255, 255, 255, 0.12);
@@ -196,20 +193,20 @@ html {
   flex-shrink: 0;
 }
 
-.nav-page {
+.marketing-site .nav-page {
   font-size: 0.75rem;
   color: rgba(255, 255, 255, 0.4);
   font-family: var(--fm);
 }
 
-.nav-right {
+.marketing-site .nav-right {
   display: flex;
   align-items: center;
   gap: 8px;
   flex-shrink: 0;
 }
 
-.nbtn {
+.marketing-site .nbtn {
   font-size: 0.77rem;
   font-weight: 600;
   color: rgba(255, 255, 255, 0.55);
@@ -222,34 +219,34 @@ html {
   white-space: nowrap;
 }
 
-.nbtn:hover {
+.marketing-site .nbtn:hover {
   color: #fff;
   background: rgba(255, 255, 255, 0.08);
 }
 
-.nbtn.red {
+.marketing-site .nbtn.red {
   background: var(--red);
   color: #fff;
 }
 
-.nbtn.red:hover {
+.marketing-site .nbtn.red:hover {
   background: var(--red2);
 }
 
-.nbtn svg {
+.marketing-site .nbtn svg {
   width: 13px;
   height: 13px;
   fill: currentColor;
   flex-shrink: 0;
 }
 
-.footer {
+.marketing-site .footer {
   background: #0d1824;
   padding: clamp(40px, 5vw, 64px) clamp(16px, 4vw, 48px) 32px;
   margin-top: auto;
 }
 
-.footer-grid {
+.marketing-site .footer-grid {
   max-width: var(--max);
   margin: 0 auto;
   display: grid;
@@ -258,7 +255,7 @@ html {
   margin-bottom: 3rem;
 }
 
-.fg-brand {
+.marketing-site .fg-brand {
   font-family: var(--fh);
   font-size: 1.05rem;
   font-weight: 800;
@@ -269,14 +266,14 @@ html {
   gap: 8px;
 }
 
-.fg-desc {
+.marketing-site .fg-desc {
   font-size: 0.78rem;
   color: rgba(255, 255, 255, 0.35);
   line-height: 1.7;
   margin-bottom: 1rem;
 }
 
-.fg-badge {
+.marketing-site .fg-badge {
   display: inline-flex;
   align-items: center;
   gap: 5px;
@@ -287,13 +284,13 @@ html {
   padding: 4px 10px;
 }
 
-.fg-badge svg {
+.marketing-site .fg-badge svg {
   width: 11px;
   height: 11px;
   fill: currentColor;
 }
 
-.fg-head {
+.marketing-site .fg-head {
   font-size: 0.68rem;
   font-weight: 700;
   letter-spacing: 0.1em;
@@ -302,7 +299,7 @@ html {
   margin-bottom: 12px;
 }
 
-.fg-link {
+.marketing-site .fg-link {
   display: block;
   font-size: 0.82rem;
   color: rgba(255, 255, 255, 0.5);
@@ -310,15 +307,15 @@ html {
   transition: color 0.2s ease;
 }
 
-.footer a.fg-link {
+.marketing-site .footer a.fg-link {
   color: rgba(255, 255, 255, 0.5);
 }
 
-.fg-link:hover {
+.marketing-site .fg-link:hover {
   color: rgba(255, 255, 255, 0.92);
 }
 
-.footer-btm {
+.marketing-site .footer-btm {
   max-width: var(--max);
   margin: 0 auto;
   border-top: 1px solid rgba(255, 255, 255, 0.07);
@@ -327,17 +324,17 @@ html {
   color: rgba(255, 255, 255, 0.28);
 }
 
-.footer-btm-text {
+.marketing-site .footer-btm-text {
   margin: 0;
   line-height: 1.55;
   max-width: 72ch;
 }
 
-.footer-btm-sep {
+.marketing-site .footer-btm-sep {
   color: rgba(255, 255, 255, 0.38);
 }
 
-.btn-hero {
+.marketing-site .btn-hero {
   padding: 13px 28px;
   border-radius: 8px;
   font-size: 0.95rem;
@@ -351,7 +348,7 @@ html {
   font-family: var(--fb);
 }
 
-.btn-red {
+.marketing-site .btn-red {
   background: rgba(255, 255, 255, 0.12);
   color: rgba(255, 255, 255, 0.95);
   border-color: rgba(255, 255, 255, 0.35);
@@ -361,14 +358,14 @@ html {
     transform 0.2s ease,
     box-shadow 0.25s ease;
 }
-.btn-red:hover {
+.marketing-site .btn-red:hover {
   background: rgba(255, 255, 255, 0.22);
   border-color: rgba(255, 255, 255, 0.55);
   transform: translateY(-1px);
   box-shadow: 0 8px 22px rgba(0, 0, 0, 0.2);
 }
 
-.sticky {
+.marketing-site .sticky {
   position: fixed;
   bottom: 0;
   left: 0;
@@ -385,29 +382,29 @@ html {
   gap: 1rem;
 }
 
-.sticky.show {
+.marketing-site .sticky.show {
   transform: translateY(0);
 }
 
-.sticky-text {
+.marketing-site .sticky-text {
   font-size: 0.88rem;
   font-weight: 600;
   color: #fff;
 }
 
-.sticky-sub {
+.marketing-site .sticky-sub {
   font-size: 0.75rem;
   color: rgba(255, 255, 255, 0.5);
 }
 
 @media (max-width: 960px) {
-  .footer-grid {
+  .marketing-site .footer-grid {
     grid-template-columns: 1fr 1fr;
   }
 }
 
 @media (max-width: 900px) {
-  .nav-links {
+  .marketing-site .nav-links {
     display: none;
   }
 }

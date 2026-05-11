@@ -339,7 +339,10 @@
   border-radius: 100px;
 }
 .hc-cta {
-  display: block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
   width: 100%;
   margin-top: 14px;
   padding: 11px;
@@ -914,6 +917,11 @@
   border: 1px solid rgba(63, 185, 80, 0.3);
 }
 .gh-more {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
   padding: 11px 18px;
   border-top: 1px solid rgba(255, 255, 255, 0.06);
   text-align: center;
@@ -1014,6 +1022,9 @@
   color: rgba(255, 255, 255, 0.55);
 }
 .cta-note a {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
   color: #fff;
   font-weight: 600;
   text-decoration: underline;

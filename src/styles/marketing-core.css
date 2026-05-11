@@ -157,6 +157,9 @@ html {
 }
 
 .nav-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
   background: var(--red);
   color: #fff;
   padding: 8px 20px;

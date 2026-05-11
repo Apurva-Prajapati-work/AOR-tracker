@@ -7,7 +7,6 @@ import { fmtDate } from "@/lib/format";
 export function DashboardRails({
   days,
   pct,
-  ringOffset,
   median,
   ppr,
   cohort,
@@ -29,29 +28,12 @@ export function DashboardRails({
     <>
       <div className="rc">
         <div className="rct">Progress</div>
-        <div className="rrw">
-          <svg width="82" height="82" viewBox="0 0 82 82">
-            <circle
-              cx="41"
-              cy="41"
-              r="33"
-              fill="none"
-              stroke="rgba(255,255,255,.06)"
-              strokeWidth="6"
-            />
-            <circle
-              cx="41"
-              cy="41"
-              r="33"
-              fill="none"
-              stroke="#c0392b"
-              strokeWidth="6"
-              strokeDasharray="207"
-              strokeDashoffset={ringOffset}
-              strokeLinecap="round"
-              style={{ transition: "stroke-dashoffset 1.2s ease" }}
-            />
-          </svg>
+        <div
+          className="rrw"
+          style={{
+            background: `conic-gradient(#c0392b ${Math.min(Math.max(pct, 0), 100) * 3.6}deg, rgba(255,255,255,.06) 0deg)`,
+          }}
+        >
           <div className="rrtxt">
             <div className="rrdays">{days}</div>
             <div className="rrlbl">days</div>

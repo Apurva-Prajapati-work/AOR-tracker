@@ -14,6 +14,17 @@ import {
   type ReactNode,
 } from "react";
 import {
+  FaArrowLeft,
+  FaCalendarAlt,
+  FaChartBar,
+  FaGem,
+  FaHome,
+  FaRegEdit,
+  FaShareAlt,
+  FaSyncAlt,
+  FaUsers,
+} from "react-icons/fa";
+import {
   getLiveCohortAggregateAction,
   listRelatedCohortSummariesAction,
   type CohortSummaryRow,
@@ -289,7 +300,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
       const pk = cohortKeyFromProfile(next);
       const vk = viewingCohortKeyOverride ?? pk;
       await hydrateCohortView(vk, pk);
-      toast.show(`✓ ${MILESTONE_DEFS.find((m) => m.key === key)?.label} date saved`);
+      toast.show(`${MILESTONE_DEFS.find((m) => m.key === key)?.label} date saved`);
     }
   };
 
@@ -392,7 +403,10 @@ export function DashboardShell({ children }: { children: ReactNode }) {
               title="Rebuild cohort_stats from all profiles (run daily in production via cron)"
               onClick={() => void syncCohortStats()}
             >
-              {syncCohortBusy ? "Syncing…" : "↻ Sync cohorts"}
+              <span className="inline-flex items-center gap-1.5">
+                <FaSyncAlt className={syncCohortBusy ? "animate-spin" : ""} aria-hidden />
+                {syncCohortBusy ? "Syncing…" : "Sync cohorts"}
+              </span>
             </button>
             <span className="text-[11px] text-[var(--t3)]">
               <span className="dlive" />
@@ -411,25 +425,37 @@ export function DashboardShell({ children }: { children: ReactNode }) {
               href={dashboardHref.timeline}
               className={`sbitem no-underline ${dashboardNavActive(pathname, "timeline") ? "on" : ""}`}
             >
-              <span className="sbico">📅</span>My Timeline
+              <span className="sbico">
+                <FaCalendarAlt aria-hidden />
+              </span>
+              My Timeline
             </Link>
             <Link
               href={dashboardHref.community}
               className={`sbitem no-underline ${dashboardNavActive(pathname, "community") ? "on" : ""}`}
             >
-              <span className="sbico">👥</span>Community Feed
+              <span className="sbico">
+                <FaUsers aria-hidden />
+              </span>
+              Community Feed
             </Link>
             <Link
               href={dashboardHref.stats}
               className={`sbitem no-underline ${dashboardNavActive(pathname, "stats") ? "on" : ""}`}
             >
-              <span className="sbico">📊</span>Processing Stats
+              <span className="sbico">
+                <FaChartBar aria-hidden />
+              </span>
+              Processing Stats
             </Link>
             <Link
               href={dashboardHref.share}
               className={`sbitem no-underline ${dashboardNavActive(pathname, "share") ? "on" : ""}`}
             >
-              <span className="sbico">🔗</span>Share Timeline
+              <span className="sbico">
+                <FaShareAlt aria-hidden />
+              </span>
+              Share Timeline
             </Link>
             <hr className="sbdiv" />
             <div className="sblbl">Cohort compare</div>
@@ -439,7 +465,9 @@ export function DashboardShell({ children }: { children: ReactNode }) {
                 className="sbitem w-full text-left"
                 onClick={() => void resetCohortToProfile()}
               >
-                <span className="sbico">⌂</span>
+                <span className="sbico">
+                  <FaHome aria-hidden />
+                </span>
                 <span className="truncate text-[var(--t2)]">Back to my cohort</span>
               </button>
             ) : null}
@@ -450,7 +478,9 @@ export function DashboardShell({ children }: { children: ReactNode }) {
                 className={`sbitem w-full text-left ${s.isCurrent ? "on" : ""}`}
                 onClick={() => void selectCohort(s.cohortKey)}
               >
-                <span className="sbico">◈</span>
+                <span className="sbico">
+                  <FaGem aria-hidden />
+                </span>
                 <span className="min-w-0 flex-1 truncate text-left">
                   {s.label}
                 </span>
@@ -461,10 +491,16 @@ export function DashboardShell({ children }: { children: ReactNode }) {
             ))}
             <hr className="sbdiv" />
             <Link href="/onboarding" className="sbitem no-underline">
-              <span className="sbico">✏️</span>Edit profile
+              <span className="sbico">
+                <FaRegEdit aria-hidden />
+              </span>
+              Edit profile
             </Link>
             <button type="button" className="sbitem" onClick={switchProfile}>
-              <span className="sbico">↩</span>Switch profile
+              <span className="sbico">
+                <FaArrowLeft aria-hidden />
+              </span>
+              Switch profile
             </button>
             <div className="sbuser">
               <div className="mb-1 flex items-center gap-2">

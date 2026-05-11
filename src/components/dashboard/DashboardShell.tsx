@@ -361,10 +361,8 @@ export function DashboardShell({ children }: { children: ReactNode }) {
     <DashboardProvider value={ctxValue}>
       <div id="screen-dashboard" className="screen active flex min-h-screen flex-col">
         <div className="topbar">
-          <Link href="/" className="logo">
-            <div className="logo-icon text-white">
-              <LogoMark />
-            </div>
+          <Link href="/" className="logo"> 
+            <LogoMark />
             <span className="logo-name">
               AOR<span>Track</span>
             </span>

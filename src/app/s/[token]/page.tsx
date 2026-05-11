@@ -29,9 +29,7 @@ export default async function PublicShareTimelinePage({ params }: Props) {
     <div id="screen-public-share" className="screen active flex min-h-screen flex-col">
       <div className="topbar">
         <Link href="/" className="logo">
-          <div className="logo-icon text-white">
-            <LogoMark />
-          </div>
+          <LogoMark />
           <span className="logo-name">
             AOR<span>Track</span>
           </span>

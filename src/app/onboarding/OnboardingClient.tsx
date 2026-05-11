@@ -172,9 +172,7 @@ export function OnboardingClient() {
     >
       <div className="topbar fixed top-0 right-0 left-0">
         <Link href="/" className="logo">
-          <div className="logo-icon text-white">
-            <LogoMark />
-          </div>
+          <LogoMark />
           <span className="logo-name">
             AOR<span>Track</span>
           </span>

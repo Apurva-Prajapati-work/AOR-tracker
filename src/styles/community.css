@@ -26,7 +26,16 @@
   display: grid;
   grid-template-columns: 240px 1fr 300px;
   gap: 0;
-  min-height: calc(100vh - 60px);
+  /*
+   * Lock the 3-column layout to a single viewport screen (minus the 60px
+   * community nav). Each column scrolls independently inside this box;
+   * once the user scrolls past the layout, the whole page slides up to
+   * reveal the marketing footer below it. See the @media (max-width: 900px)
+   * override at the bottom of this file — on mobile the layout reverts to
+   * natural flow because there's only one column.
+   */
+  height: calc(100vh - 60px);
+  min-height: 0;
 }
 
 /* ─── Left sidebar ─── */
@@ -35,9 +44,8 @@
   background: var(--cream2);
   border-right: 2px solid var(--border);
   padding: 18px 0;
-  position: sticky;
-  top: 60px;
-  height: calc(100vh - 60px);
+  height: 100%;
+  min-height: 0;
   overflow-y: auto;
 }
 .mkt-community-page .lsb-sec {
@@ -147,6 +155,14 @@
   padding: 0;
   display: flex;
   flex-direction: column;
+  /*
+   * Independent feed scroll. Sticks to the grid cell's height (cm-layout
+   * is the scroll container's parent), and the filter bar below sticks to
+   * the top of THIS box, not the viewport.
+   */
+  height: 100%;
+  min-height: 0;
+  overflow-y: auto;
 }
 
 /* Filter bar */
@@ -155,7 +171,7 @@
   border-bottom: 2px solid var(--border);
   padding: 12px clamp(16px, 2.5vw, 28px);
   position: sticky;
-  top: 60px;
+  top: 0;
   z-index: 100;
   display: flex;
   align-items: center;
@@ -749,9 +765,8 @@
   background: var(--cream2);
   border-left: 2px solid var(--border);
   padding: 18px 16px;
-  position: sticky;
-  top: 60px;
-  height: calc(100vh - 60px);
+  height: 100%;
+  min-height: 0;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
@@ -1467,8 +1482,23 @@
   }
 }
 @media (max-width: 900px) {
+  /*
+   * On mobile we want plain document scroll — there's only one column, so
+   * the desktop "fixed viewport, each column scrolls" pattern would just
+   * trap the feed inside a 100vh window and the footer wouldn't follow
+   * the feed naturally. Revert to natural flow.
+   */
   .mkt-community-page .cm-layout {
     grid-template-columns: 1fr;
+    height: auto;
+    min-height: 0;
+  }
+  .mkt-community-page .feed-main {
+    height: auto;
+    overflow-y: visible;
+  }
+  .mkt-community-page .filter-bar {
+    top: 60px;
   }
   .mkt-community-page .left-sb,
   .mkt-community-page .right-panel {

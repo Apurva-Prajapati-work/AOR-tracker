@@ -38,7 +38,7 @@ function CohortMiniCard({ data }: { data: CohortMini }) {
       {data.rows.map((row) => (
         <div className="cm-row" key={row.key}>
           <div className="cm-key">{row.key}</div>
-          <div className={`cm-val${row.emphasis ? ` ${row.emphasis}` : ""}`}>
+          <div className={`cm-val${row.emphasis ? ` text-[#4ade80]!` : ""}`}>
             {row.value}
           </div>
         </div>

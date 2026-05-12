@@ -18,6 +18,7 @@ export function MarketingNav() {
         <Link href="/#messaging">Alerts</Link>
         <Link href="/roadmap">Roadmap</Link>
         <Link href="/changelog">Changelog</Link>
+        <Link href="/community">Community</Link>
         <a href={GH} target="_blank" rel="noopener noreferrer" className="nav-oss">
           <IconGitHub />
           Open Source

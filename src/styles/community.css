@@ -1,0 +1,1494 @@
+/*
+ * Community feed styles — scoped to .mkt-community-page so they don't leak
+ * to other marketing routes. Loaded by src/app/community/page.tsx.
+ *
+ * Design tokens (--cream, --navy, --green, --red, etc.) come from
+ * .marketing-site in marketing-core.css, which the page wrapper still pulls
+ * in (so the shared MarketingFooter stays styled). We do not redeclare them.
+ *
+ * Unlike the changelog route, the community page is NOT inside the
+ * (marketing) route group — it ships its own top nav (CommunityNav, rendered
+ * from the `cm-nav` / `cm-nbtn` classes below). The footer is still the
+ * shared MarketingFooter, which is why .marketing-site stays in the page
+ * wrapper.
+ *
+ * Sticky `top` values are 60px to match `.cm-nav { height: 60px }` below.
+ */
+
+.mkt-community-page {
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+/* ─── Layout ─── */
+
+.mkt-community-page .cm-layout {
+  display: grid;
+  grid-template-columns: 240px 1fr 300px;
+  gap: 0;
+  min-height: calc(100vh - 60px);
+}
+
+/* ─── Left sidebar ─── */
+
+.mkt-community-page .left-sb {
+  background: var(--cream2);
+  border-right: 2px solid var(--border);
+  padding: 18px 0;
+  position: sticky;
+  top: 60px;
+  height: calc(100vh - 60px);
+  overflow-y: auto;
+}
+.mkt-community-page .lsb-sec {
+  padding: 0 14px;
+  margin-bottom: 16px;
+}
+.mkt-community-page .lsb-label {
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted2);
+  margin-bottom: 7px;
+  padding: 0 4px;
+}
+.mkt-community-page .lsb-link {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 8px;
+  border-radius: 7px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all 0.15s;
+  text-decoration: none;
+}
+.mkt-community-page .lsb-link:hover {
+  background: var(--cream3);
+  color: var(--navy);
+}
+.mkt-community-page .lsb-link.on {
+  background: var(--navy);
+  color: #fff;
+}
+.mkt-community-page .lsb-link svg {
+  width: 14px;
+  height: 14px;
+  fill: currentColor;
+  flex-shrink: 0;
+}
+.mkt-community-page .lsb-badge {
+  margin-left: auto;
+  font-size: 0.63rem;
+  font-family: var(--fm);
+  background: var(--cream3);
+  color: var(--muted);
+  padding: 1px 6px;
+  border-radius: 100px;
+}
+.mkt-community-page .lsb-link.on .lsb-badge {
+  background: rgba(255, 255, 255, 0.15);
+  color: rgba(255, 255, 255, 0.6);
+}
+.mkt-community-page .lsb-divider {
+  height: 1px;
+  background: var(--border);
+  margin: 6px 14px 14px;
+}
+/* (Previous .lsb-emoji rule removed — emojis replaced by react-icons.) */
+
+/* My cohort mini-card */
+.mkt-community-page .cohort-mini {
+  margin: 0 14px 14px;
+  background: var(--navy);
+  border-radius: 10px;
+  padding: 12px;
+}
+.mkt-community-page .cm-label {
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.3);
+  margin-bottom: 8px;
+  font-family: var(--fm);
+}
+.mkt-community-page .cm-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.72rem;
+  padding: 4px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+.mkt-community-page .cm-row:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+.mkt-community-page .cm-key {
+  color: rgba(255, 255, 255, 0.4);
+}
+.mkt-community-page .cm-val {
+  color: #fff;
+  font-family: var(--fm);
+  font-weight: 600;
+  font-size: 0.7rem;
+}
+.mkt-community-page .cm-val.g {
+  color: #4ade80;
+}
+
+/* ─── Main feed column ─── */
+
+.mkt-community-page .feed-main {
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Filter bar */
+.mkt-community-page .filter-bar {
+  background: #fff;
+  border-bottom: 2px solid var(--border);
+  padding: 12px clamp(16px, 2.5vw, 28px);
+  position: sticky;
+  top: 60px;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.mkt-community-page .filter-chips {
+  display: flex;
+  gap: 6px;
+  flex: 1;
+  flex-wrap: wrap;
+}
+.mkt-community-page .chip {
+  padding: 6px 14px;
+  border-radius: 100px;
+  font-size: 0.77rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1.5px solid var(--border);
+  background: var(--cream);
+  color: var(--muted);
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  white-space: nowrap;
+}
+.mkt-community-page .chip:hover {
+  border-color: var(--border2);
+  color: var(--navy);
+}
+.mkt-community-page .chip.on {
+  border-color: var(--navy);
+  background: var(--navy);
+  color: #fff;
+}
+.mkt-community-page .chip-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+}
+.mkt-community-page .chip-n {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.06);
+  font-size: 0.62rem;
+  font-weight: 700;
+  padding: 0 5px;
+}
+.mkt-community-page .chip.on .chip-n {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.mkt-community-page .search-wrap {
+  position: relative;
+  flex-shrink: 0;
+}
+.mkt-community-page .search-input {
+  padding: 7px 12px 7px 32px;
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  font-family: var(--fb);
+  font-size: 0.78rem;
+  color: var(--navy);
+  background: var(--cream);
+  outline: none;
+  width: 190px;
+  transition: all 0.2s;
+}
+.mkt-community-page .search-input:focus {
+  border-color: var(--navy);
+  width: 220px;
+}
+.mkt-community-page .search-icon {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 13px;
+  height: 13px;
+  fill: none;
+  stroke: var(--muted);
+  stroke-width: 2;
+  stroke-linecap: round;
+  pointer-events: none;
+}
+.mkt-community-page .sort-select {
+  padding: 7px 10px;
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  font-family: var(--fb);
+  font-size: 0.77rem;
+  color: var(--navy);
+  background: var(--cream);
+  outline: none;
+  cursor: pointer;
+}
+
+/* Feed list */
+.mkt-community-page .feed-list {
+  padding: 18px clamp(16px, 2.5vw, 28px);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* Feed card */
+.mkt-community-page .feed-card {
+  background: #fff;
+  border: 2px solid var(--border);
+  border-radius: 13px;
+  overflow: hidden;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  position: relative;
+}
+.mkt-community-page .feed-card:hover {
+  border-color: var(--border2);
+  box-shadow: 0 2px 12px rgba(26, 35, 50, 0.07);
+}
+
+.mkt-community-page .fc-accent {
+  width: 4px;
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  border-radius: 13px 0 0 13px;
+}
+.mkt-community-page .accent-ppr {
+  background: var(--green);
+}
+.mkt-community-page .accent-bil {
+  background: var(--blue);
+}
+.mkt-community-page .accent-bgc {
+  background: var(--amber);
+}
+.mkt-community-page .accent-med {
+  background: var(--purple);
+}
+.mkt-community-page .accent-aor {
+  background: var(--navy2);
+}
+
+.mkt-community-page .fc-inner {
+  padding: 14px 16px 14px 20px;
+}
+
+.mkt-community-page .fc-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.mkt-community-page .fc-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.mkt-community-page .fc-id {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--navy);
+  font-family: var(--fm);
+}
+.mkt-community-page .fc-milestone {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 10px;
+  border-radius: 100px;
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+.mkt-community-page .fc-milestone > svg {
+  width: 11px;
+  height: 11px;
+  fill: currentColor;
+  flex-shrink: 0;
+}
+.mkt-community-page .ms-ppr {
+  background: var(--gbg);
+  color: var(--green);
+  border: 1px solid #90d4b0;
+}
+.mkt-community-page .ms-bil {
+  background: var(--bbg);
+  color: var(--blue);
+  border: 1px solid #b8d8f0;
+}
+.mkt-community-page .ms-bgc {
+  background: var(--abg);
+  color: var(--amber);
+  border: 1px solid #e8c585;
+}
+.mkt-community-page .ms-med {
+  background: var(--pbg);
+  color: var(--purple);
+  border: 1px solid #c4b5fd;
+}
+.mkt-community-page .ms-aor {
+  background: var(--cream2);
+  color: var(--navy2);
+  border: 1px solid var(--border);
+}
+.mkt-community-page .fc-stream {
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: var(--muted);
+  background: var(--cream2);
+  border: 1px solid var(--border);
+  padding: 2px 7px;
+  border-radius: 100px;
+  font-family: var(--fm);
+}
+.mkt-community-page .fc-ts {
+  font-size: 0.67rem;
+  color: var(--muted2);
+  font-family: var(--fm);
+  white-space: nowrap;
+}
+
+.mkt-community-page .fc-mod-badge {
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 100px;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+}
+.mkt-community-page .mod-pending {
+  background: var(--abg);
+  color: var(--amber);
+  border: 1px solid #e8c585;
+}
+.mkt-community-page .mod-removed {
+  background: var(--red-pale);
+  color: var(--red);
+  border: 1px solid #f0b0a8;
+}
+.mkt-community-page .mod-soft {
+  background: var(--cream3);
+  color: var(--muted);
+  border: 1px solid var(--border2);
+  font-size: 0.61rem;
+}
+
+/* Card body */
+.mkt-community-page .fc-cohort {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+.mkt-community-page .fcc-item {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+.mkt-community-page .fcc-label {
+  font-size: 0.63rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted2);
+  font-family: var(--fm);
+}
+.mkt-community-page .fcc-val {
+  font-family: var(--fh);
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: var(--navy);
+}
+.mkt-community-page .fcc-val.green {
+  color: var(--green);
+}
+.mkt-community-page .fcc-val.blue {
+  color: var(--blue);
+}
+
+/* Mini timeline */
+.mkt-community-page .mini-tl {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  margin: 8px 0;
+}
+.mkt-community-page .mt-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 2px solid;
+  position: relative;
+  z-index: 1;
+  flex-shrink: 0;
+}
+.mkt-community-page .mt-line {
+  flex: 1;
+  height: 2px;
+  background: var(--border);
+  min-width: 8px;
+}
+.mkt-community-page .mt-done {
+  background: var(--gbg);
+  border-color: var(--green);
+}
+.mkt-community-page .mt-now {
+  background: var(--bbg);
+  border-color: var(--blue);
+}
+.mkt-community-page .mt-wait {
+  background: var(--cream2);
+  border-color: var(--border2);
+}
+.mkt-community-page .mt-dot.is-highlight {
+  box-shadow: 0 0 0 3px rgba(45, 106, 79, 0.2);
+}
+
+.mkt-community-page .fc-body {
+  font-size: 0.82rem;
+  color: var(--muted);
+  line-height: 1.65;
+  margin-bottom: 10px;
+}
+.mkt-community-page .fc-body strong {
+  color: var(--navy);
+  font-weight: 600;
+}
+
+/* Card footer / engagement */
+.mkt-community-page .fc-footer {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  padding-top: 10px;
+  border-top: 1px solid var(--border);
+  margin-top: 2px;
+}
+.mkt-community-page .eng-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 10px;
+  border-radius: 6px;
+  font-size: 0.74rem;
+  font-weight: 600;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all 0.2s;
+  border: none;
+  background: none;
+  font-family: var(--fb);
+}
+.mkt-community-page .eng-btn:hover {
+  background: var(--cream2);
+  color: var(--navy);
+}
+.mkt-community-page .eng-btn.active {
+  color: var(--green);
+  background: var(--gbg);
+}
+.mkt-community-page .eng-btn svg {
+  width: 13px;
+  height: 13px;
+  fill: currentColor;
+  flex-shrink: 0;
+}
+.mkt-community-page .eng-sep {
+  width: 1px;
+  height: 16px;
+  background: var(--border);
+  margin: 0 2px;
+}
+.mkt-community-page .eng-save.saved {
+  color: var(--blue);
+}
+.mkt-community-page .eng-save.saved svg {
+  fill: var(--blue);
+}
+.mkt-community-page .fc-footer-right {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.mkt-community-page .data-src {
+  font-size: 0.63rem;
+  color: var(--muted2);
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+}
+.mkt-community-page .data-src::before {
+  content: "ⓘ";
+}
+
+/* Replies */
+.mkt-community-page .replies-list {
+  background: var(--cream);
+  border-top: 1px solid var(--border);
+  padding: 10px 16px 10px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.mkt-community-page .reply-item {
+  display: flex;
+  gap: 9px;
+}
+.mkt-community-page .reply-avatar {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--navy2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.6rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.7);
+  flex-shrink: 0;
+  font-family: var(--fm);
+}
+.mkt-community-page .reply-bd {
+  flex: 1;
+}
+.mkt-community-page .reply-name {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--navy);
+  margin-bottom: 2px;
+}
+.mkt-community-page .reply-text {
+  font-size: 0.75rem;
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+/* Own pending / removed banner variants */
+.mkt-community-page .feed-card.own-pending {
+  border-color: #e8c585;
+  background: linear-gradient(135deg, var(--abg) 0%, #fff 50%);
+}
+.mkt-community-page .own-pending-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--amber);
+  padding: 7px 16px 7px 20px;
+  background: var(--abg);
+  border-bottom: 1px solid #e8c585;
+}
+.mkt-community-page .own-pending-label > svg {
+  width: 13px;
+  height: 13px;
+  fill: currentColor;
+  flex-shrink: 0;
+}
+.mkt-community-page .feed-card.own-removed {
+  border-color: #f0b0a8;
+  background: linear-gradient(135deg, var(--red-pale) 0%, #fff 50%);
+  opacity: 0.75;
+}
+.mkt-community-page .removed-label {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 0.75rem;
+  color: var(--red);
+  padding: 10px 16px 10px 20px;
+  background: var(--red-pale);
+  border-bottom: 1px solid #f0b0a8;
+  line-height: 1.55;
+}
+.mkt-community-page .removed-label > svg {
+  width: 14px;
+  height: 14px;
+  fill: currentColor;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.mkt-community-page .removed-label strong {
+  font-weight: 700;
+  display: block;
+  margin-bottom: 2px;
+}
+.mkt-community-page .appeal-link {
+  color: var(--red);
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  cursor: pointer;
+  margin-top: 3px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: none;
+  border: none;
+  font-family: var(--fb);
+  font-size: inherit;
+  padding: 0;
+}
+
+/* Submit CTA card */
+.mkt-community-page .submit-card {
+  background: var(--navy);
+  border-radius: 13px;
+  padding: 18px 20px;
+  border: 2px solid var(--navy2);
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.mkt-community-page .sub-card-text h3 {
+  font-family: var(--fh);
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #fff;
+  margin-bottom: 3px;
+}
+.mkt-community-page .sub-card-text p {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.45);
+  line-height: 1.5;
+}
+.mkt-community-page .sub-card-btn {
+  background: var(--red);
+  color: #fff;
+  padding: 9px 18px;
+  border-radius: 8px;
+  font-family: var(--fh);
+  font-size: 0.85rem;
+  font-weight: 800;
+  cursor: pointer;
+  white-space: nowrap;
+  border: none;
+  transition: background 0.15s;
+  flex-shrink: 0;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+}
+.mkt-community-page .sub-card-btn:hover {
+  background: var(--red2);
+}
+
+/* Load more */
+.mkt-community-page .load-more {
+  text-align: center;
+  padding: 16px 0 28px;
+}
+.mkt-community-page .load-more-btn {
+  padding: 10px 24px;
+  border: 2px solid var(--border);
+  border-radius: 100px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--muted);
+  cursor: pointer;
+  background: #fff;
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-family: var(--fb);
+}
+.mkt-community-page .load-more-btn:hover {
+  border-color: var(--navy);
+  color: var(--navy);
+  background: var(--cream2);
+}
+.mkt-community-page .load-more-btn svg {
+  width: 13px;
+  height: 13px;
+  fill: currentColor;
+  flex-shrink: 0;
+}
+
+/* ─── Right panel — insights ─── */
+
+.mkt-community-page .right-panel {
+  background: var(--cream2);
+  border-left: 2px solid var(--border);
+  padding: 18px 16px;
+  position: sticky;
+  top: 60px;
+  height: calc(100vh - 60px);
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+.mkt-community-page .rp-section {
+  margin-bottom: 20px;
+}
+.mkt-community-page .rp-label {
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted2);
+  margin-bottom: 9px;
+  padding: 0 2px;
+}
+
+/* Insight cards */
+.mkt-community-page .insight-card {
+  border-radius: 9px;
+  padding: 11px 13px;
+  margin-bottom: 8px;
+  border: 1.5px solid;
+}
+.mkt-community-page .ic-amber {
+  background: var(--abg);
+  border-color: #e8c585;
+}
+.mkt-community-page .ic-green {
+  background: var(--gbg);
+  border-color: #90d4b0;
+}
+.mkt-community-page .ic-red {
+  background: var(--red-pale);
+  border-color: #f0b0a8;
+}
+.mkt-community-page .ic-blue {
+  background: var(--bbg);
+  border-color: #b8d8f0;
+}
+.mkt-community-page .ic-top {
+  display: flex;
+  align-items: flex-start;
+  gap: 7px;
+  margin-bottom: 5px;
+}
+.mkt-community-page .ic-icon {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+.mkt-community-page .ic-icon svg {
+  width: 14px;
+  height: 14px;
+  fill: currentColor;
+}
+.mkt-community-page .ic-amber .ic-icon {
+  color: var(--amber);
+}
+.mkt-community-page .ic-green .ic-icon {
+  color: var(--green);
+}
+.mkt-community-page .ic-red .ic-icon {
+  color: var(--red);
+}
+.mkt-community-page .ic-blue .ic-icon {
+  color: var(--blue);
+}
+.mkt-community-page .ic-title {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--navy);
+  line-height: 1.35;
+}
+.mkt-community-page .ic-body {
+  font-size: 0.72rem;
+  color: var(--muted);
+  line-height: 1.55;
+}
+.mkt-community-page .ic-foot {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 5px;
+  font-size: 0.63rem;
+  color: var(--muted2);
+  font-family: var(--fm);
+}
+.mkt-community-page .ic-link {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--blue);
+  cursor: pointer;
+  margin-top: 4px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  text-decoration: none;
+  background: none;
+  border: none;
+  font-family: var(--fb);
+  padding: 0;
+}
+.mkt-community-page .ic-link svg {
+  fill: currentColor;
+}
+.mkt-community-page .ic-link:hover {
+  text-decoration: underline;
+}
+
+/* Pulse chart */
+.mkt-community-page .pulse-chart {
+  display: flex;
+  align-items: flex-end;
+  gap: 3px;
+  height: 56px;
+  margin: 8px 0 4px;
+}
+.mkt-community-page .pc-bar {
+  flex: 1;
+  border-radius: 2px 2px 0 0;
+  background: var(--navy2);
+  opacity: 0.5;
+  transition: opacity 0.2s;
+  position: relative;
+}
+.mkt-community-page .pc-bar:hover {
+  opacity: 1;
+}
+.mkt-community-page .pc-bar.peak {
+  background: var(--green);
+  opacity: 1;
+}
+.mkt-community-page .pc-bar.this-week {
+  background: var(--red);
+  opacity: 1;
+}
+.mkt-community-page .pulse-labels {
+  display: flex;
+  gap: 3px;
+}
+.mkt-community-page .pl-lbl {
+  flex: 1;
+  font-size: 0.55rem;
+  color: var(--muted2);
+  text-align: center;
+  font-family: var(--fm);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+}
+.mkt-community-page .pl-lbl.this-week {
+  color: var(--red);
+  font-weight: 700;
+}
+.mkt-community-page .pl-peak-icon {
+  width: 8px;
+  height: 8px;
+  fill: var(--green);
+}
+.mkt-community-page .pulse-note {
+  font-size: 0.68rem;
+  color: var(--muted);
+  line-height: 1.5;
+  margin-top: 6px;
+}
+.mkt-community-page .pulse-delta-icon {
+  width: 9px;
+  height: 9px;
+  fill: var(--green);
+  vertical-align: -1px;
+}
+.mkt-community-page .pulse-note strong {
+  color: var(--navy);
+  font-weight: 700;
+}
+
+/* Top contributors */
+.mkt-community-page .contrib-row {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 7px 0;
+  border-bottom: 1px solid var(--border);
+}
+.mkt-community-page .contrib-row:last-child {
+  border-bottom: none;
+}
+.mkt-community-page .contrib-rank {
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--muted2);
+  width: 16px;
+  text-align: center;
+  font-family: var(--fm);
+}
+.mkt-community-page .contrib-av {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #fff;
+  flex-shrink: 0;
+  font-family: var(--fm);
+}
+.mkt-community-page .contrib-name {
+  font-size: 0.77rem;
+  font-weight: 600;
+  color: var(--navy);
+  flex: 1;
+}
+.mkt-community-page .contrib-count {
+  font-size: 0.68rem;
+  color: var(--muted);
+  font-family: var(--fm);
+}
+
+/* Discord card */
+.mkt-community-page .discord-card {
+  background: var(--navy);
+  border-radius: 10px;
+  padding: 14px;
+  text-align: center;
+}
+.mkt-community-page .dc-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 7px;
+  color: #5865f2;
+}
+.mkt-community-page .dc-icon svg {
+  width: 24px;
+  height: 24px;
+  fill: currentColor;
+}
+.mkt-community-page .dc-title {
+  font-family: var(--fh);
+  font-size: 0.88rem;
+  font-weight: 800;
+  color: #fff;
+  margin-bottom: 4px;
+}
+.mkt-community-page .dc-sub {
+  font-size: 0.72rem;
+  color: rgba(255, 255, 255, 0.45);
+  line-height: 1.5;
+  margin-bottom: 10px;
+}
+.mkt-community-page .dc-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  background: #5865f2;
+  color: #fff;
+  padding: 8px 14px;
+  border-radius: 7px;
+  font-size: 0.77rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition: background 0.2s;
+}
+.mkt-community-page .dc-btn svg {
+  fill: currentColor;
+}
+.mkt-community-page .dc-btn:hover {
+  background: #4752c4;
+}
+
+/* ─── New-post notification bar (drops in from above) ───
+ * `position: fixed` so it floats above the sticky nav. The shell keeps it
+ * mounted at all times and just toggles `.show` to slide it in/out.
+ */
+.mkt-community-page .new-post-bar {
+  position: fixed;
+  top: 68px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-80px);
+  background: var(--navy);
+  color: #fff;
+  padding: 10px 20px;
+  border-radius: 100px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  z-index: 190;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.25);
+  cursor: pointer;
+  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+.mkt-community-page .new-post-bar.show {
+  transform: translateX(-50%) translateY(0);
+}
+.mkt-community-page .new-post-bar .dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #4ade80;
+  animation: cm-blink 1.5s infinite;
+}
+
+/* ─── Feed-card entry animation (used by dynamically prepended cards) ─── */
+.mkt-community-page .feed-card.new-entry {
+  animation: cm-slide-down 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+@keyframes cm-slide-down {
+  from {
+    opacity: 0;
+    transform: translateY(-18px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ─── Submit / Appeal modal ───
+ * Rendered inside the .mkt-community-page wrapper (so the scoping holds),
+ * but `position: fixed` pins the overlay to the viewport.
+ */
+.mkt-community-page .modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(26, 35, 50, 0.6);
+  z-index: 300;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  backdrop-filter: blur(4px);
+}
+.mkt-community-page .modal-overlay.open {
+  display: flex;
+}
+.mkt-community-page .modal {
+  background: #fff;
+  border-radius: 16px;
+  width: 100%;
+  max-width: 520px;
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+  animation: cm-modal-in 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+@keyframes cm-modal-in {
+  from {
+    opacity: 0;
+    transform: scale(0.94);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+.mkt-community-page .modal-header {
+  background: var(--navy);
+  padding: 18px 22px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.mkt-community-page .modal-title {
+  font-family: var(--fh);
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #fff;
+}
+.mkt-community-page .modal-close {
+  color: rgba(255, 255, 255, 0.4);
+  cursor: pointer;
+  padding: 4px;
+  transition: color 0.15s;
+  background: transparent;
+  border: 0;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.mkt-community-page .modal-close svg {
+  width: 14px;
+  height: 14px;
+  fill: currentColor;
+}
+.mkt-community-page .modal-close:hover {
+  color: #fff;
+}
+.mkt-community-page .modal-body {
+  padding: 20px 22px;
+}
+.mkt-community-page .m-field {
+  margin-bottom: 14px;
+}
+.mkt-community-page .m-label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--navy);
+  margin-bottom: 5px;
+  display: block;
+}
+.mkt-community-page .m-label .req {
+  color: var(--red);
+  font-size: 0.7rem;
+  margin-left: 4px;
+}
+.mkt-community-page .m-label .optional-hint {
+  font-size: 0.7rem;
+  color: var(--muted);
+  font-weight: 400;
+  margin-left: 4px;
+}
+.mkt-community-page .m-select,
+.mkt-community-page .m-input {
+  width: 100%;
+  padding: 9px 12px;
+  border: 2px solid var(--border);
+  border-radius: 8px;
+  font-family: var(--fb);
+  font-size: 0.85rem;
+  color: var(--navy);
+  background: var(--cream);
+  outline: none;
+  transition: border-color 0.2s;
+  appearance: none;
+}
+.mkt-community-page .m-select:focus,
+.mkt-community-page .m-input:focus {
+  border-color: var(--navy);
+}
+.mkt-community-page .m-textarea {
+  width: 100%;
+  padding: 9px 12px;
+  border: 2px solid var(--border);
+  border-radius: 8px;
+  font-family: var(--fb);
+  font-size: 0.82rem;
+  color: var(--navy);
+  background: var(--cream);
+  outline: none;
+  resize: none;
+  min-height: 90px;
+  transition: border-color 0.2s;
+}
+.mkt-community-page .m-textarea:focus {
+  border-color: var(--navy);
+}
+.mkt-community-page .m-note {
+  font-size: 0.72rem;
+  color: var(--muted);
+  margin-top: 4px;
+  line-height: 1.5;
+}
+.mkt-community-page .m-footer {
+  display: flex;
+  gap: 8px;
+  padding: 14px 22px;
+  border-top: 1px solid var(--border);
+  background: var(--cream2);
+}
+.mkt-community-page .m-submit {
+  flex: 1;
+  padding: 11px;
+  background: var(--green);
+  color: #fff;
+  border-radius: 9px;
+  font-family: var(--fh);
+  font-size: 0.92rem;
+  font-weight: 800;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition:
+    background 0.15s,
+    border-color 0.15s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.mkt-community-page .m-submit svg {
+  fill: currentColor;
+}
+.mkt-community-page .m-submit:hover {
+  background: var(--green2);
+  border-color: var(--green2);
+  color: #fff;
+}
+.mkt-community-page .m-submit-red {
+  background: var(--red);
+}
+.mkt-community-page .m-submit-red:hover {
+  background: var(--red2);
+  border-color: var(--red2);
+}
+.mkt-community-page .m-submit:disabled {
+  opacity: 0.7;
+  cursor: progress;
+}
+.mkt-community-page .m-cancel {
+  padding: 11px 18px;
+  background: transparent;
+  color: var(--muted);
+  border-radius: 9px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: 2px solid var(--border);
+  transition: all 0.2s;
+}
+.mkt-community-page .m-cancel:hover {
+  background: var(--cream3);
+}
+.mkt-community-page .appeal-modal .modal-header {
+  background: var(--red);
+}
+.mkt-community-page .appeal-context {
+  background: var(--red-pale);
+  border: 1.5px solid #f0b0a8;
+  border-radius: 8px;
+  padding: 12px 14px;
+  margin-bottom: 16px;
+  font-size: 0.78rem;
+  color: var(--red);
+  line-height: 1.6;
+}
+
+/* ─── Toast ───
+ * One-at-a-time confirmation in the bottom-right.
+ */
+.mkt-community-page .toast {
+  position: fixed;
+  bottom: 22px;
+  right: 22px;
+  background: var(--navy);
+  color: #fff;
+  padding: 11px 18px;
+  border-radius: 9px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  z-index: 400;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  animation: cm-toast-in 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  max-width: 340px;
+}
+@keyframes cm-toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.mkt-community-page .toast > svg {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+  fill: currentColor;
+}
+.mkt-community-page .toast.green {
+  border-left: 3px solid #4ade80;
+}
+.mkt-community-page .toast.green > svg {
+  color: #4ade80;
+}
+.mkt-community-page .toast.amber {
+  border-left: 3px solid var(--amber);
+}
+.mkt-community-page .toast.amber > svg {
+  color: var(--amber);
+}
+
+/* ─── Top nav (community-only chrome) ───
+ * Class names are deliberately prefixed `cm-` so they never collide with
+ * marketing-core.css's `.marketing-site .nav` rules, even though the page
+ * wrapper still adds the `.marketing-site` class (it's needed for the
+ * shared MarketingFooter).
+ */
+
+.mkt-community-page .cm-nav {
+  background: var(--navy);
+  height: 60px;
+  padding: 0 clamp(14px, 3vw, 36px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 200;
+  border-bottom: 1.5px solid rgba(255, 255, 255, 0.07);
+}
+.mkt-community-page .cm-nav-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.mkt-community-page .cm-nav-brand {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: inherit;
+  text-decoration: none;
+}
+.mkt-community-page .cm-nav-logo {
+  width: 24px;
+  height: 24px;
+}
+.mkt-community-page .cm-nav-name {
+  font-family: var(--fh);
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: -0.02em;
+}
+.mkt-community-page .cm-nav-sep {
+  width: 1px;
+  height: 18px;
+  background: rgba(255, 255, 255, 0.12);
+  margin: 0 8px;
+}
+.mkt-community-page .cm-nav-page {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.4);
+  font-family: var(--fm);
+}
+.mkt-community-page .cm-nav-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.mkt-community-page .cm-nav-live {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #4ade80;
+  background: rgba(45, 106, 79, 0.2);
+  border: 1px solid rgba(45, 106, 79, 0.35);
+  padding: 4px 10px;
+  border-radius: 100px;
+}
+.mkt-community-page .cm-nav-live-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #4ade80;
+  animation: cm-blink 2s infinite;
+}
+@keyframes cm-blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.3;
+  }
+}
+.mkt-community-page .cm-nbtn {
+  font-size: 0.77rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.55);
+  padding: 6px 12px;
+  border-radius: 6px;
+  transition: all 0.15s;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  text-decoration: none;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  font-family: inherit;
+}
+.mkt-community-page .cm-nbtn:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.08);
+}
+.mkt-community-page .cm-nbtn svg {
+  width: 13px;
+  height: 13px;
+  fill: currentColor;
+  flex-shrink: 0;
+}
+.mkt-community-page .cm-nbtn.red {
+  background: var(--red);
+  color: #fff;
+}
+.mkt-community-page .cm-nbtn.red:hover {
+  background: var(--red2);
+}
+
+/* ─── Responsive ─── */
+
+@media (max-width: 1100px) {
+  .mkt-community-page .cm-layout {
+    grid-template-columns: 200px 1fr 260px;
+  }
+  .mkt-community-page .right-panel {
+    padding: 14px 12px;
+  }
+}
+@media (max-width: 900px) {
+  .mkt-community-page .cm-layout {
+    grid-template-columns: 1fr;
+  }
+  .mkt-community-page .left-sb,
+  .mkt-community-page .right-panel {
+    display: none;
+  }
+}
+@media (max-width: 600px) {
+  .mkt-community-page .cm-nav-live,
+  .mkt-community-page .cm-nav-page,
+  .mkt-community-page .cm-nav-sep {
+    display: none;
+  }
+  .mkt-community-page .filter-chips {
+    gap: 4px;
+  }
+  .mkt-community-page .chip {
+    padding: 5px 10px;
+    font-size: 0.72rem;
+  }
+  .mkt-community-page .search-wrap {
+    display: none;
+  }
+}

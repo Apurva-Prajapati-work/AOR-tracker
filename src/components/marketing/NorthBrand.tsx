@@ -6,7 +6,7 @@ export function NorthBrand() {
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img src="/Logo.png" alt="GetNorthPath" className="nbrand-mark" width={28} height={28} />
       <h2 className="nbrand-wordmark">
-        <span>Get</span>NorthPath
+        <span className="text-[#C8281E]!">AOR</span><span className="text-white!">Track</span>  
       </h2>
     </Link>
   );

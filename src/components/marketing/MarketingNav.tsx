@@ -12,9 +12,12 @@ export function MarketingNav() {
       <NorthBrand />
       <div className="nav-links">
         <Link href="/#how">How It Works</Link>
+        <Link href="/#features">Features</Link>
         <Link href="/#streams">Streams</Link>
-        <Link href="/#timeline">Timeline</Link>
-        <Link href="/#feedback">Contribute</Link>
+        <Link href="/#cohort">Cohort</Link>
+        <Link href="/#messaging">Alerts</Link>
+        <Link href="/roadmap">Roadmap</Link>
+        <Link href="/changelog">Changelog</Link>
         <a href={GH} target="_blank" rel="noopener noreferrer" className="nav-oss">
           <IconGitHub />
           Open Source

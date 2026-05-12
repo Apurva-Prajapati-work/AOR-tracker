@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
-import "@/styles/landing-sections.css";
-import "@/styles/landing-v2.css";
+import "@/styles/landing.css";
 import { LandingMarketingClient } from "@/components/marketing/LandingMarketingClient";
 
 export const metadata: Metadata = {

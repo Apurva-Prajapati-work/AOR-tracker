@@ -7,7 +7,7 @@ export function LandingOssSection() {
     <section className="oss-section" id="opensource">
       <div className="oss-inner">
         <div className="reveal">
-          <p className="section-eye" style={{ color: "rgba(255,255,255,.3)" }}>
+          <p className="section-eye" style={{ color: "rgba(255,255,255,.55)" }}>
             Open Source · MIT
           </p>
           <h2 className="section-h2" style={{ color: "#fff" }}>
@@ -15,7 +15,7 @@ export function LandingOssSection() {
             <br />
             <em style={{ fontStyle: "italic", color: "#c4b5fd" }}>Owned by everyone.</em>
           </h2>
-          <p className="section-sub" style={{ color: "rgba(255,255,255,.45)", marginBottom: "2rem" }}>
+          <p className="section-sub" style={{ color: "rgba(255,255,255,.7)", marginBottom: "2rem" }}>
             AORTrack is fully open source — every line of code is on GitHub, every decision is made in
             public, and every feature is driven by the community. No black boxes. No corporate agenda.
           </p>

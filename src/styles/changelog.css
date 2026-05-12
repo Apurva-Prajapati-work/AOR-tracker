@@ -1,0 +1,541 @@
+/*
+ * Changelog page styles — scoped to .mkt-changelog-page so they don't leak
+ * to other marketing routes. Loaded by src/app/(marketing)/changelog/page.tsx.
+ *
+ * Design tokens (--cream, --navy, --green, --red, etc.) come from
+ * .marketing-site in marketing-core.css, which the route group layout
+ * wraps around every marketing page. No need to redeclare them here.
+ *
+ * Nav and footer are rendered by the shared MarketingNav/MarketingFooter
+ * components (also styled by marketing-core.css). This file only owns
+ * the page body: hero, version-list sidebar, version blocks, and the
+ * unreleased / "what's next" boxes.
+ */
+
+.mkt-changelog-page {
+  font-size: 15px;
+  line-height: 1.65;
+}
+
+/* ─── Hero ─── */
+
+.mkt-changelog-page .cl-hero {
+  background: var(--navy);
+  padding: clamp(44px, 6vw, 72px) clamp(16px, 4vw, 48px) 0;
+  position: relative;
+  overflow: hidden;
+}
+.mkt-changelog-page .cl-hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse 40% 80% at 95% 30%,
+    rgba(30, 95, 140, 0.15) 0%,
+    transparent 60%
+  );
+}
+.mkt-changelog-page .cl-hero::after {
+  content: "📋";
+  position: absolute;
+  right: clamp(300px, 26%, 480px);
+  bottom: -15px;
+  font-size: clamp(90px, 12vw, 180px);
+  opacity: 0.04;
+  pointer-events: none;
+  line-height: 1;
+}
+.mkt-changelog-page .cl-hero-inner {
+  max-width: 1000px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+}
+.mkt-changelog-page .cl-hero h1 {
+  font-family: var(--fh);
+  font-size: clamp(1.9rem, 3.5vw, 2.8rem);
+  font-weight: 900;
+  color: #fff;
+  line-height: 1.07;
+  letter-spacing: -0.04em;
+  margin-bottom: 0.75rem;
+}
+.mkt-changelog-page .cl-hero h1 em {
+  font-style: italic;
+  color: #7dd3fc;
+}
+.mkt-changelog-page .cl-hero-sub {
+  font-size: 0.94rem;
+  color: rgba(255, 255, 255, 0.5);
+  line-height: 1.72;
+  max-width: 480px;
+  margin-bottom: 1.5rem;
+  font-weight: 300;
+}
+.mkt-changelog-page .cl-hero-sub a {
+  color: #7dd3fc;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.mkt-changelog-page .cl-hero-pills {
+  display: flex;
+  gap: 18px;
+  flex-wrap: wrap;
+  padding-bottom: 2rem;
+}
+.mkt-changelog-page .cl-hp {
+  font-size: 0.74rem;
+  color: rgba(255, 255, 255, 0.36);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.mkt-changelog-page .cl-hp b {
+  color: rgba(255, 255, 255, 0.75);
+  font-weight: 700;
+  font-family: var(--fm);
+}
+
+/* ─── Page layout (sidebar + content) ─── */
+
+.mkt-changelog-page .cl-layout {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: clamp(24px, 4vw, 48px) clamp(16px, 4vw, 48px);
+  display: grid;
+  grid-template-columns: 174px 1fr;
+  gap: 40px;
+  align-items: start;
+}
+
+/* ─── Sidebar version nav ─── */
+
+.mkt-changelog-page .cl-nav {
+  position: sticky;
+  top: 76px;
+}
+.mkt-changelog-page .cl-nav-label {
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted2);
+  margin-bottom: 9px;
+  font-family: var(--fm);
+}
+.mkt-changelog-page .cl-link {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 5px 7px;
+  border-radius: 6px;
+  font-size: 0.76rem;
+  font-weight: 500;
+  color: var(--muted);
+  transition: all 0.15s;
+  margin-bottom: 2px;
+}
+.mkt-changelog-page .cl-link:hover {
+  background: var(--cream2);
+  color: var(--navy);
+}
+.mkt-changelog-page .cl-link.is-current {
+  font-weight: 700;
+  color: var(--navy);
+}
+.mkt-changelog-page .cl-vdot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  flex-shrink: 0;
+}
+.mkt-changelog-page .cl-vdot.g {
+  background: var(--green);
+  border-color: var(--green);
+}
+.mkt-changelog-page .cl-vdot.b {
+  background: var(--blue);
+  border-color: var(--blue);
+}
+.mkt-changelog-page .cl-vtag {
+  font-size: 0.62rem;
+  font-family: var(--fm);
+  color: var(--muted2);
+  margin-left: auto;
+}
+.mkt-changelog-page .cl-div {
+  height: 1px;
+  background: var(--border);
+  margin: 8px 0;
+}
+.mkt-changelog-page .cl-link.xs {
+  font-size: 0.71rem;
+  padding: 4px 7px;
+  color: var(--muted2);
+}
+.mkt-changelog-page .cl-link.xs:hover {
+  color: var(--navy);
+}
+
+/* ─── Unreleased / In Progress box ─── */
+
+.mkt-changelog-page .cl-unreleased-wrap {
+  scroll-margin-top: 80px;
+  margin-bottom: 44px;
+}
+.mkt-changelog-page .cl-unreleased {
+  background: linear-gradient(135deg, var(--navy2), var(--navy));
+  border-radius: 12px;
+  border: 2px solid rgba(255, 255, 255, 0.09);
+  padding: 16px 20px;
+  margin-bottom: 40px;
+}
+.mkt-changelog-page .cl-ur-top {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin-bottom: 10px;
+}
+.mkt-changelog-page .cl-ur-badge {
+  font-size: 0.66rem;
+  font-weight: 700;
+  background: rgba(30, 95, 140, 0.3);
+  color: #7dd3fc;
+  border: 1px solid rgba(30, 95, 140, 0.5);
+  padding: 2px 9px;
+  border-radius: 100px;
+  font-family: var(--fm);
+}
+.mkt-changelog-page .cl-ur-title {
+  font-family: var(--fh);
+  font-size: 0.92rem;
+  font-weight: 800;
+  color: #fff;
+}
+.mkt-changelog-page .cl-ur-i {
+  font-size: 0.76rem;
+  color: rgba(255, 255, 255, 0.48);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 3px;
+}
+.mkt-changelog-page .cl-ur-i::before {
+  content: "⟳";
+  color: #7dd3fc;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+.mkt-changelog-page .cl-ur-note {
+  font-size: 0.68rem;
+  color: rgba(255, 255, 255, 0.28);
+  margin-top: 9px;
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+  padding-top: 8px;
+  font-family: var(--fm);
+}
+.mkt-changelog-page .cl-ur-note a {
+  color: #7dd3fc;
+  text-decoration: underline;
+}
+
+/* ─── Version block ─── */
+
+.mkt-changelog-page .cl-version {
+  margin-bottom: 52px;
+  scroll-margin-top: 80px;
+}
+.mkt-changelog-page .cl-version-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  margin-bottom: 18px;
+  padding-bottom: 15px;
+  border-bottom: 2px solid var(--border);
+}
+.mkt-changelog-page .cl-vbadge-col {
+  flex-shrink: 0;
+  text-align: center;
+  min-width: 72px;
+}
+.mkt-changelog-page .cl-vbadge {
+  font-family: var(--fm);
+  font-size: 0.76rem;
+  font-weight: 700;
+  padding: 4px 11px;
+  border-radius: 6px;
+  display: inline-block;
+  letter-spacing: 0.02em;
+}
+.mkt-changelog-page .cl-vbadge.is-latest {
+  background: var(--green);
+  color: #fff;
+}
+.mkt-changelog-page .cl-vbadge.is-old {
+  background: var(--cream2);
+  color: var(--navy2);
+  border: 1.5px solid var(--border);
+}
+.mkt-changelog-page .cl-vdate {
+  font-size: 0.64rem;
+  color: var(--muted2);
+  font-family: var(--fm);
+  display: block;
+  margin-top: 3px;
+  text-align: center;
+}
+.mkt-changelog-page .cl-vtitle {
+  flex: 1;
+}
+.mkt-changelog-page .cl-vtitle h2 {
+  font-family: var(--fh);
+  font-size: 1.3rem;
+  font-weight: 900;
+  color: var(--navy);
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+  margin-bottom: 3px;
+}
+.mkt-changelog-page .cl-vtitle p {
+  font-size: 0.8rem;
+  color: var(--muted);
+  line-height: 1.55;
+}
+.mkt-changelog-page .cl-vgh {
+  margin-left: auto;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.71rem;
+  color: var(--muted);
+  padding: 5px 9px;
+  border: 1.5px solid var(--border);
+  border-radius: 6px;
+  transition: all 0.2s;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.mkt-changelog-page .cl-vgh:hover {
+  border-color: var(--navy);
+  color: var(--navy);
+}
+.mkt-changelog-page .cl-vgh svg {
+  width: 11px;
+  height: 11px;
+  fill: currentColor;
+}
+
+/* ─── Change sections ─── */
+
+.mkt-changelog-page .cl-sections {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.mkt-changelog-page .cl-sec-head {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-bottom: 7px;
+}
+.mkt-changelog-page .cl-ctype {
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 2px 9px;
+  border-radius: 100px;
+  font-family: var(--fm);
+}
+.mkt-changelog-page .cl-ct-add {
+  background: var(--gbg);
+  color: var(--green);
+  border: 1px solid #90d4b0;
+}
+.mkt-changelog-page .cl-ct-fix {
+  background: var(--red-pale);
+  color: var(--red);
+  border: 1px solid #f0b0a8;
+}
+.mkt-changelog-page .cl-ct-chg {
+  background: var(--bbg);
+  color: var(--blue);
+  border: 1px solid #b8d8f0;
+}
+.mkt-changelog-page .cl-ct-rem {
+  background: var(--cream3);
+  color: var(--muted);
+  border: 1px solid var(--border2);
+}
+.mkt-changelog-page .cl-ct-sec {
+  background: var(--abg);
+  color: var(--amber);
+  border: 1px solid #e8c585;
+}
+.mkt-changelog-page .cl-ct-prf {
+  background: var(--tbg);
+  color: var(--teal);
+  border: 1px solid #a8dfe0;
+}
+
+.mkt-changelog-page .cl-list {
+  display: flex;
+  flex-direction: column;
+}
+.mkt-changelog-page .cl-i {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  padding: 7px 0;
+  border-bottom: 1px solid var(--border);
+}
+.mkt-changelog-page .cl-i:last-child {
+  border-bottom: none;
+}
+.mkt-changelog-page .cl-i-d {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  margin-top: 6px;
+}
+.mkt-changelog-page .cl-d-g {
+  background: var(--green);
+}
+.mkt-changelog-page .cl-d-r {
+  background: var(--red);
+}
+.mkt-changelog-page .cl-d-b {
+  background: var(--blue);
+}
+.mkt-changelog-page .cl-d-a {
+  background: var(--amber);
+}
+.mkt-changelog-page .cl-d-t {
+  background: var(--teal);
+}
+.mkt-changelog-page .cl-d-m {
+  background: var(--muted2);
+}
+.mkt-changelog-page .cl-i-txt {
+  flex: 1;
+  font-size: 0.8rem;
+  color: var(--navy);
+  line-height: 1.55;
+}
+.mkt-changelog-page .cl-i-txt em {
+  color: var(--muted);
+  font-style: normal;
+}
+.mkt-changelog-page .cl-i-txt strong {
+  color: var(--navy);
+  font-weight: 700;
+}
+.mkt-changelog-page .cl-i-txt code {
+  font-family: var(--fm);
+  font-size: 0.73rem;
+  background: var(--cream2);
+  padding: 1px 4px;
+  border-radius: 3px;
+  border: 1px solid var(--border);
+}
+.mkt-changelog-page .cl-i-n {
+  flex-shrink: 0;
+  font-size: 0.63rem;
+  font-family: var(--fm);
+  color: var(--muted);
+  background: var(--cream2);
+  border: 1px solid var(--border);
+  padding: 1px 6px;
+  border-radius: 4px;
+  white-space: nowrap;
+  text-decoration: none;
+  transition: all 0.15s;
+}
+.mkt-changelog-page .cl-i-n:hover {
+  background: var(--bbg);
+  color: var(--blue);
+  border-color: #b8d8f0;
+}
+
+/* ─── Contributors row ─── */
+
+.mkt-changelog-page .cl-contribs {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: 13px;
+  padding-top: 11px;
+  border-top: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+.mkt-changelog-page .cl-c-label {
+  font-size: 0.66rem;
+  color: var(--muted2);
+  font-family: var(--fm);
+}
+.mkt-changelog-page .cl-cav {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.55rem;
+  font-weight: 700;
+  color: #fff;
+  font-family: var(--fm);
+  border: 2px solid #fff;
+  margin-left: -5px;
+}
+.mkt-changelog-page .cl-cav:first-of-type {
+  margin-left: 0;
+}
+.mkt-changelog-page .cl-cnames {
+  font-size: 0.68rem;
+  color: var(--muted);
+  font-family: var(--fm);
+}
+
+/* ─── "What came next" inline box ─── */
+
+.mkt-changelog-page .cl-wnext {
+  background: var(--navy);
+  border-radius: 10px;
+  padding: 14px 18px;
+  margin-top: 12px;
+}
+.mkt-changelog-page .cl-wnext-t {
+  font-family: var(--fh);
+  font-size: 0.9rem;
+  font-weight: 800;
+  color: #fff;
+  margin-bottom: 5px;
+}
+.mkt-changelog-page .cl-wnext-i {
+  font-size: 0.76rem;
+  color: rgba(255, 255, 255, 0.45);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 3px;
+}
+.mkt-changelog-page .cl-wnext-i::before {
+  content: "→";
+  color: #4ade80;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+/* ─── Responsive ─── */
+
+@media (max-width: 800px) {
+  .mkt-changelog-page .cl-layout {
+    grid-template-columns: 1fr;
+  }
+  .mkt-changelog-page .cl-nav {
+    display: none;
+  }
+}

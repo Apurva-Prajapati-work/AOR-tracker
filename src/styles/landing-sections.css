@@ -4,7 +4,7 @@
 .mkt-landing-hero {
   background: var(--navy);
   background-color: var(--navy);
-  padding: clamp(56px, 7vw, 96px) clamp(16px, 4vw, 48px) 0;
+  padding: clamp(48px, 8vw, 96px) clamp(14px, 4vw, 48px) 0;
   position: relative;
   overflow: hidden;
   font-family: var(--fb), "DM Sans", system-ui, sans-serif;
@@ -37,8 +37,8 @@
   max-width: var(--max);
   margin: 0 auto;
   display: grid;
-  grid-template-columns: 1fr minmax(440px, 520px);
-  gap: 3rem;
+  grid-template-columns: 1fr minmax(0, min(520px, 100%));
+  gap: clamp(1.5rem, 4vw, 3rem);
   align-items: end;
 }
 .mkt-landing-hero .hero-breadcrumb {
@@ -137,6 +137,7 @@
 .mkt-landing-hero .mkt-btn-github-secondary.btn-outline {
   color: #fff;
   border-color: rgba(255, 255, 255, 0.48);
+  width: 100%;
 }
 .mkt-landing-hero .mkt-btn-github-secondary.btn-outline:hover {
   border-color: rgba(255, 255, 255, 0.85);
@@ -182,6 +183,7 @@
 }
 
 .mkt-landing-hero .mkt-hero-col {
+  min-width: 0;
   animation: mkt-hero-in 0.85s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 .mkt-landing-hero .mkt-hero-col--card {
@@ -191,7 +193,10 @@
 .mkt-ha-card {
   position: relative;
   z-index: 1;
-  width: min(100%, 600px);
+  width: 100%;
+  max-width: min(100%, 600px);
+  margin-left: auto;
+  margin-right: auto;
   margin-bottom: clamp(1.75rem, 5vw, 3rem);
 }
 
@@ -1265,6 +1270,7 @@
   text-align: center;
   padding: 0 14px;
   position: relative;
+  margin-bottom: 2rem;
   z-index: 1;
 }
 .hs-num {
@@ -1801,7 +1807,7 @@
   margin: 0 auto;
   display: grid;
   grid-template-columns: 1fr auto;
-  gap: 3rem;
+  gap: clamp(1.5rem, 4vw, 3rem);
   align-items: center;
 }
 .cta-h2 {
@@ -1839,6 +1845,8 @@
   flex-direction: column;
   gap: 10px;
   align-items: flex-end;
+  width: 100%;
+  max-width: 320px;
 }
 .btn-white {
   padding: 13px 28px;
@@ -1850,10 +1858,12 @@
   border: 2px solid #fff;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
   transition: all 0.15s;
   white-space: nowrap;
   font-family: var(--fb);
+  box-sizing: border-box;
 }
 .btn-white:hover {
   background: rgba(255, 255, 255, 0.9);
@@ -1868,10 +1878,13 @@
   border: 2px solid rgba(255, 255, 255, 0.3);
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
   transition: all 0.15s;
   white-space: nowrap;
   font-family: var(--fb);
+  width: 100%;
+  
 }
 .btn-ghost-w:hover {
   border-color: rgba(255, 255, 255, 0.7);
@@ -2038,6 +2051,9 @@
   .cta-inner {
     grid-template-columns: 1fr;
   }
+  .mkt-landing-hero .hero-inner {
+    align-items: stretch;
+  }
   .mkt-landing-hero .hero-card,
   .mkt-ha-card {
     margin-bottom: clamp(1.5rem, 6vw, 2.5rem);
@@ -2055,11 +2071,50 @@
     border-top: 1px solid var(--border);
   }
   .cta-btns {
-    align-items: flex-start;
+    align-items: stretch;
+    max-width: none;
+    width: 100%;
+  }
+  .cta-btns .btn-white,
+  .cta-btns .btn-ghost-w {
+    width: 100%;
+    justify-content: center;
+    white-space: normal;
+    text-align: center;
   }
 }
 
 @media (max-width: 600px) {
+  .mkt-landing-hero .hero-actions {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+    margin-bottom: 2rem;
+  }
+  .mkt-landing-hero .hero-actions > .btn-hero {
+    width: 100%;
+    justify-content: center;
+    box-sizing: border-box;
+  }
+  .mkt-landing-hero .hero-sub {
+    max-width: none;
+  }
+  .mkt-landing-hero .hero-trust {
+    gap: 12px 16px;
+    padding-bottom: 2rem;
+  }
+  .mkt-landing-hero {
+    padding-inline: clamp(14px, 4.5vw, 24px);
+  }
+  .section,
+  .hiw-inner,
+  .tl-inner,
+  .oss-inner,
+  .growth-inner,
+  .cta-section,
+  .stats-inner {
+    padding-inline: clamp(14px, 4.5vw, 24px);
+  }
   .mkt-ha-tabs {
     justify-content: flex-start;
   }
@@ -2096,5 +2151,19 @@
   .gt-head > *:nth-child(n + 4),
   .gt-row > *:nth-child(n + 4) {
     display: none;
+  }
+  .marketing-site .sticky {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 12px clamp(14px, 4vw, 20px);
+    gap: 10px;
+  }
+  .marketing-site .sticky > div:first-child {
+    text-align: center;
+  }
+  .marketing-site .sticky .btn-hero {
+    width: 100%;
+    justify-content: center;
+    box-sizing: border-box;
   }
 }

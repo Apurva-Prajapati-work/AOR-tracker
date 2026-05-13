@@ -379,7 +379,7 @@ export function LandingHeroSection({ profileCount }: LandingHeroSectionProps) {
             your <em>PR stands.</em>
           </h1>
           <p className="hero-sub">
-            Real processing timelines from {countStr} Express Entry applicants — not IRCC&apos;s
+            Real processing timelines from {countStr}{" "} Express Entry applicants — not IRCC&apos;s
             generic estimate. Community-powered, open-source, and free forever.
           </p>
 

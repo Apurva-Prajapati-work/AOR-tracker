@@ -798,7 +798,6 @@ button.sitem{font:inherit;color:inherit;width:100%;text-align:left}
 }
 .sk {
   background: var(--navy3);
-  border: 1px solid var(--border);
   border-radius: 8px;
   animation: sk-shimmer 1.35s ease-in-out infinite;
 }

@@ -1,0 +1,321 @@
+"use client";
+
+import type { MilestoneKey } from "@/lib/types";
+import {
+  streamAverage,
+  TRACK_MILESTONES,
+  type AppType,
+  type StreamId,
+} from "./data";
+import {
+  IconArrowRight,
+  IconCheck,
+  IconChevronLeft,
+  IconWarn,
+} from "./track-icons";
+
+type PostAorKey = Exclude<MilestoneKey, "aor">;
+export type EmailMode = "email" | "anon";
+
+type Props = {
+  aorDate: string;
+  stream: StreamId;
+  appType: AppType;
+  province: string;
+
+  checked: Record<PostAorKey, boolean>;
+  dates: Record<PostAorKey, string>;
+
+  emailMode: EmailMode;
+  email: string;
+  emailError: boolean;
+  onEmailMode: (m: EmailMode) => void;
+  onEmail: (v: string) => void;
+
+  consent: boolean;
+  consentError: boolean;
+  onConsent: () => void;
+
+  submitting: boolean;
+  onBack: () => void;
+  onSubmit: () => void;
+};
+
+const DATE_FMT = new Intl.DateTimeFormat("en-CA", {
+  year: "numeric",
+  month: "short",
+  day: "numeric",
+});
+const MONTH_FMT = new Intl.DateTimeFormat("en-CA", {
+  month: "short",
+  year: "numeric",
+});
+
+function daysBetween(start: string, end: Date): number {
+  const s = new Date(`${start}T12:00:00`).getTime();
+  return Math.floor((end.getTime() - s) / 86400000);
+}
+
+/**
+ * Step 3 — Review (summary card + milestone summary) followed by the
+ * "save with email" vs "anon cookie" choice, consent box, and submit
+ * button. The orchestrator owns all state.
+ */
+export function TrackStep3Review(props: Props) {
+  const {
+    aorDate,
+    stream,
+    appType,
+    province,
+    checked,
+    dates,
+    emailMode,
+    email,
+    emailError,
+    onEmailMode,
+    onEmail,
+    consent,
+    consentError,
+    onConsent,
+    submitting,
+    onBack,
+    onSubmit,
+  } = props;
+
+  const today = new Date();
+  const daysElapsed = aorDate ? daysBetween(aorDate, today) : 0;
+  const avg = streamAverage(stream);
+  const remaining = Math.max(avg - daysElapsed, 14);
+  const windowStart = new Date(today.getTime() + remaining * 0.75 * 86400000);
+  const windowEnd = new Date(today.getTime() + remaining * 1.25 * 86400000);
+
+  const aorLabel = aorDate
+    ? DATE_FMT.format(new Date(`${aorDate}T12:00:00`))
+    : "—";
+
+  return (
+    <div className="tk-panel active" role="tabpanel" aria-labelledby="tk-step-3">
+      <div className="tk-step-head">
+        <div className="tk-step-num">Step 3 of 3</div>
+        <div className="tk-step-title">Review &amp; save your profile</div>
+        <div className="tk-step-desc">
+          Confirm your details below, then choose how to save your profile.
+        </div>
+      </div>
+
+      {/* SUMMARY CARD */}
+      <div className="tk-summary">
+        <div className="tk-summary-top">
+          <div>
+            <div className="tk-summary-stream">{stream}</div>
+            <div className="tk-summary-type">
+              {appType}
+              {stream === "PNP" && province ? ` · ${province}` : ""}
+            </div>
+          </div>
+          <div className="tk-summary-aor">
+            <div className="tk-summary-aor-val">{aorLabel}</div>
+            <div className="tk-summary-aor-label">AOR Date</div>
+          </div>
+        </div>
+        <div className="tk-summary-stats">
+          <div className="tk-summary-stat">
+            <div className="tk-summary-stat-val">{daysElapsed}d</div>
+            <div className="tk-summary-stat-label">Days elapsed</div>
+          </div>
+          <div className="tk-summary-stat">
+            <div className="tk-summary-stat-val green">{avg}d</div>
+            <div className="tk-summary-stat-label">Stream avg</div>
+          </div>
+          <div className="tk-summary-stat">
+            <div className="tk-summary-stat-val">
+              {MONTH_FMT.format(windowStart)}–{MONTH_FMT.format(windowEnd)}
+            </div>
+            <div className="tk-summary-stat-label">Est. PPR window</div>
+          </div>
+        </div>
+      </div>
+
+      {/* MILESTONE SUMMARY */}
+      <div className="tk-ms-summary">
+        <div className="tk-ms-summary-title">Your milestones</div>
+        <div className="tk-ms-summary-list">
+          {TRACK_MILESTONES.map((m) => {
+            const done = !!(checked[m.key] && dates[m.key]);
+            const dateStr = done
+              ? DATE_FMT.format(new Date(`${dates[m.key]}T12:00:00`))
+              : null;
+            return (
+              <div className="tk-ms-summary-row" key={m.key}>
+                <span
+                  className={`tk-ms-summary-dot ${done ? "done" : "pending"}`}
+                  aria-hidden="true"
+                />
+                <span className="tk-ms-summary-name">{m.label}</span>
+                {done ? (
+                  <span className="tk-ms-summary-date">{dateStr}</span>
+                ) : (
+                  <span className="tk-ms-summary-est">Pending</span>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* EMAIL OPTIONS */}
+      <div className="tk-field">
+        <div className="tk-field-label">
+          How do you want to save your profile?
+        </div>
+
+        <div
+          className={`tk-eo${emailMode === "email" ? " selected" : ""}`}
+          role="button"
+          tabIndex={0}
+          onClick={() => onEmailMode("email")}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              onEmailMode("email");
+            }
+          }}
+        >
+          <div className="tk-eo-header">
+            <span className="tk-eo-radio" aria-hidden="true" />
+            <div className="tk-eo-body">
+              <div className="tk-eo-title">Save with my email (recommended)</div>
+              <div className="tk-eo-desc">
+                Persist your profile to our MongoDB so you can resume from any
+                device. Your email is hashed — we never store it in readable
+                form.
+              </div>
+              <span className="tk-eo-tag tk-tag-rec">Recommended</span>
+            </div>
+          </div>
+          <div className="tk-email-input">
+            <input
+              type="email"
+              placeholder="your@email.com"
+              value={email}
+              onChange={(e) => onEmail(e.target.value)}
+              onClick={(e) => e.stopPropagation()}
+              className={emailError ? "tk-error" : undefined}
+              aria-label="Email address"
+              autoComplete="email"
+            />
+            <div className="tk-field-note">
+              We&apos;ll save your profile under this email so you can resume
+              from any device. No password. No spam.
+            </div>
+            <div className={`tk-field-error${emailError ? " show" : ""}`}>
+              Please enter a valid email address.
+            </div>
+          </div>
+        </div>
+
+        <div
+          className={`tk-eo${emailMode === "anon" ? " selected" : ""}`}
+          role="button"
+          tabIndex={0}
+          onClick={() => onEmailMode("anon")}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              onEmailMode("anon");
+            }
+          }}
+        >
+          <div className="tk-eo-header">
+            <span className="tk-eo-radio" aria-hidden="true" />
+            <div className="tk-eo-body">
+              <div className="tk-eo-title">
+                Continue without email (this device only)
+              </div>
+              <div className="tk-eo-desc">
+                Your profile is saved in this browser only. Clearing cookies or
+                switching devices means losing your data permanently.
+              </div>
+              <span className="tk-eo-tag tk-tag-anon">
+                Cookie-only · 90 days
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div
+          className={`tk-anon-warn${emailMode === "anon" ? " show" : ""}`}
+          role={emailMode === "anon" ? "alert" : undefined}
+        >
+          <div className="tk-anon-warn-title">
+            <IconWarn aria-hidden /> Cookie-only storage
+          </div>
+          <div className="tk-anon-warn-body">
+            If you clear your browser history, use private mode, or switch to
+            another device, your AORTrack data <strong>cannot be recovered</strong>.
+            You would need to start a new profile. We strongly recommend saving
+            your email.
+          </div>
+        </div>
+      </div>
+
+      {/* CONSENT */}
+      <button
+        type="button"
+        className={`tk-consent${consent ? " checked" : ""}`}
+        onClick={onConsent}
+        aria-pressed={consent}
+      >
+        <span className="tk-consent-check" aria-hidden="true">
+          {consent ? <IconCheck /> : null}
+        </span>
+        <span className="tk-consent-text">
+          I agree to the{" "}
+          <a
+            href="/privacy"
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={(e) => e.stopPropagation()}
+          >
+            Privacy Policy
+          </a>
+          . I understand my data contributes anonymously to community cohort
+          statistics and can be deleted at any time from my dashboard.
+        </span>
+      </button>
+      <div className={`tk-field-error${consentError ? " show" : ""}`}>
+        Please agree to the privacy policy to continue.
+      </div>
+
+      <div className="tk-row">
+        <button
+          type="button"
+          className="tk-btn-secondary"
+          onClick={onBack}
+          disabled={submitting}
+        >
+          <IconChevronLeft aria-hidden />
+          Back
+        </button>
+        <button
+          type="button"
+          className="tk-btn tk-btn-submit"
+          onClick={onSubmit}
+          disabled={submitting}
+        >
+          {submitting ? (
+            <>
+              <span className="tk-spinner" aria-hidden="true" />
+              Creating your profile…
+            </>
+          ) : (
+            <>
+              Start Tracking My Application
+              <IconArrowRight aria-hidden />
+            </>
+          )}
+        </button>
+      </div>
+    </div>
+  );
+}

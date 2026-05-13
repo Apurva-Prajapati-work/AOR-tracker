@@ -6,11 +6,6 @@ import {
   IconMaple,
   IconChevronRight,
 } from "./track-icons";
-import type { EmailMode } from "./TrackStep3Review";
-
-type Props = {
-  mode: EmailMode;
-};
 
 /**
  * Final state shown after the profile is persisted. Replaces the steps /
@@ -18,11 +13,9 @@ type Props = {
  * dashboard, so the inner links are also good entry points back into the
  * app.
  */
-export function TrackSuccess({ mode }: Props) {
+export function TrackSuccess() {
   const sub =
-    mode === "email"
-      ? "Your profile is live in MongoDB now. Bookmark your dashboard — you can return from any device using the same email."
-      : "Your profile is saved in this browser for 90 days. Bookmark your dashboard link so you can come back easily.";
+    "Your profile is live in MongoDB now. Bookmark your dashboard — you can return from any device using the same email.";
 
   return (
     <div className="tk-success" role="status" aria-live="polite">

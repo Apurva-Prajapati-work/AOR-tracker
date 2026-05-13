@@ -11,11 +11,9 @@ import {
   IconArrowRight,
   IconCheck,
   IconChevronLeft,
-  IconWarn,
 } from "./track-icons";
 
 type PostAorKey = Exclude<MilestoneKey, "aor">;
-export type EmailMode = "email" | "anon";
 
 type Props = {
   aorDate: string;
@@ -26,10 +24,9 @@ type Props = {
   checked: Record<PostAorKey, boolean>;
   dates: Record<PostAorKey, string>;
 
-  emailMode: EmailMode;
+  /** Pre-filled from the gate; user can still edit before submitting. */
   email: string;
   emailError: boolean;
-  onEmailMode: (m: EmailMode) => void;
   onEmail: (v: string) => void;
 
   consent: boolean;
@@ -69,10 +66,8 @@ export function TrackStep3Review(props: Props) {
     province,
     checked,
     dates,
-    emailMode,
     email,
     emailError,
-    onEmailMode,
     onEmail,
     consent,
     consentError,
@@ -163,99 +158,27 @@ export function TrackStep3Review(props: Props) {
         </div>
       </div>
 
-      {/* EMAIL OPTIONS */}
+      {/* EMAIL */}
       <div className="tk-field">
-        <div className="tk-field-label">
-          How do you want to save your profile?
+        <label className="tk-field-label" htmlFor="tk-step3-email">
+          Your email
+        </label>
+        <input
+          id="tk-step3-email"
+          type="email"
+          placeholder="your@email.com"
+          value={email}
+          onChange={(e) => onEmail(e.target.value)}
+          className={emailError ? "tk-error" : undefined}
+          aria-invalid={emailError}
+          autoComplete="email"
+        />
+        <div className="tk-field-note">
+          We&apos;ll save your profile under this email so you can resume
+          from any device. No password, no spam.
         </div>
-
-        <div
-          className={`tk-eo${emailMode === "email" ? " selected" : ""}`}
-          role="button"
-          tabIndex={0}
-          onClick={() => onEmailMode("email")}
-          onKeyDown={(e) => {
-            if (e.key === "Enter" || e.key === " ") {
-              e.preventDefault();
-              onEmailMode("email");
-            }
-          }}
-        >
-          <div className="tk-eo-header">
-            <span className="tk-eo-radio" aria-hidden="true" />
-            <div className="tk-eo-body">
-              <div className="tk-eo-title">Save with my email (recommended)</div>
-              <div className="tk-eo-desc">
-                Persist your profile to our MongoDB so you can resume from any
-                device. Your email is hashed — we never store it in readable
-                form.
-              </div>
-              <span className="tk-eo-tag tk-tag-rec">Recommended</span>
-            </div>
-          </div>
-          <div className="tk-email-input">
-            <input
-              type="email"
-              placeholder="your@email.com"
-              value={email}
-              onChange={(e) => onEmail(e.target.value)}
-              onClick={(e) => e.stopPropagation()}
-              className={emailError ? "tk-error" : undefined}
-              aria-label="Email address"
-              autoComplete="email"
-            />
-            <div className="tk-field-note">
-              We&apos;ll save your profile under this email so you can resume
-              from any device. No password. No spam.
-            </div>
-            <div className={`tk-field-error${emailError ? " show" : ""}`}>
-              Please enter a valid email address.
-            </div>
-          </div>
-        </div>
-
-        <div
-          className={`tk-eo${emailMode === "anon" ? " selected" : ""}`}
-          role="button"
-          tabIndex={0}
-          onClick={() => onEmailMode("anon")}
-          onKeyDown={(e) => {
-            if (e.key === "Enter" || e.key === " ") {
-              e.preventDefault();
-              onEmailMode("anon");
-            }
-          }}
-        >
-          <div className="tk-eo-header">
-            <span className="tk-eo-radio" aria-hidden="true" />
-            <div className="tk-eo-body">
-              <div className="tk-eo-title">
-                Continue without email (this device only)
-              </div>
-              <div className="tk-eo-desc">
-                Your profile is saved in this browser only. Clearing cookies or
-                switching devices means losing your data permanently.
-              </div>
-              <span className="tk-eo-tag tk-tag-anon">
-                Cookie-only · 90 days
-              </span>
-            </div>
-          </div>
-        </div>
-
-        <div
-          className={`tk-anon-warn${emailMode === "anon" ? " show" : ""}`}
-          role={emailMode === "anon" ? "alert" : undefined}
-        >
-          <div className="tk-anon-warn-title">
-            <IconWarn aria-hidden /> Cookie-only storage
-          </div>
-          <div className="tk-anon-warn-body">
-            If you clear your browser history, use private mode, or switch to
-            another device, your AORTrack data <strong>cannot be recovered</strong>.
-            You would need to start a new profile. We strongly recommend saving
-            your email.
-          </div>
+        <div className={`tk-field-error${emailError ? " show" : ""}`}>
+          Please enter a valid email address.
         </div>
       </div>
 

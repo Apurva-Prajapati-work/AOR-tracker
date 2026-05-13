@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
   createDraftProfileAction,
@@ -8,19 +8,21 @@ import {
   saveProfileAction,
 } from "@/app/actions/profile";
 import { emptyMilestones, isValidEmail } from "@/lib/profile";
-import { readSessionEmail, writeSessionEmail } from "@/lib/session-client";
+import { writeSessionEmail } from "@/lib/session-client";
 import type { MilestoneEntry, MilestoneKey, UserProfile } from "@/lib/types";
 import { useToast } from "@/components/ToastContext";
 import type { AppType, StreamId } from "./data";
+import { TrackGate } from "./TrackGate";
 import { TrackHeroPanel } from "./TrackHeroPanel";
 import { TrackNav } from "./TrackNav";
 import { TrackStep1Application } from "./TrackStep1Application";
 import { TrackStep2Milestones } from "./TrackStep2Milestones";
-import { TrackStep3Review, type EmailMode } from "./TrackStep3Review";
+import { TrackStep3Review } from "./TrackStep3Review";
 import { TrackStepsNav } from "./TrackStepsNav";
 import { TrackSuccess } from "./TrackSuccess";
 
 type PostAorKey = Exclude<MilestoneKey, "aor">;
+type Phase = "gate" | "onboarding" | "success";
 
 const POST_AOR_KEYS: PostAorKey[] = [
   "bil",
@@ -43,30 +45,33 @@ function blankDates(): Record<PostAorKey, string> {
   return { bil: "", biometrics: "", background: "", medical: "", ppr: "" };
 }
 
-const ANON_PROFILE_KEY = "aortrack_anon_profile_v1";
-
 /**
- * Top-level client for `/track`. Owns ALL form state for the 3-step flow
- * plus the success transition, then persists either:
+ * Top-level client for `/track`.
  *
- *   - email mode: `createDraftProfileAction` → `saveProfileAction` → MongoDB
- *     + `writeSessionEmail` so the dashboard can read the same profile back.
- *   - anon mode: serialises the profile to `localStorage` for now (matches
- *     the sample's "Cookie-only · 90 days" copy). When dashboard adds
- *     anonymous-cookie sessions, swap this for a server action that
- *     mints a signed cookie-only profile id.
+ * Three phases:
+ *   1. `gate` — `TrackGate` asks for the user's email, checks if a profile
+ *      already exists via `getProfileAction`. Found → CTA to `/dashboard`.
+ *      Not found → drops the user into the onboarding flow.
+ *   2. `onboarding` — the 3-step form (Application → Milestones → Review).
+ *      Step 3's email field is pre-populated with the email the user
+ *      entered in the gate (still editable).
+ *   3. `success` — `TrackSuccess` after `saveProfileAction` lands.
  *
- * On mount we read the session email — if present (e.g. user came from
- * the dashboard's "Edit profile" link) we hydrate the form with their
- * existing profile so re-edits don't start from scratch.
+ * After a successful save we call `writeSessionEmail` so the dashboard can
+ * hydrate from the same email without re-asking. We no longer auto-hydrate
+ * the form on mount from `sessionStorage` — the gate is the canonical entry
+ * point. We also dropped the previous anonymous / cookie-only save path:
+ * every profile is now backed by an email in MongoDB.
  */
 export function TrackPageClient() {
   const router = useRouter();
   const toast = useToast();
 
-  // ── Step state ───────────────────────────────────────────────────────────
+  // ── Phase ────────────────────────────────────────────────────────────────
+  const [phase, setPhase] = useState<Phase>("gate");
+
+  // ── Step state (only used while phase === "onboarding") ─────────────────
   const [step, setStep] = useState<1 | 2 | 3>(1);
-  const [done, setDone] = useState(false);
 
   // ── Step 1 ───────────────────────────────────────────────────────────────
   const [aorDate, setAorDate] = useState("");
@@ -86,8 +91,7 @@ export function TrackPageClient() {
   );
   const [dates, setDates] = useState<Record<PostAorKey, string>>(blankDates);
 
-  // ── Step 3 ───────────────────────────────────────────────────────────────
-  const [emailMode, setEmailMode] = useState<EmailMode>("email");
+  // ── Step 3 / Gate shared email ──────────────────────────────────────────
   const [email, setEmail] = useState("");
   const [emailError, setEmailError] = useState(false);
   const [consent, setConsent] = useState(false);
@@ -108,40 +112,6 @@ export function TrackPageClient() {
     () => `${liveCount.toLocaleString("en-US")} timelines live`,
     [liveCount],
   );
-
-  // ── Hydrate from session email (returning users / dashboard edits) ───────
-  const hydrated = useRef(false);
-  useEffect(() => {
-    if (hydrated.current) return;
-    hydrated.current = true;
-
-    const existingEmail = readSessionEmail();
-    if (!existingEmail) return;
-    setEmail(existingEmail);
-
-    void (async () => {
-      const res = await getProfileAction(existingEmail);
-      if (!res.ok) return;
-      const p = res.profile;
-
-      if (p.aorDate) setAorDate(p.aorDate);
-      if (p.stream) setStream(p.stream as StreamId);
-      if (p.type) setAppType(p.type as AppType);
-      if (p.province) setProvince(p.province);
-
-      const nextChecked = blankChecked();
-      const nextDates = blankDates();
-      for (const k of POST_AOR_KEYS) {
-        const m = p.milestones[k];
-        if (m?.date) {
-          nextChecked[k] = true;
-          nextDates[k] = m.date;
-        }
-      }
-      setChecked(nextChecked);
-      setDates(nextDates);
-    })();
-  }, []);
 
   // ── Step transitions ─────────────────────────────────────────────────────
   const goToStep = (n: 1 | 2 | 3) => {
@@ -203,58 +173,38 @@ export function TrackPageClient() {
       setConsentError(false);
     }
 
-    if (emailMode === "email") {
-      const trimmed = email.trim();
-      if (!isValidEmail(trimmed)) {
-        setEmailError(true);
-        valid = false;
-      } else {
-        setEmailError(false);
-      }
+    const trimmed = email.trim();
+    if (!isValidEmail(trimmed)) {
+      setEmailError(true);
+      valid = false;
+    } else {
+      setEmailError(false);
     }
     if (!valid) return;
 
     setSubmitting(true);
 
     try {
-      if (emailMode === "email") {
-        const trimmed = email.trim();
-        const draft = await createDraftProfileAction(trimmed);
-        if (!draft.ok) {
-          toast.show("Couldn't create your profile — please try again.");
-          setSubmitting(false);
-          return;
-        }
-        const profile = buildProfile(trimmed);
-        const existing = await getProfileAction(trimmed);
-        if (existing.ok) {
-          profile.createdAt = existing.profile.createdAt;
-        }
-        const res = await saveProfileAction(profile);
-        if (!res.ok) {
-          toast.show(res.error ?? "Failed to save your profile.");
-          setSubmitting(false);
-          return;
-        }
-        writeSessionEmail(trimmed);
-      } else {
-        // TODO(anon-cookie): replace with a server action that mints a
-        // signed cookie-only profile id (90-day TTL) and stores the
-        // anonymous record server-side, so cohort stats can include it.
-        // For now we persist locally so the dashboard can still hydrate.
-        if (typeof window !== "undefined") {
-          const placeholder = `anon-${crypto
-            .randomUUID()
-            .slice(0, 8)}@aortrack.local`;
-          const profile = buildProfile(placeholder);
-          window.localStorage.setItem(
-            ANON_PROFILE_KEY,
-            JSON.stringify(profile),
-          );
-        }
+      const draft = await createDraftProfileAction(trimmed);
+      if (!draft.ok) {
+        toast.show("Couldn't create your profile — please try again.");
+        setSubmitting(false);
+        return;
       }
+      const profile = buildProfile(trimmed);
+      const existing = await getProfileAction(trimmed);
+      if (existing.ok) {
+        profile.createdAt = existing.profile.createdAt;
+      }
+      const res = await saveProfileAction(profile);
+      if (!res.ok) {
+        toast.show(res.error ?? "Failed to save your profile.");
+        setSubmitting(false);
+        return;
+      }
+      writeSessionEmail(trimmed);
 
-      setDone(true);
+      setPhase("success");
       toast.show("Profile saved! Welcome to AORTrack");
     } catch (err) {
       console.error(err);
@@ -271,9 +221,21 @@ export function TrackPageClient() {
         <TrackHeroPanel liveCount={liveCountLabel} />
 
         <div className="tk-right">
-          {done ? (
-            <TrackSuccess mode={emailMode} />
-          ) : (
+          {phase === "gate" ? (
+            <TrackGate
+              email={email}
+              onEmail={setEmail}
+              onStartOnboarding={() => {
+                setPhase("onboarding");
+                setStep(1);
+                if (typeof window !== "undefined") {
+                  window.scrollTo({ top: 0, behavior: "smooth" });
+                }
+              }}
+            />
+          ) : null}
+
+          {phase === "onboarding" ? (
             <>
               <TrackStepsNav current={step} />
 
@@ -319,13 +281,8 @@ export function TrackPageClient() {
                   province={province}
                   checked={checked}
                   dates={dates}
-                  emailMode={emailMode}
                   email={email}
                   emailError={emailError}
-                  onEmailMode={(m) => {
-                    setEmailMode(m);
-                    setEmailError(false);
-                  }}
                   onEmail={(v) => {
                     setEmail(v);
                     if (emailError) setEmailError(false);
@@ -342,9 +299,11 @@ export function TrackPageClient() {
                 />
               ) : null}
             </>
-          )}
+          ) : null}
 
-          {done ? (
+          {phase === "success" ? <TrackSuccess /> : null}
+
+          {phase === "success" ? (
             <button
               type="button"
               className="tk-btn-secondary"

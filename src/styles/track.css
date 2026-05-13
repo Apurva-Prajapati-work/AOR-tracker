@@ -87,6 +87,84 @@
   border-radius: 5px;
 }
 
+/* ─── NAVBAR (own scope so it never fights .marketing-site .nav) ─────── */
+
+.mkt-track-page .tk-nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  height: 64px;
+  background: var(--navy);
+  border-bottom: 2px solid rgba(255, 255, 255, 0.07);
+  padding: 0 clamp(16px, 4vw, 48px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.mkt-track-page .tk-nav-brand {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  text-decoration: none;
+  color: inherit;
+  min-width: 0;
+}
+.mkt-track-page .tk-nav-logo {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+  display: block;
+  flex-shrink: 0;
+}
+.mkt-track-page .tk-nav-brand-text {
+  display: inline-flex;
+  flex-direction: column;
+  line-height: 1.1;
+  min-width: 0;
+}
+.mkt-track-page .tk-nav-name {
+  font-family: var(--fh);
+  font-size: 1.05rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+.mkt-track-page .tk-nav-name-aor {
+  color: var(--red);
+}
+.mkt-track-page .tk-nav-name-track {
+  color: #fff;
+}
+.mkt-track-page .tk-nav-sub {
+  font-size: 0.62rem;
+  color: rgba(255, 255, 255, 0.3);
+  font-family: var(--fm);
+  margin-top: -2px;
+}
+.mkt-track-page .tk-nav-back {
+  font-size: 0.82rem;
+  color: rgba(255, 255, 255, 0.55);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: color 0.15s;
+}
+.mkt-track-page .tk-nav-back:hover {
+  color: #fff;
+}
+.mkt-track-page .tk-nav-back svg {
+  width: 12px;
+  height: 12px;
+  fill: currentColor;
+  flex-shrink: 0;
+}
+
+@media (max-width: 480px) {
+  .mkt-track-page .tk-nav-sub {
+    display: none;
+  }
+}
+
 /* ─── PAGE LAYOUT ──────────────────────────────────────────────────────── */
 
 .mkt-track-page .tk-page {

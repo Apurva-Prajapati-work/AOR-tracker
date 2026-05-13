@@ -13,6 +13,7 @@ import type { MilestoneEntry, MilestoneKey, UserProfile } from "@/lib/types";
 import { useToast } from "@/components/ToastContext";
 import type { AppType, StreamId } from "./data";
 import { TrackHeroPanel } from "./TrackHeroPanel";
+import { TrackNav } from "./TrackNav";
 import { TrackStep1Application } from "./TrackStep1Application";
 import { TrackStep2Milestones } from "./TrackStep2Milestones";
 import { TrackStep3Review, type EmailMode } from "./TrackStep3Review";
@@ -265,6 +266,7 @@ export function TrackPageClient() {
   // ── Render ───────────────────────────────────────────────────────────────
   return (
     <div className="mkt-track-page flex min-h-0 flex-1 flex-col">
+      <TrackNav />
       <div className="tk-page">
         <TrackHeroPanel liveCount={liveCountLabel} />
 

@@ -21,7 +21,7 @@ export function TrackNav() {
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src="/Logo.png"
-          alt=""
+          alt="AORTrack"
           className="tk-nav-logo"
           width={28}
           height={28}
@@ -31,7 +31,6 @@ export function TrackNav() {
             <span className="tk-nav-name-aor">AOR</span>
             <span className="tk-nav-name-track">Track</span>
           </span>
-          <span className="tk-nav-sub">by GetNorthPath</span>
         </span>
       </Link>
 

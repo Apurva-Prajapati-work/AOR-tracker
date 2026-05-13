@@ -488,7 +488,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
               </button>
             ))}
             <hr className="sbdiv" />
-            <Link href="/onboarding" className="sbitem no-underline">
+            <Link href="/track" className="sbitem no-underline">
               <span className="sbico">
                 <FaRegEdit aria-hidden />
               </span>

@@ -459,12 +459,6 @@ export const DN_SIDEBAR = {
       href: "/community",
     },
     {
-      key: "stats",
-      label: "Processing Stats",
-      icon: "stats" as const,
-      href: "/dashboard/stats",
-    },
-    {
       key: "feedback",
       label: "Give Feedback",
       icon: "plus" as const,
@@ -472,23 +466,27 @@ export const DN_SIDEBAR = {
     },
   ],
   /**
-   * Share section is added here per the new-dashboard spec — the current
-   * production dashboard exposes a "Share" tab in its sidebar, so the new
-   * design mirrors that even though the sample HTML omitted it.
+   * Share section mirrors the pair of links present in the current
+   * `/dashboard` sidebar (`Processing Stats` immediately followed by
+   * `Share Timeline`). The order matches the production sidebar so users
+   * upgrading from the old design see the same grouping.
+   *
+   * `Processing Stats` keeps living at `/dashboard/stats` for now — the new
+   * page-level Share section is reached via the `#share-sec` anchor.
    */
   share: [
+    {
+      key: "share-stats",
+      label: "Processing Stats",
+      icon: "stats" as const,
+      href: "/dashboard/stats",
+    },
     {
       key: "share-link",
       label: "Share Timeline",
       icon: "share" as const,
       /** Anchors to the on-page Share section. */
       href: "#share-sec",
-    },
-    {
-      key: "share-stats",
-      label: "Processing Stats",
-      icon: "stats" as const,
-      href: "/dashboard/stats",
     },
   ],
   profile: [

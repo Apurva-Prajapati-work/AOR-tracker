@@ -53,7 +53,14 @@ export function DashboardAppBar({
             width={24}
             height={24}
           />
-          <div className="dnb-name">AORTrack</div>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/Logo-text.png"
+            alt=""
+            className="dnb-logo"
+            width={24}
+            height={24}
+          />
         </Link>
         <div className="dnb-sep" aria-hidden />
         <div className="dnb-page">Dashboard · {applicantId}</div>

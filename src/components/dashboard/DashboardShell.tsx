@@ -363,9 +363,8 @@ export function DashboardShell({ children }: { children: ReactNode }) {
         <div className="topbar">
           <Link href="/" className="logo"> 
             <LogoMark />
-            <span className="logo-name">
-              AOR<span>Track</span>
-            </span>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/Logo-text.png" alt="" className="fg-brand-mark" width={100} height={44} />
           </Link>
           <nav className="nav">
             <Link

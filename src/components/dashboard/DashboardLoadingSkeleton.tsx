@@ -168,14 +168,9 @@ export function DashboardLoadingSkeleton() {
         <div className="dnb-l">
           <Link href="/" className="dnb-brand">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src="/Logo.png"
-              alt=""
-              className="dnb-logo"
-              width={24}
-              height={24}
-            />
-            <div className="dnb-name">AORTrack</div>
+            <img src="/Logo.png" alt="" className="dnb-logo" width={28} height={28} />
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/Logo-text.png" alt="" className="dnb-logo" width={100} height={44} />
           </Link>
           <div className="dnb-sep" aria-hidden />
           <span className="sk sk-line h-3 w-28 opacity-70" />

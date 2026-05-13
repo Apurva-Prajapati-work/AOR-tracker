@@ -21,17 +21,19 @@ export function TrackNav() {
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src="/Logo.png"
-          alt="AORTrack"
-          className="tk-nav-logo"
+          alt=""
+          className="fg-brand-mark"
           width={28}
           height={28}
         />
-        <span className="tk-nav-brand-text">
-          <span className="tk-nav-name">
-            <span className="tk-nav-name-aor">AOR</span>
-            <span className="tk-nav-name-track">Track</span>
-          </span>
-        </span>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src="/Logo-text.png"
+          alt=""
+          className="fg-brand-mark"
+          width={100}
+          height={44}
+        />
       </Link>
 
       <Link href="/" className="tk-nav-back">

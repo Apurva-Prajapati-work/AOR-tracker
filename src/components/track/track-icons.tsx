@@ -1,5 +1,6 @@
 import type { IconType } from "react-icons";
 import {
+  FaArrowLeft,
   FaArrowRight,
   FaCanadianMapleLeaf,
   FaCheck,
@@ -76,6 +77,7 @@ export const IconFeedback = FaCommentDots;
 // ─── Misc re-exports ────────────────────────────────────────────────────────
 
 export {
+  FaArrowLeft as IconArrowLeft,
   FaArrowRight as IconArrowRight,
   FaCheck as IconCheck,
   FaChevronLeft as IconChevronLeft,

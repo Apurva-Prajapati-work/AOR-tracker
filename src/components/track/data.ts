@@ -182,7 +182,7 @@ export const COHORT_PREVIEW: CohortBar[] = [
   { height: 90, label: "165d", state: "active" },
   { height: 100, label: "180d", state: "active" },
   { height: 82, label: "195d", state: "active" },
-  { height: 60, label: "210d ←", state: "you" },
+  { height: 60, label: "210d", state: "you" },
   { height: 40, label: "225d" },
   { height: 22, label: "240d" },
   { height: 10, label: "255d" },

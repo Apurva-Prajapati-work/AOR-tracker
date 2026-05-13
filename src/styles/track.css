@@ -270,6 +270,16 @@
 .mkt-track-page .tk-cp-lbl.you {
   color: #f87171;
   font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+}
+.mkt-track-page .tk-cp-lbl.you svg {
+  width: 8px;
+  height: 8px;
+  fill: currentColor;
+  flex-shrink: 0;
 }
 .mkt-track-page .tk-cp-legend {
   display: flex;

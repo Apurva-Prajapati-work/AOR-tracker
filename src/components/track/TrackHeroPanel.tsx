@@ -4,7 +4,7 @@ import {
   LEFT_PANEL_STATS,
   TRUST_ITEMS,
 } from "./data";
-import { TrustIcon } from "./track-icons";
+import { IconArrowLeft, TrustIcon } from "./track-icons";
 
 type Props = {
   /** Live counter label rendered in the eyebrow chip (e.g. "14,827 timelines live"). */
@@ -74,6 +74,7 @@ export function TrackHeroPanel({ liveCount }: Props) {
                 className={`tk-cp-lbl${b.state ? ` ${b.state}` : ""}`}
               >
                 {b.label}
+                {b.state === "you" ? <IconArrowLeft aria-hidden /> : null}
               </div>
             ))}
           </div>

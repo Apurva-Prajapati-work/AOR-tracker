@@ -5,10 +5,12 @@
   --cream3: #ede8dc;
   --navy: #1a2332;
   --navy2: #253347;
+  --navy3: #0d1824;
   --red: #c8281e;
   --red2: #a81f17;
   --red-pale: #fdecea;
   --green: #2d6a4f;
+  --green2: #1f5038;
   --gbg: #eaf4ee;
   --amber: #b5651d;
   --abg: #fdf3e3;
@@ -206,6 +208,84 @@ html {
   flex-shrink: 0;
 }
 
+/* Hamburger toggle — hidden on desktop, shown by the ≤1221px media query
+   below. Lives between the (then-hidden) inline links and the .nav-cta. */
+.marketing-site .nav-menu-btn {
+  display: none;
+  align-items: center;
+  gap: 7px;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 100px;
+  padding: 6px 14px;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 0.82rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition:
+    color 0.15s,
+    border-color 0.15s,
+    background 0.15s;
+  flex-shrink: 0;
+}
+
+.marketing-site .nav-menu-btn:hover,
+.marketing-site .nav-menu-btn[aria-expanded="true"] {
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.32);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.marketing-site .nav-menu-btn svg {
+  width: 13px;
+  height: 13px;
+  fill: currentColor;
+  flex-shrink: 0;
+}
+
+/* Dropdown panel — sits absolutely below the sticky nav. Hidden until
+   `.open` is added by `MarketingNav`. */
+.marketing-site .nav-mobile-panel {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: var(--navy);
+  border-bottom: 2px solid rgba(255, 255, 255, 0.07);
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+  padding: 12px clamp(16px, 4vw, 48px) 16px;
+  display: none;
+  flex-direction: column;
+  gap: 2px;
+  z-index: 99;
+  box-shadow: 0 16px 24px -16px rgba(0, 0, 0, 0.4);
+}
+
+.marketing-site .nav-mobile-panel.open {
+  display: flex;
+}
+
+.marketing-site .nav-mobile-panel a {
+  font-size: 0.92rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.72);
+  padding: 10px 6px;
+  border-radius: 6px;
+  transition:
+    color 0.15s,
+    background 0.15s;
+}
+
+.marketing-site .nav-mobile-panel a:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.marketing-site .nav-mobile-panel .nav-oss {
+  align-self: flex-start;
+  margin-top: 6px;
+}
+
 .marketing-site .nbtn {
   font-size: 0.77rem;
   font-weight: 600;
@@ -241,97 +321,231 @@ html {
 }
 
 .marketing-site .footer {
-  background: #0d1824;
-  padding: clamp(40px, 5vw, 64px) clamp(16px, 4vw, 48px) 32px;
+  background: var(--navy3);
+  padding: clamp(48px, 6vw, 72px) clamp(16px, 4vw, 48px) 0;
   margin-top: auto;
 }
 
-.marketing-site .footer-grid {
+.marketing-site .footer-top {
   max-width: var(--max);
   margin: 0 auto;
   display: grid;
-  grid-template-columns: 1.6fr 1fr 1fr 1fr;
+  grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
   gap: 3rem;
-  margin-bottom: 3rem;
+  padding-bottom: 3rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 .marketing-site .fg-brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 0.6rem;
+}
+
+.marketing-site .fg-brand-name {
   font-family: var(--fh);
   font-size: 1.05rem;
   font-weight: 800;
   color: #fff;
-  margin-bottom: 0.5rem;
-  display: flex;
-  align-items: center;
-  gap: 8px;
+  letter-spacing: -0.02em;
 }
 
 .marketing-site .fg-desc {
-  font-size: 0.78rem;
-  color: rgba(255, 255, 255, 0.35);
+  font-size: 0.77rem;
+  color: rgba(255, 255, 255, 0.32);
   line-height: 1.7;
-  margin-bottom: 1rem;
+  margin: 0 0 1.2rem;
+  max-width: 280px;
 }
 
-.marketing-site .fg-badge {
+.marketing-site .fg-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 1.2rem;
+}
+
+.marketing-site .fg-b {
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  font-size: 0.69rem;
+  font-size: 0.67rem;
   color: rgba(255, 255, 255, 0.35);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 100px;
   padding: 4px 10px;
+  text-decoration: none;
+  transition:
+    color 0.15s ease,
+    border-color 0.15s ease,
+    background 0.15s ease;
 }
 
-.marketing-site .fg-badge svg {
-  width: 11px;
-  height: 11px;
+.marketing-site .fg-b svg {
+  width: 10px;
+  height: 10px;
+  fill: currentColor;
+  flex-shrink: 0;
+}
+
+.marketing-site a.fg-b:hover {
+  color: rgba(255, 255, 255, 0.55);
+  border-color: rgba(255, 255, 255, 0.18);
+}
+
+.marketing-site .fg-b.oss {
+  color: #c4b5fd;
+  border-color: rgba(91, 33, 182, 0.35);
+}
+
+.marketing-site .fg-b.free {
+  color: #fbbf24;
+  border-color: rgba(181, 101, 29, 0.35);
+}
+
+.marketing-site .fg-social {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 1.5rem;
+}
+
+.marketing-site .fg-soc-link {
+  width: 32px;
+  height: 32px;
+  border-radius: 7px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.45);
+  text-decoration: none;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.marketing-site .fg-soc-link:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+}
+
+.marketing-site .fg-soc-link svg {
+  width: 14px;
+  height: 14px;
   fill: currentColor;
 }
 
-.marketing-site .fg-head {
-  font-size: 0.68rem;
+.marketing-site .not-affiliated {
+  margin: 0;
+  max-width: 320px;
+  padding: 10px 16px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 6px;
+  font-size: 0.72rem;
+  color: rgba(255, 255, 255, 0.28);
+  line-height: 1.5;
+}
+
+.marketing-site .fg-col-head {
+  font-family: var(--fm);
+  font-size: 0.66rem;
   font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.3);
-  margin-bottom: 12px;
+  color: rgba(255, 255, 255, 0.28);
+  margin-bottom: 14px;
 }
 
 .marketing-site .fg-link {
-  display: block;
-  font-size: 0.82rem;
-  color: rgba(255, 255, 255, 0.5);
-  margin-bottom: 8px;
-  transition: color 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  font-size: 0.81rem;
+  color: rgba(255, 255, 255, 0.45);
+  margin-bottom: 9px;
+  text-decoration: none;
+  transition: color 0.15s ease;
 }
 
 .marketing-site .footer a.fg-link {
-  color: rgba(255, 255, 255, 0.5);
+  color: rgba(255, 255, 255, 0.45);
 }
 
 .marketing-site .fg-link:hover {
-  color: rgba(255, 255, 255, 0.92);
+  color: #fff;
 }
 
-.marketing-site .footer-btm {
+.marketing-site .fg-link-badge {
+  font-family: var(--fm);
+  font-size: 0.58rem;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: 100px;
+}
+
+.marketing-site .lb-new {
+  background: rgba(200, 40, 30, 0.2);
+  color: #f87171;
+  border: 1px solid rgba(200, 40, 30, 0.3);
+}
+
+.marketing-site .lb-oss {
+  background: rgba(91, 33, 182, 0.2);
+  color: #c4b5fd;
+  border: 1px solid rgba(91, 33, 182, 0.3);
+}
+
+.marketing-site .lb-free {
+  background: rgba(181, 101, 29, 0.2);
+  color: #fbbf24;
+  border: 1px solid rgba(181, 101, 29, 0.3);
+}
+
+.marketing-site .footer-bottom {
   max-width: var(--max);
   margin: 0 auto;
-  border-top: 1px solid rgba(255, 255, 255, 0.07);
-  padding-top: 24px;
-  font-size: 0.74rem;
-  color: rgba(255, 255, 255, 0.28);
+  padding: 22px 0 28px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
 }
 
-.marketing-site .footer-btm-text {
-  margin: 0;
-  line-height: 1.55;
-  max-width: 72ch;
+.marketing-site .fb-left {
+  font-size: 0.73rem;
+  color: rgba(255, 255, 255, 0.25);
 }
 
-.marketing-site .footer-btm-sep {
-  color: rgba(255, 255, 255, 0.38);
+.marketing-site .fb-disclaimer {
+  font-size: 0.68rem;
+  color: rgba(255, 255, 255, 0.18);
+  margin-top: 4px;
+  max-width: 52ch;
+  line-height: 1.45;
+}
+
+.marketing-site .fb-links {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.marketing-site .fb-link {
+  font-size: 0.72rem;
+  color: rgba(255, 255, 255, 0.25);
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.marketing-site .fb-link:hover {
+  color: rgba(255, 255, 255, 0.6);
 }
 
 .marketing-site .btn-hero {
@@ -346,6 +560,9 @@ html {
   cursor: pointer;
   transition: all 0.15s;
   font-family: var(--fb);
+  width: 100%;
+  justify-content: center;
+  box-sizing: border-box;
 }
 
 .marketing-site .btn-red {
@@ -397,14 +614,54 @@ html {
   color: rgba(255, 255, 255, 0.5);
 }
 
-@media (max-width: 960px) {
-  .marketing-site .footer-grid {
+@media (max-width: 1024px) {
+  .marketing-site .footer-top {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .marketing-site .footer-top {
     grid-template-columns: 1fr 1fr;
   }
 }
 
-@media (max-width: 900px) {
+@media (max-width: 560px) {
+  .marketing-site .footer-top {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  .marketing-site .fg-desc,
+  .marketing-site .not-affiliated {
+    max-width: none;
+  }
+
+  .marketing-site .footer-bottom {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .marketing-site .fb-links {
+    width: 100%;
+  }
+}
+
+@media (max-width: 1221px) {
   .marketing-site .nav-links {
+    display: none;
+  }
+  .marketing-site .nav-menu-btn {
+    display: inline-flex;
+  }
+}
+
+@media (max-width: 414px) {
+  .marketing-site .nav-menu-btn {
+    display: none;
+  }
+  .marketing-site .nav-mobile-panel,
+  .marketing-site .nav-mobile-panel.open {
     display: none;
   }
 }

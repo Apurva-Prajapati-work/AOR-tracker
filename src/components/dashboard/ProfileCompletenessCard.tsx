@@ -220,7 +220,7 @@ export function ProfileCompletenessCard({
             >
               {savingDetails ? "Saving…" : "Save application details"}
             </button>
-            <Link href="/onboarding" className="pc-link-onboarding">
+            <Link href="/track" className="pc-link-onboarding">
               Open full onboarding form
             </Link>
           </div>

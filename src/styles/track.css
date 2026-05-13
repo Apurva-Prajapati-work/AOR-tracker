@@ -1,0 +1,1376 @@
+/*
+ * /track page styles — scoped under `.mkt-track-page`.
+ *
+ * Mirrors the new design in `samples/aortrack-track-updated.html`.
+ *
+ * SELF-CONTAINED: `/track` lives outside the `(marketing)` route group and
+ * is NOT wrapped in `.marketing-site`, so the design tokens that
+ * `marketing-core.css` declares (--cream, --navy, --green, …) do not
+ * cascade in. We re-declare every token we use directly on
+ * `.mkt-track-page` so the page renders correctly on its own, and reset
+ * the base typography / box-sizing that the marketing shell used to
+ * provide.
+ *
+ * All emoji and inline SVGs from the sample are replaced by react-icons in
+ * the components — the rules below size them via `fill: currentColor`.
+ */
+
+/* ─── DESIGN TOKENS + BASE RESET (standalone shell) ──────────────────── */
+
+.mkt-track-page {
+  /* Palette — mirrors marketing-core.css so visuals match the rest of
+     the marketing site without depending on it. */
+  --cream: #fffcf5;
+  --cream2: #f5f0e6;
+  --cream3: #ede8dc;
+  --navy: #1a2332;
+  --navy2: #253347;
+  --navy3: #0d1824;
+  --red: #c8281e;
+  --red2: #a81f17;
+  --red-pale: #fdecea;
+  --green: #2d6a4f;
+  --green2: #1f5038;
+  --gbg: #eaf4ee;
+  --amber: #b5651d;
+  --abg: #fdf3e3;
+  --blue: #1e5f8c;
+  --bbg: #e8f2fb;
+  --border: #d5cfbf;
+  --border2: #c8c0af;
+  --muted: #7a7060;
+  --muted2: #9a8e7e;
+
+  /* Font stacks — read from the global next/font CSS vars when present,
+     fall back to system fonts otherwise so the page still renders if
+     this file is loaded outside the app shell. */
+  --fh: var(--font-fraunces), Georgia, serif;
+  --fb: var(--font-dm-sans), "DM Sans", system-ui, sans-serif;
+  --fm: var(--font-dm-mono), "DM Mono", monospace;
+
+  --tk-shadow: 0 4px 24px rgba(26, 35, 50, 0.12);
+
+  background: var(--cream);
+  color: var(--navy);
+  font-family: var(--fb);
+  font-size: 16px;
+  line-height: 1.65;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.mkt-track-page *,
+.mkt-track-page *::before,
+.mkt-track-page *::after {
+  box-sizing: border-box;
+}
+
+.mkt-track-page a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.mkt-track-page button {
+  font-family: var(--fb);
+  cursor: pointer;
+  border: none;
+  background: none;
+  color: inherit;
+}
+
+.mkt-track-page ::-webkit-scrollbar {
+  width: 5px;
+}
+.mkt-track-page ::-webkit-scrollbar-thumb {
+  background: var(--border2);
+  border-radius: 5px;
+}
+
+/* ─── NAVBAR (own scope so it never fights .marketing-site .nav) ─────── */
+
+.mkt-track-page .tk-nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  height: 64px;
+  background: var(--navy);
+  border-bottom: 2px solid rgba(255, 255, 255, 0.07);
+  padding: 0 clamp(16px, 4vw, 48px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.mkt-track-page .tk-nav-brand {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  text-decoration: none;
+  color: inherit;
+  min-width: 0;
+}
+.mkt-track-page .tk-nav-logo {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+  display: block;
+  flex-shrink: 0;
+}
+.mkt-track-page .tk-nav-brand-text {
+  display: inline-flex;
+  flex-direction: column;
+  line-height: 1.1;
+  min-width: 0;
+}
+.mkt-track-page .tk-nav-name {
+  font-family: var(--fh);
+  font-size: 1.05rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+.mkt-track-page .tk-nav-name-aor {
+  color: var(--red);
+}
+.mkt-track-page .tk-nav-name-track {
+  color: #fff;
+}
+.mkt-track-page .tk-nav-back {
+  font-size: 0.82rem;
+  color: rgba(255, 255, 255, 0.55);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: color 0.15s;
+}
+.mkt-track-page .tk-nav-back:hover {
+  color: #fff;
+}
+.mkt-track-page .tk-nav-back svg {
+  width: 12px;
+  height: 12px;
+  fill: currentColor;
+  flex-shrink: 0;
+}
+
+/* ─── PAGE LAYOUT ──────────────────────────────────────────────────────── */
+
+.mkt-track-page .tk-page {
+  display: grid;
+  grid-template-columns: 1fr 620px;
+  flex: 1;
+  min-height: 0;
+}
+
+/* ─── LEFT PANEL (dark navy, marketing copy + trust list) ──────────────── */
+
+.mkt-track-page .tk-left {
+  background: var(--navy);
+  padding: clamp(40px, 5vw, 64px) clamp(24px, 4vw, 56px);
+  position: relative;
+  overflow: hidden;
+  color: rgba(255, 255, 255, 0.78);
+}
+.mkt-track-page .tk-left::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse 70% 50% at 20% 80%,
+    rgba(45, 106, 79, 0.18) 0%,
+    transparent 60%
+  );
+  pointer-events: none;
+}
+.mkt-track-page .tk-left-content {
+  position: relative;
+  z-index: 1;
+  max-width: 520px;
+}
+
+.mkt-track-page .tk-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: rgba(45, 106, 79, 0.25);
+  border: 1px solid rgba(45, 106, 79, 0.5);
+  padding: 4px 12px;
+  border-radius: 100px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #4ade80;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-bottom: 1.4rem;
+}
+.mkt-track-page .tk-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #4ade80;
+  animation: tk-blink 2s infinite;
+}
+@keyframes tk-blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.3;
+  }
+}
+
+.mkt-track-page .tk-left h1 {
+  font-family: var(--fh);
+  font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+  font-weight: 900;
+  color: #fff;
+  line-height: 1.08;
+  letter-spacing: -0.04em;
+  margin-bottom: 1rem;
+}
+.mkt-track-page .tk-left h1 em {
+  font-style: italic;
+  color: #4ade80;
+}
+.mkt-track-page .tk-left-sub {
+  font-size: 0.95rem;
+  color: rgba(255, 255, 255, 0.55);
+  line-height: 1.75;
+  margin-bottom: 2.5rem;
+  font-weight: 300;
+  max-width: 400px;
+}
+
+/* PREVIEW STATS */
+.mkt-track-page .tk-ps-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+.mkt-track-page .tk-ps-card {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1.5px solid rgba(255, 255, 255, 0.09);
+  border-radius: 11px;
+  padding: 16px 18px;
+}
+.mkt-track-page .tk-ps-val {
+  font-family: var(--fh);
+  font-size: 1.8rem;
+  font-weight: 900;
+  color: #fff;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+.mkt-track-page .tk-ps-val span {
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.4);
+  font-weight: 700;
+}
+.mkt-track-page .tk-ps-label {
+  font-size: 0.7rem;
+  color: rgba(255, 255, 255, 0.4);
+  font-family: var(--fm);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.mkt-track-page .tk-ps-sub {
+  font-size: 0.7rem;
+  color: #4ade80;
+  margin-top: 3px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* COHORT PREVIEW */
+.mkt-track-page .tk-cp {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1.5px solid rgba(255, 255, 255, 0.09);
+  border-radius: 11px;
+  padding: 18px 20px;
+  margin-bottom: 2rem;
+}
+.mkt-track-page .tk-cp-label {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.3);
+  margin-bottom: 14px;
+}
+.mkt-track-page .tk-cp-bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 5px;
+  height: 48px;
+}
+.mkt-track-page .tk-cp-bar {
+  flex: 1;
+  border-radius: 3px 3px 0 0;
+  background: rgba(255, 255, 255, 0.12);
+  transition: background 0.2s;
+}
+.mkt-track-page .tk-cp-bar.active {
+  background: linear-gradient(180deg, #4ade80, var(--green));
+}
+.mkt-track-page .tk-cp-bar.you {
+  background: linear-gradient(180deg, var(--red), #f87171);
+}
+.mkt-track-page .tk-cp-labels {
+  display: flex;
+  gap: 5px;
+  margin-top: 6px;
+}
+.mkt-track-page .tk-cp-lbl {
+  flex: 1;
+  font-size: 0.6rem;
+  color: rgba(255, 255, 255, 0.25);
+  text-align: center;
+  font-family: var(--fm);
+}
+.mkt-track-page .tk-cp-lbl.active {
+  color: rgba(255, 255, 255, 0.5);
+}
+.mkt-track-page .tk-cp-lbl.you {
+  color: #f87171;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+}
+.mkt-track-page .tk-cp-lbl.you svg {
+  width: 8px;
+  height: 8px;
+  fill: currentColor;
+  flex-shrink: 0;
+}
+.mkt-track-page .tk-cp-legend {
+  display: flex;
+  gap: 14px;
+  margin-top: 10px;
+}
+.mkt-track-page .tk-cp-leg {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.69rem;
+  color: rgba(255, 255, 255, 0.4);
+}
+.mkt-track-page .tk-cp-leg-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+/* TRUST LIST */
+.mkt-track-page .tk-trust {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.mkt-track-page .tk-trust-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.82rem;
+  color: rgba(255, 255, 255, 0.5);
+}
+.mkt-track-page .tk-trust-ic {
+  width: 28px;
+  height: 28px;
+  border-radius: 7px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.mkt-track-page .tk-trust-ic svg {
+  width: 13px;
+  height: 13px;
+  fill: currentColor;
+  color: rgba(255, 255, 255, 0.6);
+}
+.mkt-track-page .tk-trust-item a {
+  color: #4ade80;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* ─── RIGHT PANEL (cream, form) ───────────────────────────────────────── */
+
+.mkt-track-page .tk-right {
+  background: var(--cream);
+  padding: clamp(32px, 4vw, 56px) clamp(24px, 4vw, 48px);
+  overflow-y: auto;
+}
+
+/* PROGRESS BAR */
+.mkt-track-page .tk-progress {
+  height: 3px;
+  background: var(--border);
+  border-radius: 100px;
+  margin-bottom: 2.5rem;
+  overflow: hidden;
+}
+.mkt-track-page .tk-progress-fill {
+  height: 100%;
+  border-radius: 100px;
+  background: linear-gradient(90deg, var(--green), #4ade80);
+  transition: width 0.5s ease;
+}
+
+/* STEP INDICATOR
+ *
+ * Column-per-step layout: circle on top, label below, connector line
+ * running ONLY between circles (so labels never overlap the line).
+ *
+ * Each `.tk-node` is a flex item that takes `flex: 1` of the row. The
+ * connector is an absolutely-positioned `::after` on every step except
+ * the last one — it starts to the right of the current step's circle
+ * and stretches to the left of the next step's circle, with a small
+ * gap on each side (`--tk-conn-gap`).
+ */
+.mkt-track-page .tk-steps {
+  --tk-circle-size: 28px;
+  --tk-conn-gap: 8px;
+  display: flex;
+  align-items: flex-start;
+  gap: 0;
+  margin: 0 0 2.5rem;
+  padding: 0;
+  list-style: none;
+}
+.mkt-track-page .tk-node {
+  position: relative;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  text-align: center;
+}
+.mkt-track-page .tk-node:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  /* Line sits between the two adjacent circles only. */
+  left: calc(50% + var(--tk-circle-size) / 2 + var(--tk-conn-gap));
+  right: calc(-50% + var(--tk-circle-size) / 2 + var(--tk-conn-gap));
+  top: calc(var(--tk-circle-size) / 2 - 1px);
+  height: 2px;
+  background: var(--border);
+  border-radius: 2px;
+  z-index: 0;
+  transition: background 0.3s;
+}
+.mkt-track-page .tk-node.done:not(:last-child)::after {
+  background: var(--green);
+}
+
+.mkt-track-page .tk-node-circle {
+  width: var(--tk-circle-size);
+  height: var(--tk-circle-size);
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  background: var(--cream);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--muted);
+  position: relative;
+  z-index: 1;
+  flex-shrink: 0;
+  transition: all 0.3s;
+  font-family: var(--fm);
+}
+.mkt-track-page .tk-node.active .tk-node-circle {
+  background: var(--navy);
+  border-color: var(--navy);
+  color: #fff;
+  box-shadow: 0 0 0 4px rgba(26, 35, 50, 0.08);
+}
+.mkt-track-page .tk-node.done .tk-node-circle {
+  background: var(--green);
+  border-color: var(--green);
+  color: #fff;
+}
+.mkt-track-page .tk-node.done .tk-node-circle svg {
+  width: 11px;
+  height: 11px;
+  fill: currentColor;
+}
+
+.mkt-track-page .tk-node-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--muted);
+  line-height: 1.2;
+  white-space: nowrap;
+  transition: color 0.3s;
+}
+.mkt-track-page .tk-node.active .tk-node-label {
+  color: var(--navy);
+}
+.mkt-track-page .tk-node.done .tk-node-label {
+  color: var(--green);
+}
+@media (max-width: 380px) {
+  .mkt-track-page .tk-node-label {
+    font-size: 0.66rem;
+  }
+}
+
+/* STEP PANELS */
+.mkt-track-page .tk-panel {
+  display: none;
+  animation: tk-fade-in 0.3s ease;
+}
+.mkt-track-page .tk-panel.active {
+  display: block;
+}
+@keyframes tk-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.mkt-track-page .tk-step-head {
+  margin-bottom: 2rem;
+}
+.mkt-track-page .tk-step-num {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 0.4rem;
+  font-family: var(--fm);
+}
+.mkt-track-page .tk-step-title {
+  font-family: var(--fh);
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--navy);
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  margin-bottom: 0.4rem;
+}
+.mkt-track-page .tk-step-desc {
+  font-size: 0.85rem;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+/* FORM */
+.mkt-track-page .tk-field {
+  margin-bottom: 1.4rem;
+}
+.mkt-track-page .tk-field-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--navy);
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.mkt-track-page .tk-req {
+  color: var(--red);
+  font-size: 0.7rem;
+}
+.mkt-track-page .tk-field-note {
+  font-size: 0.74rem;
+  color: var(--muted);
+  margin-top: 0.4rem;
+  line-height: 1.5;
+}
+.mkt-track-page .tk-field-note.warn {
+  color: var(--amber);
+  background: var(--abg);
+  border: 1px solid #e8c585;
+  border-radius: 7px;
+  padding: 8px 12px;
+  display: flex;
+  align-items: flex-start;
+  gap: 7px;
+}
+.mkt-track-page .tk-field-note.warn svg {
+  width: 12px;
+  height: 12px;
+  fill: currentColor;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.mkt-track-page input[type="date"],
+.mkt-track-page input[type="email"],
+.mkt-track-page input[type="text"],
+.mkt-track-page select {
+  width: 100%;
+  padding: 11px 14px;
+  border: 2px solid var(--border);
+  border-radius: 9px;
+  font-family: var(--fb);
+  font-size: 0.9rem;
+  color: var(--navy);
+  background: var(--cream);
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
+  outline: none;
+  -webkit-appearance: none;
+  appearance: none;
+}
+.mkt-track-page input:focus,
+.mkt-track-page select:focus {
+  border-color: var(--navy);
+  box-shadow: 0 0 0 3px rgba(26, 35, 50, 0.08);
+}
+.mkt-track-page input.tk-error,
+.mkt-track-page select.tk-error {
+  border-color: var(--red);
+}
+.mkt-track-page input[type="date"]::-webkit-calendar-picker-indicator {
+  opacity: 0.4;
+  cursor: pointer;
+}
+.mkt-track-page select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%237A7060' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  padding-right: 36px;
+}
+.mkt-track-page .tk-field-error {
+  font-size: 0.74rem;
+  color: var(--red);
+  margin-top: 0.35rem;
+  display: none;
+}
+.mkt-track-page .tk-field-error.show {
+  display: block;
+}
+
+/* STREAM GRID */
+.mkt-track-page .tk-stream-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.7rem;
+}
+.mkt-track-page .tk-stream-opt {
+  border: 2px solid var(--border);
+  border-radius: 10px;
+  padding: 12px 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+  background: var(--cream);
+  text-align: left;
+  font-family: inherit;
+}
+.mkt-track-page .tk-stream-opt:hover {
+  border-color: var(--border2);
+  background: var(--cream2);
+}
+.mkt-track-page .tk-stream-opt.selected {
+  border-color: var(--navy);
+  background: var(--navy);
+  color: #fff;
+}
+.mkt-track-page .tk-so-icon {
+  font-size: 1.2rem;
+  margin-bottom: 6px;
+  color: var(--navy);
+  display: inline-flex;
+}
+.mkt-track-page .tk-so-icon svg {
+  width: 18px;
+  height: 18px;
+  fill: currentColor;
+}
+.mkt-track-page .tk-stream-opt.selected .tk-so-icon {
+  color: #fff;
+}
+.mkt-track-page .tk-so-name {
+  font-family: var(--fh);
+  font-size: 0.88rem;
+  font-weight: 800;
+  color: var(--navy);
+  margin-bottom: 2px;
+}
+.mkt-track-page .tk-stream-opt.selected .tk-so-name {
+  color: #fff;
+}
+.mkt-track-page .tk-so-sub {
+  font-size: 0.7rem;
+  color: var(--muted);
+  margin-bottom: 6px;
+}
+.mkt-track-page .tk-stream-opt.selected .tk-so-sub {
+  color: rgba(255, 255, 255, 0.5);
+}
+.mkt-track-page .tk-so-meta {
+  font-size: 0.7rem;
+  color: var(--green);
+  font-weight: 700;
+  font-family: var(--fm);
+}
+.mkt-track-page .tk-stream-opt.selected .tk-so-meta {
+  color: #4ade80;
+}
+
+/* TYPE TOGGLE */
+.mkt-track-page .tk-type-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.6rem;
+}
+.mkt-track-page .tk-type-opt {
+  border: 2px solid var(--border);
+  border-radius: 9px;
+  padding: 12px 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: center;
+  background: var(--cream);
+  font-family: inherit;
+}
+.mkt-track-page .tk-type-opt:hover {
+  border-color: var(--border2);
+}
+.mkt-track-page .tk-type-opt.selected {
+  border-color: var(--green);
+  background: var(--gbg);
+}
+.mkt-track-page .tk-to-icon {
+  font-size: 1.3rem;
+  margin-bottom: 5px;
+  color: var(--navy);
+  display: inline-flex;
+}
+.mkt-track-page .tk-to-icon svg {
+  width: 20px;
+  height: 20px;
+  fill: currentColor;
+}
+.mkt-track-page .tk-to-name {
+  font-family: var(--fh);
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--navy);
+  margin-bottom: 2px;
+}
+.mkt-track-page .tk-to-desc {
+  font-size: 0.7rem;
+  color: var(--muted);
+}
+
+/* PROVINCE conditional */
+.mkt-track-page .tk-province-field {
+  display: none;
+}
+.mkt-track-page .tk-province-field.show {
+  display: block;
+}
+
+/* MILESTONE LIST */
+.mkt-track-page .tk-ms-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+.mkt-track-page .tk-ms-item {
+  border: 2px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+  transition: border-color 0.2s;
+  background: var(--cream);
+}
+.mkt-track-page .tk-ms-item.checked {
+  border-color: var(--green);
+}
+.mkt-track-page .tk-ms-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  cursor: pointer;
+  background: var(--cream);
+  width: 100%;
+  font-family: inherit;
+  border: none;
+  text-align: left;
+}
+.mkt-track-page .tk-ms-item.checked .tk-ms-head {
+  background: var(--gbg);
+}
+.mkt-track-page .tk-ms-checkbox {
+  width: 20px;
+  height: 20px;
+  border-radius: 5px;
+  border: 2px solid var(--border);
+  background: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.2s;
+  color: #fff;
+}
+.mkt-track-page .tk-ms-item.checked .tk-ms-checkbox {
+  background: var(--green);
+  border-color: var(--green);
+}
+.mkt-track-page .tk-ms-checkbox svg {
+  width: 11px;
+  height: 11px;
+  fill: currentColor;
+}
+.mkt-track-page .tk-ms-label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--navy);
+  flex: 1;
+}
+.mkt-track-page .tk-ms-item.checked .tk-ms-label {
+  color: var(--green);
+}
+.mkt-track-page .tk-ms-date {
+  font-size: 0.72rem;
+  color: var(--muted);
+  font-family: var(--fm);
+}
+.mkt-track-page .tk-ms-datefield {
+  padding: 10px 14px;
+  background: var(--cream2);
+  border-top: 1px solid var(--border);
+  display: none;
+}
+.mkt-track-page .tk-ms-item.checked .tk-ms-datefield {
+  display: block;
+}
+.mkt-track-page .tk-ms-datefield input {
+  background: #fff;
+}
+
+/* EMAIL OPTIONS */
+.mkt-track-page .tk-eo {
+  border: 2px solid var(--border);
+  border-radius: 11px;
+  padding: 16px 18px;
+  margin-bottom: 0.7rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  background: var(--cream);
+  width: 100%;
+  text-align: left;
+  font-family: inherit;
+}
+.mkt-track-page .tk-eo.selected {
+  border-color: var(--navy);
+  background: var(--cream2);
+}
+.mkt-track-page .tk-eo-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+.mkt-track-page .tk-eo-radio {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  flex-shrink: 0;
+  margin-top: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  background: #fff;
+}
+.mkt-track-page .tk-eo.selected .tk-eo-radio {
+  border-color: var(--navy);
+  background: var(--navy);
+}
+.mkt-track-page .tk-eo.selected .tk-eo-radio::after {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #fff;
+}
+.mkt-track-page .tk-eo-body {
+  flex: 1;
+}
+.mkt-track-page .tk-eo-title {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--navy);
+  margin-bottom: 3px;
+}
+.mkt-track-page .tk-eo-desc {
+  font-size: 0.76rem;
+  color: var(--muted);
+  line-height: 1.55;
+}
+.mkt-track-page .tk-eo-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 100px;
+  margin-top: 5px;
+}
+.mkt-track-page .tk-tag-rec {
+  background: var(--abg);
+  color: var(--amber);
+  border: 1px solid #e8c585;
+}
+.mkt-track-page .tk-tag-anon {
+  background: var(--cream3);
+  color: var(--muted);
+  border: 1px solid var(--border2);
+}
+.mkt-track-page .tk-email-input {
+  margin-top: 12px;
+  display: none;
+}
+.mkt-track-page .tk-eo.selected .tk-email-input {
+  display: block;
+}
+
+.mkt-track-page .tk-anon-warn {
+  background: var(--abg);
+  border: 2px solid #e8c585;
+  border-radius: 10px;
+  padding: 14px 16px;
+  margin-top: 0.7rem;
+  display: none;
+}
+.mkt-track-page .tk-anon-warn.show {
+  display: block;
+}
+.mkt-track-page .tk-anon-warn-title {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--amber);
+  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.mkt-track-page .tk-anon-warn-title svg {
+  width: 12px;
+  height: 12px;
+  fill: currentColor;
+}
+.mkt-track-page .tk-anon-warn-body {
+  font-size: 0.76rem;
+  color: var(--amber);
+  line-height: 1.55;
+  opacity: 0.85;
+}
+
+/* SUMMARY CARD (step 3) */
+.mkt-track-page .tk-summary {
+  background: var(--navy);
+  border-radius: 13px;
+  padding: 20px 22px;
+  margin-bottom: 1.5rem;
+}
+.mkt-track-page .tk-summary-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 16px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.09);
+}
+.mkt-track-page .tk-summary-stream {
+  font-family: var(--fh);
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #fff;
+}
+.mkt-track-page .tk-summary-type {
+  font-size: 0.72rem;
+  color: rgba(255, 255, 255, 0.4);
+  margin-top: 2px;
+}
+.mkt-track-page .tk-summary-aor {
+  text-align: right;
+}
+.mkt-track-page .tk-summary-aor-val {
+  font-family: var(--fm);
+  font-size: 0.82rem;
+  color: rgba(255, 255, 255, 0.7);
+}
+.mkt-track-page .tk-summary-aor-label {
+  font-size: 0.67rem;
+  color: rgba(255, 255, 255, 0.3);
+}
+.mkt-track-page .tk-summary-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 0;
+}
+.mkt-track-page .tk-summary-stat {
+  text-align: center;
+  padding: 0 8px;
+  border-right: 1px solid rgba(255, 255, 255, 0.07);
+}
+.mkt-track-page .tk-summary-stat:last-child {
+  border-right: none;
+}
+.mkt-track-page .tk-summary-stat-val {
+  font-family: var(--fh);
+  font-size: 1.4rem;
+  font-weight: 900;
+  color: #fff;
+  line-height: 1;
+}
+.mkt-track-page .tk-summary-stat-val.green {
+  color: #4ade80;
+}
+.mkt-track-page .tk-summary-stat-label {
+  font-size: 0.62rem;
+  color: rgba(255, 255, 255, 0.35);
+  margin-top: 3px;
+  font-family: var(--fm);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+/* MILESTONE SUMMARY */
+.mkt-track-page .tk-ms-summary {
+  margin-bottom: 1.5rem;
+}
+.mkt-track-page .tk-ms-summary-title {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--muted);
+  margin-bottom: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-family: var(--fm);
+}
+.mkt-track-page .tk-ms-summary-list {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.mkt-track-page .tk-ms-summary-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.82rem;
+}
+.mkt-track-page .tk-ms-summary-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.mkt-track-page .tk-ms-summary-dot.done {
+  background: var(--green);
+}
+.mkt-track-page .tk-ms-summary-dot.pending {
+  background: var(--border2);
+}
+.mkt-track-page .tk-ms-summary-name {
+  flex: 1;
+  color: var(--navy);
+}
+.mkt-track-page .tk-ms-summary-date {
+  font-family: var(--fm);
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+.mkt-track-page .tk-ms-summary-est {
+  font-size: 0.72rem;
+  color: var(--blue);
+  font-style: italic;
+}
+
+/* CONSENT */
+.mkt-track-page .tk-consent {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  background: var(--cream2);
+  border: 1.5px solid var(--border);
+  border-radius: 9px;
+  padding: 12px 14px;
+  margin-bottom: 1.4rem;
+  cursor: pointer;
+  width: 100%;
+  text-align: left;
+  font-family: inherit;
+}
+.mkt-track-page .tk-consent-check {
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+  border: 2px solid var(--border);
+  flex-shrink: 0;
+  margin-top: 1px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  color: #fff;
+  background: #fff;
+}
+.mkt-track-page .tk-consent.checked .tk-consent-check {
+  background: var(--green);
+  border-color: var(--green);
+}
+.mkt-track-page .tk-consent-check svg {
+  width: 11px;
+  height: 11px;
+  fill: currentColor;
+}
+.mkt-track-page .tk-consent-text {
+  font-size: 0.77rem;
+  color: var(--muted);
+  line-height: 1.55;
+}
+.mkt-track-page .tk-consent-text a {
+  color: var(--blue);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+/* BUTTONS */
+.mkt-track-page .tk-btn {
+  width: 100%;
+  padding: 14px 24px;
+  background: var(--navy);
+  color: #fff;
+  border: 2px solid var(--navy);
+  border-radius: 10px;
+  font-family: var(--fh);
+  font-size: 1rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.mkt-track-page .tk-btn:hover {
+  background: var(--navy2);
+}
+.mkt-track-page .tk-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.mkt-track-page .tk-btn svg {
+  width: 14px;
+  height: 14px;
+  fill: currentColor;
+}
+.mkt-track-page .tk-btn-submit {
+  background: var(--red);
+  border-color: var(--red);
+}
+.mkt-track-page .tk-btn-submit:hover {
+  background: var(--red2);
+  border-color: var(--red2);
+}
+.mkt-track-page .tk-btn-secondary {
+  width: 100%;
+  padding: 12px 24px;
+  background: transparent;
+  color: var(--muted);
+  border: 2px solid var(--border);
+  border-radius: 10px;
+  font-family: var(--fb);
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 0.7rem;
+}
+.mkt-track-page .tk-btn-secondary:hover {
+  border-color: var(--border2);
+  color: var(--navy);
+}
+.mkt-track-page .tk-btn-secondary svg {
+  width: 12px;
+  height: 12px;
+  fill: currentColor;
+}
+.mkt-track-page .tk-row {
+  display: flex;
+  gap: 0.7rem;
+}
+.mkt-track-page .tk-row .tk-btn-secondary {
+  width: auto;
+  flex: 0 0 auto;
+  padding: 12px 20px;
+  margin-top: 0;
+}
+
+/* SPINNER */
+.mkt-track-page .tk-spinner {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: tk-spin 0.6s linear infinite;
+}
+@keyframes tk-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* SUCCESS */
+.mkt-track-page .tk-success {
+  animation: tk-fade-in 0.4s ease;
+}
+.mkt-track-page .tk-success-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--gbg);
+  border: 2px solid var(--green);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.2rem;
+  color: var(--green);
+}
+.mkt-track-page .tk-success-icon svg {
+  width: 22px;
+  height: 22px;
+  fill: currentColor;
+}
+.mkt-track-page .tk-success-h {
+  font-family: var(--fh);
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: var(--navy);
+  margin-bottom: 0.5rem;
+}
+.mkt-track-page .tk-success-sub {
+  font-size: 0.88rem;
+  color: var(--muted);
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+}
+.mkt-track-page .tk-next {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+.mkt-track-page .tk-na {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  border: 2px solid var(--border);
+  border-radius: 10px;
+  transition: all 0.2s;
+  background: var(--cream);
+}
+.mkt-track-page .tk-na:hover {
+  border-color: var(--navy);
+  background: var(--cream2);
+}
+.mkt-track-page .tk-na-ic {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.mkt-track-page .tk-na-ic svg {
+  width: 16px;
+  height: 16px;
+  fill: currentColor;
+}
+.mkt-track-page .tk-na-navy {
+  background: var(--navy);
+  color: #fff;
+}
+.mkt-track-page .tk-na-green {
+  background: var(--gbg);
+  border: 1px solid #90d4b0;
+  color: var(--green);
+}
+.mkt-track-page .tk-na-blue {
+  background: var(--bbg);
+  border: 1px solid #b8d8f0;
+  color: var(--blue);
+}
+.mkt-track-page .tk-na-text {
+  flex: 1;
+}
+.mkt-track-page .tk-na-title {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--navy);
+  margin-bottom: 2px;
+}
+.mkt-track-page .tk-na-desc {
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+.mkt-track-page .tk-na-arrow {
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+.mkt-track-page .tk-na-arrow svg {
+  width: 12px;
+  height: 12px;
+  fill: currentColor;
+}
+
+/* ─── RESPONSIVE ──────────────────────────────────────────────────────── */
+
+@media (max-width: 900px) {
+  .mkt-track-page .tk-page {
+    grid-template-columns: 1fr;
+  }
+  .mkt-track-page .tk-left {
+    padding: clamp(32px, 5vw, 48px) clamp(20px, 5vw, 40px);
+    min-height: auto;
+  }
+  .mkt-track-page .tk-ps-grid {
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+  }
+  .mkt-track-page .tk-right {
+    padding: clamp(24px, 4vw, 40px) clamp(20px, 4vw, 32px);
+  }
+}
+@media (max-width: 600px) {
+  .mkt-track-page .tk-ps-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  .mkt-track-page .tk-stream-grid {
+    grid-template-columns: 1fr;
+  }
+}

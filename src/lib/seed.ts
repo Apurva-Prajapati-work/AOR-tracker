@@ -247,6 +247,14 @@ export function serializePost(
     };
   }
 
+  const created = doc.createdAt;
+  const createdAt =
+    created instanceof Date
+      ? created.toISOString()
+      : typeof created === "string"
+        ? created
+        : undefined;
+
   return {
     id: String(doc._id),
     initials: doc.initials as string,
@@ -262,5 +270,6 @@ export function serializePost(
       ? voters.includes(viewerEmailNorm)
       : false,
     ...(replyTo ? { replyTo } : {}),
+    ...(createdAt ? { createdAt } : {}),
   };
 }

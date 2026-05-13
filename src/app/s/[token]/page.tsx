@@ -34,9 +34,14 @@ export default async function PublicShareTimelinePage({ params }: Props) {
       <div className="topbar">
         <Link href="/" className="logo">
           <LogoMark />
-          <span className="logo-name">
-            AOR<span>Track</span>
-          </span>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/Logo-text.png"
+            alt=""
+            className="fg-brand-mark"
+            width={100}
+            height={44}
+          />
         </Link>
         <span className="hidden text-[11px] text-[var(--t3)] md:inline">
           Public share · read-only

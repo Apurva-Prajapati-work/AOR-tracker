@@ -1,5 +1,5 @@
-import { DashboardTimelineTab } from "@/components/dashboard/DashboardTimelineTab";
+import { DashboardTimelineTabV2 } from "@/components/dashboard/v2/DashboardTimelineTabV2";
 
 export default function DashboardTimelinePage() {
-  return <DashboardTimelineTab />;
+  return <DashboardTimelineTabV2 />;
 }

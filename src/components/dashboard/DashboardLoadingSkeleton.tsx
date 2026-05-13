@@ -1,201 +1,195 @@
 import Link from "next/link";
-import { LogoMark } from "@/components/LogoMark";
 
-function StatCardSkeleton() {
-  return (
-    <div className="sc">
-      <div className="sk sk-line mb-2 w-24 max-w-[70%]" />
-      <div className="sk sk-line mb-1 h-7 w-16" />
-      <div className="sk sk-line sm mt-1 w-20 max-w-[85%]" />
-    </div>
-  );
-}
-
-function TimelineRowSkeleton({
-  withBar,
-  isLast,
-}: {
-  withBar?: boolean;
-  isLast?: boolean;
-}) {
-  return (
-    <div className="tlrow border-b border-[var(--border)] pb-4 last:border-0">
-      <div className="tll">
-        <div className="sk sk-line w-20" />
-        <div className="sk sk-line sm mt-2 w-16" />
-      </div>
-      <div className="tlc">
-        <div className="sk sk-dot" />
-        {!isLast ? (
-          <div className="tlln mt-0.5 min-h-[18px] w-0.5 bg-[var(--border)]" />
-        ) : null}
-      </div>
-      <div className="tlr min-w-0 flex-1">
-        <div className="sk sk-line mb-2 w-[min(280px,90%)]" />
-        <div className="sk sk-line sm mb-2 w-full max-w-md" />
-        {withBar ? (
-          <div className="mt-2 flex items-center gap-2">
-            <div className="sk h-1 flex-1 rounded-full" />
-            <div className="sk sk-line sm w-28 shrink-0" />
-          </div>
-        ) : null}
-      </div>
-    </div>
-  );
-}
+/**
+ * Loading state shown by `DashboardShellV2` while the profile + cohort
+ * server actions are in flight. Mirrors the v2 layout (`.dashboard-v2-page`
+ * → `.dnb` + `.dlay` → `.dsb` / `.dmain`) so the page doesn't visually
+ * "jump" the moment data lands.
+ *
+ * Uses the global `.sk` shimmer helpers from `aortrack.css` (imported via
+ * `globals.css`); all surrounding layout classes come from
+ * `dashboard-v2.css`, which is imported in `app/dashboard/layout.tsx`.
+ */
 
 function SidebarSkeleton() {
   return (
     <aside className="dsb" aria-hidden>
-      <div className="sk sk-line mb-2 h-3 w-16 opacity-60" />
-      {Array.from({ length: 5 }).map((_, i) => (
-        <div key={i} className="sk mb-1 h-8 w-full rounded-lg opacity-80" />
-      ))}
-      <div className="sbdiv" />
-      <div className="sk sk-line mb-2 mt-2 h-3 w-24 opacity-60" />
-      {Array.from({ length: 3 }).map((_, i) => (
-        <div key={i} className="sk mb-1 h-8 w-full rounded-lg opacity-70" />
-      ))}
-      <div className="mt-auto rounded-[10px] border border-[var(--border)] bg-[var(--navy3)] p-3">
-        <div className="flex gap-2">
-          <div className="sk h-7 w-7 shrink-0 rounded-full" />
-          <div className="min-w-0 flex-1 space-y-2">
-            <div className="sk sk-line w-24" />
-            <div className="sk sk-line sm w-full max-w-[140px]" />
-          </div>
+      {/* Mirrors `.dsb-card` (applicant id / stream / type / AOR row) */}
+      <div className="dsb-card">
+        <div className="sk sk-line sm mb-2 w-16 opacity-70" />
+        <div className="sk sk-line mb-1 h-4 w-32" />
+        <div className="sk sk-line sm mt-1 w-24 opacity-60" />
+        <div className="mt-3 flex items-center justify-between border-t border-white/10 pt-2">
+          <div className="sk sk-line sm w-12 opacity-60" />
+          <div className="sk sk-line sm w-16 opacity-70" />
         </div>
-        <div className="sk mt-3 h-5 w-full max-w-[180px] rounded" />
       </div>
+
+      {/* Dashboard / Community / Share / Profile sections */}
+      {([5, 3, 4, 3] as const).map((count, sectionIdx) => (
+        <div key={sectionIdx}>
+          <div className="dsb-sec">
+            <div className="dsb-lbl">
+              <span className="sk sk-line sm inline-block h-2.5 w-16 opacity-60" />
+            </div>
+            {Array.from({ length: count }).map((_, i) => (
+              <div
+                key={i}
+                className="sk mx-3 mb-1 h-8 rounded-md opacity-80"
+                style={{
+                  width: `${72 + ((i * 13) % 28)}%`,
+                  animationDelay: `${(sectionIdx * 3 + i) * 0.05}s`,
+                }}
+              />
+            ))}
+          </div>
+          {sectionIdx < 3 ? <div className="dsb-div" aria-hidden /> : null}
+        </div>
+      ))}
     </aside>
   );
 }
 
-function RightRailSkeleton() {
+function HeroBarSkeleton() {
   return (
-    <aside className="dr" aria-hidden>
-      <div className="rc">
-        <div className="sk sk-line mx-auto mb-2 h-3 w-20" />
-        <div className="sk sk-ring mx-auto opacity-90" />
-        <div className="sk sk-line mx-auto mt-2 w-16" />
-        <div className="sk sk-line sm mx-auto mt-1 w-24" />
-        <div className="sk mt-3 h-16 w-full rounded-lg" />
+    <div className="hero-bar">
+      {/* Days-since-AOR box */}
+      <div className="days-box">
+        <div className="sk mx-auto h-10 w-24 rounded-md opacity-90" />
+        <div className="sk sk-line sm mx-auto mt-3 w-20 opacity-70" />
+        <div className="sk sk-line sm mx-auto mt-2 w-28 opacity-50" />
       </div>
-      <div className="rc space-y-2">
-        <div className="sk sk-line h-3 w-28" />
+
+      {/* 3 small KPI cards */}
+      <div className="stat-grid">
         {Array.from({ length: 3 }).map((_, i) => (
-          <div key={i} className="flex gap-2 py-1">
-            <div className="sk mt-1 h-1.5 w-1.5 shrink-0 rounded-full" />
-            <div className="sk h-8 flex-1 rounded-md" />
+          <div key={i} className="s-card">
+            <div className="sk sk-line sm w-24 opacity-70" />
+            <div className="sk sk-line mb-1 mt-3 h-6 w-20" />
+            <div className="sk sk-line sm w-28 opacity-60" />
           </div>
         ))}
       </div>
-    </aside>
+    </div>
+  );
+}
+
+function RingsRowSkeleton() {
+  return (
+    <div className="rings-row">
+      {Array.from({ length: 2 }).map((_, i) => (
+        <div key={i} className="ring-card">
+          <div className="ring-svg-wrap">
+            <div className="sk h-[68px] w-[68px] rounded-full" />
+          </div>
+          <div className="min-w-0 flex-1 space-y-2">
+            <div className="sk sk-line h-3 w-32 max-w-[80%]" />
+            <div className="sk sk-line sm w-40 max-w-[90%]" />
+            <div className="sk sk-line sm w-24 opacity-70" />
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function TimelineRowSkeleton({ isLast }: { isLast?: boolean }) {
+  return (
+    <div className="tl-row">
+      <div className="tl-spine" aria-hidden />
+      <div className="sk h-7 w-7 shrink-0 rounded-full" />
+      <div className="tl-body">
+        <div className="tl-top">
+          <div className="min-w-0 flex-1 space-y-2">
+            <div className="sk sk-line h-3.5 w-44 max-w-[60%]" />
+            <div className="sk sk-line sm w-full max-w-md opacity-70" />
+          </div>
+          <div className="tl-r space-y-2 text-right">
+            <div className="sk sk-line ml-auto h-3 w-20" />
+            <div className="sk sk-line sm ml-auto w-16 opacity-70" />
+          </div>
+        </div>
+        {!isLast ? (
+          <div className="sk mt-3 h-1 w-full rounded-full opacity-70" />
+        ) : null}
+      </div>
+    </div>
+  );
+}
+
+function TimelineSkeleton() {
+  return (
+    <section id="tl-sec" aria-hidden>
+      <div className="sec-head">
+        <div className="min-w-0 flex-1 space-y-2">
+          <div className="sk sk-line h-4 w-56 max-w-[50%]" />
+          <div className="sk sk-line sm w-full max-w-lg opacity-70" />
+        </div>
+        <div className="sk h-7 w-24 rounded-md opacity-80" />
+      </div>
+
+      <div className="timeline">
+        <TimelineRowSkeleton />
+        <TimelineRowSkeleton />
+        <TimelineRowSkeleton />
+        <TimelineRowSkeleton isLast />
+      </div>
+    </section>
+  );
+}
+
+function LoadingHeader() {
+  return (
+    <div className="mb-4 flex items-center gap-3">
+      <div className="sk-loader" aria-hidden />
+      <div className="min-w-0">
+        <p className="text-[14px] font-semibold tracking-tight text-(--navy)">
+          Loading your dashboard
+        </p>
+        <p className="mt-0.5 text-[12px] leading-snug text-(--muted)">
+          Fetching profile, cohort stats, and timeline…
+        </p>
+      </div>
+    </div>
   );
 }
 
 export function DashboardLoadingSkeleton() {
   return (
     <div
-      id="screen-dashboard"
-      className="screen active flex min-h-screen flex-col bg-[var(--navy)]"
+      className="dashboard-v2-page flex min-h-0 flex-1 flex-col"
       role="status"
       aria-live="polite"
       aria-busy="true"
       aria-label="Loading dashboard"
     >
-      <div className="topbar">
-        <Link href="/" className="logo">
-          <LogoMark />
-          <span className="logo-name">
-            AOR<span>Track</span>
-          </span>
-        </Link>
-        <div className="nav pointer-events-none opacity-60">
-          <span className="sk h-7 w-[4.5rem] rounded-md" />
-          <span className="sk h-7 w-20 rounded-md" />
-          <span className="sk h-7 max-md:hidden w-[7.5rem] rounded-md" />
-          <span className="sk h-7 w-14 rounded-md" />
+      {/* App-bar (mirrors `DashboardAppBar`) */}
+      <nav className="dnb" aria-hidden>
+        <div className="dnb-l">
+          <Link href="/" className="dnb-brand">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/Logo.png" alt="" className="dnb-logo" width={28} height={28} />
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/Logo-text.png" alt="" className="dnb-logo" width={100} height={44} />
+          </Link>
+          <div className="dnb-sep" aria-hidden />
+          <span className="sk sk-line h-3 w-28 opacity-70" />
         </div>
-        <div className="tr pointer-events-none">
-          <span className="sk h-7 w-24 rounded-md" />
+        <div className="dnb-r">
+          <span className="sk h-6 w-28 rounded-full opacity-80" />
+          <span className="sk h-7 w-16 rounded-md opacity-80" />
+          <span className="sk h-7 w-28 rounded-md opacity-80" />
         </div>
-      </div>
+      </nav>
 
-      <div className="dlayout flex-1 min-h-0">
+      <div className="dlay">
         <SidebarSkeleton />
-
         <main className="dmain">
-          <div className="flex flex-col items-center gap-3 py-1 text-center sm:flex-row sm:justify-between sm:text-left">
-            <div className="flex items-center gap-3">
-              <div className="sk-loader" aria-hidden />
-              <div>
-                <p className="text-[14px] font-semibold tracking-tight text-[var(--t1)]">
-                  Loading your dashboard
-                </p>
-                <p className="mt-0.5 max-w-md text-[12px] leading-snug text-[var(--t2)]">
-                  Fetching profile, cohort stats, and timeline…
-                </p>
-              </div>
-            </div>
-            <p className="text-[10px] font-medium uppercase tracking-wider text-[var(--t3)]">
-              <span className="dlive" aria-hidden /> One moment
-            </p>
-          </div>
-
-          <div className="srow">
-            <StatCardSkeleton />
-            <StatCardSkeleton />
-            <StatCardSkeleton />
-            <StatCardSkeleton />
-          </div>
-
-          <div className="card">
-            <div className="chd">
-              <div className="sk sk-line h-4 w-48 max-w-[60%]" />
-              <div className="sk sk-line sm h-3 w-32" />
-            </div>
-            <div className="mt-1 space-y-0">
-              <TimelineRowSkeleton withBar />
-              <TimelineRowSkeleton withBar />
-              <TimelineRowSkeleton withBar />
-              <TimelineRowSkeleton isLast />
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 gap-3.5 md:grid-cols-2">
-            <div className="card">
-              <div className="chd">
-                <div className="sk sk-line h-4 w-40" />
-                <div className="sk sk-line sm h-3 w-20" />
-              </div>
-              <div className="space-y-2.5 pt-1">
-                {Array.from({ length: 5 }).map((_, i) => (
-                  <div key={i} className="flex items-center gap-2">
-                    <div className="sk sk-line w-14 shrink-0" />
-                    <div className="sk h-5 flex-1 rounded" />
-                  </div>
-                ))}
-              </div>
-            </div>
-            <div className="card">
-              <div className="chd">
-                <div className="sk sk-line h-4 w-28" />
-                <div className="sk sk-line sm h-3 w-24" />
-              </div>
-              <div className="cgrid pt-1">
-                {Array.from({ length: 40 }).map((_, i) => (
-                  <div
-                    key={i}
-                    className="sk cdot"
-                    style={{ animationDelay: `${(i % 8) * 0.06}s` }}
-                  />
-                ))}
-              </div>
-            </div>
-          </div>
+          <LoadingHeader />
+          <HeroBarSkeleton />
+          <RingsRowSkeleton />
+          <TimelineSkeleton />
         </main>
-
-        <RightRailSkeleton />
       </div>
     </div>
   );

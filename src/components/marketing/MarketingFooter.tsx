@@ -1,53 +1,128 @@
 import Link from "next/link";
 import { IconGitHub } from "./landing-icons";
+import { FaCheck, FaComment, FaDiscord, FaHeart, FaNewspaper, FaUsers } from "react-icons/fa";
 
 const GH = "https://github.com/Get-North-Path/AOR-tracker";
+const DISCORD = "https://discord.gg/aortrack";
 
 export function MarketingFooter() {
+  const year = new Date().getFullYear();
+
   return (
     <footer className="footer">
-      <div className="footer-grid">
+      <div className="footer-top">
         <div>
           <div className="fg-brand">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/Logo.png" alt="" className="nbrand-mark" width={22} height={22} />
-            AORTrack
+            <img src="/Logo.png" alt="" className="fg-brand-mark" width={28} height={28} />
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/Logo-text.png" alt="" className="fg-brand-mark" width={100} height={44} />
           </div>
           <p className="fg-desc">
-            Free, open-source Canadian PR processing time tracker. Community-powered timelines
-            from real applicants. Built by GetNorthPath.
+            Free, open-source Canadian PR processing time tracker. Community-powered data from real
+            applicants. Built with care by GetNorthPath.
           </p>
-          <div className="fg-badge">
-            <IconGitHub />
-            MIT License · Open Source
+          <div className="fg-badges">
+            <a
+              href={GH}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="fg-b oss"
+            >
+              <IconGitHub />
+              Open Source · MIT
+            </a>
+            <span className="fg-b free"><FaHeart />
+            Free Forever · No Ads</span>
+            <span className="fg-b"><FaCheck />
+            No Signup Required</span>
           </div>
+          <div className="fg-social">
+            <a
+              className="fg-soc-link"
+              href={GH}
+              target="_blank"
+              rel="noopener noreferrer"
+              title="GitHub"
+            >
+              <IconGitHub />
+            </a>
+            <a
+              className="fg-soc-link"
+              href={DISCORD}
+              target="_blank"
+              rel="noopener noreferrer"
+              title="Discord"
+            >
+              <FaDiscord />
+            </a>
+            <a
+              className="fg-soc-link"
+              href="https://www.getnorthpath.com/blog"
+              target="_blank"
+              rel="noopener noreferrer"
+              title="Blog"
+            >
+              <FaNewspaper />
+            </a>
+          </div>
+          <p className="not-affiliated">
+            Not affiliated with or endorsed by IRCC (Immigration, Refugees and Citizenship Canada).
+            Data is crowd-sourced from community members and not official government data.
+          </p>
         </div>
+
         <div>
-          <div className="fg-head">Tracker</div>
+          <div className="fg-col-head">Tracker</div>
           <Link href="/track" className="fg-link">
-            Start Tracking
+            Start Tracking <span className="fg-link-badge lb-free">Free</span>
+          </Link>
+          <Link href="/dashboard" className="fg-link">
+            My Dashboard
+          </Link>
+          <Link href="/#streams" className="fg-link">
+            All Streams
           </Link>
           <Link href="/dashboard/stats" className="fg-link">
             Processing Stats
           </Link>
+          <Link href="/#timeline" className="fg-link">
+            Milestone Tracking <span className="fg-link-badge lb-new">Live</span>
+          </Link>
+          <Link href="/community" className="fg-link">
+            Community <span className="fg-link-badge lb-new">Hub</span>
+          </Link>
+        </div>
+
+        <div>
+          <div className="fg-col-head">Community</div>
+          <a
+            href={DISCORD}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="fg-link"
+          >
+            <FaDiscord /> Discord Server
+          </a>
+          <a href={`${GH}/issues`} target="_blank" rel="noopener noreferrer" className="fg-link">
+            <FaComment /> Give Feedback
+          </a>
+          <a href={`${GH}/graphs/contributors`} target="_blank" rel="noopener noreferrer" className="fg-link">
+            <FaUsers /> Contributors
+          </a>
+          <a href={GH} target="_blank" rel="noopener noreferrer" className="fg-link">
+            GitHub <span className="fg-link-badge lb-oss">OSS</span>
+          </a>
           <Link href="/roadmap" className="fg-link">
             Public Roadmap
           </Link>
           <Link href="/changelog" className="fg-link">
             Changelog
           </Link>
-          <Link href="/hero-animation" className="fg-link">
-            Hero Animation
-          </Link>
         </div>
+
         <div>
-          <div className="fg-head">Community</div>
-          <a href={`${GH}/issues`} target="_blank" rel="noopener noreferrer" className="fg-link">
-            Feedback &amp; Issues
-          </a>
-          <a href={GH} target="_blank" rel="noopener noreferrer" className="fg-link">
-            GitHub
-          </a>
+          <div className="fg-col-head">Resources</div>
           <a
             href="https://www.getnorthpath.com/blog"
             target="_blank"
@@ -56,9 +131,45 @@ export function MarketingFooter() {
           >
             Blog
           </a>
+          <a
+            href="https://www.getnorthpath.com/pathways"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="fg-link"
+          >
+            PR Pathways Guide
+          </a>
+          <Link href="/dashboard/stats" className="fg-link">
+            Processing insights
+          </Link>
+          <a
+            href="https://www.canada.ca/en/immigration-refugees-citizenship/news.html"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="fg-link"
+          >
+            IRCC news
+          </a>
+          <a
+            href="https://www.getnorthpath.com/privacy"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="fg-link"
+          >
+            Privacy Policy
+          </a>
+          <a
+            href="https://www.getnorthpath.com/terms"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="fg-link"
+          >
+            Terms of Use
+          </a>
         </div>
+
         <div>
-          <div className="fg-head">GetNorthPath</div>
+          <div className="fg-col-head">GetNorthPath</div>
           <a
             href="https://www.getnorthpath.com"
             target="_blank"
@@ -68,7 +179,7 @@ export function MarketingFooter() {
             Main Site
           </a>
           <a
-            href="https://www.getnorthpath.com/contact"
+            href="https://www.getnorthpath.com/contact?utm_source=aortrack"
             target="_blank"
             rel="noopener noreferrer"
             className="fg-link"
@@ -81,20 +192,51 @@ export function MarketingFooter() {
             rel="noopener noreferrer"
             className="fg-link"
           >
-            PR Pathways
+            All PR Pathways
+          </a>
+          <a
+            href="https://www.getnorthpath.com/blog"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="fg-link"
+          >
+            Immigration Blog
+          </a>
+          <a
+            href="https://www.getnorthpath.com/about"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="fg-link"
+          >
+            About Us
           </a>
         </div>
       </div>
-      <div className="footer-btm">
-        <p className="footer-btm-text">
-          © {new Date().getFullYear()} GetNorthPath Inc. AORTrack is free &amp; open source (MIT). Not
-          affiliated with IRCC.
-          <span className="footer-btm-sep" aria-hidden>
-            {" "}
-            ·{" "}
-          </span>
-          track.getnorthpath.com
-        </p>
+
+      <div className="footer-bottom">
+        <div>
+          <div className="fb-left">
+            © {year} GetNorthPath Inc. · AORTrack is free &amp; open source (MIT License)
+          </div>
+          <div className="fb-disclaimer">
+            Not affiliated with IRCC. Community data only. Processing times are estimates based on
+            crowd-sourced reports — not official government data.
+          </div>
+        </div>
+        <div className="fb-links">
+          <a href="https://www.getnorthpath.com/privacy" className="fb-link" target="_blank" rel="noopener noreferrer">
+            Privacy
+          </a>
+          <a href="https://www.getnorthpath.com/terms" className="fb-link" target="_blank" rel="noopener noreferrer">
+            Terms
+          </a>
+          <a href="https://www.getnorthpath.com/cookies" className="fb-link" target="_blank" rel="noopener noreferrer">
+            Cookies
+          </a>
+          <a href="mailto:hello@getnorthpath.com" className="fb-link">
+            Contact
+          </a>
+        </div>
       </div>
     </footer>
   );

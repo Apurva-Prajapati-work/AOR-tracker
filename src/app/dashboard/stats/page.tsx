@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
-import { DashboardStatsTab } from "@/components/dashboard/DashboardStatsTab";
+import { DashboardStatsTabV2 } from "@/components/dashboard/v2/DashboardStatsTabV2";
 
 export const metadata: Metadata = {
   title: "Processing stats — AORTrack",
 };
 
 export default function DashboardStatsPage() {
-  return <DashboardStatsTab />;
+  return <DashboardStatsTabV2 />;
 }

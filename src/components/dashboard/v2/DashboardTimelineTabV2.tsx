@@ -1,0 +1,108 @@
+"use client";
+
+import { useMemo } from "react";
+import { useDashboard } from "@/components/dashboard/DashboardContext";
+import { DashboardAlertsList } from "./DashboardAlertsList";
+import { DashboardCohortBars } from "./DashboardCohortBars";
+import { DashboardCohortSection } from "./DashboardCohortSection";
+import { DashboardConsultingCTA } from "./DashboardConsultingCTA";
+import { DashboardDotMap } from "./DashboardDotMap";
+import { DashboardHeroBar } from "./DashboardHeroBar";
+import { DashboardHistogram } from "./DashboardHistogram";
+import { DashboardPprBar } from "./DashboardPprBar";
+import { DashboardRings } from "./DashboardRings";
+import { DashboardShareSection } from "./DashboardShareSection";
+import { DashboardStreamCompare } from "./DashboardStreamCompare";
+import { DashboardTimeline } from "./DashboardTimeline";
+import {
+  alertsVM,
+  cohortBarsVM,
+  dotMapVM,
+  heroStatsVM,
+  histVM,
+  pprWindowVM,
+  ringsVM,
+  streamCompareVM,
+  timelineRowsVM,
+} from "./live-vm";
+import { humanizeCohortKey } from "@/lib/cohort";
+import type { MilestoneKey } from "@/lib/types";
+
+/**
+ * Single-page `/dashboard` view in the v2 design — composes every section
+ * from `dashboard-new` and drives them off live `DashboardContext` data.
+ *
+ * The "Dashboard" sidebar items scroll to anchors on this page:
+ *   - Overview      → #top    (rendered by `DashboardShellV2`)
+ *   - My Timeline   → #tl-sec (rendered by `DashboardTimeline`)
+ *   - My Cohort     → #cohort-sec
+ *   - Alerts        → #alerts-sec
+ *
+ * Share / Stats are reachable both via the on-page sections and via the
+ * dedicated sub-routes (`/dashboard/share`, `/dashboard/stats`), which share
+ * the same shell so the user can land on either entry point.
+ */
+export function DashboardTimelineTabV2() {
+  const ctx = useDashboard();
+
+  const heroStats = useMemo(() => heroStatsVM(ctx), [ctx]);
+  const rings = useMemo(() => ringsVM(ctx), [ctx]);
+  const pprWindow = useMemo(() => pprWindowVM(ctx), [ctx]);
+  const timelineRows = useMemo(
+    () => timelineRowsVM(ctx.milestoneDefsForCohort, ctx.profile),
+    [ctx.milestoneDefsForCohort, ctx.profile],
+  );
+  const cohortBars = useMemo(
+    () => cohortBarsVM(ctx, ctx.milestoneDefsForCohort),
+    [ctx, ctx.milestoneDefsForCohort],
+  );
+  const hist = useMemo(() => histVM(ctx), [ctx]);
+  const dotMap = useMemo(() => dotMapVM(ctx), [ctx]);
+  const streamCompare = useMemo(() => streamCompareVM(ctx), [ctx]);
+  const alerts = useMemo(() => alertsVM(ctx), [ctx]);
+
+  const onSaveDate = async (key: string, value: string) => {
+    await ctx.onSaveMilestone(key as MilestoneKey, value);
+  };
+
+  return (
+    <>
+      <DashboardHeroBar stats={heroStats} />
+      <DashboardRings rings={rings} />
+      <DashboardPprBar window={pprWindow} />
+      <DashboardTimeline
+        rows={timelineRows}
+        note={`Cohort: ${humanizeCohortKey(ctx.activeCohortKey)} · ${ctx.cohortTotal} verified profiles`}
+        onSaveDate={onSaveDate}
+      />
+
+      <DashboardCohortSection
+        title={`Your Cohort — ${humanizeCohortKey(ctx.activeCohortKey)}`}
+        subtitle={`${ctx.cohortTotal} verified applicants${ctx.cohortDataSparse ? " · low n, run Sync cohorts" : ""}`}
+      >
+        <DashboardCohortBars bars={cohortBars} />
+        <DashboardHistogram
+          bars={hist}
+          subtitle={`${ctx.cohort.n_verified} verified completions · your position highlighted`}
+        />
+        <DashboardDotMap map={dotMap} applicantId={`#${ctx.email.length}`} />
+        <DashboardStreamCompare rows={streamCompare} />
+      </DashboardCohortSection>
+
+      <DashboardAlertsList alerts={alerts} />
+
+      <DashboardShareSection
+        share={{
+          shareUrl: ctx.shareUrl,
+          shareUrlDisplay: ctx.shareUrl.replace(/^https?:\/\//, ""),
+          githubUrl: "https://github.com/Get-North-Path/AOR-tracker",
+        }}
+        error={ctx.shareLinkError}
+      />
+
+      <DashboardConsultingCTA />
+
+      <div style={{ height: 36 }} />
+    </>
+  );
+}

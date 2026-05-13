@@ -9,6 +9,7 @@ import { LandingFeaturesSection } from "@/components/marketing/landing/LandingFe
 import { LandingGrowthSection } from "@/components/marketing/landing/LandingGrowthSection";
 import { LandingHeroSection } from "@/components/marketing/landing/LandingHeroSection";
 import { LandingHowItWorksSection } from "@/components/marketing/landing/LandingHowItWorksSection";
+import { LandingLoadingAnimation } from "@/components/landing/LandingLoadingAnimation";
 import { LandingMessagingSection } from "@/components/marketing/landing/LandingMessagingSection";
 import { LandingOssSection } from "@/components/marketing/landing/LandingOssSection";
 import { LandingStatsBar } from "@/components/marketing/landing/LandingStatsBar";
@@ -57,6 +58,7 @@ export function LandingMarketingClient() {
 
   return (
     <div className="mkt-landing-page">
+      <LandingLoadingAnimation />
       <LandingHeroSection profileCount={profileCount} />
       <LandingStatsBar profileCount={profileCount} medianSample={medianSample} />
       <LandingHowItWorksSection />

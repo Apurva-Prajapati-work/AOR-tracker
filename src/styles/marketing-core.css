@@ -208,6 +208,84 @@ html {
   flex-shrink: 0;
 }
 
+/* Hamburger toggle — hidden on desktop, shown by the ≤1221px media query
+   below. Lives between the (then-hidden) inline links and the .nav-cta. */
+.marketing-site .nav-menu-btn {
+  display: none;
+  align-items: center;
+  gap: 7px;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 100px;
+  padding: 6px 14px;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 0.82rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition:
+    color 0.15s,
+    border-color 0.15s,
+    background 0.15s;
+  flex-shrink: 0;
+}
+
+.marketing-site .nav-menu-btn:hover,
+.marketing-site .nav-menu-btn[aria-expanded="true"] {
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.32);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.marketing-site .nav-menu-btn svg {
+  width: 13px;
+  height: 13px;
+  fill: currentColor;
+  flex-shrink: 0;
+}
+
+/* Dropdown panel — sits absolutely below the sticky nav. Hidden until
+   `.open` is added by `MarketingNav`. */
+.marketing-site .nav-mobile-panel {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: var(--navy);
+  border-bottom: 2px solid rgba(255, 255, 255, 0.07);
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+  padding: 12px clamp(16px, 4vw, 48px) 16px;
+  display: none;
+  flex-direction: column;
+  gap: 2px;
+  z-index: 99;
+  box-shadow: 0 16px 24px -16px rgba(0, 0, 0, 0.4);
+}
+
+.marketing-site .nav-mobile-panel.open {
+  display: flex;
+}
+
+.marketing-site .nav-mobile-panel a {
+  font-size: 0.92rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.72);
+  padding: 10px 6px;
+  border-radius: 6px;
+  transition:
+    color 0.15s,
+    background 0.15s;
+}
+
+.marketing-site .nav-mobile-panel a:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.marketing-site .nav-mobile-panel .nav-oss {
+  align-self: flex-start;
+  margin-top: 6px;
+}
+
 .marketing-site .nbtn {
   font-size: 0.77rem;
   font-weight: 600;
@@ -569,8 +647,21 @@ html {
   }
 }
 
-@media (max-width: 900px) {
+@media (max-width: 1221px) {
   .marketing-site .nav-links {
+    display: none;
+  }
+  .marketing-site .nav-menu-btn {
+    display: inline-flex;
+  }
+}
+
+@media (max-width: 414px) {
+  .marketing-site .nav-menu-btn {
+    display: none;
+  }
+  .marketing-site .nav-mobile-panel,
+  .marketing-site .nav-mobile-panel.open {
     display: none;
   }
 }

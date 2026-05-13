@@ -1,32 +1,120 @@
 "use client";
 
 import Link from "next/link";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { FaBars, FaTimes } from "react-icons/fa";
 import { IconArrowRight, IconGitHub } from "./landing-icons";
 import { NorthBrand } from "./NorthBrand";
 
 const GH = "https://github.com/Get-North-Path/AOR-tracker";
 
+type NavItem = { href: string; label: string };
+
+const NAV_ITEMS: NavItem[] = [
+  { href: "/#how", label: "How It Works" },
+  { href: "/#features", label: "Features" },
+  { href: "/#streams", label: "Streams" },
+  { href: "/#cohort", label: "Cohort" },
+  { href: "/#messaging", label: "Alerts" },
+  { href: "/roadmap", label: "Roadmap" },
+  { href: "/changelog", label: "Changelog" },
+  { href: "/community", label: "Community" },
+];
+
 export function MarketingNav() {
+  const [open, setOpen] = useState(false);
+  const panelRef = useRef<HTMLDivElement | null>(null);
+  const btnRef = useRef<HTMLButtonElement | null>(null);
+
+  const close = useCallback(() => setOpen(false), []);
+
+  useEffect(() => {
+    if (!open) return;
+    function onKey(e: KeyboardEvent) {
+      if (e.key === "Escape") close();
+    }
+    function onClick(e: MouseEvent) {
+      const target = e.target as Node | null;
+      if (!target) return;
+      if (panelRef.current?.contains(target)) return;
+      if (btnRef.current?.contains(target)) return;
+      close();
+    }
+    document.addEventListener("keydown", onKey);
+    document.addEventListener("mousedown", onClick);
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.removeEventListener("mousedown", onClick);
+    };
+  }, [open, close]);
+
   return (
     <nav className="nav">
       <NorthBrand />
+
       <div className="nav-links">
-        <Link href="/#how">How It Works</Link>
-        <Link href="/#features">Features</Link>
-        <Link href="/#streams">Streams</Link>
-        <Link href="/#cohort">Cohort</Link>
-        <Link href="/#messaging">Alerts</Link>
-        <Link href="/roadmap">Roadmap</Link>
-        <Link href="/changelog">Changelog</Link>
-        <Link href="/community">Community</Link>
-        <a href={GH} target="_blank" rel="noopener noreferrer" className="nav-oss">
+        {NAV_ITEMS.map((item) => (
+          <Link href={item.href} key={item.href}>
+            {item.label}
+          </Link>
+        ))}
+        <a
+          href={GH}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="nav-oss"
+        >
           <IconGitHub />
           Open Source
         </a>
       </div>
+
+      <button
+        type="button"
+        ref={btnRef}
+        className="nav-menu-btn"
+        aria-expanded={open}
+        aria-controls="marketing-nav-panel"
+        aria-label={open ? "Close menu" : "Open menu"}
+        onClick={() => setOpen((v) => !v)}
+      >
+        {open ? <FaTimes aria-hidden /> : <FaBars aria-hidden />}
+        <span>Menu</span>
+      </button>
+
       <Link href="/track" className="nav-cta">
         Track My AOR <IconArrowRight />
       </Link>
+
+      <div
+        id="marketing-nav-panel"
+        ref={panelRef}
+        className={`nav-mobile-panel${open ? " open" : ""}`}
+        role="menu"
+        aria-hidden={!open}
+      >
+        {NAV_ITEMS.map((item) => (
+          <Link
+            href={item.href}
+            key={item.href}
+            role="menuitem"
+            onClick={close}
+          >
+            {item.label}
+          </Link>
+        ))}
+        <a
+          href={GH}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="nav-oss"
+          role="menuitem"
+          onClick={close}
+        >
+          <IconGitHub />
+          Open Source
+        </a>
+      </div>
     </nav>
   );
 }

@@ -1,28 +1,52 @@
 "use client";
 
 import { useEffect, useId, useRef, useState } from "react";
+import {
+  createCommunityPostAction,
+  type CommunityMs,
+} from "@/app/actions/community";
 import { IconArrowRight } from "../landing-icons";
 import { IconClose } from "./community-icons";
 
 type Props = {
   open: boolean;
+  /** Viewer email; only opened when non-null (else SignInPromptModal opens). */
+  email: string | null;
   onClose: () => void;
   onSuccess: (msg: string) => void;
   onValidationFail: (msg: string) => void;
 };
 
-// Native <option> elements can't render React icons, so labels are text
-// only. The visual icon for the chosen milestone shows up on the resulting
-// feed card via `MilestoneIcon`.
-const MILESTONE_OPTIONS: { value: string; label: string }[] = [
-  { value: "", label: "Select milestone…" },
-  { value: "ppr", label: "PPR Received" },
-  { value: "bil", label: "BIL Received" },
-  { value: "bgc", label: "Background Check Started" },
-  { value: "medical", label: "Medical Results Passed" },
-  { value: "biometrics", label: "Biometrics Confirmed" },
-  { value: "copr", label: "COPR Received" },
+/**
+ * Form milestone value → backend `CommunityMs`. Backend only supports four
+ * tags (`ppr | bil | bg | med`), so the previous `biometrics` / `copr`
+ * options were removed — they have no public-feed surface today.
+ *
+ * Each option also carries a short label used to build the post body when
+ * the user leaves the optional note blank.
+ */
+const MILESTONE_OPTIONS: {
+  value: "" | "ppr" | "bil" | "bgc" | "medical";
+  label: string;
+  /** Used as the fallback body when the optional note is empty. */
+  short: string;
+}[] = [
+  { value: "", label: "Select milestone…", short: "" },
+  { value: "ppr", label: "PPR Received", short: "PPR" },
+  { value: "bil", label: "BIL Received", short: "BIL" },
+  { value: "bgc", label: "Background Check Started", short: "BGC" },
+  { value: "medical", label: "Medical Results Passed", short: "Medical" },
 ];
+
+const TYPE_TO_MS: Record<
+  Exclude<(typeof MILESTONE_OPTIONS)[number]["value"], "">,
+  CommunityMs
+> = {
+  ppr: "ppr",
+  bil: "bil",
+  bgc: "bg",
+  medical: "med",
+};
 
 /** ISO date string for "today", used as the upper bound of the date picker. */
 function todayISO(): string {
@@ -45,11 +69,14 @@ function todayISO(): string {
  */
 export function SubmitMilestoneModal({
   open,
+  email,
   onClose,
   onSuccess,
   onValidationFail,
 }: Props) {
-  const [type, setType] = useState("");
+  const [type, setType] = useState<
+    "" | "ppr" | "bil" | "bgc" | "medical"
+  >("");
   const [date, setDate] = useState("");
   const [note, setNote] = useState("");
   const [submitting, setSubmitting] = useState(false);
@@ -85,19 +112,34 @@ export function SubmitMilestoneModal({
     if (e.target === e.currentTarget && !submitting) onClose();
   }
 
-  function handleSubmit() {
+  async function handleSubmit() {
     if (!type || !date) {
       onValidationFail("Please fill in all required fields");
       return;
     }
+    if (!email) {
+      onValidationFail("You need to sign in to post.");
+      return;
+    }
+    const ms = TYPE_TO_MS[type];
+    const opt = MILESTONE_OPTIONS.find((o) => o.value === type);
+    const body =
+      note.trim() || `${opt?.short ?? type.toUpperCase()} on ${date}.`;
+
     setSubmitting(true);
-    window.setTimeout(() => {
-      setSubmitting(false);
+    try {
+      const res = await createCommunityPostAction(email, { body, ms });
+      if (!res.ok) {
+        onValidationFail(res.error);
+        return;
+      }
       onSuccess(
-        "Submitted! Under Gemini review — appears in your feed once approved",
+        "Submitted! Appears in your feed once the new-post bar refreshes",
       );
       onClose();
-    }, 1600);
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   return (
@@ -138,7 +180,9 @@ export function SubmitMilestoneModal({
               id={`${labelId}-type`}
               className="m-select"
               value={type}
-              onChange={(e) => setType(e.target.value)}
+              onChange={(e) =>
+                setType(e.target.value as typeof type)
+              }
             >
               {MILESTONE_OPTIONS.map((opt) => (
                 <option value={opt.value} key={opt.value}>
@@ -195,7 +239,7 @@ export function SubmitMilestoneModal({
           <button
             type="button"
             className="m-submit"
-            onClick={handleSubmit}
+            onClick={() => void handleSubmit()}
             disabled={submitting}
           >
             {submitting ? (

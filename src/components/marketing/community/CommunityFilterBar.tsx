@@ -1,4 +1,7 @@
+"use client";
+
 import { FaSearch } from "react-icons/fa";
+import { useCommunityUi, type CommunityMsFilter } from "./CommunityUiContext";
 import type { FilterChip, SortOption } from "./data";
 
 type Props = {
@@ -7,43 +10,65 @@ type Props = {
   defaultSort: string;
 };
 
+/** Chip ids in `data.filterChips` ↔ context msFilter values. */
+const CHIP_TO_MS: Record<string, CommunityMsFilter> = {
+  all: null,
+  ppr: "ppr",
+  bil: "bil",
+  bgc: "bgc",
+  medical: "medical",
+};
+
 /**
- * Top filter row: milestone chips, search input, sort select.
+ * Top filter row: milestone chips drive `setMsFilter` (real backend
+ * re-fetch). The search input and sort select stay visual-only — neither
+ * has backend support today.
  *
- * The interactive bits (filtering, debounced search, sort) are no-ops in
- * the marketing preview.
- *
- * TODO(real-data): once we wire this up, lift the active filter / search
- *   / sort into URL search params (so deep links work) and re-fetch the
- *   feed on change. Reference: the same pattern is used on the dashboard
- *   community panel (`CommunityFeedPanel.tsx`) — we can extract a shared
- *   hook when both pages move to live data.
+ * TODO(real-data): wire search via a new `searchQuery` field on
+ *   `getCommunityFeedAction` (text-index over `body`), and sort via a
+ *   `sortBy` option supporting `helpful_desc` / `createdAt_desc` / cohort.
  */
-export function CommunityFilterBar({ chips, sortOptions, defaultSort }: Props) {
+export function CommunityFilterBar({
+  chips,
+  sortOptions,
+  defaultSort,
+}: Props) {
+  const { msFilter, setMsFilter, loading } = useCommunityUi();
+
   return (
     <div className="filter-bar">
-      <div className="filter-chips" role="tablist" aria-label="Milestone filters">
-        {chips.map((chip) => (
-          <button
-            type="button"
-            key={chip.id}
-            className={`chip${chip.active ? " on" : ""}`}
-            role="tab"
-            aria-selected={chip.active ?? false}
-          >
-            {chip.dotColor ? (
-              <span
-                className="chip-dot"
-                style={{ background: chip.dotColor }}
-                aria-hidden
-              />
-            ) : null}
-            <span>{chip.label}</span>
-            {chip.count != null ? (
-              <span className="chip-n">{chip.count.toLocaleString()}</span>
-            ) : null}
-          </button>
-        ))}
+      <div
+        className="filter-chips"
+        role="tablist"
+        aria-label="Milestone filters"
+      >
+        {chips.map((chip) => {
+          const ms = CHIP_TO_MS[chip.id] ?? null;
+          const active = ms === msFilter;
+          return (
+            <button
+              type="button"
+              key={chip.id}
+              className={`chip${active ? " on" : ""}`}
+              role="tab"
+              aria-selected={active}
+              onClick={() => setMsFilter(ms)}
+              disabled={loading}
+            >
+              {chip.dotColor ? (
+                <span
+                  className="chip-dot"
+                  style={{ background: chip.dotColor }}
+                  aria-hidden
+                />
+              ) : null}
+              <span>{chip.label}</span>
+              {chip.count != null ? (
+                <span className="chip-n">{chip.count.toLocaleString()}</span>
+              ) : null}
+            </button>
+          );
+        })}
       </div>
 
       <label className="search-wrap">

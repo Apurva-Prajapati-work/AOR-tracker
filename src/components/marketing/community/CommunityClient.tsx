@@ -14,13 +14,11 @@ type Props = {
  * `src/app/community/page.tsx` — this component only renders the
  * three-column grid.
  *
- * TODO(real-data): no client state yet. When we wire up filtering, sort,
- *   saved-state toggles, helpful-marks and the SSE "feed:refresh" event,
- *   the right ergonomic seam is here:
- *     - mark this file "use client",
- *     - hydrate from `data` (server-rendered) into useState,
- *     - subscribe to community-broadcast via Socket.IO,
- *     - prepend new approved posts at the top.
+ * Posts and pagination state live in `CommunityShell` via
+ * `useCommunityUi()`; the sidebar / feed / right-panel pull whatever they
+ * need from the context. `data` is the SSR-built `CommunityPageData`
+ * (used for the still-seeded surfaces: insights, pulse, contributors,
+ * discord card, filter labels, etc.).
  */
 export function CommunityClient({ data }: Props) {
   return (
@@ -37,7 +35,6 @@ export function CommunityClient({ data }: Props) {
         sortOptions={data.sortOptions}
         defaultSort={data.defaultSort}
         submitCta={data.submitCta}
-        posts={data.posts}
       />
 
       <CommunityRightPanel

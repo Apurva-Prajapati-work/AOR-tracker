@@ -61,4 +61,6 @@ export type CommunityPost = {
   viewerHasMarkedHelpful?: boolean;
   /** When this post is a reply to another approved post. */
   replyTo?: CommunityReplyRef;
+  /** ISO string of the post's creation time (set by the serializer). */
+  createdAt?: string;
 };

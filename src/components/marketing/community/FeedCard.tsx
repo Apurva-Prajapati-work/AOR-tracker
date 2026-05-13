@@ -7,6 +7,7 @@ import {
 import { FeedCardEngagement } from "./FeedCardEngagement";
 import { MiniTimeline } from "./MiniTimeline";
 import type {
+  ApprovedPost,
   CohortItem,
   MilestoneChipColor,
   Post,
@@ -176,6 +177,7 @@ export function FeedCard({ post, newEntry }: Props) {
     >
       <div className={`fc-accent accent-${post.accent}`} />
       <div className="fc-inner">
+        {post.replyTo ? <ReplyToBar replyTo={post.replyTo} /> : null}
         <MetaRow
           displayId={post.displayId}
           milestoneChip={post.milestoneChip}
@@ -190,16 +192,68 @@ export function FeedCard({ post, newEntry }: Props) {
           dangerouslySetInnerHTML={{ __html: post.bodyHtml }}
         />
         <FeedCardEngagement
+          post={post}
           helpfulCount={post.helpfulCount}
           helpfulActive={post.helpfulActive}
           replyCount={post.replyCount}
-          saved={post.saved}
           dataSource={post.dataSource}
         />
       </div>
       {post.replies && post.replies.length > 0 ? (
         <RepliesList replies={post.replies} />
       ) : null}
+    </div>
+  );
+}
+
+/**
+ * Quoted parent-post preview shown at the top of reply cards. Mirrors the
+ * dashboard panel's `ReplyReferenceBar` — left rule, initials avatar,
+ * author + snippet on one line.
+ */
+function ReplyToBar({
+  replyTo,
+}: {
+  replyTo: NonNullable<ApprovedPost["replyTo"]>;
+}) {
+  return (
+    <div
+      className="fc-reply-to"
+      style={{
+        borderLeft: "3px solid var(--border2)",
+        paddingLeft: 10,
+        marginBottom: 10,
+        display: "flex",
+        gap: 10,
+        alignItems: "center",
+        color: "var(--muted)",
+        fontSize: "0.82rem",
+      }}
+    >
+      <span
+        aria-hidden
+        style={{
+          width: 22,
+          height: 22,
+          borderRadius: "50%",
+          background: "var(--cream2, #efe8d8)",
+          display: "inline-flex",
+          alignItems: "center",
+          justifyContent: "center",
+          fontWeight: 700,
+          fontSize: "0.7rem",
+          color: "var(--navy)",
+          flexShrink: 0,
+        }}
+      >
+        {replyTo.initials}
+      </span>
+      <span style={{ minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+        <strong style={{ color: "var(--navy)", marginRight: 6 }}>
+          Replying to {replyTo.name}
+        </strong>
+        {replyTo.snippet}
+      </span>
     </div>
   );
 }

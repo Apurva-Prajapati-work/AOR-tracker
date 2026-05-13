@@ -1,14 +1,21 @@
 import type { Metadata } from "next";
 import "@/styles/marketing-core.css";
 import "@/styles/community.css";
+import {
+  getCommunityFeedAction,
+  getCommunityMsCountsAction,
+} from "@/app/actions/community";
 import { MarketingFooter } from "@/components/marketing/MarketingFooter";
 import { CommunityClient } from "@/components/marketing/community/CommunityClient";
 import { CommunityNav } from "@/components/marketing/community/CommunityNav";
 import { CommunityShell } from "@/components/marketing/community/CommunityShell";
+import { communityPostToApproved } from "@/components/marketing/community/adapter";
 import {
+  buildCommunityPageData,
   COMMUNITY_NAV,
-  getCommunity,
+  type Post,
 } from "@/components/marketing/community/data";
+import { COMMUNITY_FEED_PAGE_SIZE } from "@/lib/community-feed";
 
 const CANONICAL = "https://track.getnorthpath.com/community";
 
@@ -28,40 +35,39 @@ export const metadata: Metadata = {
 };
 
 /**
- * /community
- *
- * This route lives OUTSIDE the (marketing) route group on purpose: the
- * community page has its own top nav (CommunityNav), distinct from the
- * shared MarketingNav used on /, /changelog, /track, etc.
- *
- * It still reuses the shared `MarketingFooter`. To keep the footer styled
- * we wrap the page in `.marketing-site` and pull in `marketing-core.css`,
- * which is where the footer's CSS variables and rules live.
- *
- * `CommunityShell` is the client wrapper that owns:
- *   - the auto-ticking live counter,
- *   - the simulated "X new posts — click to load" SSE bar,
- *   - the submit-milestone modal,
- *   - the appeal modal,
- *   - the toast queue.
- * The static body (nav + 3-column grid) is rendered server-side and passed
- * in as children so we keep SSR for everything except the interactive bits.
- *
- * TODO(real-data): the page is currently fed by static seed data (see
- * `src/components/marketing/community/data.ts`). When we wire it to the
- * real community feed:
- *   - make `getCommunity()` async,
- *   - convert this component to `export default async function CommunityPage()`,
- *   - add `export const dynamic = "force-dynamic"` (or revalidate via a
- *     `revalidatePath('/community')` call from the community-broadcast handler).
+ * `/community` is rendered fully dynamic on each request: the feed is
+ * loaded from MongoDB (anonymous read — no viewer email) and the ms-counts
+ * aggregation drives the sidebar / filter-chip badges. The interactive
+ * bits (helpful / reply / submit / live SSE refresh) live inside
+ * `CommunityShell` and read the current viewer email out of `sessionStorage`
+ * on mount.
  */
-export default function CommunityPage() {
-  const data = getCommunity();
+export const dynamic = "force-dynamic";
+
+export default async function CommunityPage() {
+  const [firstPage, counts] = await Promise.all([
+    getCommunityFeedAction(null, {
+      page: 1,
+      pageSize: COMMUNITY_FEED_PAGE_SIZE,
+    }),
+    getCommunityMsCountsAction(),
+  ]);
+
+  const posts: Post[] = firstPage.posts.map((p) =>
+    communityPostToApproved(p),
+  );
+  const data = buildCommunityPageData(posts, counts);
 
   return (
     <div className="marketing-site flex min-h-screen flex-col">
       <div className="mkt-community-page flex min-h-0 flex-1 flex-col">
-        <CommunityShell data={data}>
+        <CommunityShell
+          data={data}
+          initialMsFilter={null}
+          initialPage={firstPage.page}
+          initialTotal={firstPage.total}
+          initialTotalPages={firstPage.totalPages}
+        >
           <CommunityNav dashboardHref={COMMUNITY_NAV.dashboardHref} />
           <CommunityClient data={data} />
         </CommunityShell>

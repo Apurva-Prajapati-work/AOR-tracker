@@ -76,6 +76,51 @@ function postPlainSnippet(
   return `${raw.slice(0, max - 1)}…`;
 }
 
+export type CommunityMsCounts = {
+  total: number;
+  ppr: number;
+  bil: number;
+  bg: number;
+  med: number;
+};
+
+/**
+ * Returns aggregate counts of approved community posts grouped by their
+ * milestone tag. Used by the public `/community` page to show real numbers
+ * next to the filter chips and the sidebar's milestone links.
+ *
+ * Cheap: one indexed aggregation, one round-trip. Safe to call on every
+ * page render (no auth required — read-only public data).
+ */
+export async function getCommunityMsCountsAction(): Promise<CommunityMsCounts> {
+  const db = await getDb();
+  const rows = await db
+    .collection("community_posts")
+    .aggregate([
+      { $match: { approved: true } },
+      { $group: { _id: "$ms", n: { $sum: 1 } } },
+    ])
+    .toArray();
+
+  const counts: CommunityMsCounts = {
+    total: 0,
+    ppr: 0,
+    bil: 0,
+    bg: 0,
+    med: 0,
+  };
+  for (const r of rows) {
+    const key = String(r._id);
+    const n = typeof r.n === "number" ? r.n : 0;
+    counts.total += n;
+    if (key === "ppr") counts.ppr += n;
+    else if (key === "bil") counts.bil += n;
+    else if (key === "bg") counts.bg += n;
+    else if (key === "med") counts.med += n;
+  }
+  return counts;
+}
+
 export async function getCommunityFeedAction(
   viewerEmail?: string | null,
   opts?: {

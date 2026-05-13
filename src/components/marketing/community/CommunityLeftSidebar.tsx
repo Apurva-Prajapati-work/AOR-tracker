@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import {
   FaCommentAlt,
   FaInbox,
@@ -8,8 +9,11 @@ import {
   FaRegBookmark,
   FaUserFriends,
 } from "react-icons/fa";
+import { getProfileAction } from "@/app/actions/profile";
+import { daysSinceAor } from "@/lib/ppr-estimate";
+import type { UserProfile } from "@/lib/types";
 import { MilestoneIcon } from "./community-icons";
-import { useCommunityUi } from "./CommunityUiContext";
+import { useCommunityUi, type CommunityMsFilter } from "./CommunityUiContext";
 import type { CohortMini, SidebarLink } from "./data";
 
 type Props = {
@@ -31,6 +35,40 @@ const QUICK_ICON: Record<string, React.ReactNode> = {
   feedback: <FaCommentAlt aria-hidden />,
 };
 
+const MS_LINK_TO_FILTER: Record<string, CommunityMsFilter> = {
+  ppr: "ppr",
+  bil: "bil",
+  bgc: "bgc",
+  medical: "medical",
+};
+
+/** Convert "2026-02-14" to "Feb 2026" without tripping over timezones. */
+function formatAorMonth(aorDate: string): string {
+  if (!aorDate) return "";
+  const d = new Date(`${aorDate}T12:00:00`);
+  if (Number.isNaN(d.getTime())) return aorDate;
+  return d.toLocaleDateString("en-CA", { month: "short", year: "numeric" });
+}
+
+function buildCohortMiniFromProfile(p: UserProfile): CohortMini {
+  const submissions = Object.values(p.milestones ?? {}).filter(
+    (m) => m && m.date,
+  ).length;
+  return {
+    label: "My Profile",
+    rows: [
+      { key: "Stream", value: p.stream || "—", emphasis: "green" },
+      { key: "AOR Month", value: formatAorMonth(p.aorDate) || "—" },
+      {
+        key: "Day",
+        value: p.aorDate ? String(daysSinceAor(p.aorDate)) : "—",
+        emphasis: "green",
+      },
+      { key: "Submissions", value: String(submissions) },
+    ],
+  };
+}
+
 function CohortMiniCard({ data }: { data: CohortMini }) {
   return (
     <div className="cohort-mini">
@@ -51,12 +89,14 @@ function SidebarItem({
   link,
   icon,
   onClick,
+  active,
 }: {
   link: SidebarLink;
   icon?: React.ReactNode;
   onClick?: () => void;
+  active?: boolean;
 }) {
-  const className = `lsb-link${link.active ? " on" : ""}`;
+  const className = `lsb-link${active ?? link.active ? " on" : ""}`;
   const inner = (
     <>
       {icon}
@@ -88,12 +128,14 @@ function SidebarItem({
 
 /**
  * Sticky left rail: viewer's cohort mini-card + browse / milestone filters
- * + quick actions.
+ * + quick actions. Real backend data when a profile is loaded; seeded
+ * fallback for anonymous viewers.
  *
- * TODO(real-data): the cohort mini-card needs the signed-in user's profile.
- *   Use the existing `getProfileAction()` (see @/app/actions/profile) and
- *   compute the day count via @/lib/cohort-data utilities. The browse and
- *   milestone counts should be cohort-scoped queries.
+ * TODO(real-data, scope-deferred):
+ *   - `my-cohort` and `saved` Browse links: backend doesn't yet support
+ *     a `cohortKey` filter on `getCommunityFeedAction`, and "saved" is
+ *     local-only (localStorage). For now they're inert + emit a toast.
+ *   - "Active Session" / online-presence stat: no presence channel yet.
  */
 export function CommunityLeftSidebar({
   cohortMini,
@@ -101,33 +143,87 @@ export function CommunityLeftSidebar({
   milestoneLinks,
   quickLinks,
 }: Props) {
-  const { openSubmit } = useCommunityUi();
+  const {
+    viewerEmail,
+    isSignedIn,
+    msFilter,
+    setMsFilter,
+    requestPost,
+    toast,
+  } = useCommunityUi();
+
+  const [profileMini, setProfileMini] = useState<CohortMini | null>(null);
+
+  useEffect(() => {
+    if (!viewerEmail || !isSignedIn) {
+      setProfileMini(null);
+      return;
+    }
+    let cancelled = false;
+    void getProfileAction(viewerEmail).then((res) => {
+      if (cancelled) return;
+      if (res.ok) setProfileMini(buildCohortMiniFromProfile(res.profile));
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [viewerEmail, isSignedIn]);
+
+  const miniToRender = profileMini ?? cohortMini;
 
   return (
     <aside className="left-sb" aria-label="Community filters">
       <div className="lsb-sec">
         <div className="lsb-label">My Profile</div>
-        <CohortMiniCard data={cohortMini} />
+        <CohortMiniCard data={miniToRender} />
       </div>
 
       <div className="lsb-sec">
         <div className="lsb-label">Browse</div>
-        {browseLinks.map((link) => (
-          <SidebarItem link={link} icon={BROWSE_ICON[link.id]} key={link.id} />
-        ))}
+        {browseLinks.map((link) => {
+          if (link.id === "all") {
+            return (
+              <SidebarItem
+                link={link}
+                icon={BROWSE_ICON[link.id]}
+                key={link.id}
+                active={msFilter === null}
+                onClick={() => setMsFilter(null)}
+              />
+            );
+          }
+          return (
+            <SidebarItem
+              link={link}
+              icon={BROWSE_ICON[link.id]}
+              key={link.id}
+              onClick={() =>
+                toast(
+                  "Coming soon — cohort-only and saved filters need a backend pass.",
+                  "default",
+                )
+              }
+            />
+          );
+        })}
       </div>
 
       <div className="lsb-divider" />
 
       <div className="lsb-sec">
         <div className="lsb-label">Milestones</div>
-        {milestoneLinks.map((link) => (
-          <SidebarItem
-            link={link}
-            icon={<MilestoneIcon milestone={link.id} />}
-            key={link.id}
-          />
-        ))}
+        {milestoneLinks.map((link) => {
+          const ms = MS_LINK_TO_FILTER[link.id] ?? null;
+          return (
+            <SidebarItem
+              link={link}
+              icon={<MilestoneIcon milestone={link.id} />}
+              key={link.id}
+              active={ms !== null && ms === msFilter}
+              onClick={() => setMsFilter(ms)}
+            />
+          );
+        })}
       </div>
 
       <div className="lsb-divider" />
@@ -139,7 +235,7 @@ export function CommunityLeftSidebar({
             link={link}
             icon={QUICK_ICON[link.id]}
             key={link.id}
-            onClick={link.id === "submit" ? openSubmit : undefined}
+            onClick={link.id === "submit" ? requestPost : undefined}
           />
         ))}
       </div>

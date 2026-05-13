@@ -1,74 +1,130 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { io, type Socket } from "socket.io-client";
+import {
+  getCommunityFeedAction,
+  markCommunityHelpfulAction,
+} from "@/app/actions/community";
+import { getProfileAction } from "@/app/actions/profile";
+import { COMMUNITY_FEED_PAGE_SIZE } from "@/lib/community-feed";
+import { readSessionEmail } from "@/lib/session-client";
 import { AppealModal } from "./AppealModal";
+import { communityPostToApproved } from "./adapter";
 import {
   CommunityUiProvider,
   type AppealContext,
+  type CommunityMsFilter,
   type CommunityUi,
   type ToastTone,
 } from "./CommunityUiContext";
 import { CommunityToaster, type ToastItem } from "./CommunityToaster";
-import { generateDynamicPost } from "./data";
-import type { CommunityPageData, Post } from "./data";
+import type { ApprovedPost, CommunityPageData } from "./data";
 import { NewPostBar } from "./NewPostBar";
+import { ReplyModal } from "./ReplyModal";
+import { SignInPromptModal } from "./SignInPromptModal";
 import { SubmitMilestoneModal } from "./SubmitMilestoneModal";
+
+/** Marketing chip → backend `ms`. `null` = no filter (all posts). */
+const FILTER_TO_MS: Record<NonNullable<CommunityMsFilter>, string> = {
+  ppr: "ppr",
+  bil: "bil",
+  bgc: "bg",
+  medical: "med",
+};
+
+const MAX_PENDING = 50;
+const TOAST_MS = 3500;
 
 type Props = {
   data: CommunityPageData;
-  /**
-   * The server-rendered body of the page (CommunityNav + CommunityClient) is
-   * passed in as children so the shell can sit between it and the page
-   * wrapper, render the overlays alongside it, and provide the
-   * `CommunityUiContext` to all descendants without forcing the whole tree
-   * to become client components.
-   */
+  initialMsFilter: CommunityMsFilter;
+  initialPage: number;
+  initialTotal: number;
+  initialTotalPages: number;
   children: React.ReactNode;
 };
 
-/** ms between live-counter tick attempts (matches HTML sample). */
-const LIVE_TICK_MS = 5000;
-/** Probability a tick actually increments. */
-const LIVE_TICK_PROB = 0.4;
-/** First simulated "new posts" pulse after mount. */
-const FIRST_PULSE_MS = 8000;
-/** Steady-state interval for further simulated pulses. */
-const STEADY_PULSE_MS = 22000;
-/** Soft cap on pending count before we stop incrementing further. */
-const MAX_PENDING = 5;
-/** How long a toast stays on screen before auto-dismissing. */
-const TOAST_MS = 3500;
+type GatedAction = "post" | "mark helpful" | "reply";
 
 /**
- * Client wrapper that owns all interactive state for the community page:
- *   - live online counter (auto-ticks)
- *   - simulated SSE pulses → drives the new-post notification bar
- *   - clicking the bar prepends a freshly-generated card to the feed
- *   - submit / appeal modals + toast queue
+ * Top-level client wrapper for `/community`.
  *
- * The static body (sidebar / feed / right panel) is rendered server-side
- * and passed in as `children`. Only the cross-cutting controls (nav button,
- * sidebar quick-link, in-feed CTA, appeal CTA, dynamic posts list) reach
- * back into this state via `useCommunityUi()`.
+ * Owns:
+ *   - viewer-email hydration (from sessionStorage) + profile fetch
+ *   - Socket.IO subscription → drives the new-post bar via `pendingCount`
+ *   - live feed state (posts/page/total/msFilter/loading) + re-fetch on
+ *     filter / page change
+ *   - sign-in prompt overlay for gated actions
+ *   - submit / reply modals (wired to real server actions)
+ *   - toast queue + AppealModal (still simulated; moderation pipeline TODO)
  *
- * TODO(real-data): the simulated SSE block at the bottom of this file is
- *   the seam where real Socket.IO subscription should slot in. The existing
- *   `src/lib/community-broadcast.ts` already emits a `feed:refresh` event;
- *   call `incrementPending(1)` when it fires.
+ * Only the live-only `ApprovedPost[]` flows through the new feed state; the
+ * seeded `ownPending`/`ownRemoved` cards still live on `data.posts` and are
+ * rendered by `CommunityFeed` from the initial server payload.
  */
-export function CommunityShell({ data, children }: Props) {
+export function CommunityShell({
+  data,
+  initialMsFilter,
+  initialPage,
+  initialTotal,
+  initialTotalPages,
+  children,
+}: Props) {
+  /* ─── auth ─── */
+  const [viewerEmail, setViewerEmail] = useState<string | null>(null);
+  const [isSignedIn, setIsSignedIn] = useState(false);
+
+  /* ─── feed state ─── */
+  const initialApproved = useMemo<ApprovedPost[]>(
+    () =>
+      data.posts.filter(
+        (p): p is ApprovedPost => p.kind === "approved",
+      ),
+    [data.posts],
+  );
+  const [posts, setPosts] = useState<ApprovedPost[]>(initialApproved);
+  const [page, setPage] = useState(initialPage);
+  const [total, setTotal] = useState(initialTotal);
+  const [totalPages, setTotalPages] = useState(initialTotalPages);
+  const [msFilter, setMsFilterState] =
+    useState<CommunityMsFilter>(initialMsFilter);
+  const [loading, setLoading] = useState(false);
+
+  /* ─── socket / live signals ─── */
   const [liveCount, setLiveCount] = useState(data.liveCount);
-  const [dynamicPosts, setDynamicPosts] = useState<Post[]>([]);
+  const [socketLive, setSocketLive] = useState(false);
   const [pendingCount, setPendingCount] = useState(0);
+
+  /* ─── overlays ─── */
   const [submitOpen, setSubmitOpen] = useState(false);
   const [appealOpen, setAppealOpen] = useState(false);
   const [appealContext, setAppealContext] = useState<AppealContext | null>(
     null,
   );
+  const [replyOpen, setReplyOpen] = useState(false);
+  const [replyTarget, setReplyTarget] = useState<ApprovedPost | null>(null);
+  const [signInOpen, setSignInOpen] = useState(false);
+  const [signInAction, setSignInAction] = useState<GatedAction>("post");
   const [toast, setToast] = useState<ToastItem | null>(null);
   const toastIdRef = useRef(0);
   const toastTimerRef = useRef<number | null>(null);
 
+  /* ─── refs mirroring state for socket / event handlers ─── */
+  const pageRef = useRef(page);
+  const msFilterRef = useRef(msFilter);
+  const viewerEmailRef = useRef(viewerEmail);
+  useEffect(() => {
+    pageRef.current = page;
+  }, [page]);
+  useEffect(() => {
+    msFilterRef.current = msFilter;
+  }, [msFilter]);
+  useEffect(() => {
+    viewerEmailRef.current = viewerEmail;
+  }, [viewerEmail]);
+
+  /* ─── toast helper ─── */
   const showToast = useCallback(
     (message: string, tone: ToastTone = "default") => {
       if (toastTimerRef.current !== null) {
@@ -84,11 +140,167 @@ export function CommunityShell({ data, children }: Props) {
     [],
   );
 
-  const incrementPending = useCallback((by: number) => {
-    setPendingCount((prev) => Math.min(prev + by, MAX_PENDING));
+  /* ─── core re-fetch ─── */
+  const fetchPage = useCallback(
+    async (pageNum: number, filter: CommunityMsFilter) => {
+      setLoading(true);
+      try {
+        const ms = filter ? FILTER_TO_MS[filter] : null;
+        const result = await getCommunityFeedAction(
+          viewerEmailRef.current,
+          {
+            page: pageNum,
+            pageSize: COMMUNITY_FEED_PAGE_SIZE,
+            msFilter: ms,
+          },
+        );
+        setPosts(result.posts.map((p) => communityPostToApproved(p)));
+        setTotal(result.total);
+        setTotalPages(result.totalPages);
+        setPage(result.page);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [],
+  );
+
+  /* ─── hydrate viewer email + profile on mount ─── */
+  useEffect(() => {
+    const em = readSessionEmail();
+    if (!em) return;
+    setViewerEmail(em);
+    let cancelled = false;
+    void (async () => {
+      const r = await getProfileAction(em);
+      if (cancelled) return;
+      setIsSignedIn(r.ok);
+    })();
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
-  const openSubmit = useCallback(() => setSubmitOpen(true), []);
+  /* When the email becomes known, re-fetch with the viewer header so
+     `viewerHasMarkedHelpful` is accurate. */
+  useEffect(() => {
+    if (!viewerEmail) return;
+    void fetchPage(pageRef.current, msFilterRef.current);
+  }, [viewerEmail, fetchPage]);
+
+  /* ─── Socket.IO ─── */
+  useEffect(() => {
+    const socket: Socket = io({
+      path: "/socket.io",
+      addTrailingSlash: false,
+      transports: ["websocket", "polling"],
+    });
+    socket.on("connect", () => setSocketLive(true));
+    socket.on("disconnect", () => setSocketLive(false));
+    socket.on("connect_error", () => setSocketLive(false));
+    socket.on("feed:refresh", () => {
+      setPendingCount((n) => Math.min(n + 1, MAX_PENDING));
+    });
+    return () => {
+      socket.disconnect();
+    };
+  }, []);
+
+  /* ─── action dispatchers ─── */
+  const requireSignedIn = useCallback(
+    (action: GatedAction): boolean => {
+      if (viewerEmail && isSignedIn) return true;
+      setSignInAction(action);
+      setSignInOpen(true);
+      return false;
+    },
+    [viewerEmail, isSignedIn],
+  );
+
+  const requestPost = useCallback(() => {
+    if (!requireSignedIn("post")) return;
+    setSubmitOpen(true);
+  }, [requireSignedIn]);
+
+  const requestReply = useCallback(
+    (post: ApprovedPost) => {
+      if (!requireSignedIn("reply")) return;
+      setReplyTarget(post);
+      setReplyOpen(true);
+    },
+    [requireSignedIn],
+  );
+
+  const requestHelpful = useCallback(
+    (postId: string) => {
+      if (!requireSignedIn("mark helpful")) return;
+      const email = viewerEmail;
+      if (!email) return;
+
+      /* Optimistic update — flip the local state immediately so the count
+         increments without a network roundtrip. Roll back on failure. */
+      let prev: ApprovedPost | undefined;
+      setPosts((all) =>
+        all.map((p) => {
+          if (p.id !== postId) return p;
+          prev = p;
+          if (p.helpfulActive) return p;
+          return {
+            ...p,
+            helpfulCount: p.helpfulCount + 1,
+            helpfulActive: true,
+          };
+        }),
+      );
+      void markCommunityHelpfulAction(email, postId).then((res) => {
+        if (!res.ok) {
+          setPosts((all) =>
+            all.map((p) => (p.id === postId && prev ? prev : p)),
+          );
+          showToast(res.error, "amber");
+          return;
+        }
+        /* Reconcile with the canonical server count. */
+        setPosts((all) =>
+          all.map((p) =>
+            p.id === postId
+              ? {
+                  ...p,
+                  helpfulCount: res.helpful,
+                  helpfulActive: res.viewerHasMarkedHelpful,
+                }
+              : p,
+          ),
+        );
+      });
+    },
+    [requireSignedIn, viewerEmail, showToast],
+  );
+
+  const setMsFilter = useCallback(
+    (ms: CommunityMsFilter) => {
+      setMsFilterState(ms);
+      void fetchPage(1, ms);
+    },
+    [fetchPage],
+  );
+
+  const loadPage = useCallback(
+    (n: number) => {
+      void fetchPage(n, msFilterRef.current);
+    },
+    [fetchPage],
+  );
+
+  const loadNewPosts = useCallback(() => {
+    setPendingCount(0);
+    void fetchPage(1, msFilterRef.current).then(() => {
+      setLiveCount((c) => c + 1);
+    });
+  }, [fetchPage]);
+
+  /* ─── overlay helpers ─── */
+  const openSubmit = useCallback(() => requestPost(), [requestPost]);
   const closeSubmit = useCallback(() => setSubmitOpen(false), []);
 
   const openAppeal = useCallback((ctx?: AppealContext) => {
@@ -96,39 +308,10 @@ export function CommunityShell({ data, children }: Props) {
     setAppealOpen(true);
   }, []);
   const closeAppeal = useCallback(() => setAppealOpen(false), []);
-
-  const loadNewPosts = useCallback(() => {
-    if (pendingCount === 0) return;
-    const fresh: Post[] = [];
-    for (let i = 0; i < pendingCount; i++) {
-      fresh.push(generateDynamicPost());
-    }
-    setDynamicPosts((prev) => [...fresh, ...prev]);
-    setLiveCount((n) => n + pendingCount);
-    setPendingCount(0);
-  }, [pendingCount]);
-
-  useEffect(() => {
-    const id = window.setInterval(() => {
-      if (Math.random() < LIVE_TICK_PROB) {
-        setLiveCount((n) => n + 1);
-      }
-    }, LIVE_TICK_MS);
-    return () => window.clearInterval(id);
+  const closeReply = useCallback(() => {
+    setReplyOpen(false);
+    setReplyTarget(null);
   }, []);
-
-  useEffect(() => {
-    const first = window.setTimeout(() => {
-      incrementPending(Math.floor(Math.random() * 2) + 1);
-    }, FIRST_PULSE_MS);
-    const steady = window.setInterval(() => {
-      incrementPending(1);
-    }, STEADY_PULSE_MS);
-    return () => {
-      window.clearTimeout(first);
-      window.clearInterval(steady);
-    };
-  }, [incrementPending]);
 
   useEffect(() => {
     return () => {
@@ -141,12 +324,44 @@ export function CommunityShell({ data, children }: Props) {
   const ctxValue = useMemo<CommunityUi>(
     () => ({
       liveCount,
-      dynamicPosts,
+      socketLive,
+      viewerEmail,
+      isSignedIn,
+      posts,
+      page,
+      totalPages,
+      total,
+      msFilter,
+      loading,
+      requestPost,
+      requestHelpful,
+      requestReply,
+      loadPage,
+      setMsFilter,
       openSubmit,
       openAppeal,
       toast: showToast,
     }),
-    [liveCount, dynamicPosts, openSubmit, openAppeal, showToast],
+    [
+      liveCount,
+      socketLive,
+      viewerEmail,
+      isSignedIn,
+      posts,
+      page,
+      totalPages,
+      total,
+      msFilter,
+      loading,
+      requestPost,
+      requestHelpful,
+      requestReply,
+      loadPage,
+      setMsFilter,
+      openSubmit,
+      openAppeal,
+      showToast,
+    ],
   );
 
   return (
@@ -157,7 +372,16 @@ export function CommunityShell({ data, children }: Props) {
 
       <SubmitMilestoneModal
         open={submitOpen}
+        email={viewerEmail}
         onClose={closeSubmit}
+        onSuccess={(msg) => showToast(msg, "green")}
+        onValidationFail={(msg) => showToast(msg, "amber")}
+      />
+      <ReplyModal
+        open={replyOpen}
+        parent={replyTarget}
+        email={viewerEmail}
+        onClose={closeReply}
         onSuccess={(msg) => showToast(msg, "green")}
         onValidationFail={(msg) => showToast(msg, "amber")}
       />
@@ -167,6 +391,11 @@ export function CommunityShell({ data, children }: Props) {
         onClose={closeAppeal}
         onSuccess={(msg) => showToast(msg, "green")}
         onValidationFail={(msg) => showToast(msg, "amber")}
+      />
+      <SignInPromptModal
+        open={signInOpen}
+        action={signInAction}
+        onClose={() => setSignInOpen(false)}
       />
 
       <CommunityToaster toast={toast} />

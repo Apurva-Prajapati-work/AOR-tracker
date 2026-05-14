@@ -18,6 +18,7 @@ const NAV_ITEMS: NavItem[] = [
   { href: "/#messaging", label: "Alerts" },
   { href: "/roadmap", label: "Roadmap" },
   { href: "/changelog", label: "Changelog" },
+  { href: "/wiki", label: "Wiki" },
   { href: "/community", label: "Community" },
 ];
 

@@ -185,6 +185,9 @@ export function MarketingFooter() {
 
         <div>
           <div className="fg-col-head">Resources</div>
+          <Link href="/wiki" className="fg-link">
+            Dev wiki<span className="fg-link-badge lb-oss">OSS</span>
+          </Link>
           <a
             href="https://www.getnorthpath.com/blog"
             target="_blank"

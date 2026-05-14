@@ -9,6 +9,7 @@ import {
 import { getProfileAction } from "@/app/actions/profile";
 import { COMMUNITY_FEED_PAGE_SIZE } from "@/lib/community-feed";
 import { readSessionEmail } from "@/lib/session-client";
+import type { UserProfile } from "@/lib/types";
 import { AppealModal } from "./AppealModal";
 import { communityPostToApproved } from "./adapter";
 import {
@@ -74,6 +75,7 @@ export function CommunityShell({
   /* ─── auth ─── */
   const [viewerEmail, setViewerEmail] = useState<string | null>(null);
   const [isSignedIn, setIsSignedIn] = useState(false);
+  const [viewerProfile, setViewerProfile] = useState<UserProfile | null>(null);
 
   /* ─── feed state ─── */
   const initialApproved = useMemo<ApprovedPost[]>(
@@ -169,17 +171,34 @@ export function CommunityShell({
   useEffect(() => {
     const em = readSessionEmail();
     if (!em) return;
-    setViewerEmail(em);
     let cancelled = false;
-    void (async () => {
-      const r = await getProfileAction(em);
+    const t = window.setTimeout(() => {
+      setViewerEmail(em);
+      void (async () => {
+        const r = await getProfileAction(em);
+        if (cancelled) return;
+        setIsSignedIn(r.ok);
+        setViewerProfile(r.ok ? r.profile : null);
+      })();
+    }, 0);
+    return () => {
+      cancelled = true;
+      window.clearTimeout(t);
+    };
+  }, []);
+
+  /* Refresh profile when opening Submit Milestone so dates match dashboard. */
+  useEffect(() => {
+    if (!submitOpen || !viewerEmail) return;
+    let cancelled = false;
+    void getProfileAction(viewerEmail).then((r) => {
       if (cancelled) return;
-      setIsSignedIn(r.ok);
-    })();
+      if (r.ok) setViewerProfile(r.profile);
+    });
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [submitOpen, viewerEmail]);
 
   /* When the email becomes known, re-fetch with the viewer header so
      `viewerHasMarkedHelpful` is accurate. */
@@ -373,6 +392,7 @@ export function CommunityShell({
       <SubmitMilestoneModal
         open={submitOpen}
         email={viewerEmail}
+        profile={viewerProfile}
         onClose={closeSubmit}
         onSuccess={(msg) => showToast(msg, "green")}
         onValidationFail={(msg) => showToast(msg, "amber")}

@@ -1222,6 +1222,108 @@
   margin-top: 4px;
   line-height: 1.5;
 }
+.mkt-community-page .m-hint {
+  font-size: 0.72rem;
+  color: var(--muted2);
+  margin-top: 6px;
+  line-height: 1.45;
+}
+.mkt-community-page .m-profile-loading {
+  margin: 0 0 14px;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+.mkt-community-page .m-timeline-error {
+  margin: 0 0 14px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1.5px solid rgba(200, 40, 40, 0.35);
+  background: var(--red-pale);
+  font-size: 0.82rem;
+  color: var(--navy);
+}
+.mkt-community-page .m-nonshare-callout {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin: 0 0 14px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1.5px solid var(--border);
+  background: var(--cream2);
+}
+.mkt-community-page .m-nonshare-badge {
+  flex-shrink: 0;
+  margin-top: 1px;
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-size: 0.58rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+  background: var(--cream);
+  border: 1px solid var(--border);
+  line-height: 1.2;
+}
+.mkt-community-page .m-nonshare-text {
+  margin: 0;
+  font-size: 0.76rem;
+  line-height: 1.45;
+  color: var(--muted2);
+}
+.mkt-community-page .m-nonshare-text strong {
+  color: var(--navy);
+  font-weight: 600;
+}
+.mkt-community-page .m-input-readonly {
+  cursor: not-allowed;
+  background: var(--cream2);
+  color: var(--navy);
+}
+.mkt-community-page .m-dash-warning {
+  border-radius: 10px;
+  border: 1.5px solid rgba(181, 101, 29, 0.45);
+  background: var(--abg);
+  padding: 12px 14px;
+  margin-bottom: 14px;
+}
+.mkt-community-page .m-dash-warning-badge {
+  display: inline-block;
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--amber);
+  margin-bottom: 6px;
+}
+.mkt-community-page .m-dash-warning-text {
+  margin: 0 0 10px;
+  font-size: 0.8rem;
+  line-height: 1.5;
+  color: var(--navy);
+}
+.mkt-community-page .m-dash-warning-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  padding: 8px 14px;
+  border-radius: 8px;
+  background: var(--green);
+  color: #fff;
+  text-decoration: none;
+  transition: background 0.15s ease;
+}
+.mkt-community-page .m-dash-warning-btn:hover {
+  background: var(--green2);
+  color: #fff;
+}
+.mkt-community-page .m-dash-warning-btn svg {
+  flex-shrink: 0;
+  fill: currentColor;
+}
 .mkt-community-page .m-footer {
   display: flex;
   gap: 8px;

@@ -1093,6 +1093,22 @@
   gap: 3px;
   margin: 12px 0 4px;
 }
+.dashboard-v2-page .hist-empty {
+  flex: 1;
+  align-self: center;
+  min-height: 72px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 8px 12px;
+  font-size: 0.72rem;
+  line-height: 1.45;
+  color: var(--muted);
+  background: var(--cream2);
+  border-radius: 8px;
+  border: 1px dashed var(--border);
+}
 .dashboard-v2-page .hb-wrap {
   flex: 1;
   display: flex;

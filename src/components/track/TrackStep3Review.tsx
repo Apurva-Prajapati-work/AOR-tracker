@@ -1,6 +1,8 @@
 "use client";
 
-import type { MilestoneKey } from "@/lib/types";
+import { useMemo } from "react";
+import type { CohortStats, MilestoneKey } from "@/lib/types";
+import { estimatePprWindow } from "@/lib/ppr-estimate";
 import {
   streamAverage,
   TRACK_MILESTONES,
@@ -36,6 +38,10 @@ type Props = {
   submitting: boolean;
   onBack: () => void;
   onSubmit: () => void;
+
+  /** Live cohort stats for the same PPR math as `/dashboard` (null while loading). */
+  cohortStats: CohortStats | null;
+  cohortStatsLoading: boolean;
 };
 
 const DATE_FMT = new Intl.DateTimeFormat("en-CA", {
@@ -75,14 +81,31 @@ export function TrackStep3Review(props: Props) {
     submitting,
     onBack,
     onSubmit,
+    cohortStats,
+    cohortStatsLoading,
   } = props;
 
-  const today = new Date();
-  const daysElapsed = aorDate ? daysBetween(aorDate, today) : 0;
-  const avg = streamAverage(stream);
-  const remaining = Math.max(avg - daysElapsed, 14);
-  const windowStart = new Date(today.getTime() + remaining * 0.75 * 86400000);
-  const windowEnd = new Date(today.getTime() + remaining * 1.25 * 86400000);
+  const daysElapsed = aorDate ? daysBetween(aorDate, new Date()) : 0;
+  const streamAvgFallback = streamAverage(stream);
+  const medianDisplay =
+    cohortStats?.median_days_to_ppr ?? streamAvgFallback;
+
+  const fallbackWindow = useMemo(() => {
+    const now = new Date();
+    const remaining = Math.max(streamAvgFallback - daysElapsed, 14);
+    const ws = new Date(now.getTime() + remaining * 0.75 * 86400000);
+    const we = new Date(now.getTime() + remaining * 1.25 * 86400000);
+    return `${MONTH_FMT.format(ws)}–${MONTH_FMT.format(we)}`;
+  }, [streamAvgFallback, daysElapsed]);
+
+  const dashboardPprLabel = useMemo(() => {
+    if (!aorDate || !cohortStats) return null;
+    return estimatePprWindow(aorDate, cohortStats).windowLabel;
+  }, [aorDate, cohortStats]);
+
+  const pprWindowDisplay = cohortStatsLoading
+    ? "…"
+    : dashboardPprLabel ?? fallbackWindow;
 
   const aorLabel = aorDate
     ? DATE_FMT.format(new Date(`${aorDate}T12:00:00`))
@@ -119,13 +142,11 @@ export function TrackStep3Review(props: Props) {
             <div className="tk-summary-stat-label">Days elapsed</div>
           </div>
           <div className="tk-summary-stat">
-            <div className="tk-summary-stat-val green">{avg}d</div>
-            <div className="tk-summary-stat-label">Stream avg</div>
+            <div className="tk-summary-stat-val green">{medianDisplay}d</div>
+            <div className="tk-summary-stat-label">Cohort median</div>
           </div>
           <div className="tk-summary-stat">
-            <div className="tk-summary-stat-val">
-              {MONTH_FMT.format(windowStart)}–{MONTH_FMT.format(windowEnd)}
-            </div>
+            <div className="tk-summary-stat-val">{pprWindowDisplay}</div>
             <div className="tk-summary-stat-label">Est. PPR window</div>
           </div>
         </div>

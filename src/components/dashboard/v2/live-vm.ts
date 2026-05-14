@@ -279,7 +279,20 @@ export function alertsVM(
 }
 
 function stripHtml(html: string): string {
-  return html.replace(/<[^>]*>/g, "").replace(/\s+/g, " ").trim();
+  const plain = html.replace(/<[^>]*>/g, "").replace(/\s+/g, " ").trim();
+  // Decode entities left in insight strings so plain-text alerts never show
+  // literals like "&apos;" (double-escaped upstream or legacy content).
+  if (typeof document === "undefined") {
+    return plain
+      .replace(/&apos;|&#39;/gi, "'")
+      .replace(/&quot;/gi, '"')
+      .replace(/&lt;/gi, "<")
+      .replace(/&gt;/gi, ">")
+      .replace(/&amp;/gi, "&");
+  }
+  const ta = document.createElement("textarea");
+  ta.innerHTML = plain;
+  return ta.value;
 }
 
 /* ─── SIDEBAR SECTIONS ──────────────────────────────────────────────── */

@@ -50,6 +50,8 @@ export function DashboardHistogram({
     () => Math.max(...bars.map((b) => b.value), 1),
     [bars],
   );
+  const allBucketsEmpty =
+    bars.length > 0 && bars.every((b) => (b.value ?? 0) === 0);
 
   useEffect(() => {
     const id = window.setTimeout(() => setAnimateOn(true), 700);
@@ -70,15 +72,22 @@ export function DashboardHistogram({
         </div>
       </div>
       <div className="hist-area">
-        {bars.map((b, i) => (
-          <HistBar
-            key={b.label}
-            bar={b}
-            delaySec={i * 0.05}
-            animateOn={animateOn}
-            max={max}
-          />
-        ))}
+        {allBucketsEmpty ? (
+          <div className="hist-empty" role="status">
+            No PPR completion days in this cohort yet — bars appear once
+            applicants with PPR dates are verified in your bucket.
+          </div>
+        ) : (
+          bars.map((b, i) => (
+            <HistBar
+              key={b.label}
+              bar={b}
+              delaySec={i * 0.05}
+              animateOn={animateOn}
+              max={max}
+            />
+          ))
+        )}
       </div>
       <div className="hist-legend">
         <div className="hl-item">

@@ -7,7 +7,9 @@ import {
   getProfileAction,
   saveProfileAction,
 } from "@/app/actions/profile";
+import { getCohortStatsForProfileAction } from "@/app/actions/cohort";
 import { emptyMilestones, isValidEmail } from "@/lib/profile";
+import type { CohortStats } from "@/lib/types";
 import { writeSessionEmail } from "@/lib/session-client";
 import type { MilestoneEntry, MilestoneKey, UserProfile } from "@/lib/types";
 import { useToast } from "@/components/ToastContext";
@@ -98,6 +100,10 @@ export function TrackPageClient() {
   const [consentError, setConsentError] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
+  /** Step 3: same cohort document as dashboard for PPR window copy. */
+  const [reviewCohort, setReviewCohort] = useState<CohortStats | null>(null);
+  const [reviewCohortLoading, setReviewCohortLoading] = useState(false);
+
   // ── Live counter (cosmetic, matches sample) ──────────────────────────────
   const [liveCount, setLiveCount] = useState(14_827);
   useEffect(() => {
@@ -112,6 +118,44 @@ export function TrackPageClient() {
     () => `${liveCount.toLocaleString("en-US")} timelines live`,
     [liveCount],
   );
+
+  useEffect(() => {
+    if (step !== 3 || phase !== "onboarding") {
+      return;
+    }
+    if (!aorDate || !stream || !appType) return;
+
+    const prov = stream === "PNP" ? province || "Other" : province || "Ontario";
+    let cancelled = false;
+    const tid = window.setTimeout(() => {
+      if (cancelled) return;
+      setReviewCohortLoading(true);
+    }, 0);
+    void getCohortStatsForProfileAction({
+      aorDate,
+      stream,
+      type: appType,
+      province: prov,
+    })
+      .then((c) => {
+        if (!cancelled) setReviewCohort(c);
+      })
+      .catch(() => {
+        if (!cancelled) setReviewCohort(null);
+      })
+      .finally(() => {
+        if (!cancelled) setReviewCohortLoading(false);
+      });
+
+    return () => {
+      cancelled = true;
+      window.clearTimeout(tid);
+      window.setTimeout(() => {
+        setReviewCohort(null);
+        setReviewCohortLoading(false);
+      }, 0);
+    };
+  }, [step, phase, aorDate, stream, appType, province]);
 
   // ── Step transitions ─────────────────────────────────────────────────────
   const goToStep = (n: 1 | 2 | 3) => {
@@ -296,6 +340,8 @@ export function TrackPageClient() {
                   submitting={submitting}
                   onBack={() => goToStep(2)}
                   onSubmit={() => void onSubmit()}
+                  cohortStats={reviewCohort}
+                  cohortStatsLoading={reviewCohortLoading}
                 />
               ) : null}
             </>

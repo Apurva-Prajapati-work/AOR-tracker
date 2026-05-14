@@ -33,7 +33,7 @@ export default async function PublicShareTimelinePage({ params }: Props) {
     >
       <div className="topbar">
         <WebsiteLogo href="/" className="logo" aria-label="AORTrack — home" />
-        <span className="hidden text-[11px] text-[var(--t3)] md:inline">
+        <span className="hidden text-[11px] text-(--t3) md:inline">
           Public share · read-only
         </span>
         <div className="tr">
@@ -69,12 +69,12 @@ export default async function PublicShareTimelinePage({ params }: Props) {
               </div>
             </div>
             {data.pprWindow !== "—" ? (
-              <div className="mt-3 text-center text-[11px] text-[var(--t3)]">
+              <div className="mt-3 text-center text-[11px] text-(--t3)">
                 Estimated window: {data.pprWindow}
               </div>
             ) : null}
           </div>
-          <p className="mt-5 text-center text-[12px] text-[var(--t2)] leading-relaxed">
+          <p className="mt-5 text-center text-[12px] text-(--t2) leading-relaxed">
             This is a read-only snapshot. Numbers use cohort models and may
             differ from IRCC processing times.
           </p>
@@ -84,7 +84,7 @@ export default async function PublicShareTimelinePage({ params }: Props) {
             </Link>
             <Link
               href="/"
-              className="inline-block rounded-lg border border-[var(--border)] bg-[var(--navy3)] px-5 py-2.5 text-[13px] font-medium text-[var(--t2)] no-underline hover:border-[rgba(255,255,255,.15)]"
+              className="inline-block rounded-lg border border-(--border) bg-(--navy3) px-5 py-2.5 text-[13px] font-medium text-(--t2) no-underline hover:border-[rgba(255,255,255,.15)]"
             >
               Home
             </Link>

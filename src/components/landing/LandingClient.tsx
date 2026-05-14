@@ -79,7 +79,7 @@ export function LandingClient() {
     <div className="screen active flex min-h-screen flex-col">
       <div className="topbar">
         <WebsiteLogo href="/" className="logo" aria-label="AORTrack — home" />
-        <span className="hidden items-center gap-1 text-[12px] text-[var(--t3)] md:inline-flex">
+        <span className="hidden items-center gap-1 text-[12px] text-(--t3) md:inline-flex">
           <span className="dlive" />
           {profileCount != null
             ? `${profileCount.toLocaleString()} timelines live`
@@ -155,7 +155,7 @@ export function LandingClient() {
         </div>
         <div className={`rerr ${resumeErr ? "is-visible" : ""}`}>
           No profile found for that email.{" "}
-          <Link href="/track" className="text-[var(--red)]">
+          <Link href="/track" className="text-(--red)">
             Start tracking <FaArrowRight aria-hidden className="inline-block" />
           </Link>
         </div>

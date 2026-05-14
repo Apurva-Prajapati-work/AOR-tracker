@@ -391,7 +391,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
           <div className="tr flex flex-wrap items-center gap-2">
             <button
               type="button"
-              className="rounded-md border border-[var(--border)] bg-[var(--navy3)] px-4 py-2.5 text-[11px] font-medium leading-snug text-[var(--t2)] hover:border-[rgba(255,255,255,.18)] disabled:opacity-40"
+              className="rounded-md border border-(--border) bg-(--navy3) px-4 py-2.5 text-[11px] font-medium leading-snug text-(--t2) hover:border-[rgba(255,255,255,.18)] disabled:opacity-40"
               disabled={syncCohortBusy || !email}
               title="Rebuild cohort_stats from all profiles (run daily in production via cron)"
               onClick={() => void syncCohortStats()}
@@ -401,7 +401,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
                 {syncCohortBusy ? "Syncing…" : "Sync cohorts"}
               </span>
             </button>
-            <span className="text-[11px] text-[var(--t3)]">
+            <span className="text-[11px] text-(--t3)">
               <span className="dlive" />
               Live
             </span>
@@ -461,7 +461,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
                 <span className="sbico">
                   <FaHome aria-hidden />
                 </span>
-                <span className="truncate text-[var(--t2)]">Back to my cohort</span>
+                <span className="truncate text-(--t2)">Back to my cohort</span>
               </button>
             ) : null}
             {similarCohortsDisplay.slice(0, 6).map((s) => (
@@ -477,7 +477,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
                 <span className="min-w-0 flex-1 truncate text-left">
                   {s.label}
                 </span>
-                <span className="shrink-0 text-[9px] text-[var(--t3)]">
+                <span className="shrink-0 text-[9px] text-(--t3)">
                   n={s.nVerified}
                 </span>
               </button>
@@ -497,7 +497,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
             </button>
             <div className="sbuser">
               <div className="mb-1 flex items-center gap-2">
-                <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[rgba(192,57,43,0.2)] text-[10px] font-semibold text-[var(--red)]">
+                <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[rgba(192,57,43,0.2)] text-[10px] font-semibold text-(--red)">
                   {email.substring(0, 2).toUpperCase()}
                 </div>
                 <div className="min-w-0">

@@ -1,0 +1,172 @@
+/*
+ * Public share `/s/[token]` — aligns with:
+ *   - `.marketing-site` + marketing-core.css (cream canvas, navy type)
+ *   - `.dashboard-v2-page` app bar (`.dnb`) + v2 timeline embed
+ */
+
+.marketing-site .mkt-public-share-shell.dashboard-v2-page {
+  height: auto;
+  min-height: 100vh;
+  overflow: visible;
+  max-height: none;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.marketing-site .mkt-public-share-main {
+  flex: 1;
+  width: 100%;
+  max-width: 1040px;
+  margin: 0 auto;
+  padding: clamp(24px, 4vw, 48px) clamp(16px, 3vw, 28px) clamp(40px, 6vw, 72px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(28px, 4vw, 40px);
+}
+
+/* Hero summary — same vocabulary as community cards (cream, border, Fraunces) */
+.marketing-site .share-hero {
+  width: 100%;
+  max-width: 520px;
+  text-align: center;
+  background: #fff;
+  border: 1.5px solid var(--border);
+  border-radius: 16px;
+  padding: clamp(22px, 3vw, 30px) clamp(18px, 3vw, 28px);
+  box-shadow: 0 4px 24px rgba(26, 35, 50, 0.06);
+}
+
+.marketing-site .share-hero-flag {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 10px;
+  font-size: 2.25rem;
+  color: var(--red);
+  line-height: 1;
+}
+
+.marketing-site .share-hero-title {
+  font-family: var(--fh);
+  font-size: clamp(1.35rem, 2.8vw, 1.65rem);
+  font-weight: 900;
+  color: var(--navy);
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+  margin: 0 0 8px;
+}
+
+.marketing-site .share-hero-sub {
+  margin: 0;
+  font-size: 0.88rem;
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+.marketing-site .share-hero-stats {
+  display: flex;
+  justify-content: space-around;
+  gap: 12px;
+  margin-top: 18px;
+  padding-top: 18px;
+  padding-bottom: 4px;
+  border-top: 1px solid var(--border);
+}
+
+.marketing-site .share-hero-stat-val {
+  font-family: var(--fm);
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--navy);
+  line-height: 1.2;
+}
+
+.marketing-site .share-hero-stat-val--accent {
+  color: var(--red);
+}
+
+.marketing-site .share-hero-stat-lbl {
+  margin-top: 4px;
+  font-size: 0.62rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted2);
+}
+
+.marketing-site .share-hero-window {
+  margin-top: 14px;
+  font-size: 0.75rem;
+  color: var(--muted);
+  line-height: 1.45;
+}
+
+/* App bar: links styled like `.dnb-btn` */
+.marketing-site .mkt-public-share-shell.dashboard-v2-page .dnb a.dnb-btn {
+  text-decoration: none;
+}
+
+.marketing-site .share-disclaimer {
+  margin: 0;
+  max-width: 560px;
+  text-align: center;
+  font-size: 0.8rem;
+  line-height: 1.65;
+  color: var(--muted);
+}
+
+.marketing-site .share-cta-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+}
+
+.marketing-site .share-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  padding: 10px 18px;
+  border-radius: 8px;
+  text-decoration: none;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.marketing-site .share-cta--primary {
+  background: var(--green);
+  color: #fff;
+  border: 1.5px solid var(--green);
+}
+
+.marketing-site .share-cta--primary:hover {
+  background: var(--green2);
+  border-color: var(--green2);
+  color: #fff;
+}
+
+.marketing-site .share-cta--ghost {
+  background: #fff;
+  color: var(--navy);
+  border: 1.5px solid var(--border);
+}
+
+.marketing-site .share-cta--ghost:hover {
+  border-color: var(--green);
+  color: var(--green);
+}
+
+.marketing-site .share-cta svg {
+  flex-shrink: 0;
+}
+
+/* Softer embed on cream marketing canvas */
+.marketing-site .share-dash-v2-host.dashboard-v2-page {
+  box-shadow: 0 6px 28px rgba(26, 35, 50, 0.07);
+}

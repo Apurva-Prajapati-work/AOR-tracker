@@ -4,6 +4,7 @@
  * Scoped styles for the v2 dashboard design. Used by:
  *   - src/app/dashboard/**            (production, live data via context)
  *   - src/app/(marketing)/dashboard-new/page.tsx  (seed-data preview)
+ *   - src/app/s/[token]/page.tsx      (read-only share; `.share-dash-v2-host`)
  *
  * All selectors are namespaced under `.dashboard-v2-page` so this file does
  * not interact with the marketing layout or any other page chrome.
@@ -1581,4 +1582,12 @@
   .dashboard-v2-page .dnb-sep {
     display: none;
   }
+}
+
+/* Public share `/s/[token]`: v2 timeline + card without full-screen shell */
+.share-dash-v2-host.dashboard-v2-page {
+  height: auto;
+  min-height: 0;
+  overflow: visible;
+  max-height: none;
 }

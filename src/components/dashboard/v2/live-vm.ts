@@ -20,6 +20,7 @@ import { fmtDate } from "@/lib/format";
 import { humanizeCohortKey } from "@/lib/cohort";
 import type { MilestoneDefRow } from "@/lib/cohort-dynamic";
 import type { MilestoneKey, UserProfile } from "@/lib/types";
+import { applicantIdFromEmail, timelineRowsFromProfile } from "@/lib/share-timeline-vm";
 import type {
   DnAlertCard,
   DnCohortBar,
@@ -31,26 +32,11 @@ import type {
   DnRing,
   DnStreamRow,
   DnTimelineRow,
-  DnTimelineState,
   SidebarItem,
   SidebarSections,
 } from "./data";
 
 /* ─── PROFILE / IDENTITY ────────────────────────────────────────────── */
-
-/**
- * Stable short id we can use to label the user in the dashboard chrome
- * ("Applicant #4821"). Production stores the user by email — we hash it
- * lightly so the id is short, deterministic and non-PII-leaking.
- */
-function applicantIdFromEmail(email: string): string {
-  let h = 0;
-  for (let i = 0; i < email.length; i++) {
-    h = (h * 31 + email.charCodeAt(i)) | 0;
-  }
-  const n = Math.abs(h) % 9000 + 1000;
-  return `#${n}`;
-}
 
 export function profileVM(email: string, profile: UserProfile): DnProfile {
   return {
@@ -175,84 +161,11 @@ export function pprWindowVM(
 
 /* ─── TIMELINE ──────────────────────────────────────────────────────── */
 
-const ROW_BADGES: Record<DnTimelineState, "verified" | "pending" | "estimate"> =
-  {
-    done: "verified",
-    now: "pending",
-    wait: "estimate",
-    final: "estimate",
-  };
-
-function rowStateFor(
-  defs: MilestoneDefRow[],
-  idx: number,
-  profile: UserProfile,
-): DnTimelineState {
-  const hasDate = !!profile.milestones[defs[idx].key]?.date;
-  if (hasDate) {
-    // The "now" indicator goes on the latest completed milestone.
-    let lastDone = -1;
-    defs.forEach((d, i) => {
-      if (profile.milestones[d.key]?.date) lastDone = i;
-    });
-    return idx === lastDone ? "done" : "done";
-  }
-  // First not-yet-done milestone after the last completed one is "now".
-  for (let i = 0; i < idx; i++) {
-    if (!profile.milestones[defs[i].key]?.date) return "wait";
-  }
-  return defs[idx].key === "ppr" ? "final" : "now";
-}
-
 export function timelineRowsVM(
   defs: MilestoneDefRow[],
   profile: UserProfile,
 ): DnTimelineRow[] {
-  return defs.map((def, idx) => {
-    const m = profile.milestones[def.key];
-    const hasDate = !!m?.date;
-    const state = rowStateFor(defs, idx, profile);
-    const badgeKind = ROW_BADGES[state];
-
-    const baseDate = hasDate
-      ? { date: fmtDate(m.date) || "Set", day: dayLabel(profile.aorDate, m.date!) }
-      : undefined;
-
-    return {
-      key: def.key,
-      state,
-      name: def.label,
-      desc: def.desc,
-      badge:
-        hasDate
-          ? { kind: "verified", label: "Verified" }
-          : state === "now"
-            ? { kind: "pending", label: "In progress · contribute your date" }
-            : { kind: "estimate", label: `Est. ${def.est}` },
-      date: baseDate,
-      pending: !hasDate,
-      edit:
-        def.key === "ppr"
-          ? undefined
-          : {
-              label: hasDate ? "Edit" : "+ Add date",
-              fieldLabel: `${def.label} Date`,
-              initial: m?.date ?? undefined,
-              saveLabel: hasDate
-                ? "Save"
-                : "Save & contribute to community",
-              fromDate: hasDate,
-            },
-    };
-  });
-}
-
-function dayLabel(aorDate: string, milestoneDate: string): string {
-  const aor = new Date(`${aorDate}T12:00:00`);
-  const m = new Date(`${milestoneDate}T12:00:00`);
-  if (Number.isNaN(aor.getTime()) || Number.isNaN(m.getTime())) return "—";
-  const d = Math.round((m.getTime() - aor.getTime()) / 86_400_000);
-  return `Day ${d}`;
+  return timelineRowsFromProfile(defs, profile, { includeEdit: true });
 }
 
 /* ─── COHORT BARS ───────────────────────────────────────────────────── */

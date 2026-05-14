@@ -1,6 +1,6 @@
 # 🍁 AORTrack
 
-![AORTrack — banner](public/animation-bg.png)
+![AORTrack — banner](public/Mountain.png)
 
 > **Real PR timelines from the community — not only IRCC’s generic estimate.**
 

@@ -224,7 +224,7 @@ export function TrackGate({ email, onEmail, onStartOnboarding }: Props) {
             </strong>
             <div style={{ marginTop: 4 }}>
               Let&apos;s create one — it only takes a few steps. We&apos;ll
-              carry {trimmed ? "this email" : "your email"} forward to the
+              carry {trimmed ? "this email" : "your email"}{" "} forward to the
               last step so you don&apos;t have to retype it.
             </div>
           </div>

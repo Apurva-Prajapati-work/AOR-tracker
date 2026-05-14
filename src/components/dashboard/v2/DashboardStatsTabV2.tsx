@@ -44,7 +44,7 @@ export function DashboardStatsTabV2() {
             </div>
             <div className="sec-sub">
               {ctx.cohortTotal} verified applicants
-              {ctx.cohortDataSparse ? " · low n, run Sync cohorts" : ""}
+              {ctx.cohortDataSparse ? " · Data refreshed daily" : ""}
             </div>
           </div>
         </div>

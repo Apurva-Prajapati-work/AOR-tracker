@@ -42,15 +42,25 @@ export function CommunityNav({
         <div className="cm-nav-live" role="status" aria-live="polite">
           <span className="cm-nav-live-dot" aria-hidden="true" />
           <span>{formatted}</span>
-          <span>live</span>
+          <span className="cm-nav-live-word">live</span>
         </div>
         <Link href={dashboardHref} className="cm-nbtn">
           <IconDashboardGrid aria-hidden />
           Dashboard
         </Link>
-        <button type="button" className="cm-nbtn red" onClick={openSubmit}>
+        <button
+          type="button"
+          className="cm-nbtn red"
+          onClick={openSubmit}
+          aria-label="Submit milestone"
+        >
           <FaPlus aria-hidden />
-          Submit Milestone
+          <span className="cm-nbtn-text cm-nbtn-text-desktop" aria-hidden="true">
+            Submit Milestone
+          </span>
+          <span className="cm-nbtn-text cm-nbtn-text-mobile" aria-hidden="true">
+            Post
+          </span>
         </button>
       </div>
     </nav>

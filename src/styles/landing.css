@@ -2797,6 +2797,7 @@
   margin-bottom: 7px;
   gap: 8px;
   flex-wrap: wrap;
+  margin-bottom: 20px;
 }
 .mkt-landing-page .cc-chart-hd strong {
   color: var(--navy);

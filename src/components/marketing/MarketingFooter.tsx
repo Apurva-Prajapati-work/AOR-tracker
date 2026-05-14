@@ -1,10 +1,28 @@
 import Link from "next/link";
 import { WebsiteLogo } from "@/components/WebsiteLogo";
 import { IconGitHub } from "./landing-icons";
-import { FaCheck, FaComment, FaDiscord, FaHeart, FaNewspaper, FaUsers } from "react-icons/fa";
+import {
+  FaCheck,
+  FaComment,
+  FaDiscord,
+  FaHeart,
+  FaInstagram,
+  FaLinkedin,
+  FaNewspaper,
+  FaTwitter,
+  FaUsers,
+  FaYoutube,
+} from "react-icons/fa";
 
 const GH = "https://github.com/Get-North-Path/AOR-tracker";
 const DISCORD = "https://discord.gg/aortrack";
+/** Official profiles — update if GetNorthPath changes handles. */
+const SOCIAL = {
+  linkedin: "https://www.linkedin.com/company/getnorthpath",
+  x: "https://x.com/GetNorthPath",
+  youtube: "https://www.youtube.com/@GetNorthPath",
+  instagram: "https://www.instagram.com/getnorthpath",
+} as const;
 
 export function MarketingFooter() {
   const year = new Date().getFullYear();
@@ -44,6 +62,7 @@ export function MarketingFooter() {
               href={GH}
               target="_blank"
               rel="noopener noreferrer"
+              aria-label="AORTrack on GitHub"
               title="GitHub"
             >
               <IconGitHub />
@@ -53,15 +72,57 @@ export function MarketingFooter() {
               href={DISCORD}
               target="_blank"
               rel="noopener noreferrer"
+              aria-label="AORTrack Discord"
               title="Discord"
             >
               <FaDiscord />
             </a>
             <a
               className="fg-soc-link"
+              href={SOCIAL.linkedin}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="GetNorthPath on LinkedIn"
+              title="LinkedIn"
+            >
+              <FaLinkedin />
+            </a>
+            <a
+              className="fg-soc-link"
+              href={SOCIAL.x}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="GetNorthPath on X"
+              title="X"
+            >
+              <FaTwitter />
+            </a>
+            <a
+              className="fg-soc-link"
+              href={SOCIAL.youtube}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="GetNorthPath on YouTube"
+              title="YouTube"
+            >
+              <FaYoutube />
+            </a>
+            <a
+              className="fg-soc-link"
+              href={SOCIAL.instagram}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="GetNorthPath on Instagram"
+              title="Instagram"
+            >
+              <FaInstagram />
+            </a>
+            <a
+              className="fg-soc-link"
               href="https://www.getnorthpath.com/blog"
               target="_blank"
               rel="noopener noreferrer"
+              aria-label="GetNorthPath blog"
               title="Blog"
             >
               <FaNewspaper />

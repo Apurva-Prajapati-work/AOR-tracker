@@ -21,14 +21,14 @@ export function LandingLoadingAnimation() {
       return;
     }
 
-    const tFade = window.setTimeout(() => setPhase("out"), VISIBLE_MS);
-    const tDone = window.setTimeout(
-      () => setPhase("done"),
-      VISIBLE_MS + FADE_MS,
-    );
-
     const prevOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
+
+    const tFade = window.setTimeout(() => setPhase("out"), VISIBLE_MS);
+    const tDone = window.setTimeout(() => {
+      document.body.style.overflow = prevOverflow;
+      setPhase("done");
+    }, VISIBLE_MS + FADE_MS);
 
     return () => {
       window.clearTimeout(tFade);

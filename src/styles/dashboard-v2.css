@@ -112,6 +112,10 @@
   object-fit: contain;
   display: block;
 }
+.dashboard-v2-page .dnb-brand.website-logo .website-logo__text-img {
+  height: 22px;
+  max-width: 92px;
+}
 .dashboard-v2-page .dnb-name {
   font-family: var(--fh);
   font-size: 0.95rem;

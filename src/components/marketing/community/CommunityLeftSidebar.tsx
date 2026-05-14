@@ -6,7 +6,6 @@ import {
   FaCommentAlt,
   FaInbox,
   FaPlus,
-  FaRegBookmark,
   FaUserFriends,
 } from "react-icons/fa";
 import { getProfileAction } from "@/app/actions/profile";
@@ -27,7 +26,6 @@ type Props = {
 const BROWSE_ICON: Record<string, React.ReactNode> = {
   all: <FaInbox aria-hidden />,
   "my-cohort": <FaUserFriends aria-hidden />,
-  saved: <FaRegBookmark aria-hidden />,
 };
 
 const QUICK_ICON: Record<string, React.ReactNode> = {
@@ -132,9 +130,8 @@ function SidebarItem({
  * fallback for anonymous viewers.
  *
  * TODO(real-data, scope-deferred):
- *   - `my-cohort` and `saved` Browse links: backend doesn't yet support
- *     a `cohortKey` filter on `getCommunityFeedAction`, and "saved" is
- *     local-only (localStorage). For now they're inert + emit a toast.
+ *   - `my-cohort` Browse link: backend doesn't yet support a `cohortKey`
+ *     filter on `getCommunityFeedAction`. For now it's inert + emits a toast.
  *   - "Active Session" / online-presence stat: no presence channel yet.
  */
 export function CommunityLeftSidebar({
@@ -155,17 +152,16 @@ export function CommunityLeftSidebar({
   const [profileMini, setProfileMini] = useState<CohortMini | null>(null);
 
   useEffect(() => {
-    if (!viewerEmail || !isSignedIn) {
-      setProfileMini(null);
-      return;
-    }
     let cancelled = false;
-    void getProfileAction(viewerEmail).then((res) => {
-      if (cancelled) return;
-      if (res.ok) setProfileMini(buildCohortMiniFromProfile(res.profile));
-    });
+    if (viewerEmail && isSignedIn) {
+      void getProfileAction(viewerEmail).then((res) => {
+        if (cancelled) return;
+        if (res.ok) setProfileMini(buildCohortMiniFromProfile(res.profile));
+      });
+    }
     return () => {
       cancelled = true;
+      setProfileMini(null);
     };
   }, [viewerEmail, isSignedIn]);
 
@@ -199,7 +195,7 @@ export function CommunityLeftSidebar({
               key={link.id}
               onClick={() =>
                 toast(
-                  "Coming soon — cohort-only and saved filters need a backend pass.",
+                  "Coming soon — cohort-only filter needs a backend pass.",
                   "default",
                 )
               }

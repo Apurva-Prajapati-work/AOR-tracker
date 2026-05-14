@@ -112,6 +112,13 @@ html {
   min-height: 64px;
 }
 
+.marketing-site .nav-start {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
 .marketing-site .nav-links {
   display: flex;
   align-items: center;
@@ -208,8 +215,8 @@ html {
   flex-shrink: 0;
 }
 
-/* Hamburger toggle — hidden on desktop, shown by the ≤1221px media query
-   below. Lives between the (then-hidden) inline links and the .nav-cta. */
+/* Hamburger toggle — hidden on desktop, shown at ≤1221px. Sits in `.nav-start`
+   next to the brand so logo + menu stay grouped on the left with a gap. */
 .marketing-site .nav-menu-btn {
   display: none;
   align-items: center;

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { WebsiteLogo } from "@/components/WebsiteLogo";
 import { IconChevronLeft } from "./track-icons";
 
 /**
@@ -17,24 +18,7 @@ import { IconChevronLeft } from "./track-icons";
 export function TrackNav() {
   return (
     <nav className="tk-nav" aria-label="Track page navigation">
-      <Link href="/" className="tk-nav-brand">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src="/Logo.png"
-          alt=""
-          className="fg-brand-mark"
-          width={28}
-          height={28}
-        />
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src="/Logo-text.png"
-          alt=""
-          className="fg-brand-mark"
-          width={100}
-          height={44}
-        />
-      </Link>
+      <WebsiteLogo href="/" className="tk-nav-brand" aria-label="AORTrack — home" />
 
       <Link href="/" className="tk-nav-back">
         <IconChevronLeft aria-hidden />

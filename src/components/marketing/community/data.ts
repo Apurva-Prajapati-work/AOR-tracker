@@ -79,7 +79,6 @@ export type PostBase = {
   helpfulCount: number;
   helpfulActive?: boolean;
   replyCount: number;
-  saved?: boolean;
   /** Right-side info string like "Gemini-verified · Feb 2026 cohort". */
   dataSource?: string;
   /** Existing approved replies (shown if non-empty). */
@@ -244,7 +243,6 @@ export const seedCommunity: CommunityPageData = {
       active: true,
     },
     { id: "my-cohort", label: "My Cohort Only", badge: "87" },
-    { id: "saved", label: "Saved Posts", badge: "4" },
   ],
 
   milestoneLinks: [

@@ -1,0 +1,44 @@
+/**
+ * Shared home brand (mark + wordmark) for navbars — import via `WebsiteLogo`.
+ * Desktop: both visible. ≤768px (`layout="nav"` only): wordmark hidden.
+ */
+
+.website-logo {
+  --wl-mark: 28px;
+  --wl-gap: 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--wl-gap);
+  text-decoration: none;
+  color: inherit;
+  min-width: 0;
+}
+
+.website-logo--sm {
+  --wl-mark: 24px;
+  --wl-gap: 9px;
+}
+
+.website-logo__mark-img {
+  width: var(--wl-mark);
+  height: var(--wl-mark);
+  object-fit: contain;
+  display: block;
+  flex-shrink: 0;
+}
+
+.website-logo__text-img {
+  height: clamp(calc(var(--wl-mark) * 0.95), 5.5vw, 36px);
+  width: auto;
+  max-width: 100px;
+  object-fit: contain;
+  object-position: left center;
+  display: block;
+  flex-shrink: 0;
+}
+
+@media (max-width: 768px) {
+  .website-logo:not(.website-logo--inline) .website-logo__text-img {
+    display: none;
+  }
+}

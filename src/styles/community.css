@@ -552,12 +552,6 @@
   background: var(--border);
   margin: 0 2px;
 }
-.mkt-community-page .eng-save.saved {
-  color: var(--blue);
-}
-.mkt-community-page .eng-save.saved svg {
-  fill: var(--blue);
-}
 .mkt-community-page .fc-footer-right {
   margin-left: auto;
   display: flex;

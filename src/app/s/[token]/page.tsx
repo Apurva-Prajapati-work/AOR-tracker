@@ -3,7 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { FaArrowRight, FaCanadianMapleLeaf } from "react-icons/fa";
 import { getPublicSharePayloadAction } from "@/app/actions/share";
-import { LogoMark } from "@/components/LogoMark";
+import { WebsiteLogo } from "@/components/WebsiteLogo";
 import { fmtDate } from "@/lib/format";
 
 type Props = { params: Promise<{ token: string }> };
@@ -32,17 +32,7 @@ export default async function PublicShareTimelinePage({ params }: Props) {
       className="screen active flex min-h-screen flex-col"
     >
       <div className="topbar">
-        <Link href="/" className="logo">
-          <LogoMark />
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src="/Logo-text.png"
-            alt=""
-            className="fg-brand-mark"
-            width={100}
-            height={44}
-          />
-        </Link>
+        <WebsiteLogo href="/" className="logo" aria-label="AORTrack — home" />
         <span className="hidden text-[11px] text-[var(--t3)] md:inline">
           Public share · read-only
         </span>

@@ -50,7 +50,22 @@ export function MarketingNav() {
 
   return (
     <nav className="nav">
-      <NorthBrand />
+      <div className="nav-start">
+        <NorthBrand />
+
+        <button
+          type="button"
+          ref={btnRef}
+          className="nav-menu-btn"
+          aria-expanded={open}
+          aria-controls="marketing-nav-panel"
+          aria-label={open ? "Close menu" : "Open menu"}
+          onClick={() => setOpen((v) => !v)}
+        >
+          {open ? <FaTimes aria-hidden /> : <FaBars aria-hidden />}
+          <span>Menu</span>
+        </button>
+      </div>
 
       <div className="nav-links">
         {NAV_ITEMS.map((item) => (
@@ -68,19 +83,6 @@ export function MarketingNav() {
           Open Source
         </a>
       </div>
-
-      <button
-        type="button"
-        ref={btnRef}
-        className="nav-menu-btn"
-        aria-expanded={open}
-        aria-controls="marketing-nav-panel"
-        aria-label={open ? "Close menu" : "Open menu"}
-        onClick={() => setOpen((v) => !v)}
-      >
-        {open ? <FaTimes aria-hidden /> : <FaBars aria-hidden />}
-        <span>Menu</span>
-      </button>
 
       <Link href="/track" className="nav-cta">
         Track My AOR <IconArrowRight />

@@ -1,7 +1,7 @@
 "use client";
 
-import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { WebsiteLogo } from "@/components/WebsiteLogo";
 import { DN_PROFILE } from "./data";
 import { IconPlus, IconUpload } from "./dashboard-icons";
 
@@ -44,24 +44,7 @@ export function DashboardAppBar({
   return (
     <nav className="dnb" aria-label="Dashboard navigation">
       <div className="dnb-l">
-        <Link href="/" className="dnb-brand">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src="/Logo.png"
-            alt=""
-            className="dnb-logo"
-            width={24}
-            height={24}
-          />
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src="/Logo-text.png"
-            alt=""
-            className="dnb-logo"
-            width={24}
-            height={24}
-          />
-        </Link>
+        <WebsiteLogo href="/" className="dnb-brand" size="sm" aria-label="AORTrack — home" />
         <div className="dnb-sep" aria-hidden />
         <div className="dnb-page">Dashboard · {applicantId}</div>
       </div>

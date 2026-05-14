@@ -18,7 +18,7 @@ import { getLandingHomeAction } from "@/app/actions/landing";
 import { isValidEmail } from "@/lib/profile";
 import { writeSessionEmail } from "@/lib/session-client";
 import { useToast } from "@/components/ToastContext";
-import { LogoMark } from "@/components/LogoMark";
+import { WebsiteLogo } from "@/components/WebsiteLogo";
 
 function fmtCompactK(n: number): string {
   if (n < 1000) return String(n);
@@ -78,11 +78,7 @@ export function LandingClient() {
   return (
     <div className="screen active flex min-h-screen flex-col">
       <div className="topbar">
-        <Link href="/" className="logo">
-          <LogoMark />
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/Logo-text.png" alt="" className="fg-brand-mark" width={100} height={44} />
-        </Link>
+        <WebsiteLogo href="/" className="logo" aria-label="AORTrack — home" />
         <span className="hidden items-center gap-1 text-[12px] text-[var(--t3)] md:inline-flex">
           <span className="dlive" />
           {profileCount != null

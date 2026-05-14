@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { WebsiteLogo } from "@/components/WebsiteLogo";
 import { IconGitHub } from "./landing-icons";
 import { FaCheck, FaComment, FaDiscord, FaHeart, FaNewspaper, FaUsers } from "react-icons/fa";
 
@@ -12,12 +13,12 @@ export function MarketingFooter() {
     <footer className="footer">
       <div className="footer-top">
         <div>
-          <div className="fg-brand">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/Logo.png" alt="" className="fg-brand-mark" width={28} height={28} />
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/Logo-text.png" alt="" className="fg-brand-mark" width={100} height={44} />
-          </div>
+          <WebsiteLogo
+            layout="inline"
+            href="/"
+            className="fg-brand"
+            aria-label="AORTrack — home"
+          />
           <p className="fg-desc">
             Free, open-source Canadian PR processing time tracker. Community-powered data from real
             applicants. Built with care by GetNorthPath.

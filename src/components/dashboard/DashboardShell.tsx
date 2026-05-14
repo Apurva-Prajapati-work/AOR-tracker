@@ -34,7 +34,7 @@ import { getCohortStatsByKeyAction } from "@/app/actions/cohort";
 import { syncCohortStatsFromProfilesAction } from "@/app/actions/cohort-sync";
 import { getProfileAction, updateMilestoneAction } from "@/app/actions/profile";
 import { ensureShareTokenForEmailAction } from "@/app/actions/share";
-import { LogoMark } from "@/components/LogoMark";
+import { WebsiteLogo } from "@/components/WebsiteLogo";
 import { DashboardLoadingSkeleton } from "@/components/dashboard/DashboardLoadingSkeleton";
 import { DashboardProvider } from "@/components/dashboard/DashboardContext";
 import { DashboardRails } from "@/components/dashboard/DashboardRails";
@@ -361,11 +361,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
     <DashboardProvider value={ctxValue}>
       <div id="screen-dashboard" className="screen active flex min-h-screen flex-col">
         <div className="topbar">
-          <Link href="/" className="logo"> 
-            <LogoMark />
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/Logo-text.png" alt="" className="fg-brand-mark" width={100} height={44} />
-          </Link>
+          <WebsiteLogo href="/" className="logo" aria-label="AORTrack — home" />
           <nav className="nav">
             <Link
               href={dashboardHref.timeline}

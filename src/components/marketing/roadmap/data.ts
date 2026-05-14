@@ -397,7 +397,12 @@ const seedRoadmap: RoadmapData = {
       title: "Foundation",
       description:
         "Core tracker, MongoDB schema, cohort key design, basic dashboard with days counter and stream selection.",
-      chips: ["AOR Submission", "MongoDB Schema", "Cohort Keys", "Basic Dashboard"],
+      chips: [
+        "AOR Submission",
+        "MongoDB Schema",
+        "Cohort Keys",
+        "Basic Dashboard",
+      ],
     },
     {
       version: "v0.2",
@@ -407,7 +412,13 @@ const seedRoadmap: RoadmapData = {
       title: "Data Quality & Security",
       description:
         "SHA-256 hashing, PIPEDA deletion, progress ring, P25–P75 PPR window, cohort progress bars.",
-      chips: ["SHA-256", "PIPEDA", "Progress Ring", "PPR Window", "Cohort Bars"],
+      chips: [
+        "SHA-256",
+        "PIPEDA",
+        "Progress Ring",
+        "PPR Window",
+        "Cohort Bars",
+      ],
     },
     {
       version: "v0.3",
@@ -427,7 +438,13 @@ const seedRoadmap: RoadmapData = {
       title: "Gemini Moderation",
       description:
         "Full pipeline, 7 categories, BullMQ queue, action-service verdict execution, admin review queue with appeal flow.",
-      chips: ["Gemini Pipeline", "7 Categories", "BullMQ", "Admin Queue", "Appeals"],
+      chips: [
+        "Gemini Pipeline",
+        "7 Categories",
+        "BullMQ",
+        "Admin Queue",
+        "Appeals",
+      ],
     },
     {
       version: "v0.5",
@@ -464,7 +481,7 @@ const seedRoadmap: RoadmapData = {
   links: {
     repo: REPO,
     issues: ISSUES_URL,
-    feedback: "/feedback",
+    feedback: "https://github.com/Get-North-Path/AOR-tracker/issues/new",
     changelog: "/changelog",
     issueBase: ISSUES_URL,
   },

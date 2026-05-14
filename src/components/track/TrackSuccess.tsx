@@ -56,7 +56,10 @@ export function TrackSuccess() {
           </span>
         </Link>
 
-        <Link href="/feedback" className="tk-na">
+        <Link
+          href="https://github.com/Get-North-Path/AOR-tracker/issues/new"
+          className="tk-na"
+        >
           <span className="tk-na-ic tk-na-blue">
             <IconFeedback aria-hidden />
           </span>

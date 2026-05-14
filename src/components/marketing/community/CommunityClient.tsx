@@ -8,11 +8,12 @@ type Props = {
 };
 
 /**
- * Body of the community page. Three columns on desktop, single column on
- * mobile (driven entirely by community.css). The page-level wrapper
- * (`.mkt-community-page`) and the community-specific top nav live in
- * `src/app/community/page.tsx` — this component only renders the
- * three-column grid.
+ * Body of the community page. Three columns on desktop; below the `cm-layout`
+ * breakpoint the feed stays first and the left/right rails stack beneath it
+ * (see `community.css`).
+ * The page-level wrapper (`.mkt-community-page`) and the community-specific
+ * top nav live in `src/app/community/page.tsx` — this component only renders
+ * the layout grid.
  *
  * Posts and pagination state live in `CommunityShell` via
  * `useCommunityUi()`; the sidebar / feed / right-panel pull whatever they

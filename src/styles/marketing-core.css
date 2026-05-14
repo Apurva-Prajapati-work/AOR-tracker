@@ -413,6 +413,7 @@ html {
 
 .marketing-site .fg-social {
   display: flex;
+  flex-wrap: wrap;
   gap: 8px;
   margin-bottom: 1.5rem;
 }

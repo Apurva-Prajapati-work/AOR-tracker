@@ -105,7 +105,7 @@ export function buildCohortInsights(
   const cr = Math.round((cohort.completion_rate ?? 0) * 100);
   out.push({
     t: "b",
-    txt: `<strong>Modeled PPR rate</strong> — about <strong>${cr}%</strong> completion on this cohort&apos;s historical curve.`,
+    txt: `<strong>Modeled PPR rate</strong> — about <strong>${cr}%</strong> completion on this cohort's historical curve.`,
   });
 
   const wd = Math.round((cohort.weekly_delta ?? 0) * 100);

@@ -1,10 +1,15 @@
 "use client";
 
-import { useEffect, useId, useRef, useState } from "react";
+import Link from "next/link";
+import { useEffect, useId, useMemo, useRef, useState } from "react";
 import {
   createCommunityPostAction,
+  getCommunitySubmitMilestoneTimelineOptionsAction,
   type CommunityMs,
+  type CommunitySubmitMilestoneOption,
 } from "@/app/actions/community";
+import { fmtDate } from "@/lib/format";
+import type { MilestoneKey, UserProfile } from "@/lib/types";
 import { IconArrowRight } from "../landing-icons";
 import { IconClose } from "./community-icons";
 
@@ -12,77 +17,58 @@ type Props = {
   open: boolean;
   /** Viewer email; only opened when non-null (else SignInPromptModal opens). */
   email: string | null;
+  /** Live profile from dashboard — used to prefill dates and gate submit. */
+  profile: UserProfile | null;
   onClose: () => void;
   onSuccess: (msg: string) => void;
   onValidationFail: (msg: string) => void;
 };
 
 /**
- * Form milestone value → backend `CommunityMs`. Backend only supports four
- * tags (`ppr | bil | bg | med`), so the previous `biometrics` / `copr`
- * options were removed — they have no public-feed surface today.
- *
- * Each option also carries a short label used to build the post body when
- * the user leaves the optional note blank.
+ * Dashboard `MilestoneKey` → community post tag. Options list itself comes from
+ * `getCommunitySubmitMilestoneTimelineOptionsAction` (same `mergeMilestoneDefsForCohort`
+ * pipeline as the dashboard timeline).
  */
-const MILESTONE_OPTIONS: {
-  value: "" | "ppr" | "bil" | "bgc" | "medical";
-  label: string;
-  /** Used as the fallback body when the optional note is empty. */
-  short: string;
-}[] = [
-  { value: "", label: "Select milestone…", short: "" },
-  { value: "ppr", label: "PPR Received", short: "PPR" },
-  { value: "bil", label: "BIL Received", short: "BIL" },
-  { value: "bgc", label: "Background Check Started", short: "BGC" },
-  { value: "medical", label: "Medical Results Passed", short: "Medical" },
-];
-
-const TYPE_TO_MS: Record<
-  Exclude<(typeof MILESTONE_OPTIONS)[number]["value"], "">,
-  CommunityMs
-> = {
-  ppr: "ppr",
+const KEY_TO_COMMUNITY_MS: Partial<Record<MilestoneKey, CommunityMs>> = {
   bil: "bil",
-  bgc: "bg",
+  background: "bg",
   medical: "med",
+  ppr: "ppr",
 };
 
-/** ISO date string for "today", used as the upper bound of the date picker. */
-function todayISO(): string {
-  return new Date().toISOString().split("T")[0];
-}
+const DASHBOARD_TIMELINE_HREF = "/dashboard#tl-sec";
 
-/**
- * "+ Submit Milestone" modal. Visual + interaction port of
- * `samples/aortrack-community-updated.html`:
- *   - select milestone type
- *   - pick a date (max = today)
- *   - optional note (max 500 chars)
- *   - validation: type + date required
- *   - simulated 1.6 s submit, then close + green toast
- *
- * TODO(real-data): swap the simulated submit for a real server action.
- *   The shape is already very close to the dashboard's submit form — we can
- *   reuse the existing zod schema + mutation once we move community
- *   submissions off of /track and inline them here.
- */
 export function SubmitMilestoneModal({
   open,
   email,
+  profile,
   onClose,
   onSuccess,
   onValidationFail,
 }: Props) {
-  const [type, setType] = useState<
-    "" | "ppr" | "bil" | "bgc" | "medical"
-  >("");
-  const [date, setDate] = useState("");
+  const [milestoneKey, setMilestoneKey] = useState<MilestoneKey | "">("");
   const [note, setNote] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [timelineOptions, setTimelineOptions] = useState<
+    CommunitySubmitMilestoneOption[]
+  >([]);
+  const [timelineLoading, setTimelineLoading] = useState(false);
+  const [timelineError, setTimelineError] = useState<string | null>(null);
 
   const labelId = useId();
   const dialogRef = useRef<HTMLDivElement | null>(null);
+
+  const selectedDef = useMemo(
+    () => timelineOptions.find((d) => d.key === milestoneKey),
+    [timelineOptions, milestoneKey],
+  );
+
+  const dashboardDateIso =
+    milestoneKey && profile?.milestones[milestoneKey]?.date
+      ? profile.milestones[milestoneKey].date
+      : "";
+
+  const hasDashboardDate = Boolean(dashboardDateIso);
 
   useEffect(() => {
     if (!open) return;
@@ -101,11 +87,44 @@ export function SubmitMilestoneModal({
   }, [open, onClose, submitting]);
 
   useEffect(() => {
+    if (!open || !email) return;
+    let cancelled = false;
+    const tid = window.setTimeout(() => {
+      if (cancelled) return;
+      setTimelineLoading(true);
+      setTimelineError(null);
+      void getCommunitySubmitMilestoneTimelineOptionsAction(email).then((r) => {
+        if (cancelled) return;
+        setTimelineLoading(false);
+        if (r.ok) {
+          setTimelineOptions(r.options);
+          setMilestoneKey((prev) =>
+            prev && r.options.some((o) => o.key === prev) ? prev : "",
+          );
+        } else {
+          setTimelineOptions([]);
+          setTimelineError(r.error);
+          setMilestoneKey("");
+        }
+      });
+    }, 0);
+    return () => {
+      cancelled = true;
+      window.clearTimeout(tid);
+    };
+  }, [open, email]);
+
+  useEffect(() => {
     if (open) return;
     if (submitting) return;
-    setType("");
-    setDate("");
-    setNote("");
+    const id = window.setTimeout(() => {
+      setMilestoneKey("");
+      setNote("");
+      setTimelineOptions([]);
+      setTimelineError(null);
+      setTimelineLoading(false);
+    }, 0);
+    return () => window.clearTimeout(id);
   }, [open, submitting]);
 
   function onOverlayMouseDown(e: React.MouseEvent<HTMLDivElement>) {
@@ -113,18 +132,30 @@ export function SubmitMilestoneModal({
   }
 
   async function handleSubmit() {
-    if (!type || !date) {
-      onValidationFail("Please fill in all required fields");
+    if (!milestoneKey) {
+      onValidationFail("Please select a milestone type");
+      return;
+    }
+    if (!hasDashboardDate) {
+      onValidationFail(
+        "Add this milestone date on your dashboard before posting.",
+      );
       return;
     }
     if (!email) {
       onValidationFail("You need to sign in to post.");
       return;
     }
-    const ms = TYPE_TO_MS[type];
-    const opt = MILESTONE_OPTIONS.find((o) => o.value === type);
+    const ms = KEY_TO_COMMUNITY_MS[milestoneKey];
+    if (!ms) {
+      onValidationFail("This milestone cannot be posted to the community feed.");
+      return;
+    }
+
+    const dateLabel = fmtDate(dashboardDateIso);
     const body =
-      note.trim() || `${opt?.short ?? type.toUpperCase()} on ${date}.`;
+      note.trim() ||
+      `${selectedDef?.label ?? milestoneKey} on ${dateLabel}.`;
 
     setSubmitting(true);
     try {
@@ -141,6 +172,16 @@ export function SubmitMilestoneModal({
       setSubmitting(false);
     }
   }
+
+  const profileLoading = Boolean(open && email && profile === null);
+  const blockingLoad = profileLoading || timelineLoading;
+  const canSubmit =
+    Boolean(email) &&
+    Boolean(milestoneKey) &&
+    hasDashboardDate &&
+    !submitting &&
+    !timelineError &&
+    timelineOptions.length > 0;
 
   return (
     <div
@@ -172,39 +213,102 @@ export function SubmitMilestoneModal({
         </div>
 
         <div className="modal-body">
+          {profileLoading ? (
+            <p className="m-profile-loading">Loading your dashboard milestones…</p>
+          ) : null}
+          {timelineLoading ? (
+            <p className="m-profile-loading">Loading dashboard timeline options…</p>
+          ) : null}
+          {timelineError ? (
+            <p className="m-timeline-error" role="alert">
+              {timelineError}
+            </p>
+          ) : null}
+
+          {!timelineError ? (
+            <div className="m-nonshare-callout" role="note">
+              <span className="m-nonshare-badge">Not shareable here</span>
+              <p className="m-nonshare-text">
+                <strong>AOR received</strong> and{" "}
+                <strong>Biometrics completed</strong> still belong on your
+                dashboard timeline; they are not offered in this list because
+                the community feed only tags BIL, background, medical, and PPR.
+              </p>
+            </div>
+          ) : null}
+
           <div className="m-field">
             <label className="m-label" htmlFor={`${labelId}-type`}>
-              Milestone Type <span className="req">Required</span>
+              Milestone type <span className="req">Required</span>
             </label>
             <select
               id={`${labelId}-type`}
               className="m-select"
-              value={type}
-              onChange={(e) =>
-                setType(e.target.value as typeof type)
-              }
+              value={milestoneKey}
+              disabled={blockingLoad || Boolean(timelineError)}
+              onChange={(e) => {
+                const v = e.target.value;
+                setMilestoneKey(v === "" ? "" : (v as MilestoneKey));
+              }}
             >
-              {MILESTONE_OPTIONS.map((opt) => (
-                <option value={opt.value} key={opt.value}>
-                  {opt.label}
+              <option value="">Select milestone…</option>
+              {timelineOptions.map((d) => (
+                <option value={d.key} key={d.key}>
+                  {d.label}
                 </option>
               ))}
             </select>
+            <p className="m-hint">
+              Types and descriptions are loaded from the same dashboard timeline
+              as your cohort (median PPR). The date below always comes from your
+              saved profile — it cannot be edited here.
+            </p>
           </div>
 
           <div className="m-field">
             <label className="m-label" htmlFor={`${labelId}-date`}>
-              Date <span className="req">Required</span>
+              Date from dashboard
             </label>
             <input
               id={`${labelId}-date`}
-              className="m-input"
-              type="date"
-              value={date}
-              max={todayISO()}
-              onChange={(e) => setDate(e.target.value)}
+              className="m-input m-input-readonly"
+              readOnly
+              tabIndex={-1}
+              value={
+                !milestoneKey
+                  ? ""
+                  : hasDashboardDate
+                    ? fmtDate(dashboardDateIso)
+                    : ""
+              }
+              placeholder={
+                milestoneKey
+                  ? "No date saved yet"
+                  : "Select a milestone type first"
+              }
             />
           </div>
+
+          {milestoneKey &&
+          !hasDashboardDate &&
+          !blockingLoad &&
+          !timelineError ? (
+            <div className="m-dash-warning" role="status">
+              <div className="m-dash-warning-badge">Action needed</div>
+              <p className="m-dash-warning-text">
+                Please update this milestone on your dashboard first before
+                posting here. Community posts must use the same dates as your
+                tracker.
+              </p>
+              <Link
+                href={DASHBOARD_TIMELINE_HREF}
+                className="m-dash-warning-btn"
+              >
+                Open dashboard timeline
+                <IconArrowRight size={14} aria-hidden />
+              </Link>
+            </div>
+          ) : null}
 
           <div className="m-field">
             <label className="m-label" htmlFor={`${labelId}-note`}>
@@ -217,6 +321,7 @@ export function SubmitMilestoneModal({
               placeholder="Share context about your timeline — WES timing, province, anything useful for others in your cohort…"
               maxLength={500}
               value={note}
+              disabled={!hasDashboardDate && Boolean(milestoneKey)}
               onChange={(e) => setNote(e.target.value)}
             />
             <div className="m-note">
@@ -240,14 +345,14 @@ export function SubmitMilestoneModal({
             type="button"
             className="m-submit"
             onClick={() => void handleSubmit()}
-            disabled={submitting}
+            disabled={!canSubmit || blockingLoad}
           >
             {submitting ? (
               "Submitting…"
             ) : (
               <>
                 <span>Submit Milestone</span>
-                <IconArrowRight size={14} />
+                <IconArrowRight size={14} aria-hidden />
               </>
             )}
           </button>

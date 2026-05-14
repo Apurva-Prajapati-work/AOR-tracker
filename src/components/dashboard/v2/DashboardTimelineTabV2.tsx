@@ -78,7 +78,7 @@ export function DashboardTimelineTabV2() {
 
       <DashboardCohortSection
         title={`Your Cohort — ${humanizeCohortKey(ctx.activeCohortKey)}`}
-        subtitle={`${ctx.cohortTotal} verified applicants${ctx.cohortDataSparse ? " · low n, run Sync cohorts" : ""}`}
+        subtitle={`${ctx.cohortTotal} verified applicants${ctx.cohortDataSparse ? " · Data refreshed daily" : ""}`}
       >
         <DashboardCohortBars bars={cohortBars} />
         <DashboardHistogram

@@ -10,7 +10,9 @@ import {
 import { serializePost } from "@/lib/seed";
 import { normalizeEmail, isValidEmail } from "@/lib/profile";
 import type { MilestoneKey, UserProfile } from "@/lib/types";
+import { getCohortStatsForProfileAction } from "@/app/actions/cohort";
 import { getProfileAction } from "@/app/actions/profile";
+import { mergeMilestoneDefsForCohort } from "@/lib/cohort-dynamic";
 
 const MS_OPTIONS = ["ppr", "bil", "bg", "med"] as const;
 export type CommunityMs = (typeof MS_OPTIONS)[number];
@@ -119,6 +121,62 @@ export async function getCommunityMsCountsAction(): Promise<CommunityMsCounts> {
     else if (key === "med") counts.med += n;
   }
   return counts;
+}
+
+/** Keys that map to `CommunityMs` tags — same subset the feed accepts. */
+const SUBMIT_TIMELINE_KEYS = new Set<MilestoneKey>([
+  "bil",
+  "background",
+  "medical",
+  "ppr",
+]);
+
+export type CommunitySubmitMilestoneOption = {
+  key: MilestoneKey;
+  label: string;
+  desc: string;
+  est: string;
+};
+
+/**
+ * Milestone rows for the Submit Milestone modal: same pipeline as the
+ * dashboard timeline (`mergeMilestoneDefsForCohort` + cohort median), filtered
+ * to milestones that can be tagged on a community post.
+ */
+export async function getCommunitySubmitMilestoneTimelineOptionsAction(
+  email: string,
+): Promise<
+  | { ok: true; options: CommunitySubmitMilestoneOption[] }
+  | { ok: false; error: string }
+> {
+  if (!isValidEmail(email)) return { ok: false, error: "Invalid email" };
+  const prof = await getProfileAction(email);
+  if (!prof.ok) return { ok: false, error: "Profile not found" };
+  const p = prof.profile;
+  const aorDate =
+    p.aorDate.trim() ||
+    (p.milestones.aor?.date as string | undefined)?.trim() ||
+    "";
+  const cohort = await getCohortStatsForProfileAction({
+    aorDate: aorDate || "2000-01-01",
+    stream: p.stream,
+    type: p.type,
+    province: p.province,
+  });
+  const median = cohort.median_days_to_ppr || 184;
+  const defs = mergeMilestoneDefsForCohort(
+    aorDate || "2000-01-01",
+    median,
+  );
+  const options: CommunitySubmitMilestoneOption[] = defs
+    .filter((d) => SUBMIT_TIMELINE_KEYS.has(d.key))
+    .map((d) => ({
+      key: d.key,
+      label: d.label,
+      desc: d.desc,
+      est: d.est,
+    }));
+  return { ok: true, options };
 }
 
 export async function getCommunityFeedAction(

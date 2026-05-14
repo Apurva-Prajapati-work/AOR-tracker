@@ -178,8 +178,8 @@ export function ProfileCompletenessCard({
                       type="button"
                       className={`rounded-lg border px-4 py-2.5 text-[13px] font-medium transition-colors ${
                         draft.type === t
-                          ? "border-[var(--red)] bg-[rgba(192,57,43,0.18)] text-[var(--w)]"
-                          : "border-[var(--border)] bg-[var(--navy)] text-[var(--t2)] hover:border-[rgba(255,255,255,.15)]"
+                          ? "border-(--red) bg-[rgba(192,57,43,0.18)] text-(--w)"
+                          : "border-(--border) bg-(--navy) text-(--t2) hover:border-[rgba(255,255,255,.15)]"
                       }`}
                       onClick={() => setDraft((d) => ({ ...d, type: t }))}
                     >

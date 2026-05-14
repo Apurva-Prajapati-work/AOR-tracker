@@ -30,9 +30,9 @@
    * Lock the 3-column layout to a single viewport screen (minus the 60px
    * community nav). Each column scrolls independently inside this box;
    * once the user scrolls past the layout, the whole page slides up to
-   * reveal the marketing footer below it. See the @media (max-width: 900px)
-   * override at the bottom of this file — on mobile the layout reverts to
-   * natural flow because there's only one column.
+   * reveal the marketing footer below it. Below ~900px the layout switches
+   * to a single scrolling column: feed first, then left rail, then insights
+   * (see responsive rules at the bottom of this file).
    */
   height: calc(100vh - 60px);
   min-height: 0;
@@ -1222,6 +1222,108 @@
   margin-top: 4px;
   line-height: 1.5;
 }
+.mkt-community-page .m-hint {
+  font-size: 0.72rem;
+  color: var(--muted2);
+  margin-top: 6px;
+  line-height: 1.45;
+}
+.mkt-community-page .m-profile-loading {
+  margin: 0 0 14px;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+.mkt-community-page .m-timeline-error {
+  margin: 0 0 14px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1.5px solid rgba(200, 40, 40, 0.35);
+  background: var(--red-pale);
+  font-size: 0.82rem;
+  color: var(--navy);
+}
+.mkt-community-page .m-nonshare-callout {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin: 0 0 14px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1.5px solid var(--border);
+  background: var(--cream2);
+}
+.mkt-community-page .m-nonshare-badge {
+  flex-shrink: 0;
+  margin-top: 1px;
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-size: 0.58rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+  background: var(--cream);
+  border: 1px solid var(--border);
+  line-height: 1.2;
+}
+.mkt-community-page .m-nonshare-text {
+  margin: 0;
+  font-size: 0.76rem;
+  line-height: 1.45;
+  color: var(--muted2);
+}
+.mkt-community-page .m-nonshare-text strong {
+  color: var(--navy);
+  font-weight: 600;
+}
+.mkt-community-page .m-input-readonly {
+  cursor: not-allowed;
+  background: var(--cream2);
+  color: var(--navy);
+}
+.mkt-community-page .m-dash-warning {
+  border-radius: 10px;
+  border: 1.5px solid rgba(181, 101, 29, 0.45);
+  background: var(--abg);
+  padding: 12px 14px;
+  margin-bottom: 14px;
+}
+.mkt-community-page .m-dash-warning-badge {
+  display: inline-block;
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--amber);
+  margin-bottom: 6px;
+}
+.mkt-community-page .m-dash-warning-text {
+  margin: 0 0 10px;
+  font-size: 0.8rem;
+  line-height: 1.5;
+  color: var(--navy);
+}
+.mkt-community-page .m-dash-warning-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  padding: 8px 14px;
+  border-radius: 8px;
+  background: var(--green);
+  color: #fff;
+  text-decoration: none;
+  transition: background 0.15s ease;
+}
+.mkt-community-page .m-dash-warning-btn:hover {
+  background: var(--green2);
+  color: #fff;
+}
+.mkt-community-page .m-dash-warning-btn svg {
+  flex-shrink: 0;
+  fill: currentColor;
+}
 .mkt-community-page .m-footer {
   display: flex;
   gap: 8px;
@@ -1368,6 +1470,8 @@
   display: flex;
   align-items: center;
   gap: 10px;
+  min-width: 0;
+  flex: 1 1 auto;
 }
 .mkt-community-page .cm-nav-brand {
   display: flex;
@@ -1465,6 +1569,28 @@
   background: var(--red2);
 }
 
+.mkt-community-page .cm-nbtn-text-mobile {
+  display: none;
+}
+@media (max-width: 520px) {
+  .mkt-community-page .cm-nbtn.red .cm-nbtn-text-desktop {
+    display: none;
+  }
+  .mkt-community-page .cm-nbtn.red .cm-nbtn-text-mobile {
+    display: inline;
+  }
+  .mkt-community-page .m-nonshare-callout {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
+}
+@media (max-width: 380px) {
+  .mkt-community-page .cm-nav-live-word {
+    display: none;
+  }
+}
+
 /* ─── Responsive ─── */
 
 @media (max-width: 1100px) {
@@ -1475,32 +1601,189 @@
     padding: 14px 12px;
   }
 }
+
 @media (max-width: 900px) {
   /*
-   * On mobile we want plain document scroll — there's only one column, so
-   * the desktop "fixed viewport, each column scrolls" pattern would just
-   * trap the feed inside a 100vh window and the footer wouldn't follow
-   * the feed naturally. Revert to natural flow.
+   * Single column: natural document scroll (no locked 100vh column scroll).
+   * Feed stays first; browse/insights rails stack below so mobile users keep
+   * filters and sidebar content (they were previously display:none).
    */
   .mkt-community-page .cm-layout {
-    grid-template-columns: 1fr;
+    display: flex;
+    flex-direction: column;
     height: auto;
     min-height: 0;
   }
   .mkt-community-page .feed-main {
+    order: -1;
+    width: 100%;
+    flex: 0 0 auto;
     height: auto;
-    overflow-y: visible;
+    min-height: 0;
+    overflow: visible;
+  }
+  .mkt-community-page .left-sb {
+    display: block;
+    width: 100%;
+    flex: 0 0 auto;
+    height: auto;
+    max-height: none;
+    overflow: visible;
+    border-right: none;
+    border-bottom: 2px solid var(--border);
+    order: 1;
+    padding: 14px 0 16px;
+  }
+  .mkt-community-page .right-panel {
+    display: flex;
+    width: 100%;
+    flex: 0 0 auto;
+    height: auto;
+    max-height: none;
+    overflow: visible;
+    border-left: none;
+    border-top: 2px solid var(--border);
+    order: 2;
+    padding: 16px clamp(14px, 4vw, 22px) 22px;
   }
   .mkt-community-page .filter-bar {
     top: 60px;
+    padding: 10px clamp(12px, 3vw, 20px);
   }
-  .mkt-community-page .left-sb,
-  .mkt-community-page .right-panel {
-    display: none;
+  .mkt-community-page .feed-list {
+    padding: 14px clamp(12px, 3vw, 22px);
+  }
+  .mkt-community-page .new-post-bar {
+    max-width: min(400px, calc(100vw - 20px));
+    padding: 9px 14px;
+    font-size: 0.74rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    text-align: center;
+    row-gap: 4px;
+  }
+  .mkt-community-page .toast {
+    left: 14px;
+    right: 14px;
+    max-width: none;
   }
 }
+
+@media (max-width: 640px) {
+  .mkt-community-page .cm-nav {
+    flex-wrap: wrap;
+    row-gap: 8px;
+    height: auto;
+    min-height: 56px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+  .mkt-community-page .cm-nav-right {
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    row-gap: 6px;
+    max-width: 100%;
+  }
+  .mkt-community-page .cm-nbtn {
+    font-size: 0.72rem;
+    padding: 6px 10px;
+  }
+  .mkt-community-page .filter-bar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+  .mkt-community-page .filter-chips {
+    flex: none;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 6px;
+  }
+  .mkt-community-page .search-wrap {
+    width: 100%;
+  }
+  .mkt-community-page .search-input {
+    width: 100%;
+    max-width: none;
+  }
+  .mkt-community-page .search-input:focus {
+    width: 100%;
+  }
+  .mkt-community-page .sort-select {
+    width: 100%;
+    max-width: none;
+  }
+  .mkt-community-page .submit-card {
+    flex-direction: column;
+    align-items: stretch;
+    text-align: center;
+    gap: 12px;
+  }
+  .mkt-community-page .sub-card-btn {
+    width: 100%;
+    justify-content: center;
+    white-space: normal;
+  }
+  .mkt-community-page .fc-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 6px;
+  }
+  .mkt-community-page .fc-ts {
+    align-self: flex-end;
+  }
+  .mkt-community-page .fc-footer {
+    flex-wrap: wrap;
+    row-gap: 6px;
+  }
+  .mkt-community-page .fc-footer-right {
+    margin-left: 0;
+    width: 100%;
+    justify-content: flex-end;
+  }
+  .mkt-community-page .mini-tl {
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding-bottom: 4px;
+    -webkit-overflow-scrolling: touch;
+  }
+  .mkt-community-page .modal-overlay {
+    padding: max(12px, env(safe-area-inset-top, 0px)) 12px
+      max(12px, env(safe-area-inset-bottom, 0px));
+    align-items: center;
+    justify-content: center;
+  }
+  .mkt-community-page .modal {
+    display: flex;
+    flex-direction: column;
+    max-height: 80vh;
+    min-height: 0;
+    width: 100%;
+    max-width: 100%;
+    border-radius: 16px;
+    overflow: hidden;
+  }
+  .mkt-community-page .modal-header {
+    flex-shrink: 0;
+  }
+  .mkt-community-page .modal-body {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .mkt-community-page .m-footer {
+    flex-shrink: 0;
+    flex-direction: column-reverse;
+  }
+  .mkt-community-page .m-submit,
+  .mkt-community-page .m-cancel {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
 @media (max-width: 600px) {
-  .mkt-community-page .cm-nav-live,
   .mkt-community-page .cm-nav-page,
   .mkt-community-page .cm-nav-sep {
     display: none;
@@ -1512,7 +1795,7 @@
     padding: 5px 10px;
     font-size: 0.72rem;
   }
-  .mkt-community-page .search-wrap {
-    display: none;
+  .mkt-community-page .fc-inner {
+    padding: 12px 14px 12px 16px;
   }
 }

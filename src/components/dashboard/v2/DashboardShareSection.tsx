@@ -47,7 +47,7 @@ export function DashboardShareSection({
   };
 
   return (
-    <section id="share-sec" style={{ marginTop: 26 }}>
+    <section id="share-sec">
       <div className="sec-head">
         <div>
           <div className="sec-title">Share My Journey</div>

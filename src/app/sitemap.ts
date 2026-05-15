@@ -37,6 +37,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "weekly",
       priority: 0.88,
     },
+    {
+      url: abs("/vs-ircc"),
+      lastModified,
+      changeFrequency: "weekly",
+      priority: 0.87,
+    },
   ];
 
   const streamEntries: MetadataRoute.Sitemap = STREAM_PAGE_SLUGS.map((slug) => ({

@@ -27,9 +27,9 @@ import type {
   DnDotMap,
   DnHeroStats,
   DnHistBar,
-  DnPprWindow,
+  DnInfoCard,
+  DnJourneyProgress,
   DnProfile,
-  DnRing,
   DnStreamRow,
   DnTimelineRow,
   SidebarItem,
@@ -59,103 +59,126 @@ export function heroStatsVM(
     "days" | "median" | "cohort" | "cohortDisplay" | "ppr" | "profile"
   >,
 ): DnHeroStats {
-  const { days, median, cohort, cohortDisplay, ppr, profile } = ctx;
-  const completionPct = Math.round((cohort.completion_rate ?? 0) * 100);
-  const weeklyPct = Math.round((cohort.weekly_delta ?? 0) * 100);
+  const { days, median, cohortDisplay, ppr } = ctx;
   const aheadCount = cohortDisplay.per_milestone_n?.ppr ?? 0;
   const totalCount = cohortDisplay.n_verified || 1;
   const rankPct = Math.max(
     0,
     Math.round(100 - (aheadCount / totalCount) * 100),
   );
+  const atTop = aheadCount === 0;
 
   return {
     daysSinceAor: days,
-    daysSinceLabel: fmtDate(profile.aorDate) || "AOR pending",
-    streamMedian: {
-      value: `${median}d`,
-      deltaLabel: weeklyPct >= 0 ? `+${weeklyPct}%` : `${weeklyPct}%`,
-      deltaDir: weeklyPct >= 0 ? "up" : "dn",
+    typicalWait: {
+      value: `${median} days`,
+      note: "Based on real data from people like you",
     },
-    cohortRank: {
-      value: `Top ${rankPct}%`,
-      sub: `${aheadCount} of ${totalCount} ahead`,
+    queuePosition: {
+      value: atTop ? "Top of the list" : `Top ${rankPct}%`,
+      note: atTop
+        ? "0 people with the same profile ahead of you"
+        : `${aheadCount} people with the same profile ahead of you`,
+      tone: atTop || rankPct >= 50 ? "good" : "warn",
     },
-    pprWindow: {
+    expectedApproval: {
       value: ppr?.windowLabel ?? "—",
-      sub: ppr?.limitedData
-        ? `Limited data (n < 30) · ${completionPct}% complete`
-        : `P25–P75 confidence · ${completionPct}% complete`,
+      note: ppr?.limitedData
+        ? "Early estimate — limited data"
+        : "Not guaranteed — estimate only",
     },
   };
 }
 
 /* ─── RINGS ─────────────────────────────────────────────────────────── */
 
-export function ringsVM(
-  ctx: Pick<DashboardContextValue, "pct" | "cohort">,
-): DnRing[] {
+export function infoCardsVM(
+  ctx: Pick<DashboardContextValue, "pct" | "days" | "median" | "cohort">,
+): DnInfoCard[] {
   const cohortPct = Math.round((ctx.cohort.completion_rate ?? 0) * 100);
+  const pw = ctx.cohort.pulseWeekly ?? [];
+  const thisWeek = pw[pw.length - 1] ?? 0;
+  const lastWeek = pw[pw.length - 2] ?? 0;
+  const weeklyDelta =
+    lastWeek > 0
+      ? Math.round(((thisWeek - lastWeek) / lastWeek) * 100)
+      : Math.round((ctx.cohort.weekly_delta ?? 0) * 100);
+
+  const journeyExplain =
+    `You've passed ${ctx.pct}% of the typical timeline. Most people in your group finish their journey in about ${ctx.median} days — you're on Day ${ctx.days}.`;
+
+  const cohortExplain =
+    cohortPct === 0
+      ? "Nobody in your group has received final approval yet. This is normal — you're all early in the process. Check back weekly for updates."
+      : `${cohortPct}% of your group has received final approval. Check back weekly for updates as more people complete their journey.`;
+
+  const weeklyExplain =
+    weeklyDelta > 0
+      ? `Great news — approvals are picking up! ${weeklyDelta}% more than last week. This suggests IRCC is processing files faster.`
+      : weeklyDelta < 0
+        ? `Approvals slowed slightly this week — ${Math.abs(weeklyDelta)}% fewer than last week. Weekly counts often fluctuate.`
+        : "Approval volume is steady compared to last week. Check back for updates as the week progresses.";
+
   return [
     {
       id: "journey",
-      gradientId: "dn-rg1",
-      gradientFrom: "#2D6A4F",
-      gradientTo: "#4ade80",
-      pct: Math.min(0.99, ctx.pct / 100),
-      pctLabel: `${ctx.pct}%`,
-      title: "Journey Progress",
-      sub: "Days elapsed vs cohort median.",
+      label: "How far along you are",
+      tooltip:
+        "We compare how many days have passed vs how long it typically takes for people with your profile.",
+      value: `${ctx.pct}%`,
+      valueTone: "teal",
+      note: "of the typical journey complete",
+      explain: journeyExplain,
     },
     {
       id: "cohort-ppr",
-      gradientId: "dn-rg2",
-      gradientFrom: "#1E5F8C",
-      gradientTo: "#7dd3fc",
-      pct: Math.min(0.99, cohortPct / 100),
-      pctLabel: `${cohortPct}%`,
-      title: "Cohort PPR Rate",
-      sub: "Share of your cohort that has received PPR.",
-      numColor: "var(--blue)",
+      label: "Approvals in your group so far",
+      tooltip:
+        "This shows what percentage of people who applied at the same time as you have already received their permanent residence approval.",
+      value: `${cohortPct}%`,
+      note: "of your group has been approved yet",
+      explain: cohortExplain,
+    },
+    {
+      id: "weekly-ppr",
+      label: "Approval happening this week",
+      tooltip:
+        "Number of people across all groups who received their final PR approval this week.",
+      value: String(thisWeek),
+      valueTone: "teal",
+      note: "people approved across all groups this week",
+      explain: weeklyExplain,
     },
   ];
 }
 
 /* ─── PPR WINDOW ────────────────────────────────────────────────────── */
 
-export function pprWindowVM(
-  ctx: Pick<
-    DashboardContextValue,
-    "ppr" | "days" | "median" | "cohort" | "cohortDisplay"
-  >,
-): DnPprWindow {
-  const { ppr, days, median, cohort, cohortDisplay } = ctx;
-  // Project the P25 marker as a % along the [0..median] x-axis.
-  const youPct = Math.min(100, Math.round((days / Math.max(median, 1)) * 100));
-  const p25Pct = Math.min(
-    100,
-    Math.round((cohort.p25_days / Math.max(median, 1)) * 100),
-  );
-  const p75Pct = Math.min(
-    100,
-    Math.round((cohort.p75_days / Math.max(median, 1)) * 100),
-  );
+export function journeyProgressVM(
+  ctx: Pick<DashboardContextValue, "days" | "median" | "pct" | "profile">,
+): DnJourneyProgress {
+  const { days, median, pct, profile } = ctx;
+  const remaining = Math.max(0, median - days);
+  const aorLabel = fmtDate(profile.aorDate) || "AOR pending";
 
   return {
-    label: "Estimated PPR Window",
-    windowLabel: ppr?.windowLabel ?? "Pending more data",
-    nVerifiedNote: `Based on ${cohortDisplay.n_verified} verified submissions`,
-    confidenceLabel: ppr?.limitedData ? "Limited Data" : "P25–P75 Confidence",
-    youPct,
-    progressPct: youPct,
-    bandLeftPct: Math.min(95, p25Pct),
-    bandWidthPct: Math.max(4, p75Pct - p25Pct),
+    title: "Where you are on your journey",
+    subtitle:
+      "This shows today's position between when you applied and when we expect you'll be approved",
+    progressPct: Math.min(100, pct),
     axisLabels: [
-      `Day 0 (AOR)`,
-      `Today →`,
-      `P25 · ${cohort.p25_days}d`,
-      `P75 · ${cohort.p75_days}d`,
+      `Day 0 — You applied (${aorLabel})`,
+      `Today — Day ${days}`,
+      `Day ${median} — Typical finish line`,
     ],
+    daysWaited: {
+      label: "Days you've already waited",
+      value: `${days} days`,
+    },
+    daysRemaining: {
+      label: "Estimated days remaining",
+      value: `~${remaining} more days`,
+    },
   };
 }
 
@@ -279,7 +302,20 @@ export function alertsVM(
 }
 
 function stripHtml(html: string): string {
-  return html.replace(/<[^>]*>/g, "").replace(/\s+/g, " ").trim();
+  const plain = html.replace(/<[^>]*>/g, "").replace(/\s+/g, " ").trim();
+  // Decode entities left in insight strings so plain-text alerts never show
+  // literals like "&apos;" (double-escaped upstream or legacy content).
+  if (typeof document === "undefined") {
+    return plain
+      .replace(/&apos;|&#39;/gi, "'")
+      .replace(/&quot;/gi, '"')
+      .replace(/&lt;/gi, "<")
+      .replace(/&gt;/gi, ">")
+      .replace(/&amp;/gi, "&");
+  }
+  const ta = document.createElement("textarea");
+  ta.innerHTML = plain;
+  return ta.value;
 }
 
 /* ─── SIDEBAR SECTIONS ──────────────────────────────────────────────── */

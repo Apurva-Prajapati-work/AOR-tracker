@@ -45,87 +45,105 @@ export const DN_PROFILE: DnProfile = {
 export type DnHeroStats = {
   /** Animated days-since-AOR counter target. */
   daysSinceAor: number;
-  daysSinceLabel: string;
-  streamMedian: { value: string; deltaLabel: string; deltaDir: "up" | "dn" };
-  cohortRank: { value: string; sub: string };
-  pprWindow: { value: string; sub: string };
+  typicalWait: { value: string; note: string };
+  queuePosition: { value: string; note: string; tone: "good" | "warn" };
+  expectedApproval: { value: string; note: string };
 };
 
 export const DN_HERO_STATS: DnHeroStats = {
-  daysSinceAor: 72,
-  daysSinceLabel: "Feb 20, 2026",
-  streamMedian: { value: "184d", deltaLabel: "+2d", deltaDir: "up" },
-  cohortRank: { value: "Top 58%", sub: "482 of 1,240 ahead" },
-  pprWindow: { value: "Aug – Oct '26", sub: "P25–P75 confidence" },
+  daysSinceAor: 70,
+  typicalWait: {
+    value: "184 days",
+    note: "Based on real data from people like you",
+  },
+  queuePosition: {
+    value: "Top of the list",
+    note: "0 people with the same profile ahead of you",
+    tone: "good",
+  },
+  expectedApproval: {
+    value: "Aug – Oct 2026",
+    note: "Not guaranteed — estimate only",
+  },
 };
 
-/* ───────────────────────────── RINGS ─────────────────────────────────── */
+/* ───────────────────────────── INFO CARDS ──────────────────────────── */
 
-export type DnRing = {
+export type DnInfoCard = {
   id: string;
-  gradientId: string;
-  gradientFrom: string;
-  gradientTo: string;
-  /** 0..1 — fraction of circle to fill once mounted. */
-  pct: number;
-  pctLabel: string;
-  title: string;
-  sub: string;
-  /** Optional CSS color override for the centre number (e.g. var(--blue)). */
-  numColor?: string;
+  label: string;
+  tooltip: string;
+  value: string;
+  valueTone?: "teal" | "default";
+  note: string;
+  explain: string;
 };
 
-export const DN_RINGS: DnRing[] = [
+export const DN_INFO_CARDS: DnInfoCard[] = [
   {
     id: "journey",
-    gradientId: "dn-rg1",
-    gradientFrom: "#2D6A4F",
-    gradientTo: "#4ade80",
-    pct: 0.39,
-    pctLabel: "39%",
-    title: "Journey Progress",
-    sub: "72 of ~184 median days elapsed. You're past the biometrics stage.",
+    label: "How far along you are",
+    tooltip:
+      "We compare how many days have passed vs how long it typically takes for people with your profile.",
+    value: "38%",
+    valueTone: "teal",
+    note: "of the typical journey complete",
+    explain:
+      "You've passed 38% of the typical timeline. Most people in your group finish their journey in about 184 days — you're on Day 70.",
   },
   {
     id: "cohort-ppr",
-    gradientId: "dn-rg2",
-    gradientFrom: "#1E5F8C",
-    gradientTo: "#7dd3fc",
-    pct: 0.39,
-    pctLabel: "39%",
-    title: "Cohort PPR Rate",
-    sub: "482 of 1,240 applicants in your Feb 2026 cohort have received PPR.",
-    numColor: "var(--blue)",
+    label: "Approvals in your group so far",
+    tooltip:
+      "This shows what percentage of people who applied at the same time as you have already received their permanent residence approval.",
+    value: "0%",
+    note: "of your group has been approved yet",
+    explain:
+      "Nobody in your group has received final approval yet. This is normal — you're all early in the process. Check back weekly for updates.",
+  },
+  {
+    id: "weekly-ppr",
+    label: "Approval happening this week",
+    tooltip:
+      "Number of people across all groups who received their final PR approval this week.",
+    value: "18",
+    valueTone: "teal",
+    note: "people approved across all groups this week",
+    explain:
+      "Great news — approvals are picking up! 38% more than last week. This suggests IRCC is processing files faster.",
   },
 ];
 
-/* ───────────────────────────── PPR WINDOW BAR ────────────────────────── */
+/* ───────────────────────────── JOURNEY PROGRESS ──────────────────────── */
 
-export type DnPprWindow = {
-  label: string;
-  windowLabel: string;
-  nVerifiedNote: string;
-  confidenceLabel: string;
-  /** Where the "you" marker sits along the bar, in %. */
-  youPct: number;
+export type DnJourneyProgress = {
+  title: string;
+  subtitle: string;
   /** Animated progress fill width %. */
   progressPct: number;
-  /** Window band left/width %. */
-  bandLeftPct: number;
-  bandWidthPct: number;
-  axisLabels: [string, string, string, string];
+  axisLabels: [string, string, string];
+  daysWaited: { label: string; value: string };
+  daysRemaining: { label: string; value: string };
 };
 
-export const DN_PPR_WINDOW: DnPprWindow = {
-  label: "Estimated PPR Window",
-  windowLabel: "August – October 2026",
-  nVerifiedNote: "Based on 1,240 verified submissions",
-  confidenceLabel: "P25–P75 Confidence",
-  youPct: 39,
-  progressPct: 39,
-  bandLeftPct: 69,
-  bandWidthPct: 17,
-  axisLabels: ["Feb 20 (AOR)", "Today →", "Aug '26 (P25)", "Oct '26 (P75)"],
+export const DN_JOURNEY_PROGRESS: DnJourneyProgress = {
+  title: "Where you are on your journey",
+  subtitle:
+    "This shows today's position between when you applied and when we expect you'll be approved",
+  progressPct: 38,
+  axisLabels: [
+    "Day 0 — You applied (Mar 5, 2026)",
+    "Today — Day 70",
+    "Day 184 — Typical finish line",
+  ],
+  daysWaited: {
+    label: "Days you've already waited",
+    value: "70 days",
+  },
+  daysRemaining: {
+    label: "Estimated days remaining",
+    value: "~114 more days",
+  },
 };
 
 /* ───────────────────────────── TIMELINE ──────────────────────────────── */

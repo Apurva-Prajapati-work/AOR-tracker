@@ -4,15 +4,10 @@ import { useEffect, useState } from "react";
 import { DN_HERO_STATS, type DnHeroStats } from "./data";
 
 /**
- * Hero band at the top of <main>: animated days-since-AOR counter +
- * three KPI cards (stream median, cohort rank, estimated PPR window).
+ * Navy hero band: animated days-since-AOR counter + three inline KPI stats
+ * (typical wait, queue position, expected approval window).
  *
- * Sample reference: `.hero-bar` block in `aortrack-dashboard.html`.
- *
- * Pass `stats` to override the seed values — `/dashboard` derives this from
- * `useDashboard()` (days, cohortDisplay.median_days_to_ppr, cohort-rank
- * derivation and `ppr.windowLabel`); the `/dashboard-new` preview route
- * falls back to `DN_HERO_STATS`.
+ * Sample reference: `.day-hero` in `samples/pr-tracker-redesign.html`.
  */
 export function DashboardHeroBar({
   stats = DN_HERO_STATS,
@@ -43,38 +38,31 @@ export function DashboardHeroBar({
   }, [target]);
 
   return (
-    <div className="hero-bar">
-      <div className="days-box">
-        <div>
-          <div className="days-n">{days}</div>
-          <div className="days-lbl">Days Since AOR</div>
-          <div className="days-since">{stats.daysSinceLabel}</div>
+    <div className="day-hero">
+      <div className="day-big">
+        <div className="day-num">{days}</div>
+        <div className="day-sub">
+          Days since
+          <br />
+          you applied
         </div>
       </div>
-      <div className="stat-grid">
-        <div className="s-card">
-          <div className="s-lbl">Stream Median</div>
-          <div className="s-val">{stats.streamMedian.value}</div>
-          <div className="s-sub">
-            <span
-              className={stats.streamMedian.deltaDir === "up" ? "up" : "dn"}
-            >
-              {stats.streamMedian.deltaDir === "up" ? "↑" : "↓"}{" "}
-              {stats.streamMedian.deltaLabel}
-            </span>
-            &nbsp;this week
-          </div>
+      <div className="hero-stat">
+        <div className="hs-label">Typical wait in your group</div>
+        <div className="hs-val warn">{stats.typicalWait.value}</div>
+        <div className="hs-note">{stats.typicalWait.note}</div>
+      </div>
+      <div className="hero-stat">
+        <div className="hs-label">Your position in the queue</div>
+        <div className={`hs-val ${stats.queuePosition.tone}`}>
+          {stats.queuePosition.value}
         </div>
-        <div className="s-card">
-          <div className="s-lbl">Cohort Rank</div>
-          <div className="s-val amber">{stats.cohortRank.value}</div>
-          <div className="s-sub">{stats.cohortRank.sub}</div>
-        </div>
-        <div className="s-card">
-          <div className="s-lbl">Est. PPR Window</div>
-          <div className="s-val green sm">{stats.pprWindow.value}</div>
-          <div className="s-sub">{stats.pprWindow.sub}</div>
-        </div>
+        <div className="hs-note">{stats.queuePosition.note}</div>
+      </div>
+      <div className="hero-stat">
+        <div className="hs-label">Expected approval around</div>
+        <div className="hs-val approval">{stats.expectedApproval.value}</div>
+        <div className="hs-note">{stats.expectedApproval.note}</div>
       </div>
     </div>
   );

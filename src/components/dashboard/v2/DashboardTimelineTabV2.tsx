@@ -20,8 +20,8 @@ import {
   dotMapVM,
   heroStatsVM,
   histVM,
-  pprWindowVM,
-  ringsVM,
+  infoCardsVM,
+  journeyProgressVM,
   streamCompareVM,
   timelineRowsVM,
 } from "./live-vm";
@@ -46,8 +46,8 @@ export function DashboardTimelineTabV2() {
   const ctx = useDashboard();
 
   const heroStats = useMemo(() => heroStatsVM(ctx), [ctx]);
-  const rings = useMemo(() => ringsVM(ctx), [ctx]);
-  const pprWindow = useMemo(() => pprWindowVM(ctx), [ctx]);
+  const infoCards = useMemo(() => infoCardsVM(ctx), [ctx]);
+  const journeyProgress = useMemo(() => journeyProgressVM(ctx), [ctx]);
   const timelineRows = useMemo(
     () => timelineRowsVM(ctx.milestoneDefsForCohort, ctx.profile),
     [ctx.milestoneDefsForCohort, ctx.profile],
@@ -68,8 +68,17 @@ export function DashboardTimelineTabV2() {
   return (
     <>
       <DashboardHeroBar stats={heroStats} />
-      <DashboardRings rings={rings} />
-      <DashboardPprBar window={pprWindow} />
+      <DashboardShareSection
+        share={{
+          shareUrl: ctx.shareUrl,
+          shareUrlDisplay: ctx.shareUrl.replace(/^https?:\/\//, ""),
+          githubUrl: "https://github.com/Get-North-Path/AOR-tracker",
+        }}
+        error={ctx.shareLinkError}
+      />
+      <DashboardRings cards={infoCards} />
+      <DashboardPprBar journey={journeyProgress} />
+      
       <DashboardTimeline
         rows={timelineRows}
         note={`Cohort: ${humanizeCohortKey(ctx.activeCohortKey)} · ${ctx.cohortTotal} verified profiles`}
@@ -88,17 +97,6 @@ export function DashboardTimelineTabV2() {
         <DashboardDotMap map={dotMap} applicantId={`#${ctx.email.length}`} />
         <DashboardStreamCompare rows={streamCompare} />
       </DashboardCohortSection>
-
-      <DashboardAlertsList alerts={alerts} />
-
-      <DashboardShareSection
-        share={{
-          shareUrl: ctx.shareUrl,
-          shareUrlDisplay: ctx.shareUrl.replace(/^https?:\/\//, ""),
-          githubUrl: "https://github.com/Get-North-Path/AOR-tracker",
-        }}
-        error={ctx.shareLinkError}
-      />
 
       <DashboardConsultingCTA />
 

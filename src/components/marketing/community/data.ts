@@ -22,7 +22,8 @@
 
 const SUBMIT_HREF = "/track";
 const DASHBOARD_HREF = "/dashboard";
-const FEEDBACK_HREF = "/feedback";
+const FEEDBACK_HREF =
+  "https://github.com/Get-North-Path/AOR-tracker/issues/new";
 const DISCORD_HREF = "https://discord.gg/aortrack";
 
 // ─── Types ──────────────────────────────────────────────────────────────────
@@ -418,9 +419,7 @@ export function buildCommunityPageData(
     liveCount: counts.total || seedCommunity.liveCount,
     posts,
     browseLinks: seedCommunity.browseLinks.map((l) =>
-      l.id === "all"
-        ? { ...l, badge: counts.total.toLocaleString() }
-        : l,
+      l.id === "all" ? { ...l, badge: counts.total.toLocaleString() } : l,
     ),
     milestoneLinks: seedCommunity.milestoneLinks.map((l) => {
       const map: Record<string, number> = {

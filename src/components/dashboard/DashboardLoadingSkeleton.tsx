@@ -52,43 +52,62 @@ function SidebarSkeleton() {
 
 function HeroBarSkeleton() {
   return (
-    <div className="hero-bar">
-      {/* Days-since-AOR box */}
-      <div className="days-box">
-        <div className="sk mx-auto h-10 w-24 rounded-md opacity-90" />
-        <div className="sk sk-line sm mx-auto mt-3 w-20 opacity-70" />
-        <div className="sk sk-line sm mx-auto mt-2 w-28 opacity-50" />
+    <div className="day-hero">
+      <div className="day-big">
+        <div className="sk h-10 w-16 rounded-md opacity-90" />
+        <div className="space-y-2">
+          <div className="sk sk-line sm w-24 opacity-70" />
+          <div className="sk sk-line sm w-20 opacity-50" />
+        </div>
       </div>
-
-      {/* 3 small KPI cards */}
-      <div className="stat-grid">
-        {Array.from({ length: 3 }).map((_, i) => (
-          <div key={i} className="s-card">
-            <div className="sk sk-line sm w-24 opacity-70" />
-            <div className="sk sk-line mb-1 mt-3 h-6 w-20" />
-            <div className="sk sk-line sm w-28 opacity-60" />
-          </div>
-        ))}
-      </div>
+      {Array.from({ length: 3 }).map((_, i) => (
+        <div key={i} className="hero-stat space-y-2">
+          <div className="sk sk-line sm w-28 opacity-70" />
+          <div className="sk sk-line h-6 w-24" />
+          <div className="sk sk-line sm w-36 opacity-60" />
+        </div>
+      ))}
     </div>
   );
 }
 
-function RingsRowSkeleton() {
+function InfoCardsSkeleton() {
   return (
-    <div className="rings-row">
-      {Array.from({ length: 2 }).map((_, i) => (
-        <div key={i} className="ring-card">
-          <div className="ring-svg-wrap">
-            <div className="sk h-[68px] w-[68px] rounded-full" />
-          </div>
-          <div className="min-w-0 flex-1 space-y-2">
-            <div className="sk sk-line h-3 w-32 max-w-[80%]" />
-            <div className="sk sk-line sm w-40 max-w-[90%]" />
-            <div className="sk sk-line sm w-24 opacity-70" />
-          </div>
+    <div className="cards-row">
+      {Array.from({ length: 3 }).map((_, i) => (
+        <div key={i} className="info-card space-y-2">
+          <div className="sk sk-line sm w-32 opacity-70" />
+          <div className="sk sk-line h-7 w-16" />
+          <div className="sk sk-line sm w-40 opacity-70" />
+          <div className="sk mt-2 h-10 w-full rounded opacity-60" />
         </div>
       ))}
+    </div>
+  );
+}
+
+function JourneyProgressSkeleton() {
+  return (
+    <div className="progress-section space-y-3">
+      <div className="sk sk-line h-4 w-56 max-w-[70%]" />
+      <div className="sk sk-line sm w-full max-w-md opacity-70" />
+      <div className="sk h-3 w-full rounded-full opacity-80" />
+      <div className="flex justify-between gap-2">
+        <div className="sk sk-line sm w-24 opacity-60" />
+        <div className="sk sk-line sm w-20 opacity-60" />
+        <div className="sk sk-line sm w-28 opacity-60" />
+      </div>
+      <div className="pbar-stats">
+        {Array.from({ length: 2 }).map((_, i) => (
+          <div key={i} className="pbar-stat">
+            <div className="sk h-9 w-9 shrink-0 rounded-lg" />
+            <div className="min-w-0 flex-1 space-y-2">
+              <div className="sk sk-line sm w-32 opacity-70" />
+              <div className="sk sk-line h-4 w-20" />
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
@@ -187,7 +206,8 @@ export function DashboardLoadingSkeleton() {
         <main className="dmain">
           <LoadingHeader />
           <HeroBarSkeleton />
-          <RingsRowSkeleton />
+          <InfoCardsSkeleton />
+          <JourneyProgressSkeleton />
           <TimelineSkeleton />
         </main>
       </div>

@@ -225,11 +225,13 @@ export function DashboardTimelineTab() {
                       </div>
                       <span className="tlctxt">
                         {cohortTotal === 0 ? (
-                          <>No cohort data — run Sync cohorts</>
+                          <>No cohort data yet — more verified profiles will fill this in.</>
                         ) : (
                           <>
                             <b>{n}</b> of {cohortTotal} ({cp}%) past this
-                            {cohortDataSparse ? " · low n" : ""}
+                            {cohortDataSparse
+                              ? " · smaller sample, wider spread"
+                              : ""}
                           </>
                         )}
                       </span>

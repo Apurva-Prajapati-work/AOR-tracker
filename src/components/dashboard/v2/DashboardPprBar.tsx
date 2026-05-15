@@ -1,56 +1,62 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { DN_PPR_WINDOW, type DnPprWindow } from "./data";
+import { FaCalendarAlt, FaHourglassHalf, FaMapMarkerAlt } from "react-icons/fa";
+import { DN_JOURNEY_PROGRESS, type DnJourneyProgress } from "./data";
 
 /**
- * Navy "Estimated PPR Window" band with progress fill, window-band overlay
- * and a "you" marker.
+ * Journey progress card with animated bar, axis labels, and waited/remaining stats.
  *
- * Sample reference: `.ppr-bar` in `aortrack-dashboard.html`.
- *
- * Pass `window` to render from live `ppr` estimate values; otherwise falls
- * back to `DN_PPR_WINDOW` for the seed preview.
+ * Sample reference: `.progress-section` in `samples/pr-tracker-redesign.html`.
  */
 export function DashboardPprBar({
-  window: w = DN_PPR_WINDOW,
+  journey = DN_JOURNEY_PROGRESS,
 }: {
-  window?: DnPprWindow;
+  journey?: DnJourneyProgress;
 } = {}) {
   const [progress, setProgress] = useState(0);
   useEffect(() => {
-    const id = globalThis.setTimeout(() => setProgress(w.progressPct), 400);
+    const id = globalThis.setTimeout(() => setProgress(journey.progressPct), 400);
     return () => globalThis.clearTimeout(id);
-  }, [w.progressPct]);
+  }, [journey.progressPct]);
 
   return (
-    <div className="ppr-bar">
-      <div className="ppr-top">
-        <div>
-          <div className="ppr-lbl">{w.label}</div>
-          <div className="ppr-win">{w.windowLabel}</div>
-        </div>
-        <div className="ppr-right">
-          <div className="ppr-n">{w.nVerifiedNote}</div>
-          <span className="ppr-conf">{w.confidenceLabel}</span>
-        </div>
+    <div className="progress-section">
+      <div className="section-title">
+        <FaMapMarkerAlt className="section-title-icon" aria-hidden />
+        {journey.title}
       </div>
-      <div className="ppr-track">
-        <div className="ppr-progress" style={{ width: `${progress}%` }} />
+      <div className="section-note">{journey.subtitle}</div>
+      <div className="progress-bar-wrap">
         <div
-          className="ppr-window-band"
-          style={{ left: `${w.bandLeftPct}%`, width: `${w.bandWidthPct}%` }}
-        />
-        <div
-          className="ppr-you-marker"
-          style={{ left: `${w.youPct}%` }}
-          aria-label="Your current position"
+          className="progress-bar-fill"
+          style={{ width: `${progress}%` }}
         />
       </div>
-      <div className="ppr-axis">
-        {w.axisLabels.map((label) => (
+      <div className="progress-labels">
+        {journey.axisLabels.map((label) => (
           <span key={label}>{label}</span>
         ))}
+      </div>
+      <div className="pbar-stats">
+        <div className="pbar-stat">
+          <div className="pbar-stat-icon teal">
+            <FaCalendarAlt aria-hidden />
+          </div>
+          <div>
+            <div className="pbar-stat-label">{journey.daysWaited.label}</div>
+            <div className="pbar-stat-val">{journey.daysWaited.value}</div>
+          </div>
+        </div>
+        <div className="pbar-stat">
+          <div className="pbar-stat-icon amber">
+            <FaHourglassHalf aria-hidden />
+          </div>
+          <div>
+            <div className="pbar-stat-label">{journey.daysRemaining.label}</div>
+            <div className="pbar-stat-val">{journey.daysRemaining.value}</div>
+          </div>
+        </div>
       </div>
     </div>
   );

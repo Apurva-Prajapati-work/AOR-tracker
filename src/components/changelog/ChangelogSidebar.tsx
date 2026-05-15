@@ -15,7 +15,10 @@ const DEFAULT_EXTERNAL_LINKS: NonNullable<Props["externalLinks"]> = [
     label: "GitHub Releases ↗",
     external: true,
   },
-  { href: "/feedback", label: "Give Feedback" },
+  {
+    href: "https://github.com/Get-North-Path/AOR-tracker/issues/new",
+    label: "Give Feedback",
+  },
 ];
 
 /**

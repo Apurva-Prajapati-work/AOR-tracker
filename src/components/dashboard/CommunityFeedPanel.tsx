@@ -253,16 +253,16 @@ export function CommunityFeedPanel({
     <div className="space-y-4">
       <div className="flex flex-wrap items-center justify-between gap-2.5">
         <div>
-          <div className="text-lg font-bold text-[var(--w)]">
+          <div className="text-lg font-bold text-(--w)">
             Community reports
           </div>
-          <div className="mt-0.5 flex flex-wrap items-center gap-2 text-xs text-[var(--t2)]">
+          <div className="mt-0.5 flex flex-wrap items-center gap-2 text-xs text-(--t2)">
             <span>Share updates with others on similar timelines</span>
             <span
               className={`rounded px-1.5 py-0.5 text-[10px] font-semibold ${
                 socketLive
                   ? "bg-[rgba(93,228,148,0.12)] text-[#5de494]"
-                  : "bg-[var(--navy4)] text-[var(--t3)]"
+                  : "bg-(--navy4) text-(--t3)"
               }`}
               title={
                 socketLive
@@ -348,14 +348,14 @@ export function CommunityFeedPanel({
           ) : null}
           <textarea
             ref={composerTextareaRef}
-            className="mb-2 min-h-[88px] w-full resize-y rounded-md border border-[var(--navy4)] bg-[var(--navy2)] px-3 py-2 text-[13px] text-[var(--t1)] placeholder:text-[var(--t3)]"
+            className="mb-2 min-h-[88px] w-full resize-y rounded-md border border-(--navy4) bg-(--navy2) px-3 py-2 text-[13px] text-(--t1) placeholder:text-(--t3)"
             placeholder="What changed on your application? (plain text — no HTML)"
             value={composer}
             maxLength={2000}
             onChange={(e) => setComposer(e.target.value)}
           />
           <div className="flex flex-wrap items-center justify-between gap-2">
-            <span className="text-[10px] text-[var(--t3)]">
+            <span className="text-[10px] text-(--t3)">
               {composer.length}/2000 · Visible to other signed-in users viewing
               this feed
             </span>
@@ -373,13 +373,13 @@ export function CommunityFeedPanel({
       </div>
 
       {loading && feed.length === 0 ? (
-        <div className="py-8 text-center text-sm text-[var(--t3)]">
+        <div className="py-8 text-center text-sm text-(--t3)">
           Loading community…
         </div>
       ) : null}
 
       {loading && feed.length > 0 ? (
-        <div className="py-2 text-center text-[11px] text-[var(--t3)]">
+        <div className="py-2 text-center text-[11px] text-(--t3)">
           Updating feed…
         </div>
       ) : null}
@@ -435,7 +435,7 @@ export function CommunityFeedPanel({
             </button>
             <button
               type="button"
-              className={`fabtn ${savedIds.has(c.id) ? "ring-1 ring-[var(--red)]" : ""}`}
+              className={`fabtn ${savedIds.has(c.id) ? "ring-1 ring-(--red)" : ""}`}
               onClick={() => toggleSaved(c.id)}
             >
               {savedIds.has(c.id) ? <FaBookmark aria-hidden /> : <FaRegBookmark aria-hidden />}
@@ -446,16 +446,16 @@ export function CommunityFeedPanel({
       ))}
 
       {!loading && total === 0 ? (
-        <div className="py-8 text-center text-sm text-[var(--t3)]">
+        <div className="py-8 text-center text-sm text-(--t3)">
           No posts match this filter yet.
         </div>
       ) : null}
 
       {total > 0 ? (
-        <div className="flex flex-wrap items-center justify-between gap-3 border-t border-[var(--border)] pt-4">
-          <span className="text-[12px] text-[var(--t2)]">
+        <div className="flex flex-wrap items-center justify-between gap-3 border-t border-(--border) pt-4">
+          <span className="text-[12px] text-(--t2)">
             Showing {rangeLabel}
-            <span className="text-[var(--t3)]">
+            <span className="text-(--t3)">
               {" "}
               · {COMMUNITY_FEED_PAGE_SIZE} per page
             </span>
@@ -469,7 +469,7 @@ export function CommunityFeedPanel({
             >
               Previous
             </button>
-            <span className="px-1 text-[11px] text-[var(--t3)]">
+            <span className="px-1 text-[11px] text-(--t3)">
               Page {page} / {totalPages}
             </span>
             <button

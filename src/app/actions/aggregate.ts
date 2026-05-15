@@ -17,7 +17,9 @@ const MILESTONE_KEYS: MilestoneKey[] = [
   "biometrics",
   "background",
   "medical",
-  "ppr",
+  "p1",
+  "p2",
+  "ecopr",
 ];
 
 function filledCond(path: string): Record<string, unknown> {

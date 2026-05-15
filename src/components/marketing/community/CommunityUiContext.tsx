@@ -16,7 +16,9 @@ export type AppealContext = {
 /** Marketing chip id; `null` = "All". */
 export type CommunityMsFilter =
   | null
-  | "ppr"
+  | "ecopr"
+  | "p1"
+  | "p2"
   | "bil"
   | "bgc"
   | "medical";

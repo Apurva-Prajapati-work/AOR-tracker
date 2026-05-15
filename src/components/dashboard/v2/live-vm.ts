@@ -60,7 +60,7 @@ export function heroStatsVM(
   >,
 ): DnHeroStats {
   const { days, median, cohortDisplay, ppr } = ctx;
-  const aheadCount = cohortDisplay.per_milestone_n?.ppr ?? 0;
+  const aheadCount = cohortDisplay.per_milestone_n?.ecopr ?? 0;
   const totalCount = cohortDisplay.n_verified || 1;
   const rankPct = Math.max(
     0,
@@ -199,7 +199,9 @@ const BAR_FILL_BY_KEY: Record<MilestoneKey, "g" | "b" | "a" | "r"> = {
   biometrics: "b",
   background: "a",
   medical: "a",
-  ppr: "r",
+  p1: "a",
+  p2: "a",
+  ecopr: "r",
 };
 
 export function cohortBarsVM(

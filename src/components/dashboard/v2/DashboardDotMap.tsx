@@ -21,7 +21,7 @@ export function DashboardDotMap({
 }: {
   map?: DnDotMap;
   applicantId?: string;
-  legendCounts?: { ppr: number; mid: number; early: number };
+  legendCounts?: { ecopr: number; mid: number; early: number };
 } = {}) {
   const dots = useMemo(() => {
     const { total, pprUpTo, midUpTo, youIndex } = map;
@@ -29,7 +29,7 @@ export function DashboardDotMap({
       if (i === youIndex) {
         return { cls: "dm you", title: `You — Applicant ${applicantId}` };
       }
-      if (i < pprUpTo) return { cls: "dm ppr", title: "PPR received" };
+      if (i < pprUpTo) return { cls: "dm ecopr", title: "eCOPR received" };
       if (i < midUpTo) return { cls: "dm mid", title: "BGC / Medical" };
       return { cls: "dm early", title: "AOR – Biometrics" };
     });
@@ -37,7 +37,7 @@ export function DashboardDotMap({
 
   const counts =
     legendCounts ?? {
-      ppr: map.pprUpTo,
+      ecopr: map.pprUpTo,
       mid: map.midUpTo - map.pprUpTo,
       early: map.total - map.midUpTo,
     };
@@ -65,7 +65,7 @@ export function DashboardDotMap({
       <div className="dm-legend">
         <div className="dl">
           <div className="dl-d" style={{ background: "var(--green)" }} />
-          PPR received ({counts.ppr})
+          eCOPR received ({counts.ecopr})
         </div>
         <div className="dl">
           <div

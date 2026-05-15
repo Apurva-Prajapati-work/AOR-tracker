@@ -21,7 +21,9 @@ import type { CommunityPost, CommunityReplyRef, UserProfile } from "@/lib/types"
 
 const SAVED_KEY = "aortrack.community.savedIds";
 const MS_CHOICES: { v: CommunityMs; label: string }[] = [
-  { v: "ppr", label: "PPR" },
+  { v: "ecopr", label: "eCOPR" },
+  { v: "p1", label: "P1" },
+  { v: "p2", label: "P2" },
   { v: "bil", label: "BIL" },
   { v: "bg", label: "BG" },
   { v: "med", label: "Med" },
@@ -273,7 +275,7 @@ export function CommunityFeedPanel({
           </div>
         </div>
         <div className="ffs">
-          {["all", "ppr", "bil", "bg", "med"].map((f) => (
+          {["all", "ecopr", "p1", "p2", "bil", "bg", "med"].map((f) => (
             <button
               key={f}
               type="button"
@@ -285,11 +287,11 @@ export function CommunityFeedPanel({
             >
               {f === "all"
                 ? "All"
-                : f === "ppr"
+                : f === "ecopr"
                   ? (
                       <span className="inline-flex items-center gap-1">
                         <FaTrophy aria-hidden />
-                        PPR
+                        eCOPR
                       </span>
                     )
                   : f.toUpperCase()}
@@ -318,7 +320,7 @@ export function CommunityFeedPanel({
               className={`fch ${ms === c.v ? "on" : ""}`}
               onClick={() => setMs(c.v)}
             >
-              {c.v === "ppr" ? (
+              {c.v === "ecopr" ? (
                 <span className="inline-flex items-center gap-1">
                   <FaTrophy aria-hidden />
                   {c.label}

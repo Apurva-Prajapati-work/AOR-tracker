@@ -12,20 +12,22 @@ export type CohortInsight = {
   txt: string;
 };
 
-/** Typical share of median PPR day for each milestone (rough model). */
+/** Typical share of median days-to-eCOPR for each milestone (rough inland model). */
 const MEDIAN_DAY_FRAC: Record<MilestoneKey, number> = {
   aor: 0,
   bil: 0.09,
   biometrics: 0.17,
   background: 0.36,
   medical: 0.63,
-  ppr: 1,
+  p1: 0.78,
+  p2: 0.9,
+  ecopr: 1,
 };
 
 export type MilestoneDefRow = (typeof MILESTONE_DEFS)[number];
 
 /**
- * Merge static milestone labels with dates estimated from AOR + cohort median PPR.
+ * Merge static milestone labels with dates estimated from AOR + cohort median (to eCOPR).
  */
 export function mergeMilestoneDefsForCohort(
   aorDate: string,
@@ -56,7 +58,7 @@ export function mergeMilestoneDefsForCohort(
     return {
       ...def,
       est,
-      desc: `Typical ~${daysAfter}d after AOR (cohort median PPR ${med}d).`,
+      desc: `Typical ~${daysAfter}d after AOR (cohort median to eCOPR ${med}d).`,
     };
   });
 }
@@ -72,10 +74,10 @@ export function buildCohortInsights(
 
   if (live && live.profileCount > 0) {
     const bio = live.perMilestoneFilled.biometrics ?? 0;
-    const pprN = live.perMilestoneFilled.ppr ?? 0;
+    const ecoprN = live.perMilestoneFilled.ecopr ?? 0;
     out.push({
       t: "g",
-      txt: `<strong>Your cohort on AOR Track</strong> — <strong>${live.profileCount}</strong> saved profile${live.profileCount === 1 ? "" : "s"} for <strong>${humanizeCohortKey(cohort.cohortKey)}</strong>. <strong>${bio}</strong> logged biometrics · <strong>${pprN}</strong> PPR.`,
+      txt: `<strong>Your cohort on AOR Track</strong> — <strong>${live.profileCount}</strong> saved profile${live.profileCount === 1 ? "" : "s"} for <strong>${humanizeCohortKey(cohort.cohortKey)}</strong>. <strong>${bio}</strong> logged biometrics · <strong>${ecoprN}</strong> eCOPR.`,
     });
   }
 
@@ -88,8 +90,8 @@ export function buildCohortInsights(
         t: last > prev ? "g" : "a",
         txt:
           last > prev
-            ? `<strong>PPR pulse up</strong> — model shows <strong>${last}</strong> in the latest week vs <strong>${prev}</strong> the week before.`
-            : `<strong>PPR pulse eased</strong> — <strong>${last}</strong> vs <strong>${prev}</strong> prior week (cohort trend).`,
+            ? `<strong>Approval pulse up</strong> — model shows <strong>${last}</strong> in the latest week vs <strong>${prev}</strong> the week before.`
+            : `<strong>Approval pulse eased</strong> — <strong>${last}</strong> vs <strong>${prev}</strong> prior week (cohort trend).`,
       });
     }
   }
@@ -105,7 +107,7 @@ export function buildCohortInsights(
   const cr = Math.round((cohort.completion_rate ?? 0) * 100);
   out.push({
     t: "b",
-    txt: `<strong>Modeled PPR rate</strong> — about <strong>${cr}%</strong> completion on this cohort's historical curve.`,
+    txt: `<strong>Modeled completion rate</strong> — about <strong>${cr}%</strong> with eCOPR logged on this cohort's historical curve.`,
   });
 
   const wd = Math.round((cohort.weekly_delta ?? 0) * 100);

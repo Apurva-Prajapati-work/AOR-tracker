@@ -11,6 +11,24 @@ export function emptyMilestones(): Record<MilestoneKey, MilestoneEntry> {
   ) as Record<MilestoneKey, MilestoneEntry>;
 }
 
+/** Merge stored `milestones` with the current `MilestoneKey` set (fills missing keys). */
+export function normalizeMilestonesFromDoc(raw: unknown): UserProfile["milestones"] {
+  const base = emptyMilestones();
+  const r = (raw && typeof raw === "object" ? raw : {}) as Record<
+    string,
+    { date?: string | null; updatedAt?: string | null }
+  >;
+  for (const k of Object.keys(base) as MilestoneKey[]) {
+    const e = r[k];
+    if (e && typeof e === "object") {
+      const d = e.date != null ? String(e.date).trim() : "";
+      const u = e.updatedAt != null ? String(e.updatedAt) : null;
+      base[k] = { date: d || null, updatedAt: u };
+    }
+  }
+  return base;
+}
+
 export function newProfile(email: string): UserProfile {
   const now = new Date().toISOString();
   return {

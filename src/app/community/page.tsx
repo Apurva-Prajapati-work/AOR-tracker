@@ -28,7 +28,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Community Feed — AORTrack",
     description:
-      "Timelines, replies, and weekly PPR pulse from the AORTrack community.",
+      "Timelines, replies, and weekly eCOPR pulse from the AORTrack community.",
     url: CANONICAL,
     type: "website",
   },

@@ -31,7 +31,9 @@ const POST_AOR_KEYS: PostAorKey[] = [
   "biometrics",
   "background",
   "medical",
-  "ppr",
+  "p1",
+  "p2",
+  "ecopr",
 ];
 
 function blankChecked(): Record<PostAorKey, boolean> {
@@ -40,11 +42,21 @@ function blankChecked(): Record<PostAorKey, boolean> {
     biometrics: false,
     background: false,
     medical: false,
-    ppr: false,
+    p1: false,
+    p2: false,
+    ecopr: false,
   };
 }
 function blankDates(): Record<PostAorKey, string> {
-  return { bil: "", biometrics: "", background: "", medical: "", ppr: "" };
+  return {
+    bil: "",
+    biometrics: "",
+    background: "",
+    medical: "",
+    p1: "",
+    p2: "",
+    ecopr: "",
+  };
 }
 
 /**

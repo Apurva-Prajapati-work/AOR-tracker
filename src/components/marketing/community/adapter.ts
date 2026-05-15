@@ -27,7 +27,9 @@ import type {
 
 /** Backend stores `bg`/`med`; the marketing tokens use `bgc`/`med`. */
 const MS_TO_ACCENT: Record<string, MilestoneAccent> = {
-  ppr: "ppr",
+  ecopr: "ecopr",
+  p1: "p1",
+  p2: "p2",
   bil: "bil",
   bg: "bgc",
   med: "med",
@@ -35,7 +37,9 @@ const MS_TO_ACCENT: Record<string, MilestoneAccent> = {
 
 /** Same mapping for the chip color token. */
 const MS_TO_CHIP_COLOR: Record<string, MilestoneChipColor> = {
-  ppr: "ppr",
+  ecopr: "ecopr",
+  p1: "p1",
+  p2: "p2",
   bil: "bil",
   bg: "bgc",
   med: "med",

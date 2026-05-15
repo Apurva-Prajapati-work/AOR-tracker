@@ -14,11 +14,13 @@ import { getCohortStatsForProfileAction } from "@/app/actions/cohort";
 import { getProfileAction } from "@/app/actions/profile";
 import { mergeMilestoneDefsForCohort } from "@/lib/cohort-dynamic";
 
-const MS_OPTIONS = ["ppr", "bil", "bg", "med"] as const;
+const MS_OPTIONS = ["ecopr", "p1", "p2", "bil", "bg", "med"] as const;
 export type CommunityMs = (typeof MS_OPTIONS)[number];
 
 const MS_LABEL: Record<CommunityMs, string> = {
-  ppr: "PPR Received",
+  ecopr: "eCOPR received",
+  p1: "P1 — PR Portal (first)",
+  p2: "P2 — PR Portal (photo & address)",
   bil: "BIL Received",
   bg: "BGC Started",
   med: "Medical Done",
@@ -43,7 +45,9 @@ function timelineFromProfile(p: UserProfile): { label: string; done: boolean }[]
     "biometrics",
     "background",
     "medical",
-    "ppr",
+    "p1",
+    "p2",
+    "ecopr",
   ];
   const short: Record<MilestoneKey, string> = {
     aor: "AOR",
@@ -51,7 +55,9 @@ function timelineFromProfile(p: UserProfile): { label: string; done: boolean }[]
     biometrics: "Bio",
     background: "BGC",
     medical: "Med",
-    ppr: "PPR",
+    p1: "P1",
+    p2: "P2",
+    ecopr: "eCOPR",
   };
   return order.map((k) => ({
     label: short[k],
@@ -80,7 +86,9 @@ function postPlainSnippet(
 
 export type CommunityMsCounts = {
   total: number;
-  ppr: number;
+  ecopr: number;
+  p1: number;
+  p2: number;
   bil: number;
   bg: number;
   med: number;
@@ -106,7 +114,9 @@ export async function getCommunityMsCountsAction(): Promise<CommunityMsCounts> {
 
   const counts: CommunityMsCounts = {
     total: 0,
-    ppr: 0,
+    ecopr: 0,
+    p1: 0,
+    p2: 0,
     bil: 0,
     bg: 0,
     med: 0,
@@ -115,7 +125,9 @@ export async function getCommunityMsCountsAction(): Promise<CommunityMsCounts> {
     const key = String(r._id);
     const n = typeof r.n === "number" ? r.n : 0;
     counts.total += n;
-    if (key === "ppr") counts.ppr += n;
+    if (key === "ecopr") counts.ecopr += n;
+    else if (key === "p1") counts.p1 += n;
+    else if (key === "p2") counts.p2 += n;
     else if (key === "bil") counts.bil += n;
     else if (key === "bg") counts.bg += n;
     else if (key === "med") counts.med += n;
@@ -128,7 +140,9 @@ const SUBMIT_TIMELINE_KEYS = new Set<MilestoneKey>([
   "bil",
   "background",
   "medical",
-  "ppr",
+  "p1",
+  "p2",
+  "ecopr",
 ]);
 
 export type CommunitySubmitMilestoneOption = {

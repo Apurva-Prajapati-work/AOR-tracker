@@ -5,7 +5,7 @@ import { getDb } from "@/lib/db";
 export type LandingTickerItem = {
   id: string;
   time: string;
-  type: "ppr" | "bil" | "bg" | "med";
+  type: "ecopr" | "p1" | "p2" | "bil" | "bg" | "med";
   label: string;
   text: string;
   stream: string;
@@ -24,14 +24,18 @@ function relativeTime(d: Date): string {
 }
 
 function msToTickerType(ms: string): LandingTickerItem["type"] {
-  if (ms === "ppr") return "ppr";
+  if (ms === "ecopr") return "ecopr";
+  if (ms === "p1") return "p1";
+  if (ms === "p2") return "p2";
   if (ms === "bil") return "bil";
   if (ms === "med") return "med";
   return "bg";
 }
 
 function msToLabel(ms: string): string {
-  if (ms === "ppr") return "PPR";
+  if (ms === "ecopr") return "eCOPR";
+  if (ms === "p1") return "P1";
+  if (ms === "p2") return "P2";
   if (ms === "bil") return "BIL";
   if (ms === "med") return "Med";
   return "BGC";

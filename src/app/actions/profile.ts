@@ -7,6 +7,7 @@ import {
   isValidEmail,
   newProfile,
   normalizeEmail,
+  normalizeMilestonesFromDoc,
 } from "@/lib/profile";
 import type { MilestoneKey, UserProfile } from "@/lib/types";
 
@@ -17,7 +18,6 @@ function iso(v: unknown): string {
 }
 
 function docToProfile(doc: Record<string, unknown>): UserProfile {
-  const m = doc.milestones as UserProfile["milestones"];
   return {
     email: doc.emailNorm as string,
     createdAt: iso(doc.createdAt),
@@ -26,7 +26,7 @@ function docToProfile(doc: Record<string, unknown>): UserProfile {
     stream: (doc.stream as string) ?? "CEC General",
     type: (doc.type as string) ?? "Inland",
     province: (doc.province as string) ?? "Ontario",
-    milestones: m ?? emptyMilestones(),
+    milestones: normalizeMilestonesFromDoc(doc.milestones),
   };
 }
 

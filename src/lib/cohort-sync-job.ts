@@ -9,7 +9,9 @@ const MILESTONE_KEYS: MilestoneKey[] = [
   "biometrics",
   "background",
   "medical",
-  "ppr",
+  "p1",
+  "p2",
+  "ecopr",
 ];
 
 const DIST_BUCKETS: { range: string; lo: number; hi: number }[] = [
@@ -21,9 +23,9 @@ const DIST_BUCKETS: { range: string; lo: number; hi: number }[] = [
   { range: "> 240d", lo: 240, hi: 1_000_000 },
 ];
 
-function daysBetweenAorPpr(aorIso: string, pprIso: string): number {
+function daysBetweenAorEcopr(aorIso: string, ecoprIso: string): number {
   const a = new Date(`${aorIso}T12:00:00`).getTime();
-  const b = new Date(`${pprIso}T12:00:00`).getTime();
+  const b = new Date(`${ecoprIso}T12:00:00`).getTime();
   if (Number.isNaN(a) || Number.isNaN(b)) return NaN;
   return Math.max(0, Math.round((b - a) / 86_400_000));
 }
@@ -39,7 +41,7 @@ function percentile(sorted: number[], p: number): number {
 
 function milestoneDate(
   milestones: Record<string, { date?: string | null }> | undefined,
-  key: MilestoneKey,
+  key: string,
 ): string {
   const d = milestones?.[key]?.date;
   return typeof d === "string" ? d.trim() : "";
@@ -108,14 +110,14 @@ function aggregateOneCohort(
   for (const raw of profs) {
     const p = profileFieldsFromDoc(raw);
     const aor = p.aorDate || milestoneDate(p.milestones, "aor");
-    const ppr = milestoneDate(p.milestones, "ppr");
+    const ecoprDate = milestoneDate(p.milestones, "ecopr");
     for (const k of MILESTONE_KEYS) {
       if (milestoneDate(p.milestones, k)) {
         perMilestone[k] = (perMilestone[k] ?? 0) + 1;
       }
     }
-    if (aor && ppr) {
-      const d = daysBetweenAorPpr(aor, ppr);
+    if (aor && ecoprDate) {
+      const d = daysBetweenAorEcopr(aor, ecoprDate);
       if (!Number.isNaN(d)) daysToPpr.push(d);
     }
   }

@@ -36,7 +36,7 @@ function rowStateFor(
   for (let i = 0; i < idx; i++) {
     if (!profile.milestones[defs[i].key]?.date) return "wait";
   }
-  return defs[idx].key === "ppr" ? "final" : "now";
+  return defs[idx].key === "ecopr" ? "final" : "now";
 }
 
 function dayLabel(aorDate: string, milestoneDate: string): string {
@@ -77,7 +77,7 @@ export function timelineRowsFromProfile(
       pending: !hasDate,
     };
 
-    if (includeEdit && def.key !== "ppr") {
+    if (includeEdit && def.key !== "ecopr") {
       row.edit = {
         label: hasDate ? "Edit" : "+ Add date",
         fieldLabel: `${def.label} Date`,

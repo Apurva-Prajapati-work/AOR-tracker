@@ -37,10 +37,25 @@ export const MILESTONE_DEFS: {
     desc: "Officer review begins shortly after · median 112d",
   },
   {
-    key: "ppr",
-    label: "PPR — Passport request",
+    key: "p1",
+    label: "P1 — PR Portal (first invitation)",
     est: "~Aug–Sep 2025",
-    desc: "Final step before PR approval · median day 184",
+    desc:
+      "IRCC invites you to the Permanent Residence Portal to confirm you are in Canada and submit the first set of details (see canada.ca PR confirmation portal).",
+  },
+  {
+    key: "p2",
+    label: "P2 — PR Portal (photo & address)",
+    est: "~Sep 2025",
+    desc:
+      "Second portal step: submit your portrait photo and Canadian mailing address for your PR card after your file is approved in principle in the portal.",
+  },
+  {
+    key: "ecopr",
+    label: "eCOPR issued",
+    est: "~Sep–Oct 2025",
+    desc:
+      "Electronic Confirmation of Permanent Residence uploaded to your portal — formal PR grant; valid proof of status while you wait for the PR card.",
   },
 ];
 
@@ -65,7 +80,7 @@ export const PROVINCES = [
 ] as const;
 
 /**
- * Base WES table; `buildWesRowsForCohort` in `cohort-dynamic.ts` scales `d` from cohort median PPR.
+ * Base WES table; `buildWesRowsForCohort` in `cohort-dynamic.ts` scales `d` from cohort median timeline.
  */
 export const WES_ROW_TEMPLATE = [
   {

@@ -22,7 +22,9 @@ type Props = {
 
 /** Marketing accent → backend CommunityMs. Backend stores `bg`/`med`. */
 const ACCENT_TO_MS: Record<ApprovedPost["accent"], CommunityMs> = {
-  ppr: "ppr",
+  ecopr: "ecopr",
+  p1: "p1",
+  p2: "p2",
   bil: "bil",
   bgc: "bg",
   med: "med",

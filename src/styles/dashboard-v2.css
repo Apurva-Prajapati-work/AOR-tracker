@@ -1218,7 +1218,7 @@
 .dashboard-v2-page .dm:hover {
   transform: scale(1.6);
 }
-.dashboard-v2-page .dm.ppr {
+.dashboard-v2-page .dm.ecopr {
   background: var(--green);
 }
 .dashboard-v2-page .dm.mid {

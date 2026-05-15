@@ -13,7 +13,9 @@ type Props = {
 /** Chip ids in `data.filterChips` ↔ context msFilter values. */
 const CHIP_TO_MS: Record<string, CommunityMsFilter> = {
   all: null,
-  ppr: "ppr",
+  ecopr: "ecopr",
+  p1: "p1",
+  p2: "p2",
   bil: "bil",
   bgc: "bgc",
   medical: "medical",

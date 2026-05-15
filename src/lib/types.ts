@@ -4,7 +4,12 @@ export type MilestoneKey =
   | "biometrics"
   | "background"
   | "medical"
-  | "ppr";
+  /** Permanent Residence Portal — first invitation / initial portal tasks (inland). */
+  | "p1"
+  /** PR Portal — photo & Canadian mailing address for PR card (after approval in portal). */
+  | "p2"
+  /** Electronic Confirmation of Permanent Residence issued in the portal. */
+  | "ecopr";
 
 export type MilestoneEntry = {
   date: string | null;

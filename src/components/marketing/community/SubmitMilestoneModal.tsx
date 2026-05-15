@@ -33,7 +33,9 @@ const KEY_TO_COMMUNITY_MS: Partial<Record<MilestoneKey, CommunityMs>> = {
   bil: "bil",
   background: "bg",
   medical: "med",
-  ppr: "ppr",
+  p1: "p1",
+  p2: "p2",
+  ecopr: "ecopr",
 };
 
 const DASHBOARD_TIMELINE_HREF = "/dashboard#tl-sec";

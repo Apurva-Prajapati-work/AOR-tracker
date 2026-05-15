@@ -247,13 +247,40 @@ export const DN_TIMELINE: DnTimelineRow[] = [
     edit: { label: "+ Add date", fieldLabel: "Medical Results Date" },
   },
   {
-    key: "ppr",
-    state: "final",
-    name: "PPR — Passport Request",
-    desc: "Final step before COPR. Your application has been approved.",
+    key: "p1",
+    state: "wait",
+    name: "P1 — PR Portal (first invitation)",
+    desc:
+      "IRCC invites you to confirm you are in Canada and complete the first Permanent Residence Portal tasks.",
     badge: {
       kind: "estimate",
-      label: "Est. Aug–Oct 2026 · P25–P75 · 482 of your cohort received",
+      label: "Est. after medical · varies by stream",
+    },
+    pending: true,
+    edit: { label: "+ Add date", fieldLabel: "P1 (portal first invitation) Date" },
+  },
+  {
+    key: "p2",
+    state: "wait",
+    name: "P2 — PR Portal (photo & address)",
+    desc:
+      "Submit your portrait photo and Canadian mailing address for your PR card in the portal.",
+    badge: {
+      kind: "estimate",
+      label: "Est. after P1 · when IRCC requests portal step 2",
+    },
+    pending: true,
+    edit: { label: "+ Add date", fieldLabel: "P2 (portal photo & address) Date" },
+  },
+  {
+    key: "ecopr",
+    state: "final",
+    name: "eCOPR issued",
+    desc:
+      "Electronic Confirmation of Permanent Residence — formal PR grant; proof of status until your PR card arrives.",
+    badge: {
+      kind: "estimate",
+      label: "Est. Aug–Oct 2026 · P25–P75 · cohort completion",
     },
     pending: true,
   },
@@ -304,11 +331,23 @@ export const DN_COHORT_BARS: DnCohortBar[] = [
     fill: "a",
   },
   {
-    name: "PPR Received",
+    name: "P1 — PR Portal (first)",
+    countLabel: "312 / 1,240 (25%)",
+    pct: 25,
+    fill: "a",
+  },
+  {
+    name: "P2 — PR Portal (photo & address)",
+    countLabel: "198 / 1,240 (16%)",
+    pct: 16,
+    fill: "a",
+  },
+  {
+    name: "eCOPR issued",
     countLabel: "482 / 1,240 (39%)",
     pct: 39,
     fill: "r",
-    note: "Median: Day 184 · Fastest: Day 142 · Slowest tracked: Day 231",
+    note: "Median: Day 184 to eCOPR · Fastest: Day 142 · Slowest tracked: Day 231",
   },
 ];
 

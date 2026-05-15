@@ -151,10 +151,25 @@ export const TRACK_MILESTONES: TrackMilestoneDef[] = [
     note: "Date your medical results were accepted.",
   },
   {
-    key: "ppr",
-    label: "PPR — Passport Request Received",
+    key: "p1",
+    label: "P1 — PR Portal (first invitation)",
     emptyState: "Not yet received",
-    note: "Congratulations! The date you received your PPR email.",
+    note:
+      "Date IRCC invited you to the Permanent Residence Portal for the first confirmation step (inland).",
+  },
+  {
+    key: "p2",
+    label: "P2 — PR Portal (photo & address)",
+    emptyState: "Not yet received",
+    note:
+      "Date you completed the portal step to submit your photo and Canadian mailing address for your PR card.",
+  },
+  {
+    key: "ecopr",
+    label: "eCOPR issued",
+    emptyState: "Not yet received",
+    note:
+      "Date your electronic Confirmation of Permanent Residence appeared in the portal.",
   },
 ];
 

@@ -20,6 +20,8 @@
  * seeded scaffolding — see the bottom of this file.
  */
 
+import type { CommunityMsCounts } from "@/app/actions/community";
+
 const SUBMIT_HREF = "/track";
 const DASHBOARD_HREF = "/dashboard";
 const FEEDBACK_HREF =
@@ -28,13 +30,13 @@ const DISCORD_HREF = "https://discord.gg/aortrack";
 
 // ─── Types ──────────────────────────────────────────────────────────────────
 
-export type MilestoneKey = "aor" | "bil" | "bgc" | "med" | "ppr" | "copr";
+export type MilestoneKey = "aor" | "bil" | "bgc" | "med" | "ecopr" | "p1" | "p2" | "copr";
 
 /** Accent stripe color on the left edge of each card. */
-export type MilestoneAccent = "ppr" | "bil" | "bgc" | "med" | "aor";
+export type MilestoneAccent = "ecopr" | "p1" | "p2" | "bil" | "bgc" | "med" | "aor";
 
 /** Milestone chip styling token (matches the `.ms-*` CSS classes). */
-export type MilestoneChipColor = "ppr" | "bil" | "bgc" | "med" | "aor";
+export type MilestoneChipColor = "ecopr" | "p1" | "p2" | "bil" | "bgc" | "med" | "aor";
 
 export type CohortItem = {
   label: string;
@@ -247,7 +249,9 @@ export const seedCommunity: CommunityPageData = {
   ],
 
   milestoneLinks: [
-    { id: "ppr", label: "PPR Received", badge: "482" },
+    { id: "ecopr", label: "eCOPR received", badge: "482" },
+    { id: "p1", label: "P1 — PR Portal", badge: "120" },
+    { id: "p2", label: "P2 — PR Portal", badge: "95" },
     { id: "bil", label: "BIL Received", badge: "318" },
     { id: "bgc", label: "Background Check", badge: "241" },
     { id: "medical", label: "Medical Passed", badge: "199" },
@@ -260,8 +264,10 @@ export const seedCommunity: CommunityPageData = {
 
   filterChips: [
     { id: "all", label: "All", count: 1240, active: true },
-    { id: "ppr", label: "PPR", count: 482, dotColor: "var(--green)" },
-    { id: "bil", label: "BIL", count: 318, dotColor: "var(--blue)" },
+    { id: "ecopr", label: "eCOPR", count: 482, dotColor: "var(--green)" },
+    { id: "p1", label: "P1", count: 120, dotColor: "var(--blue)" },
+    { id: "p2", label: "P2", count: 95, dotColor: "var(--teal)" },
+    { id: "bil", label: "BIL", count: 318, dotColor: "var(--amber)" },
     { id: "bgc", label: "BGC", count: 241, dotColor: "var(--amber)" },
     { id: "medical", label: "Medical", dotColor: "var(--purple)" },
   ],
@@ -275,7 +281,7 @@ export const seedCommunity: CommunityPageData = {
 
   submitCta: {
     heading: "Got a milestone? Share it.",
-    sub: "Your BIL, BGC, PPR — every date you log helps 1,240 applicants in your cohort predict their timeline.",
+    sub: "Your BIL, BGC, portal steps (P1/P2), eCOPR — every date you log helps 1,240 applicants in your cohort predict their timeline.",
     buttonLabel: "Submit Milestone",
     href: SUBMIT_HREF,
   },
@@ -305,8 +311,8 @@ export const seedCommunity: CommunityPageData = {
     {
       id: "ins-2",
       tone: "green",
-      title: "PPR Velocity Up This Week",
-      body: "18 PPR approvals logged in the Feb 2026 CEC General cohort this week — highest since tracking began.",
+      title: "eCOPR velocity up this week",
+      body: "18 eCOPR issuances logged in the Feb 2026 CEC General cohort this week — highest since tracking began.",
       reporters: "18 reporters",
       age: "1 day ago",
     },
@@ -321,7 +327,7 @@ export const seedCommunity: CommunityPageData = {
   ],
 
   pulse: {
-    label: "Weekly PPR Pulse — CEC General",
+    label: "Weekly eCOPR pulse — CEC General",
     weeks: [
       { label: "Apr 7", value: 8 },
       { label: "Apr 14", value: 11 },
@@ -406,13 +412,7 @@ export const COMMUNITY_NAV = {
  */
 export function buildCommunityPageData(
   posts: Post[],
-  counts: {
-    total: number;
-    ppr: number;
-    bil: number;
-    bg: number;
-    med: number;
-  },
+  counts: CommunityMsCounts,
 ): CommunityPageData {
   return {
     ...seedCommunity,
@@ -423,7 +423,9 @@ export function buildCommunityPageData(
     ),
     milestoneLinks: seedCommunity.milestoneLinks.map((l) => {
       const map: Record<string, number> = {
-        ppr: counts.ppr,
+        ecopr: counts.ecopr,
+        p1: counts.p1,
+        p2: counts.p2,
         bil: counts.bil,
         bgc: counts.bg,
         medical: counts.med,
@@ -434,7 +436,9 @@ export function buildCommunityPageData(
     filterChips: seedCommunity.filterChips.map((c) => {
       const map: Record<string, number> = {
         all: counts.total,
-        ppr: counts.ppr,
+        ecopr: counts.ecopr,
+        p1: counts.p1,
+        p2: counts.p2,
         bil: counts.bil,
         bgc: counts.bg,
         medical: counts.med,

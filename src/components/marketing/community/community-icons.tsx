@@ -1,10 +1,10 @@
 import type { IconType } from "react-icons";
 import {
   FaBan,
-  FaCanadianMapleLeaf,
   FaChartLine,
   FaCheckCircle,
   FaDiscord,
+  FaDoorOpen,
   FaEnvelopeOpenText,
   FaExclamationCircle,
   FaExclamationTriangle,
@@ -12,6 +12,7 @@ import {
   FaFingerprint,
   FaHospital,
   FaHourglassHalf,
+  FaIdCard,
   FaInfoCircle,
   FaSearch,
   FaThLarge,
@@ -46,7 +47,9 @@ export type MilestoneIconKey =
   | "copr";
 
 const MILESTONE_ICON: Record<MilestoneIconKey, IconType> = {
-  ppr: FaCanadianMapleLeaf,
+  ecopr: FaTrophy,
+  p1: FaDoorOpen,
+  p2: FaIdCard,
   bil: FaEnvelopeOpenText,
   bgc: FaSearch,
   med: FaHospital,

@@ -6,7 +6,9 @@ const POST_AOR_MILESTONES: MilestoneKey[] = [
   "biometrics",
   "background",
   "medical",
-  "ppr",
+  "p1",
+  "p2",
+  "ecopr",
 ];
 
 export type RemainingField =

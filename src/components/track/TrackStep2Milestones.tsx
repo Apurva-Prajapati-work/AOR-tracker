@@ -41,8 +41,8 @@ function formatStored(date: string): string {
  * Step 2 — post-AOR milestones (BIL, biometrics, BGC, medical, PPR).
  *
  * Each row is a checkbox header that toggles a collapsible date input
- * below. When `ppr` is checked but `biometrics` is not, a warning callout
- * is rendered (matches the sample's PPR-without-biometrics rule).
+ * below. When `ecopr` is checked but `biometrics` is not, a warning callout
+ * is rendered (excluded from community stats without biometrics).
  */
 export function TrackStep2Milestones({
   checked,
@@ -53,7 +53,7 @@ export function TrackStep2Milestones({
   onContinue,
   onSkip,
 }: Props) {
-  const showPprWarn = checked.ppr && !checked.biometrics;
+  const showEcoprWarn = checked.ecopr && !checked.biometrics;
 
   return (
     <div className="tk-panel active" role="tabpanel" aria-labelledby="tk-step-2">
@@ -97,11 +97,11 @@ export function TrackStep2Milestones({
                     onChange={(e) => onDate(m.key, e.target.value)}
                     aria-label={`${m.label} date`}
                   />
-                  {m.key === "ppr" && showPprWarn ? (
+                  {m.key === "ecopr" && showEcoprWarn ? (
                     <div className="tk-field-note warn" role="alert">
                       <IconWarn aria-hidden />
                       <span>
-                        PPR submissions without a biometrics date are excluded
+                        eCOPR submissions without a biometrics date are excluded
                         from community statistics. Please add your biometrics
                         date above.
                       </span>

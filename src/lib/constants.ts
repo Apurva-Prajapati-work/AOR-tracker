@@ -65,7 +65,7 @@ export const STREAM_OPTIONS = [
   // "CEC Healthcare",
   // "CEC French",
   "FSW General",
-  // "PNP",
+  "PNP",
 ] as const;
 
 export const PROVINCES = [

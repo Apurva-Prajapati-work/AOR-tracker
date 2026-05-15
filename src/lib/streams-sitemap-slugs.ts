@@ -2,19 +2,27 @@ import { STREAM_OPTIONS } from "@/lib/constants";
 
 export type StreamOption = (typeof STREAM_OPTIONS)[number];
 
-/** URL segment under `/streams/*` — kept in sync with `STREAM_OPTIONS`. */
-export const STREAM_PAGE_SLUG_BY_LABEL: Record<StreamOption, string> = {
+/**
+ * Mapping of stream labels that have dedicated /streams/* landing pages.
+ * Only streams listed here get statically generated route segments.
+ */
+const STREAM_PAGE_SLUG_BY_LABEL: Partial<Record<StreamOption, string>> = {
   "CEC General": "cec",
   // "CEC STEM": "cec-stem",
   // "CEC Healthcare": "cec-healthcare",
   // "CEC French": "cec-french",
   "FSW General": "fsw",
-  // "PNP": "pnp",
+  "PNP": "pnp",
 };
 
-export const STREAM_PAGE_SLUGS: readonly string[] = STREAM_OPTIONS.map(
-  (label) => STREAM_PAGE_SLUG_BY_LABEL[label],
-);
+/** URL slugs for streams that have a full landing page. */
+export const STREAM_PAGE_SLUGS: readonly string[] = Object.values(
+  STREAM_PAGE_SLUG_BY_LABEL,
+).filter(Boolean) as string[];
+
+export function streamSlugFromLabel(label: StreamOption): string | null {
+  return STREAM_PAGE_SLUG_BY_LABEL[label] ?? null;
+}
 
 export function streamLabelFromSitemapSlug(slug: string): StreamOption | null {
   const hit = (

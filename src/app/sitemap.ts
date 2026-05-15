@@ -1,6 +1,5 @@
 import type { MetadataRoute } from "next";
-import { STREAM_OPTIONS } from "@/lib/constants";
-import { STREAM_PAGE_SLUG_BY_LABEL } from "@/lib/streams-sitemap-slugs";
+import { STREAM_PAGE_SLUGS } from "@/lib/streams-sitemap-slugs";
 import { getSiteUrl } from "@/lib/site-url";
 
 function abs(path: string): string {
@@ -28,8 +27,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: abs("/wiki"), lastModified, changeFrequency: "monthly", priority: 0.6 },
   ];
 
-  const streamEntries: MetadataRoute.Sitemap = STREAM_OPTIONS.map((label) => ({
-    url: abs(`/streams/${STREAM_PAGE_SLUG_BY_LABEL[label]}`),
+  const streamEntries: MetadataRoute.Sitemap = STREAM_PAGE_SLUGS.map((slug) => ({
+    url: abs(`/streams/${slug}`),
     lastModified,
     changeFrequency: "daily" as const,
     priority: 0.8,

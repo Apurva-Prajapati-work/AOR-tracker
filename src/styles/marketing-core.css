@@ -333,6 +333,17 @@ html {
   margin-top: auto;
 }
 
+/* Home: fixed bottom CTA (#mkt-sticky) — keep footer content clear when bar is visible */
+.marketing-site:has(#mkt-sticky) .footer {
+  padding-bottom: calc(4.75rem + env(safe-area-inset-bottom, 0px));
+}
+
+@media (max-width: 414px) {
+  .marketing-site:has(#mkt-sticky) .footer {
+    padding-bottom: calc(7.5rem + env(safe-area-inset-bottom, 0px));
+  }
+}
+
 .marketing-site .footer-top {
   max-width: var(--max);
   margin: 0 auto;

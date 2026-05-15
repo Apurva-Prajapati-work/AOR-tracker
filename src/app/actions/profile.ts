@@ -2,8 +2,10 @@
 
 import { getDb } from "@/lib/db";
 import { buildCohortKey, cohortKeyFromProfile, streamFallbackKey } from "@/lib/cohort";
+import { ensureCohortStatsPlaceholder } from "@/lib/ensure-cohort-stats";
 import {
   milestoneLabelForKey,
+  notifyDiscordNewCohortPlaceholder,
   notifyDiscordProfileEvent,
 } from "@/lib/discord-webhook";
 import {
@@ -91,6 +93,22 @@ export async function saveProfileAction(profile: UserProfile): Promise<{
     const cohortKey =
       (typeof saved.cohortKey === "string" && saved.cohortKey) ||
       cohortKeyFromProfile(p);
+    let created = false;
+    try {
+      ({ created } = await ensureCohortStatsPlaceholder(db, cohortKey));
+    } catch (e) {
+      console.warn("[ensure-cohort-stats] insert failed", cohortKey, e);
+    }
+    if (created) {
+      await notifyDiscordNewCohortPlaceholder({
+        cohortKey,
+        triggerEmail: norm,
+        stream: p.stream,
+        type: p.type,
+        province: p.province,
+        aorDate: p.aorDate,
+      });
+    }
     await notifyDiscordProfileEvent({
       kind: "profile_saved",
       email: norm,
@@ -200,6 +218,22 @@ export async function updateMilestoneAction(
   const cohortKey =
     (typeof doc.cohortKey === "string" && doc.cohortKey) ||
     cohortKeyFromProfile(profile);
+  let created = false;
+  try {
+    ({ created } = await ensureCohortStatsPlaceholder(db, cohortKey));
+  } catch (e) {
+    console.warn("[ensure-cohort-stats] insert failed", cohortKey, e);
+  }
+  if (created) {
+    await notifyDiscordNewCohortPlaceholder({
+      cohortKey,
+      triggerEmail: norm,
+      stream: profile.stream,
+      type: profile.type,
+      province: profile.province,
+      aorDate: profile.aorDate,
+    });
+  }
   await notifyDiscordProfileEvent({
     kind: "milestone",
     email: norm,

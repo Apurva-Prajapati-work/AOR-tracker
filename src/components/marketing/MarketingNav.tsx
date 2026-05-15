@@ -14,7 +14,7 @@ const NAV_ITEMS: NavItem[] = [
   { href: "/#how", label: "How It Works" },
   { href: "/#features", label: "Features" },
   { href: "/#streams", label: "Streams" },
-  { href: "/#cohort", label: "Cohort" },
+  { href: "/cohort", label: "Cohort" },
   { href: "/#messaging", label: "Alerts" },
   { href: "/roadmap", label: "Roadmap" },
   { href: "/changelog", label: "Changelog" },

@@ -15,6 +15,7 @@ import { getCohortStatsForProfileAction } from "@/app/actions/cohort";
 import { getProfileAction } from "@/app/actions/profile";
 import { mergeMilestoneDefsForCohort } from "@/lib/cohort-dynamic";
 import { communityTimelineFromMs } from "@/lib/community-timeline";
+import { notifyDiscordCommunityPost } from "@/lib/discord-webhook";
 
 const MS_OPTIONS = ["ecopr", "p1", "p2", "bil", "bg", "med"] as const;
 export type CommunityMs = (typeof MS_OPTIONS)[number];
@@ -302,12 +303,17 @@ export async function createCommunityPostAction(
     };
   }
 
+  const authorName = displayNameFromEmail(email);
+  const authorInitials = initialsFromEmail(email);
+  const meta = metaFromProfile(p);
+  const msLabel = MS_LABEL[input.ms];
+
   await col.insertOne({
-    initials: initialsFromEmail(email),
-    name: displayNameFromEmail(email),
-    meta: metaFromProfile(p),
+    initials: authorInitials,
+    name: authorName,
+    meta,
     ms: input.ms,
-    msl: MS_LABEL[input.ms],
+    msl: msLabel,
     body,
     bodyIsHtml: false,
     tl: communityTimelineFromMs(input.ms),
@@ -318,6 +324,25 @@ export async function createCommunityPostAction(
     createdAt: new Date(),
     ...(replyToId && replyToPreview
       ? { replyToId, replyToPreview }
+      : {}),
+  });
+
+  void notifyDiscordCommunityPost({
+    kind: replyToPreview ? "reply" : "milestone",
+    authorEmail: norm,
+    authorName,
+    authorInitials,
+    meta,
+    ms: input.ms,
+    msLabel,
+    body,
+    stream: p.stream,
+    type: p.type,
+    province: p.province,
+    caseNo: p.caseNo,
+    username: p.username,
+    ...(replyToPreview
+      ? { replyTo: { name: replyToPreview.name, snippet: replyToPreview.snippet } }
       : {}),
   });
 

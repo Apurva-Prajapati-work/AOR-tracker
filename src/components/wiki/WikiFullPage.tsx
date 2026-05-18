@@ -37,9 +37,7 @@ export function WikiFullPage() {
           <h2 className="wiki-block-title">Session &amp; identity</h2>
           <p className="wiki-lead">
             If you are wiring new UI or API routes, assume: the browser may hold{" "}
-            <code style={{ fontFamily: "var(--fm)", fontSize: "0.9em" }}>
-              sessionStorage[&quot;aortrack_session_email&quot;]
-            </code>{" "}
+            <code>sessionStorage[&quot;aortrack_session_email&quot;]</code>{" "}
             (normalized email). Server actions trust the <em>string</em> the client
             passes for mutations — there is no signed session cookie for end-users
             today.
@@ -63,7 +61,7 @@ export function WikiFullPage() {
             <h2>Client: &ldquo;session&rdquo; = sessionStorage</h2>
             <p>
               All helpers live in{" "}
-              <code style={{ fontFamily: "var(--fm)" }}>src/lib/session-client.ts</code>
+              <code>src/lib/session-client.ts</code>
               :
             </p>
             <pre className="wiki-code">{`const KEY = "aortrack_session_email";
@@ -150,7 +148,7 @@ clearSessionEmail()`}</pre>
 
           <div className="wiki-callout wiki-callout--warn" id="sess-trust-model">
             <strong>Security / trust model (important for contributors)</strong>
-            <p style={{ margin: 0, color: "var(--muted)" }}>
+            <p>
               Today&apos;s model is suitable for a community MVP and transparent data:
               anyone who can guess or supply another user&apos;s email string could
               invoke server actions as that user from their browser. Hardening would
@@ -860,7 +858,7 @@ curl "http://localhost:3000/api/dev/seed?cec=1&discord=summary"`}</pre>
 
           <div className="wiki-callout">
             <strong>Public methodology</strong>
-            <p style={{ margin: 0, color: "var(--muted)" }}>
+            <p>
               User-facing copy at <code>/cohort</code> (
               <code>src/content/guides/cohort.html</code>). Keep wiki + guide aligned
               when the algorithm changes.

@@ -24,6 +24,12 @@ export type UserProfile = {
   type: string;
   province: string;
   milestones: Record<MilestoneKey, MilestoneEntry>;
+  /** myimmitracker Case # — unique for CEC Excel import. */
+  caseNo?: string;
+  username?: string;
+  /** Team label: Excel import vs live /track submissions. */
+  seededData?: boolean;
+  currentStatus?: string;
 };
 
 export type CohortStats = {

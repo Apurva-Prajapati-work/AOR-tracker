@@ -78,10 +78,12 @@ export async function saveProfileAction(profile: UserProfile): Promise<{
               type: profile.type,
             })
           : streamFallbackKey(profile.stream, profile.type),
+        seededData: false,
         updatedAt: now,
       },
       $setOnInsert: {
         createdAt: now,
+        seededData: false,
       },
     },
     { upsert: true },
@@ -106,6 +108,9 @@ export async function saveProfileAction(profile: UserProfile): Promise<{
         type: p.type,
         province: p.province,
         aorDate: p.aorDate,
+        seededData: saved.seededData === true,
+        caseNo: typeof saved.caseNo === "string" ? saved.caseNo : undefined,
+        username: typeof saved.username === "string" ? saved.username : undefined,
       });
     }
     await notifyDiscordProfileEvent({
@@ -116,6 +121,9 @@ export async function saveProfileAction(profile: UserProfile): Promise<{
       type: p.type,
       province: p.province,
       aorDate: p.aorDate,
+      seededData: saved.seededData === true,
+      caseNo: typeof saved.caseNo === "string" ? saved.caseNo : undefined,
+      username: typeof saved.username === "string" ? saved.username : undefined,
     });
   }
   return { ok: true };
@@ -170,6 +178,7 @@ export async function createDraftProfileAction(
     province: profile.province,
     milestones: profile.milestones,
     cohortKey,
+    seededData: false,
   });
   return { ok: true, profile };
 }
@@ -186,6 +195,7 @@ export async function updateMilestoneAction(
   const update: Record<string, unknown> = {
     [`milestones.${key}.date`]: date,
     [`milestones.${key}.updatedAt`]: date ? now : null,
+    seededData: false,
     updatedAt: new Date(),
   };
   if (key === "aor" && date) {
@@ -229,6 +239,9 @@ export async function updateMilestoneAction(
       type: profile.type,
       province: profile.province,
       aorDate: profile.aorDate,
+      seededData: doc.seededData === true,
+      caseNo: typeof doc.caseNo === "string" ? doc.caseNo : undefined,
+      username: typeof doc.username === "string" ? doc.username : undefined,
     });
   }
   await notifyDiscordProfileEvent({
@@ -241,6 +254,9 @@ export async function updateMilestoneAction(
     milestoneKey: key,
     milestoneLabel: milestoneLabelForKey(key),
     date,
+    seededData: doc.seededData === true,
+    caseNo: typeof doc.caseNo === "string" ? doc.caseNo : undefined,
+    username: typeof doc.username === "string" ? doc.username : undefined,
   });
   return { ok: true, profile };
 }
@@ -279,9 +295,10 @@ export async function ensureDemoProfileAction(): Promise<UserProfile> {
           stream: profile.stream,
           type: profile.type,
         }),
+        seededData: false,
         updatedAt: new Date(),
       },
-      $setOnInsert: { createdAt: new Date() },
+      $setOnInsert: { createdAt: new Date(), seededData: false },
     },
     { upsert: true },
   );

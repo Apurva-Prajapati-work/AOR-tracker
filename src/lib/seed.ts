@@ -139,6 +139,8 @@ const SEED_POSTS: Omit<
 export async function ensureIndexes(db: Db): Promise<void> {
   const posts = db.collection("community_posts");
   await db.collection("profiles").createIndex({ emailNorm: 1 }, { unique: true });
+  await db.collection("profiles").createIndex({ caseNo: 1 }, { unique: true, sparse: true });
+  await db.collection("profiles").createIndex({ seededData: 1 });
   await db.collection("profiles").createIndex({ cohortKey: 1 });
   await db
     .collection("profiles")

@@ -82,10 +82,10 @@ export function TrackStep3Review(props: Props) {
 
   const daysElapsed = aorDate ? daysBetween(aorDate, new Date()) : 0;
 
-  const medianDisplay =
+  const medianDays =
     cohortStats && cohortStats.median_days_to_ppr > 0
-      ? `${cohortStats.median_days_to_ppr}d`
-      : "—";
+      ? cohortStats.median_days_to_ppr
+      : null;
 
   const dashboardPprLabel = useMemo(() => {
     if (
@@ -136,7 +136,9 @@ export function TrackStep3Review(props: Props) {
             <div className="tk-summary-stat-label">Days elapsed</div>
           </div>
           <div className="tk-summary-stat">
-            <div className="tk-summary-stat-val green">{medianDisplay}d</div>
+            <div className="tk-summary-stat-val green">
+              {medianDays != null ? `${medianDays}d` : "—"}
+            </div>
             <div className="tk-summary-stat-label">Cohort median</div>
           </div>
           <div className="tk-summary-stat">

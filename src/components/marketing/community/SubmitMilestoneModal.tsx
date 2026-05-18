@@ -9,9 +9,12 @@ import {
   type CommunitySubmitMilestoneOption,
 } from "@/app/actions/community";
 import { fmtDate } from "@/lib/format";
+import { communityTimelineFromMs } from "@/lib/community-timeline";
 import type { MilestoneKey, UserProfile } from "@/lib/types";
 import { IconArrowRight } from "../landing-icons";
 import { IconClose } from "./community-icons";
+import { MiniTimeline } from "./MiniTimeline";
+import type { TimelineDot } from "./data";
 
 type Props = {
   open: boolean;
@@ -71,6 +74,17 @@ export function SubmitMilestoneModal({
       : "";
 
   const hasDashboardDate = Boolean(dashboardDateIso);
+
+  const previewTimeline = useMemo((): TimelineDot[] | null => {
+    const ms = milestoneKey ? KEY_TO_COMMUNITY_MS[milestoneKey] : undefined;
+    if (!ms) return null;
+    const steps = communityTimelineFromMs(ms);
+    return steps.map((t, idx) => ({
+      state: t.done ? "done" : "wait",
+      label: t.label,
+      highlight: idx === steps.length - 1 && t.done,
+    }));
+  }, [milestoneKey]);
 
   useEffect(() => {
     if (!open) return;
@@ -231,10 +245,8 @@ export function SubmitMilestoneModal({
             <div className="m-nonshare-callout" role="note">
               <span className="m-nonshare-badge">Not shareable here</span>
               <p className="m-nonshare-text">
-                <strong>AOR received</strong> and{" "}
-                <strong>Biometrics completed</strong> still belong on your
-                dashboard timeline; they are not offered in this list because
-                the community feed only tags BIL, background, medical, and PPR.
+                <strong>AOR received</strong> still belong on your
+                dashboard timeline; It is not offered in this list.
               </p>
             </div>
           ) : null}
@@ -262,10 +274,40 @@ export function SubmitMilestoneModal({
             </select>
             <p className="m-hint">
               Types and descriptions are loaded from the same dashboard timeline
-              as your cohort (median PPR). The date below always comes from your
-              saved profile — it cannot be edited here.
+              as your cohort. The date below always comes from your saved profile
+              — it cannot be edited here.
             </p>
           </div>
+
+          {milestoneKey &&
+          !hasDashboardDate &&
+          !blockingLoad &&
+          !timelineError ? (
+            <div className="m-dash-warning" role="status">
+              <div className="m-dash-warning-badge">Action needed</div>
+              <p className="m-dash-warning-text">
+                Please update this milestone on your dashboard first before
+                posting here. Community posts must use the same dates as your
+                tracker.
+              </p>
+              <Link
+                href={DASHBOARD_TIMELINE_HREF}
+                className="m-dash-warning-btn"
+              >
+                Open dashboard timeline
+                <IconArrowRight size={14} aria-hidden />
+              </Link>
+            </div>
+          ) : null}
+
+          {previewTimeline ? (
+            <div className="m-timeline-preview">
+              <div className="m-timeline-preview-label">
+                Timeline preview on your post
+              </div>
+              <MiniTimeline dots={previewTimeline} />
+            </div>
+          ) : null}
 
           <div className="m-field">
             <label className="m-label" htmlFor={`${labelId}-date`}>
@@ -291,26 +333,7 @@ export function SubmitMilestoneModal({
             />
           </div>
 
-          {milestoneKey &&
-          !hasDashboardDate &&
-          !blockingLoad &&
-          !timelineError ? (
-            <div className="m-dash-warning" role="status">
-              <div className="m-dash-warning-badge">Action needed</div>
-              <p className="m-dash-warning-text">
-                Please update this milestone on your dashboard first before
-                posting here. Community posts must use the same dates as your
-                tracker.
-              </p>
-              <Link
-                href={DASHBOARD_TIMELINE_HREF}
-                className="m-dash-warning-btn"
-              >
-                Open dashboard timeline
-                <IconArrowRight size={14} aria-hidden />
-              </Link>
-            </div>
-          ) : null}
+          
 
           <div className="m-field">
             <label className="m-label" htmlFor={`${labelId}-note`}>

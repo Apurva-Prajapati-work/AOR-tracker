@@ -1126,6 +1126,10 @@
   border-radius: 16px;
   width: 100%;
   max-width: 520px;
+  max-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
   overflow: hidden;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
   animation: cm-modal-in 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -1146,6 +1150,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  flex-shrink: 0;
 }
 .mkt-community-page .modal-title {
   font-family: var(--fh);
@@ -1175,6 +1180,25 @@
 }
 .mkt-community-page .modal-body {
   padding: 20px 22px;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border2) transparent;
+}
+.mkt-community-page .modal-body::-webkit-scrollbar {
+  width: 6px;
+}
+.mkt-community-page .modal-body::-webkit-scrollbar-track {
+  background: transparent;
+}
+.mkt-community-page .modal-body::-webkit-scrollbar-thumb {
+  background: var(--border2);
+  border-radius: 999px;
+}
+.mkt-community-page .modal-body::-webkit-scrollbar-thumb:hover {
+  background: var(--muted2);
 }
 .mkt-community-page .m-field {
   margin-bottom: 14px;
@@ -1261,6 +1285,7 @@
 .mkt-community-page .m-nonshare-callout {
   display: flex;
   align-items: flex-start;
+  flex-direction: column;
   gap: 10px;
   margin: 0 0 14px;
   padding: 10px 12px;
@@ -1346,6 +1371,22 @@
   padding: 14px 22px;
   border-top: 1px solid var(--border);
   background: var(--cream2);
+  flex-shrink: 0;
+}
+.mkt-community-page .m-timeline-preview {
+  margin: 4px 0 14px;
+  padding: 12px 14px;
+  background: var(--cream2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+.mkt-community-page .m-timeline-preview-label {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted2);
+  margin-bottom: 8px;
 }
 .mkt-community-page .m-submit {
   flex: 1;

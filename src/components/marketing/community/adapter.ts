@@ -14,6 +14,7 @@
  * receives safe markup. Never relax this without adding HTML sanitisation.
  */
 
+import { communityTimelineFromMs } from "@/lib/community-timeline";
 import type { CommunityPost, CommunityReplyRef } from "@/lib/types";
 import type {
   ApprovedPost,
@@ -96,18 +97,15 @@ function cohortFromMeta(meta: string): CohortItem[] {
   return items;
 }
 
-/** Map the simple `tl: [{label, done}]` shape into the marketing's
- *  `TimelineDot[]`. The last dot of a fully-completed timeline gets the
- *  PPR-style outer ring (`highlight`) so it matches the seed cards. */
-function timelineFromTl(tl: CommunityPost["tl"]): TimelineDot[] {
-  return tl.map((t, idx) => {
-    const isLast = idx === tl.length - 1;
-    const allDoneSoFar = tl.slice(0, idx + 1).every((x) => x.done);
-    const state: TimelineDot["state"] = t.done ? "done" : "wait";
+/** Mini-timeline from post milestone tag — filled through the tagged step. */
+function timelineFromPostMs(ms: string): TimelineDot[] {
+  const steps = communityTimelineFromMs(ms);
+  return steps.map((t, idx) => {
+    const isLast = idx === steps.length - 1;
     return {
-      state,
+      state: t.done ? "done" : "wait",
       label: t.label,
-      highlight: isLast && t.done && allDoneSoFar,
+      highlight: isLast && t.done,
     };
   });
 }
@@ -174,7 +172,7 @@ export function communityPostToApproved(
     timestamp: timeAgo(src.createdAt),
     geminiVerified: false,
     cohort: cohortRows,
-    timeline: timelineFromTl(src.tl),
+    timeline: timelineFromPostMs(src.ms),
     bodyHtml: src.bodyIsHtml ? src.body : escapeAndWrap(src.body),
     helpfulCount: src.helpful ?? 0,
     helpfulActive: src.viewerHasMarkedHelpful ?? false,

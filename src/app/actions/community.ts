@@ -9,13 +9,24 @@ import {
 } from "@/lib/community-feed";
 import { serializePost } from "@/lib/seed";
 import { normalizeEmail, isValidEmail } from "@/lib/profile";
+import { milestoneDate } from "@/lib/cohort-algorithm-v2";
 import type { MilestoneKey, UserProfile } from "@/lib/types";
 import { getCohortStatsForProfileAction } from "@/app/actions/cohort";
 import { getProfileAction } from "@/app/actions/profile";
 import { mergeMilestoneDefsForCohort } from "@/lib/cohort-dynamic";
+import { communityTimelineFromMs } from "@/lib/community-timeline";
 
 const MS_OPTIONS = ["ecopr", "p1", "p2", "bil", "bg", "med"] as const;
 export type CommunityMs = (typeof MS_OPTIONS)[number];
+
+const MS_TO_MILESTONE_KEY: Record<CommunityMs, MilestoneKey> = {
+  ecopr: "ecopr",
+  p1: "p1",
+  p2: "p2",
+  bil: "biometrics",
+  bg: "background",
+  med: "medical",
+};
 
 const MS_LABEL: Record<CommunityMs, string> = {
   ecopr: "eCOPR received",
@@ -36,31 +47,6 @@ function initialsFromEmail(email: string): string {
 function displayNameFromEmail(email: string): string {
   const local = email.split("@")[0] ?? "applicant";
   return `Applicant · ${local}`;
-}
-
-function timelineFromProfile(p: UserProfile): { label: string; done: boolean }[] {
-  const order: MilestoneKey[] = [
-    "aor",
-    "biometrics",
-    "background",
-    "medical",
-    "p1",
-    "p2",
-    "ecopr",
-  ];
-  const short: Record<MilestoneKey, string> = {
-    aor: "AOR",
-    biometrics: "Bio",
-    background: "BGC",
-    medical: "Med",
-    p1: "P1",
-    p2: "P2",
-    ecopr: "eCOPR",
-  };
-  return order.map((k) => ({
-    label: short[k],
-    done: !!p.milestones[k]?.date,
-  }));
 }
 
 function metaFromProfile(p: UserProfile): string {
@@ -191,6 +177,12 @@ export async function getCommunitySubmitMilestoneTimelineOptionsAction(
   return { ok: true, options };
 }
 
+export type CommunityFeedSort = "newest" | "helpful";
+
+function escapeRegex(s: string): string {
+  return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
 export async function getCommunityFeedAction(
   viewerEmail?: string | null,
   opts?: {
@@ -198,6 +190,9 @@ export async function getCommunityFeedAction(
     pageSize?: number;
     /** When set (not `all`), only posts with this `ms` value. */
     msFilter?: string | null;
+    /** Case-insensitive match on body, milestone label, or meta. */
+    searchQuery?: string | null;
+    sortBy?: CommunityFeedSort;
   },
 ): Promise<CommunityFeedPage> {
   const db = await getDb();
@@ -217,6 +212,14 @@ export async function getCommunityFeedAction(
     filter.ms = mf;
   }
 
+  const q = opts?.searchQuery?.trim();
+  if (q) {
+    const rx = { $regex: escapeRegex(q), $options: "i" };
+    filter.$or = [{ body: rx }, { meta: rx }, { msl: rx }];
+  }
+
+  const sortBy = opts?.sortBy === "helpful" ? "helpful" : "newest";
+
   const col = db.collection("community_posts");
   const total = await col.countDocuments(filter);
   const totalPages = Math.max(1, Math.ceil(total / pageSize));
@@ -225,7 +228,11 @@ export async function getCommunityFeedAction(
 
   const rows = await col
     .find(filter)
-    .sort({ createdAt: -1 })
+    .sort(
+      sortBy === "helpful"
+        ? { helpful: -1, createdAt: -1 }
+        : { createdAt: -1 },
+    )
     .skip(skip)
     .limit(pageSize)
     .toArray();
@@ -255,6 +262,14 @@ export async function createCommunityPostAction(
 
   const prof = await getProfileAction(email);
   if (!prof.ok) return { ok: false, error: "Profile not found" };
+
+  const milestoneKey = MS_TO_MILESTONE_KEY[input.ms];
+  if (!milestoneDate(prof.profile.milestones, milestoneKey)) {
+    return {
+      ok: false,
+      error: "Add this milestone date on your dashboard before posting.",
+    };
+  }
 
   const norm = normalizeEmail(email);
   const db = await getDb();
@@ -295,7 +310,7 @@ export async function createCommunityPostAction(
     msl: MS_LABEL[input.ms],
     body,
     bodyIsHtml: false,
-    tl: timelineFromProfile(p),
+    tl: communityTimelineFromMs(input.ms),
     helpful: 0,
     helpfulVoters: [] as string[],
     approved: true,

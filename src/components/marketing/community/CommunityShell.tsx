@@ -15,6 +15,7 @@ import { communityPostToApproved } from "./adapter";
 import {
   CommunityUiProvider,
   type AppealContext,
+  type CommunityFeedSort,
   type CommunityMsFilter,
   type CommunityUi,
   type ToastTone,
@@ -93,6 +94,8 @@ export function CommunityShell({
   const [totalPages, setTotalPages] = useState(initialTotalPages);
   const [msFilter, setMsFilterState] =
     useState<CommunityMsFilter>(initialMsFilter);
+  const [searchQuery, setSearchQueryState] = useState("");
+  const [sortBy, setSortByState] = useState<CommunityFeedSort>("newest");
   const [loading, setLoading] = useState(false);
 
   /* ─── socket / live signals ─── */
@@ -117,6 +120,8 @@ export function CommunityShell({
   /* ─── refs mirroring state for socket / event handlers ─── */
   const pageRef = useRef(page);
   const msFilterRef = useRef(msFilter);
+  const searchQueryRef = useRef(searchQuery);
+  const sortByRef = useRef(sortBy);
   const viewerEmailRef = useRef(viewerEmail);
   useEffect(() => {
     pageRef.current = page;
@@ -124,6 +129,12 @@ export function CommunityShell({
   useEffect(() => {
     msFilterRef.current = msFilter;
   }, [msFilter]);
+  useEffect(() => {
+    searchQueryRef.current = searchQuery;
+  }, [searchQuery]);
+  useEffect(() => {
+    sortByRef.current = sortBy;
+  }, [sortBy]);
   useEffect(() => {
     viewerEmailRef.current = viewerEmail;
   }, [viewerEmail]);
@@ -146,7 +157,12 @@ export function CommunityShell({
 
   /* ─── core re-fetch ─── */
   const fetchPage = useCallback(
-    async (pageNum: number, filter: CommunityMsFilter) => {
+    async (
+      pageNum: number,
+      filter: CommunityMsFilter,
+      search: string,
+      sort: CommunityFeedSort,
+    ) => {
       setLoading(true);
       try {
         const ms = filter ? FILTER_TO_MS[filter] : null;
@@ -156,6 +172,8 @@ export function CommunityShell({
             page: pageNum,
             pageSize: COMMUNITY_FEED_PAGE_SIZE,
             msFilter: ms,
+            searchQuery: search.trim() || null,
+            sortBy: sort,
           },
         );
         setPosts(result.posts.map((p) => communityPostToApproved(p)));
@@ -206,7 +224,12 @@ export function CommunityShell({
      `viewerHasMarkedHelpful` is accurate. */
   useEffect(() => {
     if (!viewerEmail) return;
-    void fetchPage(pageRef.current, msFilterRef.current);
+    void fetchPage(
+      pageRef.current,
+      msFilterRef.current,
+      searchQueryRef.current,
+      sortByRef.current,
+    );
   }, [viewerEmail, fetchPage]);
 
   /* ─── Socket.IO ─── */
@@ -301,21 +324,55 @@ export function CommunityShell({
   const setMsFilter = useCallback(
     (ms: CommunityMsFilter) => {
       setMsFilterState(ms);
-      void fetchPage(1, ms);
+      void fetchPage(1, ms, searchQueryRef.current, sortByRef.current);
     },
     [fetchPage],
   );
 
+  const setSearchQuery = useCallback((q: string) => {
+    setSearchQueryState(q);
+  }, []);
+
+  const setSortBy = useCallback(
+    (sort: CommunityFeedSort) => {
+      setSortByState(sort);
+      void fetchPage(1, msFilterRef.current, searchQueryRef.current, sort);
+    },
+    [fetchPage],
+  );
+
+  const searchMountedRef = useRef(false);
+  useEffect(() => {
+    if (!searchMountedRef.current) {
+      searchMountedRef.current = true;
+      return;
+    }
+    const id = window.setTimeout(() => {
+      void fetchPage(1, msFilterRef.current, searchQuery, sortByRef.current);
+    }, 320);
+    return () => window.clearTimeout(id);
+  }, [searchQuery, fetchPage]);
+
   const loadPage = useCallback(
     (n: number) => {
-      void fetchPage(n, msFilterRef.current);
+      void fetchPage(
+        n,
+        msFilterRef.current,
+        searchQueryRef.current,
+        sortByRef.current,
+      );
     },
     [fetchPage],
   );
 
   const loadNewPosts = useCallback(() => {
     setPendingCount(0);
-    void fetchPage(1, msFilterRef.current).then(() => {
+    void fetchPage(
+      1,
+      msFilterRef.current,
+      searchQueryRef.current,
+      sortByRef.current,
+    ).then(() => {
       setLiveCount((c) => c + 1);
     });
   }, [fetchPage]);
@@ -353,12 +410,16 @@ export function CommunityShell({
       totalPages,
       total,
       msFilter,
+      searchQuery,
+      sortBy,
       loading,
       requestPost,
       requestHelpful,
       requestReply,
       loadPage,
       setMsFilter,
+      setSearchQuery,
+      setSortBy,
       openSubmit,
       openAppeal,
       toast: showToast,
@@ -373,12 +434,16 @@ export function CommunityShell({
       totalPages,
       total,
       msFilter,
+      searchQuery,
+      sortBy,
       loading,
       requestPost,
       requestHelpful,
       requestReply,
       loadPage,
       setMsFilter,
+      setSearchQuery,
+      setSortBy,
       openSubmit,
       openAppeal,
       showToast,

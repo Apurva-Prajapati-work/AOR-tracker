@@ -1,3 +1,5 @@
+import { WikiSidebar } from "@/components/wiki/WikiSidebar";
+
 /**
  * Single-page contributor wiki: session model, Community, Track, Dashboard.
  */
@@ -6,48 +8,29 @@ export function WikiFullPage() {
     <article className="mkt-wiki-page">
       <header className="wiki-hero">
         <div className="wiki-hero-inner">
+          <p className="wiki-hero-kicker">Contributor documentation</p>
           <h1>
-            Contributor <em>wiki</em>
+            Backend <em>wiki</em>
           </h1>
           <p className="wiki-hero-sub">
-            Backend data flow for each major surface: how server actions, MongoDB,
-            and the browser session line up. Everything lives on this one page —
-            use the table of contents to jump.
+            How server actions, MongoDB, and the browser session connect across
+            Community, Track, and Dashboard — plus the v2.0 cohort pipeline.
           </p>
         </div>
       </header>
 
-      <div className="wiki-main">
-        <p className="wiki-lead">
-          These notes describe the <strong>actual code paths</strong> in this
-          repo (not a product roadmap). Terms like &ldquo;viewer email&rdquo; mean
-          the normalized string in{" "}
-          <code style={{ fontFamily: "var(--fm)", fontSize: "0.9em" }}>
-            sessionStorage[&quot;aortrack_session_email&quot;]
-          </code>
-          , unless stated otherwise.
-        </p>
-
-        <nav className="wiki-toc" aria-label="Page sections">
-          <div className="wiki-toc-title">On this page</div>
-          <ul className="wiki-toc-list">
-            <li>
-              <a href="#session-identity">Session &amp; identity</a>
-            </li>
-            <li>
-              <a href="#community-backend">Community backend</a>
-            </li>
-            <li>
-              <a href="#track-backend">Track backend</a>
-            </li>
-            <li>
-              <a href="#dashboard-backend">Dashboard backend</a>
-            </li>
-            <li>
-              <a href="#cohort-v2">Cohort &amp; statistics (v2.0)</a>
-            </li>
-          </ul>
-        </nav>
+      <div className="wiki-layout">
+        <aside className="wiki-sidebar-aside" aria-label="Section navigation">
+          <WikiSidebar />
+        </aside>
+        <div className="wiki-content">
+          <p className="wiki-intro">
+            These notes describe the <strong>actual code paths</strong> in this
+            repo (not a product roadmap). &ldquo;Viewer email&rdquo; means the
+            normalized value in{" "}
+            <code>sessionStorage[&quot;aortrack_session_email&quot;]</code> unless
+            stated otherwise.
+          </p>
 
         {/* ─── Session & identity ───────────────────────────────────── */}
         <section id="session-identity" className="wiki-major-section">
@@ -884,6 +867,7 @@ curl "http://localhost:3000/api/dev/seed?cec=1&discord=summary"`}</pre>
             </p>
           </div>
         </section>
+        </div>
       </div>
     </article>
   );

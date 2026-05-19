@@ -47,6 +47,20 @@ const MS_TO_CHIP_COLOR: Record<string, MilestoneChipColor> = {
   med: "med",
 };
 
+/** Short chip labels on feed cards (canonical display; overrides legacy `msl`). */
+const MS_CHIP_LABEL: Record<string, string> = {
+  ecopr: "eCOPR received",
+  p1: "P1 — PR Portal (first)",
+  p2: "P2 — PR Portal (photo & address)",
+  bil: "BIL",
+  bg: "BGC Started",
+  med: "Medical Done",
+};
+
+function milestoneChipLabel(ms: string, msl: string): string {
+  return MS_CHIP_LABEL[ms] ?? msl;
+}
+
 /* ─── helpers ───────────────────────────────────────────────────────── */
 
 /** "Applicant · <local>" → "#<local>". Keeps the leading "#" so it lines up
@@ -203,7 +217,7 @@ export function communityPostToApproved(
     id: src.id,
     displayId: displayIdFromName(src.name),
     accent,
-    milestoneChip: { label: src.msl, color: chipColor },
+    milestoneChip: { label: milestoneChipLabel(src.ms, src.msl), color: chipColor },
     stream: streamFromMeta(src.meta),
     timestamp: timeAgo(src.createdAt),
     geminiVerified: false,

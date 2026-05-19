@@ -33,7 +33,7 @@ const MS_LABEL: Record<CommunityMs, string> = {
   ecopr: "eCOPR received",
   p1: "P1 — PR Portal (first)",
   p2: "P2 — PR Portal (photo & address)",
-  bil: "BIL Received",
+  bil: "BIL",
   bg: "BGC Started",
   med: "Medical Done",
 };

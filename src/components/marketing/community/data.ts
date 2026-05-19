@@ -254,7 +254,7 @@ export const seedCommunity: CommunityPageData = {
     { id: "ecopr", label: "eCOPR received", badge: "482" },
     { id: "p1", label: "P1 — PR Portal", badge: "120" },
     { id: "p2", label: "P2 — PR Portal", badge: "95" },
-    { id: "bil", label: "BIL Received", badge: "318" },
+    { id: "bil", label: "BIL", badge: "318" },
     { id: "bgc", label: "Background Check", badge: "241" },
     { id: "medical", label: "Medical Passed", badge: "199" },
   ],

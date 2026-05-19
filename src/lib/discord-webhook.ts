@@ -2,7 +2,8 @@ import { humanizeCohortKey } from "@/lib/cohort";
 import { MILESTONE_DEFS } from "@/lib/constants";
 import type { MilestoneKey } from "@/lib/types";
 
-const WEBHOOK_TIMEOUT_MS = 4000;
+/** Allow headroom on serverless (cold start + Discord latency). */
+const WEBHOOK_TIMEOUT_MS = 10_000;
 
 const COLOR_PROFILE = 0x5865f2;
 const COLOR_COHORT_OPS = 0xfee75c;

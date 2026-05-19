@@ -327,7 +327,7 @@ export async function createCommunityPostAction(
       : {}),
   });
 
-  void notifyDiscordCommunityPost({
+  await notifyDiscordCommunityPost({
     kind: replyToPreview ? "reply" : "milestone",
     authorEmail: norm,
     authorName,

@@ -273,11 +273,10 @@ export const seedCommunity: CommunityPageData = {
   ],
 
   sortOptions: [
-    { value: "recent", label: "Most Recent" },
+    { value: "newest", label: "Most Recent" },
     { value: "helpful", label: "Most Helpful" },
-    { value: "cohort", label: "My Cohort First" },
   ],
-  defaultSort: "recent",
+  defaultSort: "newest",
 
   submitCta: {
     heading: "Got a milestone? Share it.",

@@ -13,6 +13,8 @@ export type AppealContext = {
   daysRemaining: number;
 };
 
+export type CommunityFeedSort = "newest" | "helpful";
+
 /** Marketing chip id; `null` = "All". */
 export type CommunityMsFilter =
   | null
@@ -50,6 +52,8 @@ export type CommunityUi = {
   totalPages: number;
   total: number;
   msFilter: CommunityMsFilter;
+  searchQuery: string;
+  sortBy: CommunityFeedSort;
   loading: boolean;
 
   /* ─── action dispatchers ─── */
@@ -63,6 +67,10 @@ export type CommunityUi = {
   loadPage: (n: number) => void;
   /** Switch active filter and reload page 1. */
   setMsFilter: (ms: CommunityMsFilter) => void;
+  /** Update search text (debounced re-fetch in shell). */
+  setSearchQuery: (q: string) => void;
+  /** Change sort order and reload page 1. */
+  setSortBy: (sort: CommunityFeedSort) => void;
 
   /* ─── overlay dispatchers ─── */
   openSubmit: () => void;

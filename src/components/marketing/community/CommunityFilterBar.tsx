@@ -1,7 +1,11 @@
 "use client";
 
 import { FaSearch } from "react-icons/fa";
-import { useCommunityUi, type CommunityMsFilter } from "./CommunityUiContext";
+import {
+  useCommunityUi,
+  type CommunityFeedSort,
+  type CommunityMsFilter,
+} from "./CommunityUiContext";
 import type { FilterChip, SortOption } from "./data";
 
 type Props = {
@@ -22,20 +26,23 @@ const CHIP_TO_MS: Record<string, CommunityMsFilter> = {
 };
 
 /**
- * Top filter row: milestone chips drive `setMsFilter` (real backend
- * re-fetch). The search input and sort select stay visual-only — neither
- * has backend support today.
- *
- * TODO(real-data): wire search via a new `searchQuery` field on
- *   `getCommunityFeedAction` (text-index over `body`), and sort via a
- *   `sortBy` option supporting `helpful_desc` / `createdAt_desc` / cohort.
+ * Top filter row: milestone chips, search, and sort all re-fetch page 1
+ * via `CommunityShell` (server-backed).
  */
 export function CommunityFilterBar({
   chips,
   sortOptions,
   defaultSort,
 }: Props) {
-  const { msFilter, setMsFilter, loading } = useCommunityUi();
+  const {
+    msFilter,
+    setMsFilter,
+    searchQuery,
+    setSearchQuery,
+    sortBy,
+    setSortBy,
+    loading,
+  } = useCommunityUi();
 
   return (
     <div className="filter-bar">
@@ -80,13 +87,18 @@ export function CommunityFilterBar({
           type="search"
           placeholder="Search posts…"
           aria-label="Search community posts"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          disabled={loading}
         />
       </label>
 
       <select
         className="sort-select"
-        defaultValue={defaultSort}
+        value={sortBy}
         aria-label="Sort posts"
+        disabled={loading}
+        onChange={(e) => setSortBy(e.target.value as CommunityFeedSort)}
       >
         {sortOptions.map((option) => (
           <option value={option.value} key={option.value}>

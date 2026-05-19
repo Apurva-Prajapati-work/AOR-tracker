@@ -157,6 +157,7 @@ export async function getPublicSharePayloadAction(
   const defs = mergeMilestoneDefsForCohort(
     aorDate || "2000-01-01",
     median,
+    cohort,
   );
   const timelineRows = timelineRowsFromProfile(defs, profile, {
     includeEdit: false,

@@ -169,6 +169,7 @@ export async function getCommunitySubmitMilestoneTimelineOptionsAction(
   const defs = mergeMilestoneDefsForCohort(
     aorDate || "2000-01-01",
     median,
+    cohort,
   );
   const options: CommunitySubmitMilestoneOption[] = defs
     .filter((d) => SUBMIT_TIMELINE_KEYS.has(d.key))

@@ -197,7 +197,7 @@ const seedRoadmap: RoadmapData = {
       issue: 47,
       title: "Add OINP stream processing data",
       description:
-        "Ontario Immigrant Nominee Program — most requested stream. Requires new cohort key, stream seeding, and province-based cohort grouping.",
+        "Ontario Immigrant Nominee Program — most requested stream. Requires new cohort key, stream rollout, and province-based cohort grouping.",
       status: "planned",
       priority: "high",
       categories: ["feat", "data"],

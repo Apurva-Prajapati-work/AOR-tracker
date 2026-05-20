@@ -81,9 +81,9 @@ export function heroStatsVM(
       note:
         journey != null
           ? journeyFromSeededPace
-            ? "Typical AOR → eCOPR from seeded milestone gaps (matches your timeline)"
+            ? "Typical AOR → eCOPR from community milestone timing (matches your timeline)"
             : "v2.0 recency-weighted median (survival bias corrected)"
-          : "Run cohort sync after seeding to unlock timeline and journey estimates",
+          : "Timeline and journey estimates appear once cohort data is synced",
     },
     queuePosition: {
       value: atTop ? "Top of the list" : `${queueAhead} ahead`,
@@ -96,10 +96,10 @@ export function heroStatsVM(
       value: ppr?.windowLabel ?? "—",
       note: ppr?.limitedData
         ? journeyFromSeededPace
-          ? "Early estimate — limited seeded data"
+          ? "Early estimate — limited milestone timing data"
           : "Early estimate — limited cohort data"
         : journeyFromSeededPace
-          ? "Typical eCOPR month from seeded milestone gaps (matches your timeline)"
+          ? "Typical eCOPR month from community milestone timing (matches your timeline)"
           : "v2.0 cohort P25–P75 window — not guaranteed",
     },
   };
@@ -125,9 +125,9 @@ export function infoCardsVM(
   const journeyExplain =
     ctx.journeyDays > 0
       ? ctx.journeyFromSeededPace
-        ? `You've passed ${ctx.pct}% of the typical seeded timeline. Milestone gaps suggest a full journey of about ${ctx.journeyDays} days from AOR — you're on Day ${ctx.days}.`
+        ? `You've passed ${ctx.pct}% of the typical timeline. Community milestone timing suggests a full journey of about ${ctx.journeyDays} days from AOR — you're on Day ${ctx.days}.`
         : `You've passed ${ctx.pct}% of the typical timeline. Most people in your group finish in about ${ctx.journeyDays} days — you're on Day ${ctx.days}.`
-      : `You're on Day ${ctx.days}. Journey length appears once cohort or seeded pace data is available.`;
+      : `You're on Day ${ctx.days}. Journey length appears once cohort or milestone timing data is available.`;
 
   const cohortExplain =
     cohortPct === 0

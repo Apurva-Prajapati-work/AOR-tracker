@@ -46,7 +46,7 @@ export function DashboardRails({
           <div className="rrsub">
             {journeyDays > 0
               ? journeyFromSeededPace
-                ? `Based on ${journeyDays}d seeded timeline`
+                ? `Based on ${journeyDays}d typical timeline`
                 : `Based on ${journeyDays}d cohort median`
               : "Journey length not available"}
           </div>

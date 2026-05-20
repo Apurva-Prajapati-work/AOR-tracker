@@ -20,7 +20,7 @@ export type CohortInsight = {
 
 export type MilestoneDefRow = (typeof MILESTONE_DEFS)[number];
 
-const PACE_UNAVAILABLE_DESC = `Milestone estimates need seeded cohort data (run cohort sync after CEC import; each step needs ≥${MIN_SEGMENT_N} paired dates).`;
+const PACE_UNAVAILABLE_DESC = `Milestone estimates need more community milestone dates (each step needs at least ${MIN_SEGMENT_N} paired timelines).`;
 
 /**
  * Merge static milestone labels with est. dates from global seeded gap averages.
@@ -82,7 +82,7 @@ export function mergeMilestoneDefsForCohort(
       return {
         ...def,
         est: `~${formatEstDateFromAor(aorDate, cum)}`,
-        desc: `Typical ~${cum}d after AOR (avg gaps from ${pace!.seeded_profiles ?? 0} seeded profiles).`,
+        desc: `Typical ~${cum}d after AOR (avg gaps from ${pace!.seeded_profiles ?? 0} profiles on AOR Track).`,
       };
     }
 

@@ -1056,6 +1056,50 @@
   letter-spacing: 0.04em;
 }
 
+/* Body copy + actions inside navy summary cards (gate welcome-back, step 3 review) */
+.mkt-track-page .tk-summary .tk-summary-body,
+.mkt-track-page .tk-summary p {
+  color: rgba(255, 255, 255, 0.78);
+  line-height: 1.6;
+  font-size: 0.85rem;
+}
+.mkt-track-page .tk-summary .tk-summary-type strong {
+  color: #fff;
+  font-weight: 700;
+}
+.mkt-track-page .tk-summary .tk-summary-stream svg {
+  fill: currentColor;
+  color: #4ade80;
+}
+.mkt-track-page .tk-summary .tk-success-icon {
+  margin-bottom: 0;
+  flex-shrink: 0;
+}
+.mkt-track-page .tk-summary .tk-btn-secondary {
+  color: rgba(255, 255, 255, 0.88);
+  border-color: rgba(255, 255, 255, 0.35);
+  background: transparent;
+}
+.mkt-track-page .tk-summary .tk-btn-secondary:hover {
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.55);
+  background: rgba(255, 255, 255, 0.08);
+}
+.mkt-track-page .tk-summary .tk-btn-secondary svg {
+  fill: currentColor;
+}
+
+/* Selected stream cards (step 1) — navy background, light text */
+.mkt-track-page .tk-stream-opt.selected,
+.mkt-track-page .tk-stream-opt.selected .tk-so-name,
+.mkt-track-page .tk-stream-opt.selected .tk-so-sub,
+.mkt-track-page .tk-stream-opt.selected .tk-so-icon {
+  color: #fff;
+}
+.mkt-track-page .tk-stream-opt.selected .tk-so-meta {
+  color: #4ade80;
+}
+
 /* MILESTONE SUMMARY */
 .mkt-track-page .tk-ms-summary {
   margin-bottom: 1.5rem;

@@ -2,7 +2,10 @@
 
 import { randomBytes } from "crypto";
 import type { DnTimelineRow } from "@/components/dashboard/v2/data";
-import { getCohortStatsForProfileAction } from "@/app/actions/cohort";
+import {
+  getCohortStatsForProfileAction,
+  getGlobalMilestonePaceAction,
+} from "@/app/actions/cohort";
 import { getDb } from "@/lib/db";
 import { humanizeCohortKey, normalizeStreamLabel } from "@/lib/cohort";
 import { fmtDate } from "@/lib/format";
@@ -13,8 +16,9 @@ import {
 } from "@/lib/share-timeline-vm";
 import {
   daysSinceAor,
-  estimatePprWindow,
+  journeyTargetDays,
   pctThroughMedian,
+  resolveApprovalEstimate,
 } from "@/lib/ppr-estimate";
 import type { UserProfile } from "@/lib/types";
 import { mergeMilestoneDefsForCohort } from "@/lib/cohort-dynamic";
@@ -138,13 +142,15 @@ export async function getPublicSharePayloadAction(
   });
 
   const median = cohort.median_days_to_ppr;
+  const pace = await getGlobalMilestonePaceAction();
   const days = aorDate ? daysSinceAor(aorDate) : 0;
-  const pct = pctThroughMedian(days, median);
+  const journeyDays = journeyTargetDays(pace, median);
+  const pct = pctThroughMedian(days, journeyDays);
 
   let pprP50 = "—";
   let pprWindow = "—";
   if (aorDate) {
-    const est = estimatePprWindow(aorDate, cohort);
+    const est = resolveApprovalEstimate(aorDate, cohort, pace, profile);
     pprP50 = est.p50Approx;
     pprWindow = est.windowLabel;
   }
@@ -156,8 +162,8 @@ export async function getPublicSharePayloadAction(
 
   const defs = mergeMilestoneDefsForCohort(
     aorDate || "2000-01-01",
-    median,
-    cohort,
+    pace,
+    profile,
   );
   const timelineRows = timelineRowsFromProfile(defs, profile, {
     includeEdit: false,

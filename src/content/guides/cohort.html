@@ -19,13 +19,15 @@
 .ch-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 50% 45% at 80% 15%,rgba(91,33,182,.12),transparent 55%),radial-gradient(ellipse 45% 40% at 15% 85%,rgba(45,106,79,.1),transparent 50%);pointer-events:none}
 .ch-grid{position:absolute;inset:0;opacity:.4;background-image:repeating-linear-gradient(0deg,transparent,transparent 40px,rgba(255,255,255,.02) 40px,rgba(255,255,255,.02) 41px);pointer-events:none}
 .ch-inner{max-width:var(--max-wide);margin:0 auto;position:relative;z-index:1;display:grid;grid-template-columns:1fr minmax(280px,400px);gap:2.5rem;align-items:start}
-.ch-k{font-family:var(--fm);font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.58);margin-bottom:.75rem}
+.ch-k{font-family:var(--fm);font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.65);margin-bottom:.75rem}
 .ch-h1{font-family:var(--fh);font-weight:900;font-size:clamp(2rem,4vw,3rem);line-height:1.05;color:#fff;letter-spacing:-.035em;margin-bottom:1rem}
 .ch-h1 em{font-style:italic;color:#c4b5fd}
 .ch-lead{font-size:1.05rem;color:rgba(255,255,255,.78);max-width:36rem;margin-bottom:1.5rem;font-weight:400}
 .ch-lead strong{color:#fff;font-weight:600}
-.ch-actions{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:1rem}
-.ch-meta{font-size:.78rem;color:rgba(255,255,255,.52);display:flex;flex-wrap:wrap;gap:12px 18px}
+.ch-actions{display:flex;flex-direction:column;align-items:stretch;gap:10px;width:100%;margin-bottom:1rem}
+.ch-actions .g-btn{width:100%;max-width:100%;justify-content:center;box-sizing:border-box}
+.ch-meta{font-size:.78rem;color:rgba(255,255,255,.62);display:flex;flex-wrap:wrap;gap:12px 18px}
+.ch-meta i{color:rgba(255,255,255,.92)}
 
 .ch-card{background:var(--cream);border:2px solid var(--navy2);border-radius:14px;overflow:hidden;box-shadow:0 22px 55px rgba(0,0,0,.38)}
 .ch-card-h{background:linear-gradient(135deg,var(--purple),#4338ca);padding:12px 16px;font-family:var(--fh);font-size:.88rem;font-weight:800;color:#fff}
@@ -98,13 +100,13 @@
         <h1 class="ch-h1">Express Entry cohort analytics — <em>find your rank</em></h1>
         <p class="ch-lead">AORTrack turns anonymous milestone logs into <strong>cohorts</strong> you can compare against: same AOR month, same stream, same inland/outland profile where possible. This page explains <em>how</em> we calculate percentile rank and why that matters more than a generic IRCC service standard.</p>
         <div class="ch-actions">
-          <a href="/track" class="g-btn g-btn-primary">Find my cohort rank — free</a>
-          <a href="#methodology" class="g-btn g-btn-secondary">Read methodology</a>
+          <a href="/track" class="g-btn g-btn-primary">Find my cohort rank — free <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+          <a href="#methodology" class="g-btn g-btn-secondary">Read methodology <i class="fa-solid fa-arrow-down" aria-hidden="true"></i></a>
         </div>
         <div class="ch-meta">
-          <span>Open source · auditable</span>
-          <span>MIT license</span>
-          <span>Not affiliated with IRCC</span>
+          <span><i class="fa-solid fa-code-branch" aria-hidden="true"></i> Open source · auditable</span>
+          <span><i class="fa-solid fa-scale-balanced" aria-hidden="true"></i> MIT license</span>
+          <span><i class="fa-solid fa-circle-info" aria-hidden="true"></i> Not affiliated with IRCC</span>
         </div>
       </div>
       <aside class="ch-card" aria-label="Example percentile">
@@ -247,8 +249,8 @@
     <div class="g-cta-in">
       <h2>See your cohort — not someone else’s average.</h2>
       <div class="g-cta-actions">
-        <a href="/track" class="g-btn g-btn-cta">Open AORTrack</a>
-        <a href="#methodology" class="g-btn g-btn-secondary">Methodology</a>
+        <a href="/track" class="g-btn g-btn-cta">Open AORTrack <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+        <a href="#methodology" class="g-btn g-btn-secondary">Methodology <i class="fa-solid fa-book" aria-hidden="true"></i></a>
       </div>
     </div>
   </div>

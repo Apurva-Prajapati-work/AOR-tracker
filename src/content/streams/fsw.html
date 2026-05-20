@@ -1,4 +1,13 @@
 <style>
+
+.cp-icon i,.ms-icon i{font-size:1.1rem;line-height:1}
+.sp-compare .cp-icon i{color:#fff!important}
+.ms-icon i{color:var(--navy)}
+.ms-icon{display:flex;align-items:center;justify-content:center;min-height:1.75rem}
+.ms-icon i{font-size:1.35rem;color:var(--navy)}
+.hb i,.btn-red i,.btn-blue i,.btn-amber i,.btn-out i,.btn-white i,.btn-ghost-w i,.hc-cta i{margin-right:.35em}
+.hc-cta i{margin-right:.25em}
+
 /* ── FSW Stream Page — scoped content styles ── */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -16,8 +25,8 @@
   --fm:'DM Mono',monospace;
   --max:1100px;
 }
-body{background:var(--cream);color:var(--navy);font-family:var(--fb);font-size:16px;line-height:1.65;overflow-x:hidden}
-a{color:inherit;text-decoration:none}
+.stream-page{background:var(--cream);color:var(--navy);font-family:var(--fb);font-size:16px;line-height:1.65;overflow-x:hidden}
+.stream-page a{text-decoration:none}
 
 /* HERO */
 .sp-hero{background:var(--navy);padding:clamp(52px,7vw,84px) clamp(16px,4vw,48px) 0;position:relative;overflow:hidden}
@@ -35,15 +44,16 @@ a{color:inherit;text-decoration:none}
 .sp-h1{font-family:var(--fh);font-size:clamp(2.2rem,4vw,3.3rem);font-weight:900;color:#fff;line-height:1.05;letter-spacing:-.04em;margin-bottom:1rem}
 .sp-h1 em{font-style:italic;color:#93c5fd}
 .sp-sub{font-size:1.02rem;color:rgba(255,255,255,.55);line-height:1.75;font-weight:300;max-width:490px;margin-bottom:2rem}
-.sp-actions{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:2.5rem}
+.sp-actions{display:flex;flex-direction:column;align-items:stretch;gap:10px;width:100%;margin-bottom:2.5rem}
+.sp-actions a{width:100%;max-width:100%;justify-content:center;box-sizing:border-box}
 .btn-blue{padding:13px 26px;border-radius:8px;font-size:.93rem;font-weight:700;background:var(--blue);color:#fff !important;border:2px solid var(--blue);display:inline-flex;align-items:center;gap:8px;transition:all .15s}
 .btn-blue:hover{background:#174e76;transform:translateY(-2px)}
 .btn-out{padding:13px 22px;border-radius:8px;font-size:.88rem;font-weight:500;background:transparent;color:#fff !important;border:2px solid rgba(255,255,255,.2);display:inline-flex;align-items:center;gap:8px;transition:all .15s}
 .btn-out:hover{border-color:rgba(255,255,255,.5)}
 .sp-trust{display:flex;gap:18px;flex-wrap:wrap;padding-bottom:3rem}
 .ht{display:flex;align-items:center;gap:6px;font-size:.79rem;color:rgba(255,255,255,.38);font-weight:500}
-.ht::before{content:'✓';color:var(--g4);font-weight:700;font-size:.84rem}
-.ht.ht-note::before{content:'★';color:#93c5fd}
+.ht::before{font-family:"Font Awesome 6 Free";font-weight:900;content:'\f00c';color:var(--g4);font-size:.84rem}
+.ht.ht-note::before{font-family:"Font Awesome 6 Free";font-weight:900;content:'\f005';color:#93c5fd}
 
 /* Hero data card */
 .sp-card{background:var(--cream);border:2px solid var(--navy2);border-radius:16px;overflow:hidden;box-shadow:0 24px 64px rgba(0,0,0,.4)}
@@ -62,7 +72,7 @@ a{color:inherit;text-decoration:none}
 .hc-bar{height:7px;background:var(--cream3);border-radius:100px;overflow:hidden;margin-bottom:4px}
 .hc-bar-fill{height:100%;border-radius:100px;background:linear-gradient(90deg,var(--blue),#93c5fd)}
 .hc-note{font-size:.64rem;color:var(--muted);margin-bottom:12px}
-.hc-cta{display:block;width:100%;margin-top:4px;padding:11px;background:var(--blue);color:#fff;border:none;border-radius:8px;font-family:var(--fh);font-size:.88rem;font-weight:800;text-align:center;transition:background .15s;text-decoration:none}
+.hc-cta{display:block;width:100%;margin-top:4px;padding:11px 16px;background:var(--blue);color:#fff !important;border:2px solid var(--blue);border-radius:8px;font-family:var(--fh);font-size:.88rem;font-weight:800;text-align:center;transition:background .15s;text-decoration:none;box-sizing:border-box}
 .hc-cta:hover{background:#174e76}
 
 /* STATS BAR */
@@ -145,25 +155,26 @@ a{color:inherit;text-decoration:none}
 
 /* CTA */
 .sp-cta{background:var(--blue);padding:clamp(60px,7vw,88px) clamp(16px,4vw,48px)}
-.sp-cta-inner{max-width:var(--max);margin:0 auto;display:grid;grid-template-columns:1fr auto;gap:3rem;align-items:center}
+.sp-cta-inner{max-width:var(--max);margin:0 auto;display:grid;grid-template-columns:1fr;gap:2rem;align-items:stretch}
 .cta-h2{font-family:var(--fh);font-size:clamp(1.8rem,3vw,2.5rem);font-weight:900;color:#fff;letter-spacing:-.03em;line-height:1.1}
 .cta-sub{font-size:1rem;color:rgba(255,255,255,.65);margin-top:.8rem;font-weight:300}
 .cta-note{margin-top:1rem;padding-top:1rem;border-top:1px solid rgba(255,255,255,.2);font-size:.8rem;color:rgba(255,255,255,.55)}
 .cta-note a{color:#fff;font-weight:600;text-decoration:underline;text-underline-offset:3px}
-.cta-btns{display:flex;flex-direction:column;gap:10px;align-items:flex-end}
-.btn-white{padding:13px 26px;border-radius:8px;font-size:.93rem;font-weight:700;background:#fff;color:var(--blue);border:2px solid #fff;display:inline-flex;align-items:center;gap:8px;transition:all .15s;white-space:nowrap}
+.cta-btns{display:flex;flex-direction:column;gap:10px;align-items:stretch;width:100%}
+.cta-btns a{width:100%;max-width:100%;justify-content:center;box-sizing:border-box}
+.btn-white{padding:13px 26px;border-radius:8px;font-size:.93rem;font-weight:700;background:#fff;color:var(--blue) !important;border:2px solid #fff;display:inline-flex;align-items:center;gap:8px;transition:all .15s;box-sizing:border-box}
 .btn-white:hover{background:rgba(255,255,255,.92)}
-.btn-ghost-w{padding:10px 20px;border-radius:8px;font-size:.84rem;font-weight:600;background:transparent;color:rgba(255,255,255,.8);border:2px solid rgba(255,255,255,.3);display:inline-flex;align-items:center;gap:7px;transition:all .15s;white-space:nowrap}
-.btn-ghost-w:hover{border-color:rgba(255,255,255,.7);color:#fff}
+.btn-ghost-w{padding:10px 20px;border-radius:8px;font-size:.84rem;font-weight:600;background:transparent;color:rgba(255,255,255,.92) !important;border:2px solid rgba(255,255,255,.4);display:inline-flex;align-items:center;gap:7px;transition:all .15s;box-sizing:border-box}
+.btn-ghost-w:hover{border-color:rgba(255,255,255,.75);color:#fff !important}
 
 /* REVEAL */
 .reveal{opacity:0;transform:translateY(20px);transition:opacity .5s,transform .5s}
 .reveal.shown{opacity:1;transform:none}
 
 /* RESPONSIVE */
-@media(max-width:1024px){.sp-hero-inner{grid-template-columns:1fr;gap:2rem}.sp-compare-inner{grid-template-columns:1fr}.sp-cta-inner{grid-template-columns:1fr;gap:2rem}.cta-btns{align-items:flex-start;flex-direction:row;flex-wrap:wrap}}
+@media(max-width:1024px){.sp-hero-inner{grid-template-columns:1fr;gap:2rem}.sp-compare-inner{grid-template-columns:1fr}.sp-cta-inner{grid-template-columns:1fr;gap:2rem}}
 @media(max-width:768px){.ms-grid{grid-template-columns:1fr 1fr}.sp-stats-inner{grid-template-columns:repeat(3,1fr)}.stat-cell:nth-child(4),.stat-cell:nth-child(5){display:none}}
-@media(max-width:560px){.ms-grid{grid-template-columns:1fr}.sp-actions{flex-direction:column}.btn-blue,.btn-out{width:100%;justify-content:center}}
+@media(max-width:560px){.ms-grid{grid-template-columns:1fr}}
 </style>
 
 <!-- HERO -->
@@ -172,16 +183,16 @@ a{color:inherit;text-decoration:none}
   <div class="sp-hero-inner">
     <div>
       <div class="sp-badges">
-        <span class="hb hb-stream">🌍 FSW · Federal Skilled Worker</span>
+        <span class="hb hb-stream"><i class="fa-solid fa-globe" aria-hidden="true"></i> FSW · Federal Skilled Worker</span>
         <span class="hb hb-live"><span class="hb-dot"></span>Live community data</span>
-        <span class="hb hb-note">★ FSW avg +83d vs CEC</span>
+        <span class="hb hb-note"><i class="fa-solid fa-star" aria-hidden="true"></i> FSW avg +83d vs CEC</span>
       </div>
       <p class="sp-kicker">FSW Processing Time 2026</p>
       <h1 class="sp-h1">Avg <em>267 days</em><br>AOR to PPR — FSW.</h1>
       <p class="sp-sub">Real Federal Skilled Worker processing timelines from the AORTrack community — not IRCC's generic estimate. Includes FSW vs CEC comparison, cohort histogram, and P25–P75 window for 2026 applicants.</p>
       <div class="sp-actions">
-        <a href="/track" class="btn-blue">Track My FSW AOR — Free →</a>
-        <a href="#compare" class="btn-out">FSW vs CEC ↓</a>
+        <a href="/track" class="btn-blue">Track My FSW AOR — Free <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+        <a href="#compare" class="btn-out">FSW vs CEC <i class="fa-solid fa-arrow-down" aria-hidden="true"></i></a>
       </div>
       <div class="sp-trust">
         <span class="ht ht-note">FSW avg 267d vs CEC avg 184d</span>
@@ -196,7 +207,7 @@ a{color:inherit;text-decoration:none}
         <span class="hc-hd-t">FSW — Live Cohort Snapshot</span>
         <span class="hc-live"><span class="hc-live-dot"></span>Updated daily</span>
       </div>
-      <div class="hc-body">
+      <div class="hc-body" style="padding: 16px;">
         <div class="hc-stats">
           <div class="hc-stat"><div class="hc-sv">267</div><div class="hc-sl">Median days</div></div>
           <div class="hc-div"></div>
@@ -207,7 +218,7 @@ a{color:inherit;text-decoration:none}
         <div class="hc-pl"><span class="hc-pk">P25–P75 processing window</span><span class="hc-pv">192 – 315d</span></div>
         <div class="hc-bar"><div class="hc-bar-fill" style="width:58%"></div></div>
         <div class="hc-note">Based on verified community profiles · International (outland) · 2026 cohorts</div>
-        <a href="/track" class="hc-cta">Track Your FSW AOR — Free →</a>
+        <a href="/track" class="hc-cta">Track Your FSW AOR — Free <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
       </div>
     </div>
   </div>
@@ -233,28 +244,28 @@ a{color:inherit;text-decoration:none}
       <p class="sub-text reveal">Both streams go through the same IRCC processing pipeline, but Federal Skilled Worker applicants (typically international/outland) consistently wait longer. AORTrack data shows a clear and persistent gap across 2026 cohorts.</p>
       <div class="compare-points reveal">
         <div class="cp">
-          <div class="cp-icon" style="background:rgba(30,95,140,.2)">📊</div>
+          <div class="cp-icon" style="background:rgba(30,95,140,.2)"><i class="fa-solid fa-chart-column" aria-hidden="true"></i></div>
           <div>
             <div class="cp-title">Median gap: 267d (FSW) vs 184d (CEC)</div>
             <div class="cp-desc">Community data from AORTrack 2026 cohorts — same methodology for both streams.</div>
           </div>
         </div>
         <div class="cp">
-          <div class="cp-icon" style="background:rgba(45,106,79,.2)">🎯</div>
+          <div class="cp-icon" style="background:rgba(45,106,79,.2)"><i class="fa-solid fa-bullseye" aria-hidden="true"></i></div>
           <div>
             <div class="cp-title">P25–P75 windows are wider for FSW</div>
             <div class="cp-desc">FSW has more variance (192–315d) than CEC (133–217d) — the spread is larger for international applicants.</div>
           </div>
         </div>
         <div class="cp">
-          <div class="cp-icon" style="background:rgba(181,101,29,.2)">⚡</div>
+          <div class="cp-icon" style="background:rgba(181,101,29,.2)"><i class="fa-solid fa-bolt" aria-hidden="true"></i></div>
           <div>
             <div class="cp-title">Same milestone sequence — longer wait</div>
             <div class="cp-desc">BIL, biometrics, background check, medicals, and portal steps are identical. The timeline between steps is just longer for FSW.</div>
           </div>
         </div>
         <div class="cp">
-          <div class="cp-icon" style="background:rgba(91,33,182,.2)">🔄</div>
+          <div class="cp-icon" style="background:rgba(91,33,182,.2)"><i class="fa-solid fa-arrows-rotate" aria-hidden="true"></i></div>
           <div>
             <div class="cp-title">Data updates as members contribute</div>
             <div class="cp-desc">The more FSW applicants who log milestones, the more accurate the comparison becomes.</div>
@@ -313,14 +324,13 @@ a{color:inherit;text-decoration:none}
     <h2 class="h2 reveal">What happens between AOR and PPR — FSW.</h2>
     <p class="sub-text reveal">Community-reported median days for each processing step. Individual timelines vary — these are patterns from verified FSW profiles on AORTrack.</p>
     <div class="ms-grid reveal">
-      <div class="ms-card done"><div class="ms-icon">📬</div><div class="ms-name">AOR Received</div><div class="ms-day">Day 0 — Starting point</div><span class="ms-tag tag-done">Milestone 1</span></div>
-      <div class="ms-card done"><div class="ms-icon">🖐</div><div class="ms-name">Biometrics Letter</div><div class="ms-day">~Day 20 after AOR</div><span class="ms-tag tag-done">Milestone 2</span></div>
-      <div class="ms-card done"><div class="ms-icon">📷</div><div class="ms-name">Biometrics Completed</div><div class="ms-day">~Day 35 after AOR</div><span class="ms-tag tag-done">Milestone 3</span></div>
-      <div class="ms-card done"><div class="ms-icon">🔍</div><div class="ms-name">Background Check</div><div class="ms-day">~Day 75 median</div><span class="ms-tag tag-done">Milestone 4</span></div>
-      <div class="ms-card"><div class="ms-icon">🩺</div><div class="ms-name">Medical Results</div><div class="ms-day">~Day 140 median</div><span class="ms-tag tag-pend">Milestone 5</span></div>
-      <div class="ms-card"><div class="ms-icon">🏛</div><div class="ms-name">P1 — PR Portal</div><div class="ms-day">~Day 225–245</div><span class="ms-tag tag-pend">Milestone 6</span></div>
-      <div class="ms-card"><div class="ms-icon">📸</div><div class="ms-name">P2 — Photo &amp; Address</div><div class="ms-day">~Day 250–265</div><span class="ms-tag tag-pend">Milestone 7</span></div>
-      <div class="ms-card"><div class="ms-icon">🌍</div><div class="ms-name">eCOPR Issued</div><div class="ms-day">Median Day 267</div><span class="ms-tag tag-pend">Milestone 8</span></div>
+      <div class="ms-card done"><div class="ms-icon"><i class="fa-solid fa-envelope" aria-hidden="true"></i></div><div class="ms-name">AOR Received</div><div class="ms-day">Day 0 — Starting point</div><span class="ms-tag tag-done">Milestone 1</span></div>
+      <div class="ms-card done"><div class="ms-icon"><i class="fa-solid fa-fingerprint" aria-hidden="true"></i></div><div class="ms-name">Biometrics Completed</div><div class="ms-day">~Day 27 after AOR</div><span class="ms-tag tag-done">Milestone 2</span></div>
+      <div class="ms-card done"><div class="ms-icon"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i></div><div class="ms-name">Background Check</div><div class="ms-day">~Day 58 median</div><span class="ms-tag tag-done">Milestone 3</span></div>
+      <div class="ms-card"><div class="ms-icon"><i class="fa-solid fa-stethoscope" aria-hidden="true"></i></div><div class="ms-name">Medical Results</div><div class="ms-day">~Day 112 median</div><span class="ms-tag tag-pend">Milestone 4</span></div>
+      <div class="ms-card"><div class="ms-icon"><i class="fa-solid fa-landmark" aria-hidden="true"></i></div><div class="ms-name">P1 — PR Portal</div><div class="ms-day">~Day 155–170</div><span class="ms-tag tag-pend">Milestone 5</span></div>
+      <div class="ms-card"><div class="ms-icon"><i class="fa-solid fa-camera" aria-hidden="true"></i></div><div class="ms-name">P2 — Photo &amp; Address</div><div class="ms-day">~Day 170–185</div><span class="ms-tag tag-pend">Milestone 6</span></div>
+      <div class="ms-card"><div class="ms-icon"><i class="fa-solid fa-globe" aria-hidden="true"></i></div><div class="ms-name">eCOPR Issued</div><div class="ms-day">Median Day 184</div><span class="ms-tag tag-pend">Milestone 7</span></div>
     </div>
   </div>
 </section>
@@ -361,19 +371,12 @@ a{color:inherit;text-decoration:none}
     <div>
       <h2 class="cta-h2">Track your FSW application today.<br>Free. Always.</h2>
       <p class="cta-sub">Join thousands of FSW applicants using real community data. Enter your AOR date, pick FSW, and see your cohort position instantly — no signup, under 60 seconds.</p>
-      <div class="cta-note">Need expert guidance? <a href="https://www.getnorthpath.com/contact?utm_source=aortrack-fsw">GetNorthPath consultants manage your full application from ITA to PPR →</a></div>
+      <div class="cta-note">Need expert guidance? <a href="https://www.getnorthpath.com/contact?utm_source=aortrack-fsw">GetNorthPath consultants manage your full application from ITA to PPR <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></div>
     </div>
     <div class="cta-btns">
-      <a href="/track" class="btn-white">Track My FSW AOR — Free →</a>
-      <a href="/streams/cec" class="btn-ghost-w">🍁 Compare with CEC</a>
-      <a href="/dashboard/stats" class="btn-ghost-w">📊 Full Processing Stats</a>
+      <a href="/track" class="btn-white">Track My FSW AOR — Free <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+      <a href="/streams/cec" class="btn-ghost-w"><i class="fa-brands fa-canadian-maple-leaf" aria-hidden="true"></i> Compare with CEC</a>
+      <a href="/dashboard/stats" class="btn-ghost-w"><i class="fa-solid fa-chart-column" aria-hidden="true"></i> Full Processing Stats</a>
     </div>
   </div>
 </section>
-
-<script>
-(function(){
-  var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('shown');io.unobserve(e.target);}});},{threshold:0.1});
-  document.querySelectorAll('.reveal').forEach(function(el){io.observe(el);});
-})();
-</script>

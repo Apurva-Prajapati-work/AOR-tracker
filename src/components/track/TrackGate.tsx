@@ -176,14 +176,7 @@ export function TrackGate({ email, onEmail, onStartOnboarding }: Props) {
               <IconMaple aria-hidden />
             </div>
           </div>
-          <p
-            style={{
-              margin: "1rem 0 0",
-              color: "var(--muted)",
-              lineHeight: 1.6,
-              fontSize: "0.85rem",
-            }}
-          >
+          <p className="tk-summary-body" style={{ margin: "1rem 0 0" }}>
             Head to your dashboard to see your timeline, cohort position and
             milestone updates. Or sign in with a different email below.
           </p>

@@ -30,7 +30,10 @@ import {
   type CohortSummaryRow,
   type LiveCohortAggregate,
 } from "@/app/actions/aggregate";
-import { getCohortStatsByKeyAction } from "@/app/actions/cohort";
+import {
+  getCohortStatsByKeyAction,
+  getGlobalMilestonePaceAction,
+} from "@/app/actions/cohort";
 import { syncCohortStatsFromProfilesAction } from "@/app/actions/cohort-sync";
 import { getProfileAction, updateMilestoneAction } from "@/app/actions/profile";
 import { ensureShareTokenForEmailAction } from "@/app/actions/share";
@@ -49,11 +52,18 @@ import { cohortKeyFromProfile, humanizeCohortKey } from "@/lib/cohort";
 import { computeProfileCompleteness } from "@/lib/profile-completeness";
 import {
   daysSinceAor,
-  estimatePprWindow,
+  journeyTargetDays,
+  journeyUsesSeededPace,
   pctThroughMedian,
+  resolveApprovalEstimate,
 } from "@/lib/ppr-estimate";
 import { clearSessionEmail, readSessionEmail } from "@/lib/session-client";
-import type { CohortStats, MilestoneKey, UserProfile } from "@/lib/types";
+import type {
+  CohortStats,
+  GlobalMilestonePace,
+  MilestoneKey,
+  UserProfile,
+} from "@/lib/types";
 
 export function DashboardShell({ children }: { children: ReactNode }) {
   const router = useRouter();
@@ -75,6 +85,8 @@ export function DashboardShell({ children }: { children: ReactNode }) {
     string | null
   >(null);
   const [syncCohortBusy, setSyncCohortBusy] = useState(false);
+  const [milestonePace, setMilestonePace] =
+    useState<GlobalMilestonePace | null>(null);
   const [shareState, setShareState] = useState<{
     email: string;
     token: string | null;
@@ -140,6 +152,16 @@ export function DashboardShell({ children }: { children: ReactNode }) {
   }, [email, load]);
 
   useEffect(() => {
+    let cancelled = false;
+    void getGlobalMilestonePaceAction().then((pace) => {
+      if (!cancelled) setMilestonePace(pace);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  useEffect(() => {
     if (!email) return;
     let cancelled = false;
     void ensureShareTokenForEmailAction(email).then((r) => {
@@ -178,8 +200,13 @@ export function DashboardShell({ children }: { children: ReactNode }) {
 
   const ppr = useMemo(() => {
     if (!profile || !cohortDisplay || !profile.aorDate) return null;
-    return estimatePprWindow(profile.aorDate, cohortDisplay);
-  }, [profile, cohortDisplay]);
+    return resolveApprovalEstimate(
+      profile.aorDate,
+      cohortDisplay,
+      milestonePace,
+      profile,
+    );
+  }, [profile, cohortDisplay, milestonePace]);
 
   const completeness = useMemo(
     () => (profile ? computeProfileCompleteness(profile) : null),
@@ -220,17 +247,18 @@ export function DashboardShell({ children }: { children: ReactNode }) {
     if (!profile?.aorDate?.trim()) {
       return [...MILESTONE_DEFS];
     }
-    const med = cohortDisplay?.median_days_to_ppr ?? 0;
     return mergeMilestoneDefsForCohort(
       profile.aorDate,
-      med,
-      cohortDisplay ?? undefined,
+      milestonePace,
+      profile,
     );
-  }, [profile, cohortDisplay]);
+  }, [profile, milestonePace]);
 
   const days = profile?.aorDate ? daysSinceAor(profile.aorDate) : 0;
   const median = cohortDisplay?.median_days_to_ppr ?? 0;
-  const pct = pctThroughMedian(days, median);
+  const journeyDays = journeyTargetDays(milestonePace, median);
+  const journeyFromSeededPace = journeyUsesSeededPace(milestonePace);
+  const pct = pctThroughMedian(days, journeyDays);
 
   useEffect(() => {
     const t = window.setTimeout(() => setRingPct(pct), 250);
@@ -271,6 +299,8 @@ export function DashboardShell({ children }: { children: ReactNode }) {
       const pk = cohortKeyFromProfile(profile);
       const vk = viewingCohortKeyOverride ?? pk;
       await hydrateCohortView(vk, pk);
+      const pace = await getGlobalMilestonePaceAction();
+      setMilestonePace(pace);
     } finally {
       setSyncCohortBusy(false);
     }
@@ -303,7 +333,10 @@ export function DashboardShell({ children }: { children: ReactNode }) {
       window.setTimeout(() => setSavedFlash(null), 3000);
       const next = res.profile;
       const pk = cohortKeyFromProfile(next);
-      const vk = viewingCohortKeyOverride ?? pk;
+      if (key === "aor") {
+        setViewingCohortKeyOverride(null);
+      }
+      const vk = key === "aor" ? pk : (viewingCohortKeyOverride ?? pk);
       await hydrateCohortView(vk, pk);
       toast.show(`${MILESTONE_DEFS.find((m) => m.key === key)?.label} date saved`);
     }
@@ -343,6 +376,9 @@ export function DashboardShell({ children }: { children: ReactNode }) {
     switchProfile,
     days,
     median,
+    journeyDays,
+    journeyFromSeededPace,
+    milestonePace,
     pct,
     ppr,
     completeness,
@@ -525,7 +561,8 @@ export function DashboardShell({ children }: { children: ReactNode }) {
               days={days}
               pct={pct}
               ringOffset={ringOffset}
-              median={median}
+              journeyDays={journeyDays}
+              journeyFromSeededPace={journeyFromSeededPace}
               ppr={ppr}
               cohort={cohortDisplay}
               similarCohorts={similarCohortsDisplay}

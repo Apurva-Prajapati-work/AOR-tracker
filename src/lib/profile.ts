@@ -1,5 +1,8 @@
 import type { MilestoneKey, MilestoneEntry, UserProfile } from "./types";
-import { normalizeStreamLabel } from "./cohort";
+import {
+  cohortKeyFromProfile,
+  normalizeStreamLabel,
+} from "./cohort";
 import { MILESTONE_DEFS } from "./constants";
 
 export function normalizeEmail(email: string): string {
@@ -46,4 +49,39 @@ export function newProfile(email: string): UserProfile {
 
 export function isValidEmail(email: string): boolean {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
+}
+
+/** Keep `aorDate`, `milestones.aor`, and `cohortKey` aligned when persisting. */
+export function normalizeProfileForPersistence(profile: UserProfile): {
+  aorDate: string;
+  stream: string;
+  type: string;
+  province: string;
+  milestones: UserProfile["milestones"];
+  cohortKey: string;
+} {
+  const stream = normalizeStreamLabel(profile.stream);
+  const aorDate = profile.aorDate?.trim() ?? "";
+  const milestones = normalizeMilestonesFromDoc(profile.milestones);
+  if (aorDate) {
+    const now = new Date().toISOString();
+    milestones.aor = {
+      date: aorDate,
+      updatedAt: milestones.aor?.updatedAt ?? now,
+    };
+  }
+  const cohortKey = cohortKeyFromProfile({
+    aorDate,
+    stream,
+    type: profile.type,
+    province: profile.province,
+  });
+  return {
+    aorDate,
+    stream,
+    type: profile.type,
+    province: profile.province,
+    milestones,
+    cohortKey,
+  };
 }

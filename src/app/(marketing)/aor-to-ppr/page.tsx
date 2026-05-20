@@ -1,6 +1,7 @@
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 import type { Metadata } from "next";
+import { MarketingHtmlContent } from "@/components/marketing/MarketingHtmlContent";
 import { getSiteUrl } from "@/lib/site-url";
 
 export const revalidate = 3600;
@@ -146,7 +147,7 @@ export default async function AorToPprGuidePage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(ld) }}
       />
-      <div dangerouslySetInnerHTML={{ __html: html }} />
+      <MarketingHtmlContent html={html} />
     </>
   );
 }

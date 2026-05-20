@@ -2,6 +2,7 @@ import { readFile } from "node:fs/promises";
 import path from "node:path";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { MarketingHtmlContent } from "@/components/marketing/MarketingHtmlContent";
 import { getSiteUrl } from "@/lib/site-url";
 import { STREAM_PAGE_SLUGS, streamLabelFromSitemapSlug } from "@/lib/streams-sitemap-slugs";
 function buildStreamDatasetJsonLd(opts: {
@@ -129,7 +130,7 @@ export default async function StreamLandingPage({ params }: Props) {
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(ld) }}
         />
-        <div className="stream-page" dangerouslySetInnerHTML={{ __html: html }} />
+        <MarketingHtmlContent html={html} className="stream-page" />
       </>
     );
   }

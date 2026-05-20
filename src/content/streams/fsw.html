@@ -207,7 +207,7 @@
         <span class="hc-hd-t">FSW — Live Cohort Snapshot</span>
         <span class="hc-live"><span class="hc-live-dot"></span>Updated daily</span>
       </div>
-      <div class="hc-body">
+      <div class="hc-body" style="padding: 16px;">
         <div class="hc-stats">
           <div class="hc-stat"><div class="hc-sv">267</div><div class="hc-sl">Median days</div></div>
           <div class="hc-div"></div>
@@ -380,10 +380,3 @@
     </div>
   </div>
 </section>
-
-<script>
-(function(){
-  var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('shown');io.unobserve(e.target);}});},{threshold:0.1});
-  document.querySelectorAll('.reveal').forEach(function(el){io.observe(el);});
-})();
-</script>

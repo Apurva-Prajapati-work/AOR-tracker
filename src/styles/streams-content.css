@@ -3,6 +3,13 @@
  * Overrides `.marketing-site a { color: inherit }` and ghost `.btn-red` from marketing-core.
  */
 
+@media (prefers-reduced-motion: reduce) {
+  .marketing-site .stream-page .reveal {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
 .marketing-site .stream-page {
   background: var(--cream);
   color: var(--navy);

@@ -19,6 +19,7 @@ import {
   newProfile,
   normalizeEmail,
   normalizeMilestonesFromDoc,
+  normalizeProfileForPersistence,
 } from "@/lib/profile";
 import type { MilestoneKey, UserProfile } from "@/lib/types";
 
@@ -61,25 +62,19 @@ export async function saveProfileAction(profile: UserProfile): Promise<{
   if (!isValidEmail(profile.email)) return { ok: false, error: "Invalid email" };
   const db = await getDb();
   const norm = normalizeEmail(profile.email);
-  const stream = normalizeStreamLabel(profile.stream);
+  const persisted = normalizeProfileForPersistence(profile);
   const now = new Date();
   await db.collection("profiles").updateOne(
     { emailNorm: norm },
     {
       $set: {
         emailNorm: norm,
-        aorDate: profile.aorDate,
-        stream,
-        type: profile.type,
-        province: profile.province,
-        milestones: profile.milestones,
-        cohortKey: profile.aorDate
-          ? buildStatsCohortKey({
-              aorDate: profile.aorDate,
-              stream,
-              type: profile.type,
-            })
-          : streamFallbackKey(stream, profile.type),
+        aorDate: persisted.aorDate,
+        stream: persisted.stream,
+        type: persisted.type,
+        province: persisted.province,
+        milestones: persisted.milestones,
+        cohortKey: persisted.cohortKey,
         updatedAt: now,
       },
       $setOnInsert: {
@@ -164,23 +159,17 @@ export async function createDraftProfileAction(
     return { ok: true, profile: docToProfile(existing as Record<string, unknown>) };
   }
   const profile = applyDraftHints(newProfile(norm), hints);
-  const cohortKey = profile.aorDate
-    ? buildStatsCohortKey({
-        aorDate: profile.aorDate,
-        stream: profile.stream,
-        type: profile.type,
-      })
-    : streamFallbackKey(profile.stream, profile.type);
+  const persisted = normalizeProfileForPersistence(profile);
   await db.collection("profiles").insertOne({
     emailNorm: norm,
     createdAt: new Date(profile.createdAt),
     updatedAt: new Date(profile.updatedAt),
-    aorDate: profile.aorDate,
-    stream: profile.stream,
-    type: profile.type,
-    province: profile.province,
-    milestones: profile.milestones,
-    cohortKey,
+    aorDate: persisted.aorDate,
+    stream: persisted.stream,
+    type: persisted.type,
+    province: persisted.province,
+    milestones: persisted.milestones,
+    cohortKey: persisted.cohortKey,
     seededData: false,
   });
   return { ok: true, profile };
@@ -201,30 +190,27 @@ export async function updateMilestoneAction(
     seededData: false,
     updatedAt: new Date(),
   };
-  if (key === "aor" && date) {
-    update.aorDate = date;
+  if (key === "aor") {
+    update.aorDate = date?.trim() ?? "";
   }
   await db.collection("profiles").updateOne({ emailNorm: norm }, { $set: update });
   let doc = await db.collection("profiles").findOne({ emailNorm: norm });
   if (!doc) return { ok: false, error: "not_found" };
   let profile = docToProfile(doc as Record<string, unknown>);
-  if (profile.aorDate?.trim()) {
-    await db.collection("profiles").updateOne(
-      { emailNorm: norm },
-      {
-        $set: {
-          cohortKey: buildStatsCohortKey({
-            aorDate: profile.aorDate,
-            stream: profile.stream,
-            type: profile.type,
-          }),
-        },
+  const persisted = normalizeProfileForPersistence(profile);
+  await db.collection("profiles").updateOne(
+    { emailNorm: norm },
+    {
+      $set: {
+        aorDate: persisted.aorDate,
+        milestones: persisted.milestones,
+        cohortKey: persisted.cohortKey,
       },
-    );
-    doc = await db.collection("profiles").findOne({ emailNorm: norm });
-    if (!doc) return { ok: false, error: "not_found" };
-    profile = docToProfile(doc as Record<string, unknown>);
-  }
+    },
+  );
+  doc = await db.collection("profiles").findOne({ emailNorm: norm });
+  if (!doc) return { ok: false, error: "not_found" };
+  profile = docToProfile(doc as Record<string, unknown>);
   const cohortKey =
     (typeof doc.cohortKey === "string" && doc.cohortKey) ||
     cohortKeyFromProfile(profile);

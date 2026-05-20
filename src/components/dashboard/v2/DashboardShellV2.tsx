@@ -364,7 +364,10 @@ export function DashboardShellV2({ children }: { children: ReactNode }) {
       window.setTimeout(() => setSavedFlash(null), 3000);
       const next = res.profile;
       const pk = cohortKeyFromProfile(next);
-      const vk = viewingCohortKeyOverride ?? pk;
+      if (key === "aor") {
+        setViewingCohortKeyOverride(null);
+      }
+      const vk = key === "aor" ? pk : (viewingCohortKeyOverride ?? pk);
       await hydrateCohortView(vk, pk);
       toast.show(
         `${MILESTONE_DEFS.find((m) => m.key === key)?.label} date saved`,

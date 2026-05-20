@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   getProfileAction,
   saveProfileAction,
@@ -46,6 +46,15 @@ export function ProfileCompletenessCard({
     type: profile.type,
     province: profile.province,
   }));
+
+  useEffect(() => {
+    setDraft({
+      aorDate: profile.aorDate,
+      stream: profile.stream,
+      type: profile.type,
+      province: profile.province,
+    });
+  }, [profile.aorDate, profile.stream, profile.type, profile.province]);
 
   const saveApplicationDetails = useCallback(async () => {
     setSavingDetails(true);

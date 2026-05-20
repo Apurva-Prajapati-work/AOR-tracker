@@ -175,14 +175,14 @@ export function milestoneEstimatesFromPace(
     if (!row) {
       out[key] = {
         estLabel: "—",
-        desc: `Insufficient seeded data for this step (need ≥${MIN_SEGMENT_N} paired dates).`,
+        desc: `Not enough community milestone dates for this step (need at least ${MIN_SEGMENT_N} paired timelines).`,
         available: false,
       };
       continue;
     }
     out[key] = {
       estLabel: `~${formatEstDateFromAor(aorDate, row.daysAfterAor)}`,
-      desc: `Typical ~${row.daysAfterAor}d after AOR (avg gaps from ${n} seeded profiles).`,
+      desc: `Typical ~${row.daysAfterAor}d after AOR (avg gaps from ${n} profiles on AOR Track).`,
       available: true,
     };
   }

@@ -43,7 +43,7 @@ export function estimateEcoprFromSeededPace(
   if (!aor || !days || days <= 0) {
     const today = new Date();
     return {
-      windowLabel: "Insufficient seeded pace data",
+      windowLabel: "Insufficient milestone timing data",
       p50Approx: "—",
       windowStart: today,
       windowEnd: today,

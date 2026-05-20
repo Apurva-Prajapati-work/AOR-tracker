@@ -129,7 +129,7 @@ export default async function StreamLandingPage({ params }: Props) {
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(ld) }}
         />
-        <div dangerouslySetInnerHTML={{ __html: html }} />
+        <div className="stream-page" dangerouslySetInnerHTML={{ __html: html }} />
       </>
     );
   }
@@ -138,12 +138,27 @@ export default async function StreamLandingPage({ params }: Props) {
   if (!label) notFound();
 
   return (
-    <div style={{ background: "#0f1923", color: "#f4f7fa", minHeight: "100vh", fontFamily: "DM Sans, sans-serif", padding: "4rem 1.5rem" }}>
-      <h1 style={{ fontFamily: "Fraunces, serif", fontSize: "2rem", fontWeight: 700, marginBottom: "1rem" }}>{label}</h1>
-      <p style={{ color: "rgba(244,247,250,.65)", marginBottom: "2rem" }}>
+    <div className="stream-page" style={{ padding: "4rem clamp(1rem, 4vw, 3rem)" }}>
+      <h1 style={{ fontFamily: "var(--fh)", fontSize: "2rem", fontWeight: 700, marginBottom: "1rem" }}>{label}</h1>
+      <p style={{ color: "#5c5348", marginBottom: "2rem", maxWidth: "36rem" }}>
         Explore real applicant milestones and cohort stats for this stream on AORTrack — free, no account required.
       </p>
-      <a href="/track" style={{ display: "inline-block", background: "#C8281E", color: "#fff", padding: "12px 24px", borderRadius: "8px", fontWeight: 700, textDecoration: "none" }}>
+      <a
+        href="/track"
+        className="btn-red"
+        style={{
+          display: "inline-flex",
+          alignItems: "center",
+          justifyContent: "center",
+          minHeight: "48px",
+          padding: "12px 24px",
+          borderRadius: "8px",
+          fontWeight: 700,
+          width: "100%",
+          maxWidth: "100%",
+          boxSizing: "border-box",
+        }}
+      >
         Start tracking →
       </a>
     </div>

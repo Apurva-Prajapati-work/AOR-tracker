@@ -1,4 +1,13 @@
 <style>
+
+.cp-icon i,.ms-icon i{font-size:1.1rem;line-height:1}
+.sp-compare .cp-icon i{color:#fff!important}
+.ms-icon i{color:var(--navy)}
+.ms-icon{display:flex;align-items:center;justify-content:center;min-height:1.75rem}
+.ms-icon i{font-size:1.35rem;color:var(--navy)}
+.hb i,.btn-red i,.btn-blue i,.btn-amber i,.btn-out i,.btn-white i,.btn-ghost-w i,.hc-cta i{margin-right:.35em}
+.hc-cta i{margin-right:.25em}
+
 /* ── PNP Stream Page — scoped content styles ── */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -17,8 +26,8 @@
   --fm:'DM Mono',monospace;
   --max:1100px;
 }
-body{background:var(--cream);color:var(--navy);font-family:var(--fb);font-size:16px;line-height:1.65;overflow-x:hidden}
-a{color:inherit;text-decoration:none}
+.stream-page{background:var(--cream);color:var(--navy);font-family:var(--fb);font-size:16px;line-height:1.65;overflow-x:hidden}
+.stream-page a{text-decoration:none}
 
 /* HERO */
 .sp-hero{background:var(--navy);padding:clamp(52px,7vw,84px) clamp(16px,4vw,48px) 0;position:relative;overflow:hidden}
@@ -36,15 +45,16 @@ a{color:inherit;text-decoration:none}
 .sp-h1{font-family:var(--fh);font-size:clamp(2.2rem,4vw,3.3rem);font-weight:900;color:#fff;line-height:1.05;letter-spacing:-.04em;margin-bottom:1rem}
 .sp-h1 em{font-style:italic;color:#fcd34d}
 .sp-sub{font-size:1.02rem;color:rgba(255,255,255,.55);line-height:1.75;font-weight:300;max-width:490px;margin-bottom:2rem}
-.sp-actions{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:2.5rem}
+.sp-actions{display:flex;flex-direction:column;align-items:stretch;gap:10px;width:100%;margin-bottom:2.5rem}
+.sp-actions a{width:100%;max-width:100%;justify-content:center;box-sizing:border-box}
 .btn-amber{padding:13px 26px;border-radius:8px;font-size:.93rem;font-weight:700;background:var(--amber);color:#fff !important;border:2px solid var(--amber);display:inline-flex;align-items:center;gap:8px;transition:all .15s}
 .btn-amber:hover{background:#944d17;border-color:#944d17;transform:translateY(-2px)}
 .btn-out{padding:13px 22px;border-radius:8px;font-size:.88rem;font-weight:500;background:transparent;color:#fff !important;border:2px solid rgba(255,255,255,.2);display:inline-flex;align-items:center;gap:8px;transition:all .15s}
 .btn-out:hover{border-color:rgba(255,255,255,.5)}
 .sp-trust{display:flex;gap:18px;flex-wrap:wrap;padding-bottom:3rem}
 .ht{display:flex;align-items:center;gap:6px;font-size:.79rem;color:rgba(255,255,255,.38);font-weight:500}
-.ht::before{content:'✓';color:var(--g4);font-weight:700;font-size:.84rem}
-.ht.ht-note::before{content:'★';color:#fcd34d}
+.ht::before{font-family:"Font Awesome 6 Free";font-weight:900;content:'\f00c';color:var(--g4);font-size:.84rem}
+.ht.ht-note::before{font-family:"Font Awesome 6 Free";font-weight:900;content:'\f005';color:#fcd34d}
 
 /* Hero card */
 .sp-card{background:var(--cream);border:2px solid var(--navy2);border-radius:16px;overflow:hidden;box-shadow:0 24px 64px rgba(0,0,0,.4)}
@@ -63,7 +73,7 @@ a{color:inherit;text-decoration:none}
 .hc-bar{height:7px;background:var(--cream3);border-radius:100px;overflow:hidden;margin-bottom:4px}
 .hc-bar-fill{height:100%;border-radius:100px;background:linear-gradient(90deg,var(--amber),#fcd34d)}
 .hc-note{font-size:.64rem;color:var(--muted);margin-bottom:12px}
-.hc-cta{display:block;width:100%;margin-top:4px;padding:11px;background:var(--amber);color:#fff;border:none;border-radius:8px;font-family:var(--fh);font-size:.88rem;font-weight:800;text-align:center;transition:background .15s;text-decoration:none}
+.hc-cta{display:block;width:100%;margin-top:4px;padding:11px 16px;background:var(--amber);color:#fff !important;border:2px solid var(--amber);border-radius:8px;font-family:var(--fh);font-size:.88rem;font-weight:800;text-align:center;transition:background .15s;text-decoration:none;box-sizing:border-box}
 .hc-cta:hover{background:#944d17}
 
 /* STATS BAR */
@@ -147,24 +157,25 @@ a{color:inherit;text-decoration:none}
 
 /* CTA */
 .sp-cta{background:var(--amber);padding:clamp(60px,7vw,88px) clamp(16px,4vw,48px)}
-.sp-cta-inner{max-width:var(--max);margin:0 auto;display:grid;grid-template-columns:1fr auto;gap:3rem;align-items:center}
+.sp-cta-inner{max-width:var(--max);margin:0 auto;display:grid;grid-template-columns:1fr;gap:2rem;align-items:stretch}
 .cta-h2{font-family:var(--fh);font-size:clamp(1.8rem,3vw,2.5rem);font-weight:900;color:#fff;letter-spacing:-.03em;line-height:1.1}
 .cta-sub{font-size:1rem;color:rgba(255,255,255,.75);margin-top:.8rem;font-weight:300}
 .cta-note{margin-top:1rem;padding-top:1rem;border-top:1px solid rgba(255,255,255,.25);font-size:.8rem;color:rgba(255,255,255,.65)}
 .cta-note a{color:#fff;font-weight:600;text-decoration:underline;text-underline-offset:3px}
-.cta-btns{display:flex;flex-direction:column;gap:10px;align-items:flex-end}
-.btn-white{padding:13px 26px;border-radius:8px;font-size:.93rem;font-weight:700;background:#fff;color:var(--amber);border:2px solid #fff;display:inline-flex;align-items:center;gap:8px;transition:all .15s;white-space:nowrap}
+.cta-btns{display:flex;flex-direction:column;gap:10px;align-items:stretch;width:100%}
+.cta-btns a{width:100%;max-width:100%;justify-content:center;box-sizing:border-box}
+.btn-white{padding:13px 26px;border-radius:8px;font-size:.93rem;font-weight:700;background:#fff;color:var(--amber) !important;border:2px solid #fff;display:inline-flex;align-items:center;gap:8px;transition:all .15s;box-sizing:border-box}
 .btn-white:hover{background:rgba(255,255,255,.92)}
-.btn-ghost-w{padding:10px 20px;border-radius:8px;font-size:.84rem;font-weight:600;background:transparent;color:rgba(255,255,255,.9);border:2px solid rgba(255,255,255,.35);display:inline-flex;align-items:center;gap:7px;transition:all .15s;white-space:nowrap}
-.btn-ghost-w:hover{border-color:rgba(255,255,255,.75);color:#fff}
+.btn-ghost-w{padding:10px 20px;border-radius:8px;font-size:.84rem;font-weight:600;background:transparent;color:rgba(255,255,255,.92) !important;border:2px solid rgba(255,255,255,.4);display:inline-flex;align-items:center;gap:7px;transition:all .15s;box-sizing:border-box}
+.btn-ghost-w:hover{border-color:rgba(255,255,255,.75);color:#fff !important}
 
 /* REVEAL */
 .reveal{opacity:0;transform:translateY(20px);transition:opacity .5s,transform .5s}
 .reveal.shown{opacity:1;transform:none}
 
-@media(max-width:1024px){.sp-hero-inner{grid-template-columns:1fr;gap:2rem}.sp-compare-inner{grid-template-columns:1fr}.sp-cta-inner{grid-template-columns:1fr;gap:2rem}.cta-btns{align-items:flex-start;flex-direction:row;flex-wrap:wrap}}
+@media(max-width:1024px){.sp-hero-inner{grid-template-columns:1fr;gap:2rem}.sp-compare-inner{grid-template-columns:1fr}.sp-cta-inner{grid-template-columns:1fr;gap:2rem}}
 @media(max-width:768px){.ms-grid{grid-template-columns:1fr 1fr}.sp-stats-inner{grid-template-columns:repeat(3,1fr)}.stat-cell:nth-child(4),.stat-cell:nth-child(5){display:none}}
-@media(max-width:560px){.ms-grid{grid-template-columns:1fr}.sp-actions{flex-direction:column}.btn-amber,.btn-out{width:100%;justify-content:center}}
+@media(max-width:560px){.ms-grid{grid-template-columns:1fr}}
 </style>
 
 <!-- HERO -->
@@ -173,16 +184,16 @@ a{color:inherit;text-decoration:none}
   <div class="sp-hero-inner">
     <div>
       <div class="sp-badges">
-        <span class="hb hb-stream">🏔 PNP · Provincial Nominee Program</span>
+        <span class="hb hb-stream"><i class="fa-solid fa-mountain" aria-hidden="true"></i> PNP · Provincial Nominee Program</span>
         <span class="hb hb-live"><span class="hb-dot"></span>Live community data</span>
-        <span class="hb hb-note">★ Longest median of top 3 streams</span>
+        <span class="hb hb-note"><i class="fa-solid fa-star" aria-hidden="true"></i> Longest median of top 3 streams</span>
       </div>
       <p class="sp-kicker">PNP Processing Time 2026</p>
       <h1 class="sp-h1">Median <em>312 days</em><br>AOR to PPR — PNP.</h1>
       <p class="sp-sub">Federal-stage processing timelines for provincial nominees on AORTrack — after your nomination, IRCC still runs the full Express Entry pipeline. Community data shows PNP cohorts are slower on average than CEC or FSW alone.</p>
       <div class="sp-actions">
-        <a href="/track" class="btn-amber">Track My PNP AOR — Free →</a>
-        <a href="#compare" class="btn-out">PNP vs CEC &amp; FSW ↓</a>
+        <a href="/track" class="btn-amber">Track My PNP AOR — Free <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+        <a href="#compare" class="btn-out">PNP vs CEC &amp; FSW <i class="fa-solid fa-arrow-down" aria-hidden="true"></i></a>
       </div>
       <div class="sp-trust">
         <span class="ht ht-note">PNP median ~45d longer than FSW</span>
@@ -208,7 +219,7 @@ a{color:inherit;text-decoration:none}
         <div class="hc-pl"><span class="hc-pk">P25–P75 processing window</span><span class="hc-pv">235 – 410d</span></div>
         <div class="hc-bar"><div class="hc-bar-fill" style="width:52%"></div></div>
         <div class="hc-note">Federal stage (post-nomination) · Mixed provinces · 2026 cohorts</div>
-        <a href="/track" class="hc-cta">Track Your PNP AOR — Free →</a>
+        <a href="/track" class="hc-cta">Track Your PNP AOR — Free <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
       </div>
     </div>
   </div>
@@ -234,28 +245,28 @@ a{color:inherit;text-decoration:none}
       <p class="sub-text reveal">PNP applicants receive a provincial nomination, then enter the federal pool (often with an enhanced nomination tied to Express Entry). The clock AORTrack uses for “processing time” is the federal Acknowledgement of Receipt through eCOPR — where PNP files often sit longer due to extra verification and higher variance by province.</p>
       <div class="compare-points reveal">
         <div class="cp">
-          <div class="cp-icon" style="background:rgba(181,101,29,.25)">📊</div>
+          <div class="cp-icon" style="background:rgba(181,101,29,.25)"><i class="fa-solid fa-chart-column" aria-hidden="true"></i></div>
           <div>
             <div class="cp-title">Median ~312 days (federal stage)</div>
             <div class="cp-desc">Community median for PNP-linked PR applications on AORTrack — longer than both CEC and FSW medians in the same dataset.</div>
           </div>
         </div>
         <div class="cp">
-          <div class="cp-icon" style="background:rgba(30,95,140,.2)">🎯</div>
+          <div class="cp-icon" style="background:rgba(30,95,140,.2)"><i class="fa-solid fa-bullseye" aria-hidden="true"></i></div>
           <div>
             <div class="cp-title">Widest P25–P75 spread</div>
             <div class="cp-desc">235–410d reflects real scatter: Ontario, BC, Alberta, and prairie streams do not move at one speed. AORTrack breaks cohorts down by province where data allows.</div>
           </div>
         </div>
         <div class="cp">
-          <div class="cp-icon" style="background:rgba(45,106,79,.2)">⚡</div>
+          <div class="cp-icon" style="background:rgba(45,106,79,.2)"><i class="fa-solid fa-bolt" aria-hidden="true"></i></div>
           <div>
             <div class="cp-title">Same IRCC milestones, heavier queue</div>
             <div class="cp-desc">Biometrics, background checks, medicals, and portal steps match other EE streams — but nomination type and province drive how long each step takes.</div>
           </div>
         </div>
         <div class="cp">
-          <div class="cp-icon" style="background:rgba(91,33,182,.2)">🔄</div>
+          <div class="cp-icon" style="background:rgba(91,33,182,.2)"><i class="fa-solid fa-arrows-rotate" aria-hidden="true"></i></div>
           <div>
             <div class="cp-title">Improves as more nominees contribute</div>
             <div class="cp-desc">Log your milestones anonymously — every update sharpens medians for your province and nomination pathway.</div>
@@ -317,14 +328,14 @@ a{color:inherit;text-decoration:none}
     <h2 class="h2 reveal">After nomination: AOR to eCOPR.</h2>
     <p class="sub-text reveal">Illustrative medians for the <strong>federal</strong> stage after you receive your nomination and submit to IRCC. Provincial processing before AOR is separate — track both on AORTrack with your real dates.</p>
     <div class="ms-grid reveal">
-      <div class="ms-card done"><div class="ms-icon">📬</div><div class="ms-name">AOR Received</div><div class="ms-day">Day 0 — Federal queue</div><span class="ms-tag tag-done">Milestone 1</span></div>
-      <div class="ms-card done"><div class="ms-icon">🖐</div><div class="ms-name">Biometrics Letter</div><div class="ms-day">~Day 22 after AOR</div><span class="ms-tag tag-done">Milestone 2</span></div>
-      <div class="ms-card done"><div class="ms-icon">📷</div><div class="ms-name">Biometrics Completed</div><div class="ms-day">~Day 38 after AOR</div><span class="ms-tag tag-done">Milestone 3</span></div>
-      <div class="ms-card done"><div class="ms-icon">🔍</div><div class="ms-name">Background Check</div><div class="ms-day">~Day 95 median</div><span class="ms-tag tag-done">Milestone 4</span></div>
-      <div class="ms-card"><div class="ms-icon">🩺</div><div class="ms-name">Medical Results</div><div class="ms-day">~Day 175 median</div><span class="ms-tag tag-pend">Milestone 5</span></div>
-      <div class="ms-card"><div class="ms-icon">🏛</div><div class="ms-name">P1 — PR Portal</div><div class="ms-day">~Day 265–285</div><span class="ms-tag tag-pend">Milestone 6</span></div>
-      <div class="ms-card"><div class="ms-icon">📸</div><div class="ms-name">P2 — Photo &amp; Address</div><div class="ms-day">~Day 290–305</div><span class="ms-tag tag-pend">Milestone 7</span></div>
-      <div class="ms-card"><div class="ms-icon">🏔</div><div class="ms-name">eCOPR Issued</div><div class="ms-day">Median Day 312</div><span class="ms-tag tag-pend">Milestone 8</span></div>
+      <div class="ms-card done"><div class="ms-icon"><i class="fa-solid fa-envelope" aria-hidden="true"></i></div><div class="ms-name">AOR Received</div><div class="ms-day">Day 0 — Federal queue</div><span class="ms-tag tag-done">Milestone 1</span></div>
+      <div class="ms-card done"><div class="ms-icon"><i class="fa-solid fa-envelope-open-text" aria-hidden="true"></i></div><div class="ms-name">Biometrics Letter</div><div class="ms-day">~Day 22 after AOR</div><span class="ms-tag tag-done">Milestone 2</span></div>
+      <div class="ms-card done"><div class="ms-icon"><i class="fa-solid fa-fingerprint" aria-hidden="true"></i></div><div class="ms-name">Biometrics Completed</div><div class="ms-day">~Day 38 after AOR</div><span class="ms-tag tag-done">Milestone 3</span></div>
+      <div class="ms-card done"><div class="ms-icon"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i></div><div class="ms-name">Background Check</div><div class="ms-day">~Day 95 median</div><span class="ms-tag tag-done">Milestone 4</span></div>
+      <div class="ms-card"><div class="ms-icon"><i class="fa-solid fa-stethoscope" aria-hidden="true"></i></div><div class="ms-name">Medical Results</div><div class="ms-day">~Day 175 median</div><span class="ms-tag tag-pend">Milestone 5</span></div>
+      <div class="ms-card"><div class="ms-icon"><i class="fa-solid fa-landmark" aria-hidden="true"></i></div><div class="ms-name">P1 — PR Portal</div><div class="ms-day">~Day 265–285</div><span class="ms-tag tag-pend">Milestone 6</span></div>
+      <div class="ms-card"><div class="ms-icon"><i class="fa-solid fa-camera" aria-hidden="true"></i></div><div class="ms-name">P2 — Photo &amp; Address</div><div class="ms-day">~Day 290–305</div><span class="ms-tag tag-pend">Milestone 7</span></div>
+      <div class="ms-card"><div class="ms-icon"><i class="fa-solid fa-mountain" aria-hidden="true"></i></div><div class="ms-name">eCOPR Issued</div><div class="ms-day">Median Day 312</div><span class="ms-tag tag-pend">Milestone 8</span></div>
     </div>
   </div>
 </section>
@@ -365,12 +376,12 @@ a{color:inherit;text-decoration:none}
     <div>
       <h2 class="cta-h2">Track your PNP file today.<br>Free. Always.</h2>
       <p class="cta-sub">Pick PNP, enter your AOR date and province, and join the cohort charts — no signup wall, same open-source stack as the rest of AORTrack.</p>
-      <div class="cta-note">Need full representation? <a href="https://www.getnorthpath.com/contact?utm_source=aortrack-pnp">GetNorthPath can manage provincial + federal steps end-to-end →</a></div>
+      <div class="cta-note">Need full representation? <a href="https://www.getnorthpath.com/contact?utm_source=aortrack-pnp">GetNorthPath can manage provincial + federal steps end-to-end <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></div>
     </div>
     <div class="cta-btns">
-      <a href="/track" class="btn-white">Track My PNP AOR — Free →</a>
-      <a href="/streams/cec" class="btn-ghost-w">🍁 CEC timelines</a>
-      <a href="/streams/fsw" class="btn-ghost-w">🌍 FSW timelines</a>
+      <a href="/track" class="btn-white">Track My PNP AOR — Free <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+      <a href="/streams/cec" class="btn-ghost-w"><i class="fa-brands fa-canadian-maple-leaf" aria-hidden="true"></i> CEC timelines</a>
+      <a href="/streams/fsw" class="btn-ghost-w"><i class="fa-solid fa-globe" aria-hidden="true"></i> FSW timelines</a>
     </div>
   </div>
 </section>

@@ -166,6 +166,7 @@ export function CommunityShell({
       sort: CommunityFeedSort,
     ) => {
       setLoading(true);
+      setPage(pageNum);
       try {
         const ms = filter ? FILTER_TO_MS[filter] : null;
         const result = await getCommunityFeedAction(
@@ -188,6 +189,12 @@ export function CommunityShell({
     },
     [],
   );
+
+  const scrollFeedToTop = useCallback(() => {
+    document
+      .querySelector<HTMLElement>(".mkt-community-page .feed-main")
+      ?.scrollTo({ top: 0, behavior: "smooth" });
+  }, []);
 
   /* ─── hydrate viewer email + profile on mount ─── */
   useEffect(() => {
@@ -375,7 +382,12 @@ export function CommunityShell({
   const setMsFilter = useCallback(
     (ms: CommunityMsFilter) => {
       setMsFilterState(ms);
-      void fetchPage(1, ms, searchQueryRef.current, sortByRef.current);
+      void fetchPage(
+        pageRef.current,
+        ms,
+        searchQueryRef.current,
+        sortByRef.current,
+      );
     },
     [fetchPage],
   );
@@ -407,13 +419,13 @@ export function CommunityShell({
   const loadPage = useCallback(
     (n: number) => {
       void fetchPage(
-        n,
+        Math.max(1, n),
         msFilterRef.current,
         searchQueryRef.current,
         sortByRef.current,
-      );
+      ).then(scrollFeedToTop);
     },
-    [fetchPage],
+    [fetchPage, scrollFeedToTop],
   );
 
   /* ─── overlay helpers ─── */

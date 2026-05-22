@@ -2,6 +2,12 @@ import { readFile } from "node:fs/promises";
 import path from "node:path";
 import type { Metadata } from "next";
 import { MarketingHtmlContent } from "@/components/marketing/MarketingHtmlContent";
+import {
+  buildBreadcrumbList,
+  homeBreadcrumbs,
+  MARKETING_CONTENT_DATE_MODIFIED,
+} from "@/lib/marketing-seo";
+import { buildPageMetadata, getWebsiteId } from "@/lib/marketing-metadata";
 import { getSiteUrl } from "@/lib/site-url";
 
 export const revalidate = 3600;
@@ -13,6 +19,7 @@ function structuredDataJsonLd(): Record<string, unknown> {
     name: "Express Entry: from ITA to CoPR (Canada PR)",
     description:
       "Step-by-step overview of the Canadian Express Entry permanent residence timeline after invitation, through AOR, biometrics, medicals, background check, PPR, and electronic CoPR.",
+    dateModified: MARKETING_CONTENT_DATE_MODIFIED,
     step: [
       {
         "@type": "HowToStep",
@@ -67,7 +74,7 @@ function structuredDataJsonLd(): Record<string, unknown> {
         name: "How long does Express Entry take from AOR to PPR in 2026?",
         acceptedAnswer: {
           "@type": "Answer",
-          text: "It varies by stream and cohort. On AORTrack community data for 2026, median federal-stage timelines are often near ~184 days for CEC, ~267 days for FSW, and ~312 days for PNP-linked files — measured from AOR to eCOPR/PPR-equivalent milestones. IRCC publishes service standards separately; use community data as a complement, not a guarantee.",
+          text: "It varies by stream and cohort. On AORTrack community data for 2026, median federal-stage timelines are often near ~184 days for CEC, ~267 days for FSW, ~312 days for PNP, ~284 days for FST, and ~228 days for Atlantic Immigration — measured from AOR to eCOPR/PPR-equivalent milestones. IRCC publishes service standards separately; use community data as a complement, not a guarantee.",
         },
       },
       {
@@ -89,6 +96,12 @@ function structuredDataJsonLd(): Record<string, unknown> {
     ],
   };
 
+  const pageUrl = `${base}/aor-to-ppr`;
+  const breadcrumbs = buildBreadcrumbList([
+    ...homeBreadcrumbs(base),
+    { name: "AOR to PPR Guide", url: pageUrl },
+  ]);
+
   return {
     "@context": "https://schema.org",
     "@graph": [
@@ -97,23 +110,24 @@ function structuredDataJsonLd(): Record<string, unknown> {
       {
         "@type": "WebPage",
         name: "AOR to PPR timeline — Canada PR guide",
-        url: `${base}/aor-to-ppr`,
-        isPartOf: { "@type": "WebSite", name: "AORTrack", url: base },
+        url: pageUrl,
+        dateModified: MARKETING_CONTENT_DATE_MODIFIED,
+        isPartOf: { "@id": getWebsiteId(base) },
       },
+      breadcrumbs,
     ],
   };
 }
 
 export async function generateMetadata(): Promise<Metadata> {
-  const base = getSiteUrl();
-  const url = `${base}/aor-to-ppr`;
-  const title =
-    "AOR to PPR Timeline Canada PR: From Submission to Passport Request | AORTrack";
-  const description =
-    "AOR to PPR timeline for Canada PR and Express Entry in 2026: ITA → AOR → biometrics → medicals → background check → PPR → CoPR. Community average days per step, CEC vs FSW vs PNP, and how to track with AORTrack (not IRCC official).";
-  return {
-    title,
-    description,
+  return buildPageMetadata({
+    title:
+      "AOR to PPR Timeline Canada PR: From Submission to Passport Request | AORTrack",
+    description:
+      "AOR to PPR timeline for Canada PR in 2026: ITA → AOR → biometrics → medicals → PPR → CoPR. Community medians for CEC, FSW, PNP, FST, and Atlantic — not IRCC official.",
+    path: "/aor-to-ppr",
+    ogImage: "guide",
+    ogType: "article",
     keywords: [
       "AOR to PPR timeline",
       "Canada PR processing time",
@@ -122,14 +136,8 @@ export async function generateMetadata(): Promise<Metadata> {
       "Express Entry processing time",
       "how long does express entry take",
     ],
-    alternates: { canonical: url },
-    openGraph: {
-      title,
-      description,
-      url,
-      type: "article",
-    },
-  };
+    includeModifiedTime: true,
+  });
 }
 
 async function readGuideHtml(): Promise<string> {

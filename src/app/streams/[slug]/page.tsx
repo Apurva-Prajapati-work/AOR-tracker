@@ -3,8 +3,22 @@ import path from "node:path";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { MarketingHtmlContent } from "@/components/marketing/MarketingHtmlContent";
+import {
+  buildBreadcrumbList,
+  buildFaqPageSchema,
+  buildJsonLdGraph,
+  MARKETING_CONTENT_DATE_MODIFIED,
+  STREAM_FAQ,
+  streamBreadcrumbs,
+} from "@/lib/marketing-seo";
+import {
+  buildStreamMetadata,
+  getWebsiteId,
+  STREAM_RICH_META,
+} from "@/lib/marketing-metadata";
 import { getSiteUrl } from "@/lib/site-url";
 import { STREAM_PAGE_SLUGS, streamLabelFromSitemapSlug } from "@/lib/streams-sitemap-slugs";
+
 function buildStreamDatasetJsonLd(opts: {
   url: string;
   name: string;
@@ -12,7 +26,6 @@ function buildStreamDatasetJsonLd(opts: {
   dateModified: string;
 }): Record<string, unknown> {
   return {
-    "@context": "https://schema.org",
     "@type": "Dataset",
     name: opts.name,
     description: opts.description,
@@ -40,24 +53,14 @@ export function generateStaticParams() {
   return STREAM_PAGE_SLUGS.map((slug) => ({ slug }));
 }
 
-const RICH_SLUGS = new Set(["cec", "fsw", "pnp"]);
+const RICH_SLUGS = new Set(["cec", "fsw", "pnp", "fst", "atlantic"]);
 
-const RICH_META: Record<string, Pick<Metadata, "title" | "description">> = {
-  cec: {
-    title: "CEC Processing Time 2026 — Live Community Data | AORTrack",
-    description:
-      "CEC processing time 2026 and Canadian Experience Class wait time from live AORTrack cohorts — median 184 days, P25–P75, histogram. Free.",
-  },
-  fsw: {
-    title: "FSW Processing Time 2026 — Federal Skilled Worker | AORTrack",
-    description:
-      "FSW processing time 2026 — avg 267 days from community data. Full FSW vs CEC comparison, cohort histogram, P25–P75. Free.",
-  },
-  pnp: {
-    title: "PNP Processing Time 2026 — Provincial Nominee Program | AORTrack",
-    description:
-      "PNP processing time 2026 from community data — median ~312 days, P25–P75, vs CEC and FSW. Provincial nominee PR timelines on AORTrack. Free.",
-  },
+const STREAM_BREADCRUMB_LABEL: Record<string, string> = {
+  cec: "CEC Processing Time 2026",
+  fsw: "FSW Processing Time 2026",
+  pnp: "PNP Processing Time 2026",
+  fst: "FST Processing Time 2026",
+  atlantic: "Atlantic Immigration Processing Time 2026",
 };
 
 const RICH_LD: Record<string, { name: string; description: string }> = {
@@ -76,26 +79,25 @@ const RICH_LD: Record<string, { name: string; description: string }> = {
     description:
       "Crowd-sourced PNP federal-stage processing times with histogram, P25–P75, and comparison to CEC and FSW on AORTrack.",
   },
+  fst: {
+    name: "Federal Skilled Trades (FST) PR processing timelines 2026",
+    description:
+      "Crowd-sourced FST processing times with cohort histogram, P25–P75, and comparison to FSW and CEC on AORTrack.",
+  },
+  atlantic: {
+    name: "Atlantic Immigration Program PR processing timelines 2026",
+    description:
+      "Crowd-sourced Atlantic federal-stage processing times with histogram, P25–P75, and comparison to PNP and CEC on AORTrack.",
+  },
 };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
+  const rich = buildStreamMetadata(slug);
+  if (rich) return rich;
+
   const base = getSiteUrl();
   const url = `${base}/streams/${slug}`;
-
-  if (RICH_META[slug]) {
-    return {
-      ...RICH_META[slug],
-      alternates: { canonical: url },
-      openGraph: {
-        title: RICH_META[slug].title as string,
-        description: RICH_META[slug].description as string,
-        url,
-        type: "website",
-      },
-    };
-  }
-
   const label = streamLabelFromSitemapSlug(slug);
   if (!label) return { title: "Stream — AORTrack" };
   return {
@@ -115,14 +117,28 @@ export default async function StreamLandingPage({ params }: Props) {
 
   if (RICH_SLUGS.has(slug)) {
     const html = await readHtml(slug);
-    const pageUrl = `${getSiteUrl()}/streams/${slug}`;
+    const siteUrl = getSiteUrl();
+    const pageUrl = `${siteUrl}/streams/${slug}`;
     const ldInfo = RICH_LD[slug]!;
-    const ld = buildStreamDatasetJsonLd({
-      url: pageUrl,
-      name: ldInfo.name,
-      description: ldInfo.description,
-      dateModified: new Date().toISOString(),
-    });
+    const crumbLabel = STREAM_BREADCRUMB_LABEL[slug] ?? STREAM_RICH_META[slug]!.title;
+    const ld = buildJsonLdGraph([
+      buildStreamDatasetJsonLd({
+        url: pageUrl,
+        name: ldInfo.name,
+        description: ldInfo.description,
+        dateModified: MARKETING_CONTENT_DATE_MODIFIED,
+      }),
+      buildFaqPageSchema(STREAM_FAQ[slug]!),
+      {
+        "@type": "WebPage",
+        name: STREAM_RICH_META[slug]!.title,
+        url: pageUrl,
+        description: ldInfo.description,
+        dateModified: MARKETING_CONTENT_DATE_MODIFIED,
+        isPartOf: { "@id": getWebsiteId(siteUrl) },
+      },
+      buildBreadcrumbList(streamBreadcrumbs(siteUrl, slug, crumbLabel)),
+    ]);
 
     return (
       <>

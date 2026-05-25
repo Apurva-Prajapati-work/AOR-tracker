@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { DeferredStylesheet } from "@/components/layout/DeferredStylesheet";
+import { GoogleAnalytics, MicrosoftClarity } from "@/components/seo/tags";
 import { ToastProvider } from "@/components/ToastContext";
 import { getSiteUrl } from "@/lib/site-url";
 
@@ -35,6 +36,8 @@ export default function RootLayout({
         <DeferredStylesheet href={GOOGLE_FONT_STYLESHEET_HREF} />
       </head>
       <body className="min-h-full antialiased">
+        <GoogleAnalytics />
+        <MicrosoftClarity />
         <ToastProvider>{children}</ToastProvider>
       </body>
     </html>

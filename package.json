@@ -9,7 +9,11 @@
     "start": "NODE_ENV=production node server.mjs",
     "start:next": "next start",
     "lint": "eslint",
-    "test": "npx tsx --test src/lib/milestone-gap-estimates.test.ts src/lib/ppr-estimate.test.ts"
+    "test": "npx tsx --test src/lib/milestone-gap-estimates.test.ts src/lib/ppr-estimate.test.ts",
+    "db:migrate:dump": "node scripts/migrate-mongodb.mjs dump",
+    "db:migrate:restore": "node scripts/migrate-mongodb.mjs restore",
+    "db:migrate:copy": "node scripts/migrate-mongodb.mjs copy",
+    "db:migrate:verify": "node scripts/migrate-mongodb.mjs verify"
   },
   "dependencies": {
     "@microsoft/clarity": "^1.0.2",

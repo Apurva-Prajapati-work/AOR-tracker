@@ -12,6 +12,7 @@
     "test": "npx tsx --test src/lib/milestone-gap-estimates.test.ts src/lib/ppr-estimate.test.ts"
   },
   "dependencies": {
+    "@microsoft/clarity": "^1.0.2",
     "mongodb": "^7.2.0",
     "next": "16.2.4",
     "react": "19.2.4",

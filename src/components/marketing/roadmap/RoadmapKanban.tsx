@@ -43,16 +43,20 @@ export function RoadmapKanban({ data }: Props) {
   }, [data.cards, filter]);
 
   return (
-    <div className="rm-kanban">
-      {ROADMAP_STATUSES.map((col) => {
+    <>
+      <p className="rm-kanban-hint">Swipe sideways to see In Progress and Done</p>
+      <div className="rm-kanban">
+        {ROADMAP_STATUSES.map((col) => {
         const cards = byStatus[col.id] ?? [];
         return (
           <div key={col.id} className="rm-col">
             <div className="rm-col-head">
-              <span className="rm-col-icon">
-                <ColumnIcon status={col.id} />
-              </span>
-              <h2 className="rm-col-h2">{col.title}</h2>
+              <div className="rm-col-head-row">
+                <span className="rm-col-icon">
+                  <ColumnIcon status={col.id} />
+                </span>
+                <h2 className="rm-col-h2">{col.title}</h2>
+              </div>
               <span className={`rm-col-badge ${col.badgeClass}`}>
                 {col.countLabel(cards.length)}
               </span>
@@ -88,7 +92,8 @@ export function RoadmapKanban({ data }: Props) {
             </div>
           </div>
         );
-      })}
-    </div>
+        })}
+      </div>
+    </>
   );
 }

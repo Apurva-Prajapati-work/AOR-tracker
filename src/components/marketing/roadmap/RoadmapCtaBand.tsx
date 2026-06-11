@@ -23,7 +23,10 @@ export function RoadmapCtaBand({ feedbackHref, issuesHref }: Props) {
       <div className="rm-ctab-btns">
         <Link href={feedbackHref} className="rm-btn rm-btn-r">
           <IconPlus aria-hidden />
-          Request Feature
+          <span className="rm-btn-long">Request Feature</span>
+          <span className="rm-btn-short" aria-hidden>
+            Request
+          </span>
         </Link>
         <a
           href={issuesHref}
@@ -31,7 +34,10 @@ export function RoadmapCtaBand({ feedbackHref, issuesHref }: Props) {
           rel="noopener noreferrer"
           className="rm-btn rm-btn-g"
         >
-          View GitHub Issues
+          <span className="rm-btn-long">View GitHub Issues</span>
+          <span className="rm-btn-short" aria-hidden>
+            GitHub Issues
+          </span>
           <IconArrowRight aria-hidden />
         </a>
       </div>

@@ -281,7 +281,7 @@ function buildUnreleased(
     title: "In Progress",
     items,
     noteHtml:
-      'Track delivery on the <a href="/roadmap">Public Roadmap</a> · Releases publish automatically when Release PRs merge.',
+      'Track delivery on the <a href="/roadmap">Public Roadmap</a> · Push a <code>v*</code> tag to open a draft release on GitHub; publish when ready.',
   };
 }
 

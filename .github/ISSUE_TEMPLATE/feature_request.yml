@@ -1,0 +1,42 @@
+name: Feature request
+description: Suggest a new feature or improvement
+title: "feat: "
+labels:
+  - enhancement
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for the suggestion. A linked issue is **required** before any PR can merge.
+        See [CONTRIBUTING.md](https://github.com/Get-North-Path/AOR-tracker/blob/main/CONTRIBUTING.md).
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: What problem does this solve? Who benefits?
+      placeholder: As a PR applicant, I want to ...
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+      description: Checklist of what "done" looks like.
+      placeholder: |
+        - [ ] User can ...
+        - [ ] Page shows ...
+        - [ ] Works on mobile
+    validations:
+      required: true
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Screenshots or mockups
+      description: Optional sketches, Figma links, or examples from other sites.
+    validations:
+      required: false
+  - type: markdown
+    attributes:
+      value: |
+        ---
+        By submitting this issue, you understand that a **pull request must link this issue** before it can be merged.

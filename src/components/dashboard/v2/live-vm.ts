@@ -488,7 +488,7 @@ export function sidebarSectionsVM({
       key: "feedback",
       label: "Give Feedback",
       icon: "plus",
-      href: "https://github.com/Get-North-Path/AOR-tracker/issues/new",
+      href: "https://github.com/Get-North-Path/AOR-tracker/issues/new/choose",
     },
   ];
 

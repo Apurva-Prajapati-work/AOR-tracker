@@ -57,7 +57,7 @@ export function TrackSuccess() {
         </Link>
 
         <Link
-          href="https://github.com/Get-North-Path/AOR-tracker/issues/new"
+          href="https://github.com/Get-North-Path/AOR-tracker/issues/new/choose"
           className="tk-na"
         >
           <span className="tk-na-ic tk-na-blue">
@@ -66,7 +66,7 @@ export function TrackSuccess() {
           <div className="tk-na-text">
             <div className="tk-na-title">Give feedback on AORTrack</div>
             <div className="tk-na-desc">
-              Help us improve   no GitHub account needed
+              Open a GitHub Issue to suggest improvements
             </div>
           </div>
           <span className="tk-na-arrow" aria-hidden="true">

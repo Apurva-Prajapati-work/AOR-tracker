@@ -1,0 +1,33 @@
+name: Documentation
+description: Improve README, guides, copy, or contributor docs
+title: "docs: "
+labels:
+  - documentation
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Documentation-only changes still need an issue before a PR merges.
+        See [CONTRIBUTING.md](https://github.com/Get-North-Path/AOR-tracker/blob/main/CONTRIBUTING.md).
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: What should be documented or clarified?
+      placeholder: README setup steps are missing GITHUB_TOKEN for roadmap...
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+      placeholder: |
+        - [ ] README section added under Contributing
+        - [ ] Wording reviewed for applicant-friendly tone
+    validations:
+      required: true
+  - type: markdown
+    attributes:
+      value: |
+        ---
+        By submitting this issue, you understand that a **pull request must link this issue** before it can be merged.

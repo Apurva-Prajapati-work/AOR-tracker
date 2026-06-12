@@ -1,0 +1,57 @@
+name: Bug report
+description: Something is broken or behaving incorrectly
+title: "fix: "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting a bug. A linked issue is **required** before any PR can merge.
+        See [CONTRIBUTING.md](https://github.com/Get-North-Path/AOR-tracker/blob/main/CONTRIBUTING.md).
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: What went wrong? Which page or feature?
+      placeholder: On /roadmap, the Done column shows...
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: Steps to reproduce
+      description: Numbered steps so we can see the same behavior.
+      placeholder: |
+        1. Go to ...
+        2. Click ...
+        3. See error
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      placeholder: What should have happened?
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+      placeholder: What happened instead?
+    validations:
+      required: true
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Screenshots or recordings
+      description: Optional but very helpful. Drag and drop images here.
+      placeholder: Paste screenshots or links to recordings.
+    validations:
+      required: false
+  - type: markdown
+    attributes:
+      value: |
+        ---
+        By submitting this issue, you understand that a **pull request must link this issue** before it can be merged.

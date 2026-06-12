@@ -25,7 +25,7 @@ import type { CommunityMsCounts } from "@/app/actions/community";
 const SUBMIT_HREF = "/track";
 const DASHBOARD_HREF = "/dashboard";
 const FEEDBACK_HREF =
-  "https://github.com/Get-North-Path/AOR-tracker/issues/new";
+  "https://github.com/Get-North-Path/AOR-tracker/issues/new/choose";
 const DISCORD_HREF = "https://discord.gg/aortrack";
 
 // ─── Types ──────────────────────────────────────────────────────────────────

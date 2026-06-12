@@ -146,7 +146,7 @@ const ROADMAP_FILTERS: RoadmapFilterChip[] = [
 const ROADMAP_LINKS: RoadmapData["links"] = {
   repo: REPO_URL,
   issues: ISSUES_URL,
-  feedback: `${REPO_URL}/issues/new`,
+  feedback: `${REPO_URL}/issues/new/choose`,
   changelog: "/changelog",
   issueBase: ISSUES_URL,
 };

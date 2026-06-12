@@ -16,7 +16,7 @@ const DEFAULT_EXTERNAL_LINKS: NonNullable<Props["externalLinks"]> = [
     external: true,
   },
   {
-    href: "https://github.com/Get-North-Path/AOR-tracker/issues/new",
+    href: "https://github.com/Get-North-Path/AOR-tracker/issues/new/choose",
     label: "Give Feedback",
   },
 ];

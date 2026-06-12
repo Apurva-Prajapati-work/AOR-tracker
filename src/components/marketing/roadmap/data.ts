@@ -481,7 +481,8 @@ const seedRoadmap: RoadmapData = {
   links: {
     repo: REPO,
     issues: ISSUES_URL,
-    feedback: "https://github.com/Get-North-Path/AOR-tracker/issues/new",
+    feedback:
+      "https://github.com/Get-North-Path/AOR-tracker/issues/new/choose",
     changelog: "/changelog",
     issueBase: ISSUES_URL,
   },

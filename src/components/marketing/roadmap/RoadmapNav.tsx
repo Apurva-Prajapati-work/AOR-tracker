@@ -8,7 +8,7 @@ type Props = {
   changelogHref: string;
   /** Public repo URL. */
   repoHref: string;
-  /** Feature request entry point. */
+  /** GitHub issue template chooser (contributors open issues themselves). */
   feedbackHref: string;
 };
 
@@ -44,10 +44,15 @@ export function RoadmapNav({
           <IconGitHub aria-hidden />
           GitHub
         </a>
-        <Link href={feedbackHref} className="rm-nbtn red">
+        <a
+          href={feedbackHref}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="rm-nbtn red"
+        >
           <IconPlus aria-hidden />
           Request Feature
-        </Link>
+        </a>
       </div>
     </nav>
   );

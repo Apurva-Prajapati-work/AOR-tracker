@@ -1,0 +1,14 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Open an issue (templates)
+    url: https://github.com/Get-North-Path/AOR-tracker/issues/new/choose
+    about: Contributors create issues themselves — pick bug, feature, data, or docs.
+  - name: Contributing guide
+    url: https://github.com/Get-North-Path/AOR-tracker/blob/main/CONTRIBUTING.md
+    about: Branch naming, commits, and PR rules after your issue is open.
+  - name: Security report (email only)
+    url: https://github.com/Get-North-Path/AOR-tracker/blob/main/SECURITY.md
+    about: Do not open public issues for vulnerabilities — email info@getnorthpath.com.
+  - name: Discord community
+    url: https://discord.gg/aortrack
+    about: Informal chat — GitHub Issues are required before code changes merge.

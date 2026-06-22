@@ -59,7 +59,7 @@ export function RoadmapNav({
           <span className="rm-nbtn-short" aria-hidden>
             Request
           </span>
-        </Link>
+        </a>
       </div>
     </nav>
   );

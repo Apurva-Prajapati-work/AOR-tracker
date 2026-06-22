@@ -31,7 +31,7 @@ export function RoadmapCtaBand({ feedbackHref, issuesHref }: Props) {
           <span className="rm-btn-short" aria-hidden>
             Request
           </span>
-        </Link>
+        </a>
         <a
           href={issuesHref}
           target="_blank"

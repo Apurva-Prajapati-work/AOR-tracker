@@ -71,7 +71,12 @@ export function timelineRowsFromProfile(
       badge: hasDate
         ? { kind: "verified", label: "Verified" }
         : state === "now"
-          ? { kind: "pending", label: "In progress · contribute your date" }
+          ? {
+              kind: "pending",
+              label: def.est?.trim()
+                ? `In progress · Est. ${def.est}`
+                : "In progress · contribute your date",
+            }
           : { kind: "estimate", label: `Est. ${def.est}` },
       date: baseDate,
       pending: !hasDate,

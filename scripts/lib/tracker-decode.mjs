@@ -1,5 +1,5 @@
 /**
- * Decode myimmitracker obfuscated row fields → milestone ISO dates.
+ * Decode tracker API obfuscated row fields → milestone ISO dates.
  */
 
 /** Obfuscated API keys → internal milestone key */
@@ -20,7 +20,7 @@ export function parseTrackerDate(cell) {
   if (cell == null || cell === "") return null;
   const str = String(cell).trim().replace(/\s+/g, " ");
   if (!str) return null;
-  // myimmitracker uses "Jan 19, 2024" — comma form must not get T12:00:00 appended
+  // Source uses "Jan 19, 2024" — comma form must not get T12:00:00 appended
   const d = str.includes(",")
     ? new Date(str)
     : new Date(`${str}T12:00:00`);

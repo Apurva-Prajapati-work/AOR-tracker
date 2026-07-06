@@ -10,10 +10,11 @@
  *   npm run tracker:fetch
  *
  * Env (.env / .env.local):
- *   TRACKER_COOKIE     — required (analytics cookies are stripped automatically)
- *   TRACKER_TRACKER    — optional, default cec-express-entry-tracker
- *   TRACKER_DELAY_MS   — optional, default 800
- *   TRACKER_*      — legacy aliases for the TRACKER_* vars above
+ *   TRACKER_COOKIE       — required (analytics cookies are stripped automatically)
+ *   TRACKER_ORIGIN       — required API origin (no trailing slash)
+ *   TRACKER_API_PREFIX   — required path before /{slug}/cases (e.g. /en/ca/trackers)
+ *   TRACKER_TRACKER      — tracker slug, default cec-express-entry-tracker
+ *   TRACKER_DELAY_MS     — optional, default 800
  */
 
 import fs from "node:fs";
@@ -28,8 +29,17 @@ const STEP = 100;
 const AOR_SORT_KEY =
   "xuset-kavav-casez-nypek-sybet-synyg-nocan-tyzef-tyxux";
 
-function envVar(primary, legacy) {
-  return process.env[primary]?.trim() || process.env[legacy]?.trim() || "";
+function env(name) {
+  return process.env[name]?.trim() || "";
+}
+
+function requireEnv(name) {
+  const value = env(name);
+  if (!value) {
+    console.error(`${name} is not set. Add it to .env or .env.local.`);
+    process.exit(1);
+  }
+  return value;
 }
 
 function loadEnv() {
@@ -93,15 +103,26 @@ function startToRange(start) {
   return start + STEP;
 }
 
-function buildCasesUrl(tracker, start) {
+function trackerBasePath(origin, apiPrefix, slug) {
+  const base = origin.replace(/\/$/, "");
+  const prefix = apiPrefix.startsWith("/") ? apiPrefix : `/${apiPrefix}`;
+  return `${base}${prefix}/${slug}`;
+}
+
+function resolveTrackerEndpoints() {
+  return {
+    origin: requireEnv("TRACKER_ORIGIN"),
+    apiPrefix: requireEnv("TRACKER_API_PREFIX"),
+  };
+}
+
+function buildCasesUrl(endpoints, tracker, start) {
   const filter = JSON.stringify({ state: ["Active"] });
   const sort = JSON.stringify([
     [AOR_SORT_KEY, "desc"],
     ["updated", "desc"],
   ]);
-  const url = new URL(
-    `https://myimmitracker.com/en/ca/trackers/${tracker}/cases`,
-  );
+  const url = new URL(`${trackerBasePath(endpoints.origin, endpoints.apiPrefix, tracker)}/cases`);
   url.searchParams.set("start", String(start));
   url.searchParams.set("filter", filter);
   url.searchParams.set("sort", sort);
@@ -112,14 +133,15 @@ function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-async function fetchPage(tracker, start, cookie) {
-  const url = buildCasesUrl(tracker, start);
+async function fetchPage(endpoints, tracker, start, cookie) {
+  const url = buildCasesUrl(endpoints, tracker, start);
+  const referer = trackerBasePath(endpoints.origin, endpoints.apiPrefix, tracker);
   const res = await fetch(url, {
     headers: {
       Cookie: cookie,
       Accept: "application/json, text/plain, */*",
       "X-Requested-With": "XMLHttpRequest",
-      Referer: `https://myimmitracker.com/en/ca/trackers/${tracker}`,
+      Referer: referer,
       "User-Agent":
         "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
     },
@@ -147,13 +169,7 @@ async function fetchPage(tracker, start, cookie) {
 async function main() {
   loadEnv();
 
-  const cookieRaw = envVar("TRACKER_COOKIE", "TRACKER_COOKIE");
-  if (!cookieRaw) {
-    console.error(
-      "TRACKER_COOKIE is not set (TRACKER_COOKIE accepted). Add to .env or .env.local.",
-    );
-    process.exit(1);
-  }
+  const cookieRaw = requireEnv("TRACKER_COOKIE");
 
   const cookie = slimCookie(cookieRaw);
   if (!cookie) {
@@ -163,11 +179,10 @@ async function main() {
     process.exit(1);
   }
 
-  const tracker =
-    envVar("TRACKER_TRACKER", "TRACKER_TRACKER") ||
-    "cec-express-entry-tracker";
+  const endpoints = resolveTrackerEndpoints();
+  const tracker = env("TRACKER_TRACKER") || "cec-express-entry-tracker";
   const delayMs =
-    Number(envVar("TRACKER_DELAY_MS", "TRACKER_DELAY_MS")) ||
+    Number(env("TRACKER_DELAY_MS")) ||
     parseArgs(process.argv.slice(2)).delayMs ||
     800;
 
@@ -178,7 +193,7 @@ async function main() {
   let rows = 0;
 
   if (opts.all) {
-    const probe = await fetchPage(tracker, 0, cookie);
+    const probe = await fetchPage(endpoints, tracker, 0, cookie);
     const total = probe.total_cases_count ?? 0;
     console.log(`Total cases on tracker: ${total}`);
 
@@ -201,7 +216,7 @@ async function main() {
       }
 
       await sleep(delayMs);
-      const data = await fetchPage(tracker, start, cookie);
+      const data = await fetchPage(endpoints, tracker, start, cookie);
       fs.writeFileSync(outPath, JSON.stringify(data, null, 4) + "\n");
       written++;
       rows += data.values.length;
@@ -219,7 +234,7 @@ async function main() {
 
       await sleep(delayMs);
       const start = rangeToStart(range);
-      const data = await fetchPage(tracker, start, cookie);
+      const data = await fetchPage(endpoints, tracker, start, cookie);
       fs.writeFileSync(outPath, JSON.stringify(data, null, 4) + "\n");
       written++;
       rows += data.values.length;

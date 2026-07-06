@@ -147,10 +147,10 @@ async function fetchPage(tracker, start, cookie) {
 async function main() {
   loadEnv();
 
-  const cookieRaw = envVar("TRACKER_COOKIE", "IMMITRACKER_COOKIE");
+  const cookieRaw = envVar("TRACKER_COOKIE", "TRACKER_COOKIE");
   if (!cookieRaw) {
     console.error(
-      "TRACKER_COOKIE is not set (IMMITRACKER_COOKIE accepted). Add to .env or .env.local.",
+      "TRACKER_COOKIE is not set (TRACKER_COOKIE accepted). Add to .env or .env.local.",
     );
     process.exit(1);
   }
@@ -164,10 +164,10 @@ async function main() {
   }
 
   const tracker =
-    envVar("TRACKER_TRACKER", "IMMITRACKER_TRACKER") ||
+    envVar("TRACKER_TRACKER", "TRACKER_TRACKER") ||
     "cec-express-entry-tracker";
   const delayMs =
-    Number(envVar("TRACKER_DELAY_MS", "IMMITRACKER_DELAY_MS")) ||
+    Number(envVar("TRACKER_DELAY_MS", "TRACKER_DELAY_MS")) ||
     parseArgs(process.argv.slice(2)).delayMs ||
     800;
 

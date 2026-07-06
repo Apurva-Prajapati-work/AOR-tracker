@@ -13,7 +13,12 @@
     "release:draft": "node scripts/draft-release-from-tag.mjs",
     "release:draft:dry-run": "node scripts/draft-release-from-tag.mjs --dry-run",
     "releases:backfill": "node scripts/backfill-github-releases.mjs",
-    "releases:backfill:execute": "node scripts/backfill-github-releases.mjs --execute"
+    "releases:backfill:execute": "node scripts/backfill-github-releases.mjs --execute",
+    "cases:check": "node scripts/check-cases-in-db.mjs",
+    "tracker:fetch": "node scripts/fetch-tracker-json.mjs --all",
+    "tracker:cases": "node scripts/extract-case-numbers.mjs",
+    "tracker:dry-run": "node scripts/dry-run-milestone-sync.mjs",
+    "tracker:sync": "node scripts/sync-milestones.mjs"
   },
   "dependencies": {
     "@microsoft/clarity": "^1.0.2",

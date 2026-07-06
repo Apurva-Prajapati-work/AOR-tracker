@@ -46,3 +46,10 @@ next-env.d.ts
 ~$*.xlsx
 *.xlsx~
 *.xlsx
+
+tracker-json
+case-numbers-db-check.json
+case-numbers.json
+cohort-calibration-today.json
+milestone-sync-dry-run.json
+milestone-sync-applied.json

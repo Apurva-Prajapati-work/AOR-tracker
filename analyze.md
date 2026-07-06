@@ -8,7 +8,7 @@ Data Source
 Records
 AOR Date Range
 Sync Frequency
-myimmitracker.com / CEC Tracker
+CEC Express Entry Tracker (external JSON API)
 600 applicants
 Aug 2024 – May 2026
 Weekly
@@ -151,14 +151,14 @@ The 210-day median aligns with the observed IRCC trend as of May 2026. This esti
 
 
 3. Data Source & Primary Key
-All data is scraped weekly from the public CEC Express Entry Tracker on myimmitracker.com. The primary key is Case # (e.g. case-126792)   the unique internal ID assigned by myimmitracker. Username is not the primary key because the same person can have multiple cases.
+All data is scraped weekly from the public CEC Express Entry Tracker (configured via `TRACKER_ORIGIN`, `TRACKER_API_PREFIX`, and `TRACKER_TRACKER` in `.env`). The primary key is Case # (e.g. case-126792)   the unique internal ID assigned by the tracker. Username is not the primary key because the same person can have multiple cases.
 
 Field
 Primary Key?
 Notes
 Case #
 YES   unique across all 600 records
-Assigned once by myimmitracker, never changes
+Assigned once by the tracker, never changes
 Username
 NO   3 duplicates found in dataset
 Same person can have multiple applications
@@ -245,13 +245,13 @@ For a March 4, 2026 applicant on May 16, 2026: (73 / 210) × 100 = 34.8%. Previo
 
 
 7. Weekly Sync Logic
-Primary key: Case #. Run every week against myimmitracker.com/en/ca/trackers/cec-express-entry-tracker.
+Primary key: Case #. Run every week via `npm run tracker:fetch` (API host and path from `.env`: `TRACKER_ORIGIN`, `TRACKER_API_PREFIX`, `TRACKER_TRACKER`).
 
 Step
 Action
 Key rule
 1
-Scrape myimmitracker
+Fetch tracker JSON
 Full CEC tracker export
 2
 Match on Case #
@@ -589,4 +589,4 @@ Update all dashboard estimates and document change in changelog
 
 
 AORTrack v2.0   Recency-Weighted Algorithm  |  ~7 month median (May 2026)
-track.getnorthpath.com  |  Primary Key: Case #  |  Sync: Weekly  |  Source: myimmitracker.com
+track.getnorthpath.com  |  Primary Key: Case #  |  Sync: Weekly  |  Source: CEC tracker JSON (`tracker-json/`)

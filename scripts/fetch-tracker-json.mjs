@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Fetch CEC tracker JSON from myimmitracker → tracker-json/<range>.json
+ * Fetch CEC tracker JSON from tracker → tracker-json/<range>.json
  *
  * Filename convention: 100.json = start 0, 200.json = start 100, etc.
  *
@@ -13,7 +13,7 @@
  *   TRACKER_COOKIE     — required (analytics cookies are stripped automatically)
  *   TRACKER_TRACKER    — optional, default cec-express-entry-tracker
  *   TRACKER_DELAY_MS   — optional, default 800
- *   IMMITRACKER_*      — legacy aliases for the TRACKER_* vars above
+ *   TRACKER_*      — legacy aliases for the TRACKER_* vars above
  */
 
 import fs from "node:fs";

@@ -19,7 +19,7 @@ export function LandingStatsBar({ profileCount, medianSample }: LandingStatsBarP
         </div>
         <div className="">
           <div className="stat-num">
-            184
+            {cecMed}
             <span>d</span>
           </div>
           <div className="stat-desc">Avg. CEC processing time</div>

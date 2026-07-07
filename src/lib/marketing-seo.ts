@@ -1,8 +1,8 @@
 /** ISO date for schema.org dateModified   bump when YMYL copy changes. */
-export const MARKETING_CONTENT_DATE_MODIFIED = "2026-05-22";
+export const MARKETING_CONTENT_DATE_MODIFIED = "2026-07-07";
 
-/** Human label for hero meta rows, e.g. "Last updated: May 22, 2026". */
-export const MARKETING_CONTENT_DATE_LABEL = "May 22, 2026";
+/** Human label for hero meta rows, e.g. "Last updated: July 7, 2026". */
+export const MARKETING_CONTENT_DATE_LABEL = "July 7, 2026";
 
 export const GH_REPO_URL = "https://github.com/Get-North-Path/AOR-tracker";
 

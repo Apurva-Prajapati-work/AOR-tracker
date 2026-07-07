@@ -6,7 +6,7 @@
  *   node scripts/check-cases-in-db.mjs
  *   npm run cases:check
  *
- * DB scope: profiles where seededData === true (CEC Excel import).
+ * DB scope: profiles where seededData === true (tracker-json seed or legacy Excel).
  *
  * Env (from .env.local or .env):
  *   MONGODB_URI — required

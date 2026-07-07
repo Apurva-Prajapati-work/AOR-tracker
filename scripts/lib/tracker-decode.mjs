@@ -15,6 +15,10 @@ export const TRACKER_FIELD_KEYS = {
 
 export const MILESTONE_KEYS = Object.keys(TRACKER_FIELD_KEYS);
 
+/** Tracker "current status" column (e.g. Biometrics, e-APR AOR). */
+export const TRACKER_CURRENT_STATUS_KEY =
+  "xopos-kybed-picys-supot-gukab-tetyl-luzyd-lekez-gixex";
+
 /** @param {unknown} cell */
 export function parseTrackerDate(cell) {
   if (cell == null || cell === "") return null;
@@ -40,7 +44,7 @@ export function normalizeCaseNo(raw) {
 
 /**
  * @param {Record<string, unknown>} row
- * @returns {{ caseNo: string, username: string, milestones: Record<string, string|null> } | null}
+ * @returns {{ caseNo: string, username: string, milestones: Record<string, string|null>, currentStatus?: string } | null}
  */
 export function decodeRow(row) {
   const username = row.username;
@@ -53,10 +57,12 @@ export function decodeRow(row) {
   for (const [key, field] of Object.entries(TRACKER_FIELD_KEYS)) {
     milestones[key] = parseTrackerDate(row[field]);
   }
+  const currentStatus = String(row[TRACKER_CURRENT_STATUS_KEY] ?? "").trim();
   return {
     caseNo,
     username: String(username[0] ?? "").trim(),
     milestones,
+    ...(currentStatus ? { currentStatus } : {}),
   };
 }
 

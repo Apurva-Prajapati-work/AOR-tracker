@@ -2,6 +2,7 @@
 /**
  * Dry-run: milestone date diff for tracker ∩ seeded DB only.
  * Scope: seededData:true profiles whose caseNo exists in tracker-json.
+ * Seeded profiles may come from tracker-json seed or legacy Excel import.
  * Does NOT create profiles — compare/update existing seeded rows only.
  *
  * Usage:

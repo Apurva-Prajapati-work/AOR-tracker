@@ -2,15 +2,23 @@
  * Decode tracker API obfuscated row fields → milestone ISO dates.
  */
 
+import dayjs from "dayjs";
+import customParseFormat from "dayjs/plugin/customParseFormat.js";
+
+dayjs.extend(customParseFormat);
+
+/** ImmiTracker date strings: "Jan 19, 2024", "Jul 3, 2026", or "2026-07-03". */
+const TRACKER_DATE_FORMATS = ["MMM D, YYYY", "YYYY-MM-DD"];
+
 /** Obfuscated API keys → internal milestone key */
 export const TRACKER_FIELD_KEYS = {
-  aor: "xuset-kavav-casez-nypek-sybet-synyg-nocan-tyzef-tyxux",
-  biometrics: "ximos-bykys-likus-nifob-nomum-nytuh-modoz-hezug-myxyx",
-  background: "xepot-nucyl-vycon-nivid-micim-rigal-semag-fyzyz-tixyx",
-  medical: "xedac-zyfyn-zylof-cedok-rahem-sirit-tafoh-pygap-poxex",
-  p1: "xizon-mupof-fyzys-sogys-lipil-cyvez-lifyr-nyzic-lexix",
-  p2: "xocoz-vubum-bifub-mitak-varab-habog-genyl-ginat-kaxyx",
-  ecopr: "xufad-nuraz-bapaz-pinyt-gydoz-nenaf-kipah-rapac-texux",
+  aor: "xuset-kavav-casez-nypek-sybet-synyg-nocan-tyzef-tyxux", // AOR Date
+  biometrics: "ximos-bykys-likus-nifob-nomum-nytuh-modoz-hezug-myxyx", // Biometrics Invitation Letter (BIL)
+  background: "xocoz-vubum-bifub-mitak-varab-habog-genyl-ginat-kaxyx", // Last BGS change Date
+  medical: "xepot-nucyl-vycon-nivid-micim-rigal-semag-fyzyz-tixyx", // Medical Passed
+  p1: "xedac-zyfyn-zylof-cedok-rahem-sirit-tafoh-pygap-poxex", // Portal 1 Email (Inland)
+  p2: "xufad-nuraz-bapaz-pinyt-gydoz-nenaf-kipah-rapac-texux", // Portal 2 Email / PPR Date
+  ecopr: "xubak-bezec-bokyh-mevid-vazab-gybaf-mysid-vibak-zexex", // eCoPR Date (Inland Landing)
 };
 
 export const MILESTONE_KEYS = Object.keys(TRACKER_FIELD_KEYS);
@@ -24,12 +32,9 @@ export function parseTrackerDate(cell) {
   if (cell == null || cell === "") return null;
   const str = String(cell).trim().replace(/\s+/g, " ");
   if (!str) return null;
-  // Source uses "Jan 19, 2024" — comma form must not get T12:00:00 appended
-  const d = str.includes(",")
-    ? new Date(str)
-    : new Date(`${str}T12:00:00`);
-  if (Number.isNaN(d.getTime())) return null;
-  return d.toISOString().slice(0, 10);
+  const parsed = dayjs(str, TRACKER_DATE_FORMATS, true);
+  if (!parsed.isValid()) return null;
+  return parsed.format("YYYY-MM-DD");
 }
 
 /** @param {string} raw */

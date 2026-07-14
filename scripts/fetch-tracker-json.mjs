@@ -1,13 +1,15 @@
 #!/usr/bin/env node
 /**
- * Fetch CEC tracker JSON from tracker → tracker-json/<range>.json
+ * Fetch CEC tracker JSON from tracker → <outDir>/<range>.json
  *
  * Filename convention: 100.json = start 0, 200.json = start 100, etc.
  *
  * Usage:
  *   node scripts/fetch-tracker-json.mjs --all
- *   node scripts/fetch-tracker-json.mjs --from 100 --to 500
+ *   node scripts/fetch-tracker-json.mjs --all --out ./my-tracker-data
+ *   node scripts/fetch-tracker-json.mjs --from 100 --to 500 --out D:/exports/tracker
  *   npm run tracker:fetch
+ *   npm run tracker:fetch -- --out ./my-tracker-data
  *
  * Env (.env / .env.local):
  *   TRACKER_COOKIE       — required (analytics cookies are stripped automatically)
@@ -15,6 +17,7 @@
  *   TRACKER_API_PREFIX   — required path before /{slug}/cases (e.g. /en/ca/trackers)
  *   TRACKER_TRACKER      — tracker slug, default cec-express-entry-tracker
  *   TRACKER_DELAY_MS     — optional, default 800
+ *   TRACKER_JSON_DIR     — optional output dir (overridden by --out)
  */
 
 import fs from "node:fs";
@@ -23,7 +26,7 @@ import { fileURLToPath } from "node:url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(__dirname, "..");
-const outDir = path.join(root, "tracker-json");
+const DEFAULT_OUT_DIR = path.join(root, "tracker-json");
 
 const STEP = 100;
 const AOR_SORT_KEY =
@@ -83,6 +86,7 @@ function parseArgs(argv) {
     to: null,
     force: false,
     delayMs: null,
+    out: null,
   };
   for (let i = 0; i < argv.length; i++) {
     const arg = argv[i];
@@ -91,8 +95,21 @@ function parseArgs(argv) {
     else if (arg === "--from") opts.from = Number(argv[++i]);
     else if (arg === "--to") opts.to = Number(argv[++i]);
     else if (arg === "--delay") opts.delayMs = Number(argv[++i]);
+    else if (arg === "--out" || arg === "--dir") opts.out = argv[++i];
   }
   return opts;
+}
+
+/** Resolve output dir: --out > TRACKER_JSON_DIR > tracker-json. Create if missing. */
+function resolveOutDir(cliOut) {
+  const raw = (cliOut || env("TRACKER_JSON_DIR") || "").trim();
+  const outDir = raw
+    ? path.isAbsolute(raw)
+      ? raw
+      : path.resolve(root, raw)
+    : DEFAULT_OUT_DIR;
+  fs.mkdirSync(outDir, { recursive: true });
+  return outDir;
 }
 
 function rangeToStart(range) {
@@ -187,7 +204,8 @@ async function main() {
     800;
 
   const opts = parseArgs(process.argv.slice(2));
-  fs.mkdirSync(outDir, { recursive: true });
+  const outDir = resolveOutDir(opts.out);
+  console.log(`Saving to: ${outDir}`);
 
   let written = 0;
   let rows = 0;
@@ -246,7 +264,7 @@ async function main() {
     }
   } else {
     console.error(
-      "Usage: node scripts/fetch-tracker-json.mjs --all | --from 100 --to 500 [--force] [--delay 800]",
+      "Usage: node scripts/fetch-tracker-json.mjs --all | --from 100 --to 500 [--out <dir>] [--force] [--delay 800]",
     );
     process.exit(1);
   }

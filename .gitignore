@@ -48,6 +48,9 @@ next-env.d.ts
 *.xlsx
 
 tracker-json
+pnp-non-express-entry-tracker
+cec-express-entry-tracker
+federal-skilled-worker-fsw-express-entry-tracker
 case-numbers-db-check.json
 case-numbers.json
 cohort-calibration-today.json

@@ -2,6 +2,8 @@
 
 Schemas as specified for the product redesign.
 
+Estimates are **per-user AI windows** (month buckets), not community medians. Cohorts are for browsing peers only.
+
 ---
 
 ## 1. Draw category
@@ -39,8 +41,6 @@ export type DrawCategory = (typeof DRAW_CATEGORIES)[number]["value"];
 
 ---
 
-
-
 ## 2. Visa offices
 
 ```ts
@@ -69,39 +69,9 @@ export const OFFICE_LIST = [
 export type VisaOffice = (typeof OFFICE_LIST)[number];
 ```
 
-### Office adjustments
-
-Days added to every estimable milestone **after BIL** when the user has a PVO. Not applied to `bil` itself. Config (code or collection) — not on the user doc.
-
-```ts
-OFFICE_ADJ: Record<VisaOffice, number> = {
-  Ottawa: 0,
-  Edmonton: -6,
-  Vancouver: -3,
-  Montreal: 4,
-  Scarborough: 8,
-  Etobicoke: 6,
-  Mississauga: 5,
-  "Niagara Falls": 2,
-  "Sydney NS": -4,
-  "New Delhi": 18,
-  Chandigarh: 16,
-  Manila: 12,
-  "London UK": 8,
-  "Abu Dhabi": 10,
-  Ankara: 14,
-  "Mexico City": 9,
-  "Sao Paulo": 11,
-  Other: 0,
-  "Not sure": 0,
-};
-```
-
-Placeholder values from the product HTML. Replace with data-backed adjustments when enough PVO-tagged completions exist.
+PVO / SVO are stored on the user profile and passed into the AI estimate prompt when available. There is **no** day-offset table and **no** `STREAM_PACE` collection.
 
 ---
-
-
 
 ## 3. Milestones
 
@@ -208,28 +178,58 @@ export const MILESTONES = [
 ] as const;
 ```
 
-
-
 ### Milestone config vs stored data
 
 `MILESTONES` above is **UI / validation only** (`label`, `sec`, `desc`, `est`, `needs`, `sub`). It is not written onto each profile.
 
-### Profile milestone (stored on user)
+### Estimate month buckets
 
-Only id + date:
+Canonical slugs stored on the profile. UI formats as `"Early September to Mid October"`.
+
+```ts
+// Pattern: "{early|mid|late}-{month}"
+// month ∈ january … december
+export type EstimateBucket =
+  | "early-january" | "mid-january" | "late-january"
+  | "early-february" | "mid-february" | "late-february"
+  | "early-march" | "mid-march" | "late-march"
+  | "early-april" | "mid-april" | "late-april"
+  | "early-may" | "mid-may" | "late-may"
+  | "early-june" | "mid-june" | "late-june"
+  | "early-july" | "mid-july" | "late-july"
+  | "early-august" | "mid-august" | "late-august"
+  | "early-september" | "mid-september" | "late-september"
+  | "early-october" | "mid-october" | "late-october"
+  | "early-november" | "mid-november" | "late-november"
+  | "early-december" | "mid-december" | "late-december";
+```
+
+Include year in the AI response or derive from AOR when formatting (e.g. store optional `estimatedYear` if the window crosses year boundaries). Prefer storing year on the range:
+
+```ts
+// Optional if buckets alone are ambiguous across years
+estimatedYearFrom?: number;  // e.g. 2026
+estimatedYearTo?: number;
+```
+
+### Profile milestone (stored on user)
 
 ```ts
 PROFILE_MILESTONE = {
   milestoneId: MILESTONES.id;
-  milestoneDate: date;                 // ISO YYYY-MM-DD
+  milestoneDate: date | null;          // real logged date (ISO YYYY-MM-DD)
+  estimatedFrom: EstimateBucket | null;
+  estimatedTo: EstimateBucket | null;
+  estimatedYearFrom: number | null;
+  estimatedYearTo: number | null;
 }
 ```
 
-Join to `MILESTONES` in the app when rendering labels, sections, estimates, and dependency rules.
+- If `milestoneDate` is set → show the real date; clear or ignore estimate fields for that row.
+- If `est: false` (`bio_done`) → never fill AI estimates; UI shows “30 days after BIL”.
+- Display range: `"Early September to Mid October"` (from `estimatedFrom` … `estimatedTo`).
 
 ---
-
-
 
 ## 4. User details
 
@@ -249,16 +249,24 @@ USER_DETAILS = {
 }
 ```
 
-PVO / SVO live on `USER_SCHEMA` (they drive estimates), not inside `userDetails`.
+PVO / SVO live on `USER_SCHEMA` (AI prompt context), not inside `userDetails`.
 All `USER_DETAILS` fields are optional at first submit.
 
 ---
 
-
-
 ## 5. User schema
 
 ```ts
+ESTIMATE_META = {
+  generatedAt: date;
+  model: string;
+  promptVersion: string;
+  phase: "aor-only" | "with-offices";
+  // Hash of: itaDate, aorDate, applyingFrom, pathway, expressEntryProgram,
+  //          primaryVisaOffice, secondaryVisaOffice, logged milestone dates
+  inputsHash: string;
+}
+
 USER_SCHEMA = {
   _id: ObjectId;
 
@@ -282,18 +290,21 @@ USER_SCHEMA = {
   secondaryVisaOffice: enum[OFFICE_LIST] | null;
 
   // Timeline + cohort
-  milestones: PROFILE_MILESTONE[];     // id + date only; UI joins MILESTONES config
+  milestones: PROFILE_MILESTONE[];
   cohortKey: ref("Cohort");            // always ObjectId → COHORT._id
-  currentStatus: string | null;        // tracker "current status" string, if any
+  currentStatus: string | null;
+
+  // AI estimates (cached on profile — do not call on every page load)
+  estimateMeta: ESTIMATE_META | null;
 
   // Optional extras
-  userDetails: USER_DETAILS;           // all fields optional at first submit
-  purity: number | null;               // import data-quality score
+  userDetails: USER_DETAILS;
+  purity: number | null;
 
   // Timestamps
   createdAt: date;
   updatedAt: date;
-  submittedAt: date | null;            // first time milestones flow completed
+  submittedAt: date | null;
 }
 ```
 
@@ -304,15 +315,15 @@ USER_SCHEMA = {
 | `email` / `emailNorm` | Yes | Always |
 | `caseNo` | Yes (sparse) | Tracker sync PK; null for non-seeded |
 | `shareToken` | Yes (sparse) | Null until share is created |
-| `username` | Yes for live users | **Not unique while seeding** — tracker usernames can collide; seeded rows may omit or share names. Enforce uniqueness only when `seededData === false` (app submit / account create). |
+| `username` | Yes for live users | **Not unique while seeding**. Enforce only when `seededData === false`. |
 
 Resolve cohort on write: find-or-create `COHORT` by `"{YYYY-MM}|{inland|outland}"`, then set `USER_SCHEMA.cohortKey` to that document’s `_id`.
 
 ---
 
+## 6. Cohort (browse only)
 
-
-## 6. Cohort
+No medians / percentiles. Cohorts group peers for the browse UI.
 
 ```ts
 // cohortKey = "{YYYY-MM}|{inland|outland}"
@@ -321,110 +332,77 @@ Resolve cohort on write: find-or-create `COHORT` by `"{YYYY-MM}|{inland|outland}
 
 COHORT = {
   _id: ObjectId;
-  cohortKey: string;                 // unique — "{YYYY-MM}|{inland|outland}"
+  cohortKey: string;                   // unique — "{YYYY-MM}|{inland|outland}"
   aorMonth: string;                    // "YYYY-MM"
   applyingFrom: enum[inland, outland];
-  // Browse grid + detail header
-  nApplicants: number;                 // verified profiles in this cohort
-  dominantStage: MILESTONES.id | null; // furthest milestone most applicants have reached
-  stageDistribution: {                 // counts per furthest milestone (for sparkline / filters)
+
+  nApplicants: number;
+  nCompleted: number;                  // has ecopr milestoneDate
+  nWaiting: number;                    // no ecopr yet
+
+  dominantStage: MILESTONES.id | null;
+  stageDistribution: {
     [milestoneId: MILESTONES.id]: number;
   };
 
-  // eCOPR timing (computed on sync)
-  nCompleted: number;                  // applicants with eCOPR logged
-  nWaiting: number;                    // applicants still in progress
-  medianDaysToEcopr: number;           // P50 days AOR → eCOPR
-  p25DaysToEcopr: number;
-  p75DaysToEcopr: number;
-
-  // Optional per-milestone medians when n is large enough
-  perMilestoneMedian: {
-    [milestoneId: MILESTONES.id]: number; // median days from AOR
-  };
-
-  algorithmVersion: string;            // e.g. "v3.0"
   lastUpdated: date;
 }
 ```
 
-`USER_SCHEMA.cohortKey` is always `ref("Cohort")` → `COHORT._id`. The human-readable key lives only on `COHORT.cohortKey`. Cohort stats are rebuilt on profile insert/update and weekly sync.
+`USER_SCHEMA.cohortKey` is always `ref("Cohort")` → `COHORT._id`. Rebuild counts / stage distribution on profile insert/update (not for estimates).
 
 ---
 
+## 7. AI estimation flow
 
+No `STREAM_PACE`. No community median tables. Estimates live only on `PROFILE_MILESTONE` + `estimateMeta`.
 
-## 7. Stream / estimation pace
+### When to call
 
-One document per `applyingFrom`. Powers timeline chips and “typical day” estimates. Separate from month cohorts — empty month cohorts still fall back here.
+| Trigger | Call? | `phase` |
+|---------|-------|---------|
+| ITA + AOR first complete, PVO **and** SVO still missing | **Call 1** | `"aor-only"` |
+| Later PVO and/or SVO set (after call 1) | **Call 2** | `"with-offices"` |
+| ITA + AOR first complete, PVO **and** SVO already set | **One call only** | `"with-offices"` — skip call 2 |
+| `inputsHash` unchanged | Skip | — |
+| ITA / AOR change | Re-run (same rules as above) | — |
+| PVO / SVO change after `"with-offices"` | Re-run call 2 | `"with-offices"` |
+
+Max **2** AI runs per user in the happy path; **1** if offices are already filled when ITA+AOR land.
+
+### Prompt inputs
+
+- Always: `itaDate`, `aorDate`, `applyingFrom`, `pathway`, `expressEntryProgram`, draw category, logged `milestoneDate`s
+- When `phase === "with-offices"`: also `primaryVisaOffice`, `secondaryVisaOffice`
+
+### Output
+
+For each estimable pending milestone (`est: true` and no `milestoneDate`):
 
 ```ts
-STREAM_PACE = {
-  _id: ObjectId;
-  applyingFrom: enum[inland, outland]; // unique
-
-  // Median (or mean) days from AOR → each estimable milestone
-  // Omit bio_done (est:false — never community-estimated)
-  daysFromAor: {
-    bil: number;
-    medical: number;
-    bgc_start: number;
-    crim: number;
-    info: number;
-    sec: number;
-    elig: number;
-    final: number;
-    p1: number;
-    p2: number;
-    ecopr: number;
-    prcard: number;
-  };
-
-  // How many profiles contributed to each milestone median
-  segmentN: {
-    [milestoneId: MILESTONES.id]: number;
-  };
-
-  totalDaysToEcopr: number;            // = daysFromAor.ecopr (or sum of gaps)
-  profilesScanned: number;
-  seededProfiles: number;
-  computedAt: date;
-  algorithmVersion: string;            // e.g. "v3.0"
+{
+  milestoneId: MILESTONES.id;
+  estimatedFrom: EstimateBucket;
+  estimatedTo: EstimateBucket;
+  estimatedYearFrom: number;
+  estimatedYearTo: number;
 }
 ```
 
-### Placeholder seed (from product HTML — replace after sync)
+Write onto matching `PROFILE_MILESTONE` rows; update `estimateMeta`.
 
-```ts
-// inland daysFromAor
-{ bil:58, medical:74, bgc_start:96, crim:122, info:133, sec:154,
-  elig:165, final:182, p1:185, p2:189, ecopr:216, prcard:268 }
+### Rules
 
-// outland daysFromAor
-{ bil:66, medical:88, bgc_start:110, crim:139, info:151, sec:174,
-  elig:186, final:204, p1:208, p2:213, ecopr:241, prcard:300 }
-```
-
-### Estimate formula
-
-```
-base = STREAM_PACE[applyingFrom].daysFromAor[milestoneId]
-adj  = milestoneId === "bil" ? 0 : (OFFICE_ADJ[primaryVisaOffice] ?? 0)
-est  = aorDate + base + adj
-then: chain-forward (never before previous milestone)
-then: future-shift pending chain if first pending < today
-never estimate bio_done
-```
-
-Recomputed on weekly sync from profiles with enough `segmentN` per milestone. Prefer live + correctly labeled seeded rows; do not trust inland/outland split until seed labeling is fixed.
+- Never AI-estimate `bio_done`
+- Do not call on every dashboard load — only when hash/phase rules say so
+- When user logs a real `milestoneDate`, clear that row’s estimate fields
+- Optional: after new logged dates, refresh remaining estimates if you want tighter windows (counts as another call; gate with hash)
 
 ---
 
-
-
 ## What needs to be added
 
-1. **Indexes** — unique on `emailNorm`; sparse unique on `caseNo` / `shareToken`; unique on `username` only for live users (`seededData: false`); index on `cohortKey` (ObjectId) and `applyingFrom`; unique on `STREAM_PACE.applyingFrom`.
-2. **Tracker → milestone mapping** — which source columns fill which of the 13 ids; which ids are user-only (`crim`, `info`, `sec`, `elig`, `final`, `prcard`, `bio_done`).
-3. **Inland/outland on seed** — stop defaulting all imported rows to inland; map real type (and inland/outland P1/eCOPR columns) before `STREAM_PACE` and cohort stats are trustworthy.
-
+1. **Indexes** — unique on `emailNorm`; sparse unique on `caseNo` / `shareToken`; unique on `username` only for live users (`seededData: false`); index on `cohortKey` (ObjectId) and `applyingFrom`.
+2. **Tracker → milestone mapping** — which source columns fill which of the 13 ids; user-only vs tracker-filled (see decoder keys: inland eCOPR vs outland landing, `final` ← Decision Made, etc.).
+3. **Inland/outland on seed** — still needed for correct **cohort browse** grouping; not required for AI estimates (live users self-select `applyingFrom`).
+4. **AI provider wiring** — model, `promptVersion`, structured output validation for buckets, rate limits / retries.
